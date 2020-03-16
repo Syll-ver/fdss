@@ -1,0 +1,585 @@
+<template>
+  <b-container fluid>
+    <div>
+      <b-alert
+        :show="alert.showAlert"
+        dismissible
+        :variant="alert.variant"
+        @dismissed="alert.showAlert = null"
+      >
+        <font-awesome-icon
+          :icon="alert.variant == 'biotech' ? 'check-circle' : 'exclamation'"
+          class="mr-1"
+          style="font-size:20px"
+        />
+        {{ alert.message }}
+      </b-alert>
+    </div>
+    <div>
+      <!-- Main table -->
+      <b-row>
+        <b-col>
+          <b-button
+            id="add_action"
+            size="sm"
+            class="button-sq"
+            variant="biotech"
+            @click="addAction()"
+            v-if="actions.add_action"
+          >
+            <font-awesome-icon icon="plus" class="mr-1" />Add Action
+          </b-button>
+        </b-col>
+      </b-row>
+
+      <b-row>
+        <b-col cols="4" class="mt-3">
+          <b-form-group>
+            <b-input-group size="sm">
+              <b-form-input
+                v-model="filter"
+                type="search"
+                id="search_action"
+                placeholder="Search Action"
+              ></b-form-input>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+
+        <b-col class="mt-3">
+          <b-dropdown
+            id="filter_module"
+            class="shadows"
+            text="Filter Status"
+            style="font-size:1PX; width:8.4rem; position:relative; right:21px"
+            size="sm"
+            variant="outline-secondary"
+          >
+            <b-form-checkbox-group
+              id="status_group"
+              name="flavour-2"
+              class="pl-2"
+              style="font-size:14px"
+              v-model="filterStatus"
+            >
+              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+              <b-form-checkbox id="inactive_stat" :value="0">Inactive</b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-dropdown>
+        </b-col>
+
+        <b-col cols="1" offset="4" class="mb-2 mt-3">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_action"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col>
+      </b-row>
+
+      <!-- Main table element -->
+      <b-table
+        id="action-table"
+        show-empty
+        style="font-size:15.5px; max-height:100%"
+        scrollable="true"
+        sticky-header
+        no-border-collapse
+        :items="filterItems"
+        :fields="filterFields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :filter="filter"
+        :filterIncludedFields="filterOn"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        :sort-direction="sortDirection"
+        @filtered="onFiltered"
+      >
+        <!-- <template v-slot:table-caption>{{ bottomLabel }}</template> -->
+
+        <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
+
+        <template v-slot:cell(actions)="row">
+          <b-button
+            size="sm"
+            @click="edit(row.item)"
+            class="mr-1 button-circle"
+            v-b-tooltip.hover
+            title="Edit Action"
+            v-if="actions.edit_action"
+          >
+            <font-awesome-icon icon="edit" />
+          </b-button>
+        </template>
+
+        <template v-slot:cell(U_MODULE_NAME)="row">
+          <div>
+            {{
+            row.item.U_MODULE_NAME
+            ? row.item.U_MODULE_NAME
+            : listModules.find(
+            modules => modules.Code === row.item.U_MODULE_CODE
+            ).Name
+            }}
+          </div>
+        </template>
+
+        <template v-slot:cell(U_IS_ACTIVE)="row">
+          <div style="font-size:13.5px">
+            <b-badge
+              style="width:70px"
+              pill
+              :variant="row.item.U_IS_ACTIVE ? 'biotech' : 'secondary'"
+            >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
+          </div>
+        </template>
+      </b-table>
+
+      <hr />
+
+      <b-row>
+        <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="center">
+          <div size="sm" style="color: gray; font-size: 11px;">{{ bottomLabel }}</div>
+        </b-col>
+        <b-col cols="4" offset="5">
+          <b-pagination
+            id="modules-pagination"
+            pills
+            v-model="currentPage"
+            :total-rows="rows"
+            :per-page="perPage"
+            align="right"
+            size="sm"
+            aria-controls="modules-table"
+            limit="3"
+          ></b-pagination>
+        </b-col>
+      </b-row>
+
+      <!-- Main table -->
+
+      <!-- Add Action -->
+
+      <b-modal
+        size="sm"
+        header-bg-variant="biotech"
+        header-text-variant="light"
+        body-bg-variant="light"
+        id="add-action-modal"
+        @hide="clearForm()"
+      >
+        <template v-slot:modal-title>
+          <h6>Add Action</h6>
+        </template>
+
+        <small class="text-left">Select Module</small>
+        <b-row align-h="center">
+          <b-form-select
+            id="select_module_modal"
+            type="text"
+            style="font-size:10px"
+            class="mx-3"
+            v-model="action_form.U_MODULE_CODE"
+          >
+            <option :value="null" disabled>Select Module</option>
+            <option
+              :value="modules.Code"
+              v-for="(modules, i) in listModules.filter(
+                modules => modules.U_IS_ACTIVE
+              )"
+              :key="i"
+            >{{ modules.Name }}</option>
+          </b-form-select>
+        </b-row>
+
+        <small class="text-left">Action Name</small>
+        <b-row align-h="center">
+          <b-form-input
+            id="add_ACTION_NAME_modal"
+            type="text"
+            style="font-size:10px"
+            class="mx-3"
+            v-model="action_form.U_ACTION_NAME"
+          ></b-form-input>
+        </b-row>
+
+        <template v-slot:modal-footer="{ ok, cancel }">
+          <b-button
+            id="add_action_modal"
+            size="sm"
+            variant="biotech"
+            @click="addActionTable()"
+            style="font-size:13px"
+            class="button"
+            :disabled="showButtonLoading === true"
+          >
+            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Add
+          </b-button>
+          <b-button
+            id="cancel_add_action_modal"
+            size="sm"
+            @click="cancel()"
+            style="font-size:13px;border: 0px;"
+          >Cancel</b-button>
+        </template>
+      </b-modal>
+
+      <!-- Add Action -->
+
+      <!-- Edit Action -->
+
+      <b-modal
+        size="sm"
+        header-bg-variant="biotech"
+        header-text-variant="light"
+        body-bg-variant="light"
+        id="edit-action-modal"
+        @hide="clearForm()"
+      >
+        <template v-slot:modal-title>
+          <h6>Edit Action</h6>
+        </template>
+
+        <small class="text-left">Select Module</small>
+        <b-row align-h="center">
+          <b-form-select
+            type="text"
+            style="font-size:10px"
+            disabled
+            class="mx-3"
+            v-model="action_form.U_MODULE_CODE"
+          >
+            <option :value="null">Select Module</option>
+            <option
+              :value="modules.Code"
+              v-for="(modules, i) in listModules"
+              :key="i"
+            >{{ modules.Name }}</option>
+          </b-form-select>
+        </b-row>
+
+        <small class="text-left">Action Description</small>
+        <b-row align-h="center">
+          <b-form-input
+            type="text"
+            style="font-size:10px"
+            disabled
+            class="mx-3"
+            v-model="action_form.U_ACTION_NAME"
+          ></b-form-input>
+        </b-row>
+        <br />
+        <small class="text-left">Status</small>
+        <b-row align-h="center">
+          <b-form-select
+            class="mx-3"
+            type="text"
+            style="font-size:10px"
+            v-model="action_form.U_IS_ACTIVE"
+          >
+            <option :value="1">Active</option>
+            <option :value="0">Inactive</option>
+          </b-form-select>
+        </b-row>
+
+        <template v-slot:modal-footer="{ ok, cancel }">
+          <b-button
+            size="sm"
+            variant="biotech"
+            @click="editActionTable()"
+            style="font-size:13px"
+            class="button"
+            :disabled="showButtonLoading === true"
+          >
+            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Edit
+          </b-button>
+          <b-button size="sm" @click="cancel()" style="font-size:13px;border: 0px;">Cancel</b-button>
+        </template>
+      </b-modal>
+    </div>
+
+    <!-- Edit Action -->
+  </b-container>
+</template>
+
+<script>
+import moment from "moment";
+import { mapMutations } from "vuex";
+import { mapGetters } from "vuex";
+
+export default {
+  components: {},
+  data() {
+    return {
+      showButtonLoading: false,
+      filterStatus: [1],
+
+      actions: {
+        add_action: false,
+        edit_action: false
+      },
+      alert: {
+        showAlert: 0,
+        variant: "biotech",
+        message: ""
+      },
+
+      action_form: {
+        U_MODULE_CODE: null,
+        U_ACTION_NAME: null,
+        U_IS_ACTIVE: null
+      },
+
+      fields: [
+        // {
+        //   key: "index",
+        //   label: "#",
+        //   sortable: true,
+        //   sortDirection: "desc"
+        // },
+
+        {
+          key: "U_ACTION_NAME",
+          label: "Action Name",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+        {
+          key: "U_MODULE_NAME",
+          label: "Module Name",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+        {
+          key: "U_IS_ACTIVE",
+          label: "Status",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+        { key: "actions", label: "Actions" }
+      ],
+
+      totalRows: 1,
+      currentPage: 1,
+      perPage: 5,
+      pageOptions: [5, 10, 50],
+      sortBy: "",
+      sortDesc: false,
+      sortDirection: "asc",
+      filter: null,
+      filterOn: []
+    };
+  },
+  computed: {
+    filterItems() {
+      return this.listActions.filter(listActions => {
+        return this.filterStatus.includes(listActions.U_IS_ACTIVE);
+      });
+    },
+
+    rows() {
+      return this.filterItems.length;
+    },
+
+    filterFields() {
+      if (this.actions.editAction === false) {
+        return this.fields.filter(field => field.key !== "actions");
+      } else {
+        return this.fields;
+      }
+    },
+    ...mapGetters({
+      listActions: "Admin/Actions/getListActions",
+      listModules: "Admin/Modules/getListModules"
+    }),
+
+    getListActions() {
+      return this.listActions;
+    },
+    sortOptions() {
+      // Create an options list from our fields
+      return this.fields
+        .filter(f => f.sortable)
+        .map(f => {
+          return { text: f.label, value: f.key };
+        });
+    },
+
+    bottomLabel() {
+      let end = this.perPage * this.currentPage;
+      let start = end - this.perPage + 1;
+
+      if (end > this.filterItems.length) {
+        end = this.filterItems.length;
+      }
+
+      if (this.filterItems.length === 0) {
+        start = 0;
+      }
+
+      return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
+    }
+  },
+
+  methods: {
+    clearForm() {
+      this.action_form = {
+        U_MODULE_CODE: null,
+        U_ACTION_NAME: null,
+        U_IS_ACTIVE: null
+      };
+    },
+    cancel() {
+      this.alert.showAlert = 0;
+    },
+    editActionTable() {
+      this.showButtonLoading = true;
+      this.$store
+        .dispatch("Admin/Actions/editAction", {
+          U_UPDATED_BY: JSON.parse(localStorage.user_details).Code,
+          user_actions: JSON.parse(localStorage.user_actions),
+          action_details: this.action_form,
+          SessionId: localStorage.SessionId
+        })
+        .then(res => {
+          if (res && res.name == "Error") {
+            if (res.response && res.response.data.errorMsg) {
+              if (res.response.data.errorMsg === "Invalid session.") {
+                this.$bvModal.show("session_modal");
+              }
+              this.showAlert(res.response.data.errorMsg, "danger");
+            } else {
+              this.showAlert(res.message, "danger");
+            }
+            this.showButtonLoading = false;
+          } else {
+            this.showAlert("Success", "biotech");
+
+            this.$bvModal.hide("edit-action-modal");
+            this.clearForm();
+            this.showButtonLoading = false;
+          }
+        });
+    },
+    addActionTable() {
+      this.showButtonLoading = true;
+
+      this.$store
+        .dispatch("Admin/Actions/addAction", {
+          U_CREATED_BY: JSON.parse(localStorage.user_details).Code,
+          user_actions: JSON.parse(localStorage.user_actions),
+          U_MODULE_CODE: this.action_form.U_MODULE_CODE,
+          U_ACTION_NAME: this.action_form.U_ACTION_NAME,
+          SessionId: localStorage.SessionId
+        })
+        .then(res => {
+          if (res && res.name == "Error") {
+            if (res.response && res.response.data.errorMsg) {
+              if (res.response.data.errorMsg === "Invalid session.") {
+                this.$bvModal.show("session_modal");
+              }
+              this.showAlert(res.response.data.errorMsg, "danger");
+            } else {
+              this.showAlert(res.message, "danger");
+            }
+            this.showButtonLoading = false;
+          } else {
+            this.showAlert("Success", "biotech");
+
+            this.$bvModal.hide("add-action-modal");
+            this.clearForm();
+            this.showButtonLoading = false;
+          }
+        });
+    },
+
+    addAction() {
+      this.$bvModal.show("add-action-modal");
+    },
+
+    edit(data) {
+      this.action_form = { ...data };
+      this.$bvModal.show("edit-action-modal");
+    },
+
+    fetchPendingTransactions() {
+      this.items = this.$store.state.transactions.pendingTransactions;
+      return;
+    },
+    addDocument() {
+      this.transactionForm.documentListValues.push({
+        documentType: null,
+        number: null
+      });
+    },
+
+    resetInfoModal() {
+      this.infoModal.title = "";
+      this.infoModal.content = "";
+    },
+    onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      // this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+    },
+
+    showAlert(message, variant) {
+      this.alert = {
+        showAlert: 3,
+        variant,
+        message
+      };
+    }
+  },
+
+  beforeCreate() {
+    this.$store
+      .dispatch("Admin/Actions/fetchListActions", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+    this.$store
+      .dispatch("Admin/Modules/fetchListModules", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+  },
+
+  created() {
+    const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
+
+    if (userActions.find(action => action.U_ACTION_NAME === "Add action")) {
+      this.actions.add_action = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "Edit action")) {
+      this.actions.edit_action = true;
+    }
+  }
+};
+</script>
+
