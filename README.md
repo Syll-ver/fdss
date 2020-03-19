@@ -1,6 +1,5 @@
-# Business-Partner-Master-Data-System
-
-> BP Master Data
+# Automated Delivery Receipt
+> Automated Delivery Receipt
 
 ## Build Setup
 
