@@ -1,15 +1,14 @@
 <template>
-  <b-container fluid>
-    <div>
+ <div >
+
       <!-- Main table -->
       <b-row>
         <b-col>
           <b-button
             id="add_module"
             size="sm"
-            class="button-sq"
+            class="button-style"
             variant="biotech"
-            style="font-size:12px; box-shadow:0px 10px 20px -10px #000000"
             @click="addModule()"
             v-if="actions.add_module"
           >
@@ -18,57 +17,90 @@
         </b-col>
       </b-row>
 
-      <b-row>
-        <b-col cols="4" class="mt-3">
-          <b-form-group>
-            <b-input-group size="sm">
-              <b-form-input
-                id="search_module"
-                v-model="filter"
-                type="search"
-                placeholder="Search Module"
-              ></b-form-input>
-            </b-input-group>
-          </b-form-group>
-        </b-col>
+       <b-row>
+      <b-col cols="4" class="mt-3">
+        <b-form-group>
+          <b-input-group size="sm">
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Search Module"
+            ></b-form-input>
+            <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
 
-        <b-col class="mt-3">
-          <b-dropdown
-            id="filter_module"
-            text="Filter Status"
-            style="font-size:1PX; width:8.4rem; position:relative; right:21px; box-shadow:10px 10px 15px -2px rgba(0,0,0,0.095)"
-            size="sm"
-            variant="outline-secondary"
+      <b-col cols="4" class="mt-3">
+        <!-- <b-input-group prepend="Date" size="sm">
+          <date-range-picker
+            id="date_pending"
+            ref="picker"
+            :opens="opens1"
+            :locale-data="localeData"
+            :autoApply="true"
+            :singleDatePicker="false"
+            :showWeekNumbers="true"
+            v-model="datePicker"
+            @update="updateValues"
           >
+            <div slot="input" id="date_pending" >
+              {{ datePicker.startDate }} - {{ datePicker.endDate }}
+            </div>
+          </date-range-picker>
+          <b-input-group-append style="height:2rem; font-size:12px">
+            <b-button
+              @click="resetDate"
+              id="date_reset_pending"
+              style="font-size:12px"
+              >Reset</b-button
+            >
+          </b-input-group-append>
+        </b-input-group> -->
+      </b-col>
+  <b-col ></b-col>
+ 
+      <b-col cols="2"  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
+          <b-form-select
+            id="perPageSelect_action"
+            size="sm"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group> -->
+      
+          <b-dropdown
+            right
+            id="filter_actions"
+            class="button-sq"
+            size="sm"
+            variant="dark"
+          >
+          <template v-slot:button-content>
+     <font-awesome-icon icon="filter" class="mr-1" />   
+    </template> 
             <b-form-checkbox-group
               id="status_group"
               name="flavour-2"
               class="pl-2"
-              style="font-size:14px"
+              style="font-size:12px"
               v-model="filterStatus"
             >
               <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
           </b-dropdown>
-        </b-col>
-
-        <b-col cols="1" offset="5" class="mb-2 mt-3">
-          <b-form-group class="mb-0">
-            <b-form-select
-              v-model="perPage"
-              id="perPageSelect_module"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-select>
-          </b-form-group>
-        </b-col>
-      </b-row>
+     
+      </b-col>
+    </b-row>
 
       <!-- Main table element -->
       <b-table
         id="module-table"
-        class="table"
+        class="table-style"
         show-empty
         scrollable
         sticky-header
@@ -87,12 +119,12 @@
         <template v-slot:cell(actions)="row">
           <b-button
             id="edit_module"
+            variant ="edit"
             size="sm"
             @click="edit(row.item)"
-            class="mr-1 button-circle"
-            style="font-size:12px; "
+            class="table-button"
             v-b-tooltip.hover
-            title="Edit Module"
+            title="Update Module"
             v-if="actions.edit_module"
           >
             <font-awesome-icon icon="edit" />
@@ -100,21 +132,22 @@
         </template>
 
         <template v-slot:cell(U_IS_ACTIVE)="row">
-          <div style="font-size:13.5px">
             <b-badge
-              style="width:70px"
+              class="table-badge"
               pill
-              :variant="row.item.U_IS_ACTIVE ? 'biotech' : 'danger'"
+              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
             >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
-          </div>
         </template>
       </b-table>
 
       <hr />
 
       <b-row>
-        <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="center">
-          <div size="sm" style="color: gray; font-size: 11px;">{{ bottomLabel }}</div>
+        <b-col  label-cols-sm
+        class="mb-0 mt-1 text-left"
+        cols="3"
+        align-h="receipt">
+          <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
         </b-col>
         <b-col cols="4" offset="5">
           <b-pagination
@@ -141,6 +174,7 @@
         header-text-variant="light"
         body-bg-variant="light"
         id="add-module-modal"
+        no-close-on-backdrop
         @hide="clearForm()"
       >
         <template v-slot:modal-title>
@@ -148,13 +182,13 @@
         </template>
 
         <small class="text-left">Module Name</small>
-        <b-row align-h="center">
+        <b-row align-h="receipt">
           <b-form-input
+            size="xs"
             id="add_module_name_modal"
             type="text"
-            class="mx-3"
+            class="mx-3 form-text"
             v-model="moduleForm.Name"
-            style="font-size:10px"
           ></b-form-input>
         </b-row>
 
@@ -164,8 +198,7 @@
             size="sm"
             variant="biotech"
             @click="saveModule()"
-            style="font-size:13px"
-            class="button"
+            class="button-style"
             :disabled="showButtonLoading === true"
           >
             <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Add
@@ -174,7 +207,7 @@
             id="cancel_add_module_modal"
             size="sm"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
           >Cancel</b-button>
         </template>
       </b-modal>
@@ -189,20 +222,21 @@
         header-text-variant="light"
         id="edit-module-modal"
         body-bg-variant="light"
+        no-close-on-backdrop
         @hide="clearForm()"
       >
         <template v-slot:modal-title>
-          <h6>Edit Module</h6>
+          <h6>Update Module</h6>
         </template>
 
         <small class="text-left">Module Name</small>
         <b-row align-h="center">
           <b-form-input
+            id="inpute_module"
             type="text"
-            class="mx-2"
+            class="mx-2 form-text"
             v-model="moduleForm.Name"
             disabled
-            style="font-size:10px"
           ></b-form-input>
         </b-row>
         <small class="text-left">Status</small>
@@ -210,9 +244,8 @@
           <b-form-select
             id="edit_status_modal"
             type="text"
-            class="mx-2"
+            class="mx-2 form-text"
             v-model="moduleForm.U_IS_ACTIVE"
-            style="font-size:10px"
           >
             <option :value="1">Active</option>
             <option :value="0">Inactive</option>
@@ -225,40 +258,40 @@
             size="sm"
             variant="biotech"
             @click="editModule()"
-            style="font-size:13px"
-            class="button"
+            class="button-style"
             :disabled="showButtonLoading === true"
           >
-            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Edit
+            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Update
           </b-button>
           <b-button
             id="cancel_edit_module_modal"
             size="sm"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
           >Cancel</b-button>
         </template>
       </b-modal>
 
       <!-- Edit Module -->
-    </div>
-
     <div>
       <b-alert
+        id="alert"
+        class="alerticon"
         :show="alert.showAlert"
         dismissible
         :variant="alert.variant"
         @dismissed="alert.showAlert = null"
       >
         <font-awesome-icon
-          :icon="alert.variant == 'biotech' ? 'check-circle' : 'exclamation'"
-          class="mr-1"
-          style="font-size:20px"
+          :icon="alert.variant == 'danger' ? 'exclamation' : 'check-circle'"
+          class="mr-1 alerticon"
         />
         {{ alert.message }}
       </b-alert>
     </div>
-  </b-container>
+
+   
+ </div>
 </template>
 
 <script>
@@ -407,7 +440,7 @@ export default {
             }
             this.showButtonLoading = false;
           } else {
-            this.showAlert("Success", "biotech");
+            this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-module-modal");
             this.clearForm();
@@ -432,7 +465,7 @@ export default {
         .then(res => {
           if (res && res.name == "Error") {
             if (res.response && res.response.data.errorMsg) {
-              if (res.response.data.errorMsg === "Invalid session.") {
+            if (res.response.data.errorMsg === "Invalid session.") {
                 this.$bvModal.show("session_modal");
               }
               this.showAlert(res.response.data.errorMsg, "danger");
@@ -441,7 +474,7 @@ export default {
             }
             this.showButtonLoading = false;
           } else {
-            this.showAlert("Success", "biotech");
+            this.showAlert("Successfully Added", "success");
 
             this.$bvModal.hide("add-module-modal");
             this.clearForm();
@@ -461,27 +494,27 @@ export default {
       this.$bvModal.show("save-modal");
     },
 
-    fetchPendingTransactions() {
-      this.items = this.$store.state.transactions.pendingTransactions;
-      return;
-    },
-    addDocument() {
-      this.transactionForm.documentListValues.push({
-        documentType: null,
-        number: null
-      });
-    },
-    removeDocument(id) {
-      if (this.transactionForm.documentListValues.length === 1) {
-        //Create an error message. Document must contain 1 or more
-      } else {
-        this.transactionForm.documentListValues.splice(id, 1);
-      }
-    },
-    info(data) {
-      this.transactionForm = data;
-      this.$bvModal.show("process-modal");
-    },
+    // fetchPendingTransactions() {
+    //   this.items = this.$store.state.transactions.pendingTransactions;
+    //   return;
+    // },
+    // addDocument() {
+    //   this.transactionForm.documentListValues.push({
+    //     documentType: null,
+    //     number: null
+    //   });
+    // },
+    // removeDocument(id) {
+    //   if (this.transactionForm.documentListValues.length === 1) {
+    //     //Create an error message. Document must contain 1 or more
+    //   } else {
+    //     this.transactionForm.documentListValues.splice(id, 1);
+    //   }
+    // },
+    // info(data) {
+    //   this.transactionForm = data;
+    //   this.$bvModal.show("process-modal");
+    // },
 
     resetInfoModal() {
       this.infoModal.title = "";
@@ -523,3 +556,4 @@ export default {
   }
 };
 </script>
+

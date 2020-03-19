@@ -1,19 +1,22 @@
 <template>
   <div class="body">
     <main>
-      <LoginForm />
+      <Login />
     </main>
   </div>
 </template>
 
 <script>
-import LoginForm from "~/components/LoginForm.vue";
-
+import Login from "@/components/Login/Login";
 export default {
+  name: "LoginUI",
+  layout: "loginLayout",
   components: {
-    LoginForm
+    Login
+  },
+  data() {
+    return {
+    };
   }
 };
 </script>
-
-<style></style>

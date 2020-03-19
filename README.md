@@ -1,6 +1,6 @@
-# RCT
+# Business-Partner-Master-Data-System
 
-> 
+> BP Master Data
 
 ## Build Setup
 

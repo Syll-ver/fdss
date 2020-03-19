@@ -1,28 +1,31 @@
 <template>
-  <b-container fluid>
+  
+   
     <div>
+       <div>
       <b-alert
+        id="alert_action"
+        class="alerticon"
         :show="alert.showAlert"
         dismissible
         :variant="alert.variant"
         @dismissed="alert.showAlert = null"
       >
         <font-awesome-icon
-          :icon="alert.variant == 'biotech' ? 'check-circle' : 'exclamation'"
-          class="mr-1"
-          style="font-size:20px"
+          :icon="alert.variant == 'danger' ? 'exclamation' : 'check-circle'"
+          class="mr-1 alerticon"
+        
         />
         {{ alert.message }}
       </b-alert>
     </div>
-    <div>
       <!-- Main table -->
       <b-row>
         <b-col>
           <b-button
             id="add_action"
             size="sm"
-            class="button-sq"
+            class="button-style"
             variant="biotech"
             @click="addAction()"
             v-if="actions.add_action"
@@ -42,50 +45,56 @@
                 id="search_action"
                 placeholder="Search Action"
               ></b-form-input>
+               <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
             </b-input-group>
           </b-form-group>
         </b-col>
 
-        <b-col class="mt-3">
-          <b-dropdown
-            id="filter_module"
-            class="shadows"
-            text="Filter Status"
-            style="font-size:1PX; width:8.4rem; position:relative; right:21px"
+       <b-col cols="4" class="mt-3">
+           </b-col>
+  <b-col ></b-col>
+<b-col cols="2"  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
+          <b-form-select
+            id="perPageSelect_action"
             size="sm"
-            variant="outline-secondary"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group> -->
+      
+          <b-dropdown
+            right
+            id="filter_actions"
+            class="button-sq"
+            size="sm"
+            variant="dark"
           >
+          <template v-slot:button-content>
+     <font-awesome-icon icon="filter" class="mr-1" />   
+    </template> 
             <b-form-checkbox-group
               id="status_group"
               name="flavour-2"
               class="pl-2"
-              style="font-size:14px"
+              style="font-size:12px"
               v-model="filterStatus"
             >
               <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
-              <b-form-checkbox id="inactive_stat" :value="0">Inactive</b-form-checkbox>
+              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
           </b-dropdown>
-        </b-col>
-
-        <b-col cols="1" offset="4" class="mb-2 mt-3">
-          <b-form-group class="mb-0">
-            <b-form-select
-              v-model="perPage"
-              id="perPageSelect_action"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-select>
-          </b-form-group>
-        </b-col>
-      </b-row>
+     
+      </b-col>
+    </b-row>
 
       <!-- Main table element -->
       <b-table
-        id="action-table"
+        id="table-action"
+        class="table-style"
         show-empty
-        style="font-size:15.5px; max-height:100%"
-        scrollable="true"
+        scrollable
         sticky-header
         no-border-collapse
         :items="filterItems"
@@ -107,9 +116,11 @@
           <b-button
             size="sm"
             @click="edit(row.item)"
-            class="mr-1 button-circle"
+            class="table-button"
+            variant ="edit"
+            id="edit_action"
             v-b-tooltip.hover
-            title="Edit Action"
+            title="Update Action"
             v-if="actions.edit_action"
           >
             <font-awesome-icon icon="edit" />
@@ -129,32 +140,30 @@
         </template>
 
         <template v-slot:cell(U_IS_ACTIVE)="row">
-          <div style="font-size:13.5px">
             <b-badge
-              style="width:70px"
+              class="table-badge"
               pill
-              :variant="row.item.U_IS_ACTIVE ? 'biotech' : 'secondary'"
+              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
             >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
-          </div>
         </template>
       </b-table>
 
       <hr />
 
       <b-row>
-        <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="center">
-          <div size="sm" style="color: gray; font-size: 11px;">{{ bottomLabel }}</div>
+        <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="receipt">
+          <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
         </b-col>
         <b-col cols="4" offset="5">
           <b-pagination
-            id="modules-pagination"
+            id="actions-pagination"
             pills
             v-model="currentPage"
             :total-rows="rows"
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="actions-table"
             limit="3"
           ></b-pagination>
         </b-col>
@@ -170,6 +179,7 @@
         header-text-variant="light"
         body-bg-variant="light"
         id="add-action-modal"
+        no-close-on-backdrop
         @hide="clearForm()"
       >
         <template v-slot:modal-title>
@@ -181,8 +191,7 @@
           <b-form-select
             id="select_module_modal"
             type="text"
-            style="font-size:10px"
-            class="mx-3"
+            class="mx-3 form-text"
             v-model="action_form.U_MODULE_CODE"
           >
             <option :value="null" disabled>Select Module</option>
@@ -201,8 +210,7 @@
           <b-form-input
             id="add_ACTION_NAME_modal"
             type="text"
-            style="font-size:10px"
-            class="mx-3"
+            class="mx-3 form-text"
             v-model="action_form.U_ACTION_NAME"
           ></b-form-input>
         </b-row>
@@ -214,7 +222,7 @@
             variant="biotech"
             @click="addActionTable()"
             style="font-size:13px"
-            class="button"
+            class="button-style"
             :disabled="showButtonLoading === true"
           >
             <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Add
@@ -223,7 +231,7 @@
             id="cancel_add_action_modal"
             size="sm"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
           >Cancel</b-button>
         </template>
       </b-modal>
@@ -238,19 +246,20 @@
         header-text-variant="light"
         body-bg-variant="light"
         id="edit-action-modal"
+        no-close-on-backdrop
         @hide="clearForm()"
       >
         <template v-slot:modal-title>
-          <h6>Edit Action</h6>
+          <h6>Update Action</h6>
         </template>
 
         <small class="text-left">Select Module</small>
         <b-row align-h="center">
           <b-form-select
+            id="update_selected_module"
             type="text"
-            style="font-size:10px"
             disabled
-            class="mx-3"
+            class="mx-3 form-text"
             v-model="action_form.U_MODULE_CODE"
           >
             <option :value="null">Select Module</option>
@@ -265,20 +274,20 @@
         <small class="text-left">Action Description</small>
         <b-row align-h="center">
           <b-form-input
+            id="update_desc"
             type="text"
-            style="font-size:10px"
             disabled
-            class="mx-3"
+            class="mx-3 form-text"
             v-model="action_form.U_ACTION_NAME"
           ></b-form-input>
         </b-row>
-        <br />
+
         <small class="text-left">Status</small>
         <b-row align-h="center">
           <b-form-select
-            class="mx-3"
+            id="status_update"
+            class="mx-3 form-text"
             type="text"
-            style="font-size:10px"
             v-model="action_form.U_IS_ACTIVE"
           >
             <option :value="1">Active</option>
@@ -288,22 +297,22 @@
 
         <template v-slot:modal-footer="{ ok, cancel }">
           <b-button
+            id="update_action"
             size="sm"
             variant="biotech"
             @click="editActionTable()"
-            style="font-size:13px"
-            class="button"
+            class="button-style"
             :disabled="showButtonLoading === true"
           >
-            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Edit
+            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Update
           </b-button>
-          <b-button size="sm" @click="cancel()" style="font-size:13px;border: 0px;">Cancel</b-button>
+          <b-button id="cancel_action" size="sm" @click="cancel()" class="button-style">Cancel</b-button>
         </template>
       </b-modal>
     </div>
 
     <!-- Edit Action -->
-  </b-container>
+
 </template>
 
 <script>
@@ -460,7 +469,7 @@ export default {
             }
             this.showButtonLoading = false;
           } else {
-            this.showAlert("Success", "biotech");
+            this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-action-modal");
             this.clearForm();
@@ -491,7 +500,7 @@ export default {
             }
             this.showButtonLoading = false;
           } else {
-            this.showAlert("Success", "biotech");
+            this.showAlert("Successfully Added", "success");
 
             this.$bvModal.hide("add-action-modal");
             this.clearForm();
@@ -582,4 +591,3 @@ export default {
   }
 };
 </script>
-

@@ -1,11 +1,15 @@
 <template>
-  <div class="mainPages">
-    <b-card no-body class="cardShadow mt-3">
-      <b-tabs v-model="tabIndex" content-class="mt-1" card small>
-        <b-tab id="tab-actions" title="ACTIONS" class="tab" active-nav-item-class="font-weight-bold text-uppercase text-success">
-          <b-card-text>
+  <div class>
+    <b-card no-body class="mt-5">
+      <b-tabs
+        card
+        small
+        active-nav-item-class="font-weight-bold text-uppercase text-biotech"
+      >
+        <b-tab title="Actions">
+        <div>
             <ActionsTable/>
-          </b-card-text>
+        </div>
         </b-tab>
       </b-tabs>
     </b-card>

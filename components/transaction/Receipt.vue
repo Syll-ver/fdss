@@ -2,222 +2,229 @@
   <div id="receipt">
     <b-row>
       <b-card class="check-card mr-4" style="width:31rem; height:40rem">
-        <b-row>
-          <b-col cols="6">
+        <!-- <b-row>
+          <b-col cols="6"> -->
             <span>
              
-                 <b-img src="/revive.png" class="sidebar-image" center/>
+                 <b-img src="/revive.png" class="receipt-logo" center/>
        
            
             </span>
-          </b-col>
+          <!-- </b-col>
           <b-col cols="6">
             <span>
               Group: Payment Center
             </span>
           </b-col>
-        </b-row>
+        </b-row> -->
 
-        <b-row>
-          <b-col cols="6">
+  <center>
+ 
             <span>
-              ACKNOWLEDGEMENT SLIP
+              DELIVERY RECEIPT | {{ U_TRANSACTION_TYPE }}
             </span>
-          </b-col>
-          <b-col cols="6">
-            <span>
-              Date: 27-Jan-2020
-            </span>
-          </b-col>
-        </b-row>
+            <br>
+            <span><small>
+              Date: {{U_DTE_CRTD  }}
+            </small></span>
+    </center>
 
         <br />
 
+ <span>
+Transaction Number : {{ U_TRX_NO }}
+</span>
+<br/><br>
+
         <b-row>
           <b-col cols="4">
+            <div>
             <span>
-              Customer's Name
+              Farmer's Name
             </span>
+            </div>
+            <div><span>
+              Address
+            </span></div>
           </b-col>
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : LOST AND FOUND
+                : {{ U_FRMR_NAME }}
               </span>
             </div>
-          </b-col>
-        </b-row>
-        <br />
-
-        <b-row>
-          <b-col cols="4">
-            <span>
-              Amount
-            </span>
-          </b-col>
-
-          <b-col cols="8">
-            <div class="dotted-border">
-              <span>
-                : TWO HUNDRED TWENTY PESOS ONLY
-              </span>
-            </div>
-            <div class="dotted-border">
+             <div class="dotted-border">
               <span class="mt-1">
-                : Php 220.00
+                : {{ U_FRMR_ADD }}
               </span>
             </div>
           </b-col>
         </b-row>
 
-        <br />
+
 
         <b-row>
           <b-col cols="4">
             <span>
-              In Payment for
+              Item
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : Payment for Lost And Found
+                :{{U_CMMDTY}} 
               </span>
             </div>
           </b-col>
         </b-row>
 
-        <br />
 
         <b-row>
           <b-col cols="4">
             <span>
-              Reference
+              Driver's Name
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                :
+                : {{U_DRVR_NAME}}
               </span>
             </div>
           </b-col>
         </b-row>
-        <br />
-
-        <b-row>
+                <b-row>
           <b-col cols="4">
             <span>
-              TYPE OF COLLECTION
+              Plate Number
             </span>
-            <b-form-checkbox>Cash</b-form-checkbox>
-            <b-form-checkbox>Check</b-form-checkbox>
           </b-col>
 
           <b-col cols="8">
-            <b-card class="check-card">
-              <b-row>
-                <b-col cols="5">
-                  <span>
-                    Check Date
-                  </span>
-                </b-col>
-                <b-col cols="7">
-                  <div class="dotted-border">
-                    <span>
-                      :
-                    </span>
-                  </div>
-                </b-col>
-              </b-row>
-
-              <b-row>
-                <b-col cols="5">
-                  <span>
-                    Check No.
-                  </span>
-                </b-col>
-                <b-col cols="7">
-                  <div class="dotted-border">
-                    <span>
-                      :
-                    </span>
-                  </div>
-                </b-col>
-              </b-row>
-
-              <b-row>
-                <b-col cols="5">
-                  <span>
-                    Bank Name
-                  </span>
-                </b-col>
-                <b-col cols="7">
-                  <div class="dotted-border">
-                    <span>
-                      :
-                    </span>
-                  </div>
-                </b-col>
-              </b-row>
-            </b-card>
-          </b-col>
-        </b-row>
-        <br />
-        <b-row>
-          <b-col>
-            <b-card class="check-card">
-              <b-form inline>
-                <span>
-                  Remarks:
-                </span>
-
-                <span class="ml-2">
-                  #45678912
-                </span>
-              </b-form>
-            </b-card>
-          </b-col>
-        </b-row>
-
-        <br />
-
-        <b-row>
-          <b-col>
-            <b-form inline>
+            <div class="dotted-border">
               <span>
-                Prepared By:
+                : {{U_PLATE_NUMBER}}
               </span>
-              &nbsp;
-
-              <span style="border-bottom-style: solid; border-width:1px">
-                JUDY DELFIN
-              </span>
-            </b-form>
-          </b-col>
-
-          <b-col cols="auto" class="mr-3">
-            <b-row>
-              <span>
-                Reviewed By:
-              </span>
-              &nbsp;
-              <span style="border-bottom-style: solid; border-width:1px">
-                JUDY DELFIN
-              </span>
-            </b-row>
+            </div>
           </b-col>
         </b-row>
+        <div v-if="U_TRANSACTION_TYPE === 'Pick-up'">
+                        <b-row >
+          <b-col cols="4">
+            <span>
+              Number of Sacks
+            </span>
+          </b-col>
 
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span>
+                : 
+              </span>
+            </div>
+          </b-col>
+        </b-row>
+                       <b-row>
+          <b-col cols="4">
+            <span>
+               Empty Sacks
+            </span>
+          </b-col>
+
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span>
+                : 
+              </span>
+            </div>
+          </b-col>
+        </b-row>
+        </div>
+<div v-else>
+               <b-row >
+          <b-col cols="4">
+            <span>
+              Number of Sacks
+            </span>
+          </b-col>
+
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span>
+                : {{U_SACKS}}
+              </span>
+            </div>
+          </b-col>
+        </b-row>
+                       <b-row>
+          <b-col cols="4">
+            <span>
+               Empty Sacks
+            </span>
+          </b-col>
+
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span>
+                : {{U_EMPTY_SACKS}}
+              </span>
+            </div>
+          </b-col>
+        </b-row>
+</div>
+  <br>
+        <b-row class="my-4">
+          <b-col cols="6">
+
+              <center>
+              <span style="font-size:9px">
+                {{U_FRMR_NAME}}
+              </span>
+              <br>
+              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+               &nbsp;&nbsp; FARMER'S NAME & SIGNATURE
+               &nbsp;&nbsp; </B>
+              </span>
+              </center>
+
+          </b-col >
+
+          <b-col cols="6" >
+              
+              <center>
+              <span style="font-size:9px;margin:0;padding:0">
+                {{U_HLPR_NAME}}
+              </span>
+              <br>
+              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REVIEWED BY
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </B>
+              </span>
+              </center> 
+                
+          </b-col>
+        </b-row>
+ 
+
+        <center>
+          
+        <span style="font-size:9px">
+            &nbsp;&nbsp;{{U_CRTD_BY}}&nbsp;&nbsp;
+        </span>
+      <br>
+        <span style="border-top-style: solid; border-width:1px;font-size:9px;">
+            <b>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED BY
+              &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+        </span>
+
+        </center>
         <b-row style="float:right" class="mr-1 mt-1">
-          <span>
-            <b>
-              AS No. BFI-MISC-2012
-            </b>
-          </span>
+
         </b-row>
+<br>
+
 
         <b-row class="mt-4">
           <b-col>
@@ -229,13 +236,13 @@
 
             <span style="font-size:12px; float:right" class="mr-1">
               <b>
-                1st Copy
+                Farmer's Copy
               </b>
             </span>
           </b-col>
         </b-row>
       </b-card>
-
+<!-- 
       <b-card class="check-card" style="width:31rem; height:40rem">
         <b-row>
           <b-col cols="6">
@@ -422,7 +429,7 @@
           <b-col>
             <b-form inline>
               <span>
-                Prepared By:
+                Farmer's Signature:
               </span>
               &nbsp;
 
@@ -435,7 +442,7 @@
           <b-col cols="auto" class="mr-3">
             <b-row>
               <span>
-                Reviewed By:
+                Checked By:
               </span>
               &nbsp;
               <span style="border-bottom-style: solid; border-width:1px">
@@ -448,7 +455,7 @@
         <b-row style="float:right" class="mr-1 mt-1">
           <span>
             <b>
-              AS No. BFI-MISC-2012
+             
             </b>
           </span>
         </b-row>
@@ -457,7 +464,7 @@
           <b-col>
             <span style="font-size:10px" class="mr-2">
               <i>
-                This doest not serve as an Official Receipt
+                This does not serve as an Official Receipt
               </i>
             </span>
 
@@ -468,7 +475,7 @@
             </span>
           </b-col>
         </b-row>
-      </b-card>
+      </b-card> -->
     </b-row>
   </div>
 </template>
@@ -476,35 +483,19 @@
 export default {
   components: {},
   data() {
-    return{}
+    return{
+      receiptData:{}
+    }
   },
+ 
   computed: {},
 
   methods: {
-    showTab() {
-      switch (this.U_TRANSACTION_TYPE) {
-        case "soa":
-          this.U_RECEIPT_TYPE = "Standard";
-          break;
-        case "nonsale":
-          this.U_RECEIPT_TYPE = "Miscellaneous";
-          break;
-      }
-    },
-
-    fillSubgroup() {
-      this.U_SUB_GROUP = "KCC Payment Center";
-    },
-    fetchInvoiceDetails() {
-      this.U_CUSTOMER_NAME = "Genevie Mindajao";
-      this.U_TRANSACTION_DATE = "2020-08-08";
-      this.U_DUE_DATE = "2020-18-08";
-      this.U_AMOUNT_DUE = 10000;
-      this.U_AMOUNT_BALANCE = 10000;
-      this.U_TYPE = "KCC Rent";
-    },
-
-    async print() {
+   
+    
+    async print(data) {
+      this.receiptData = {...data}
+      console.log(this.receiptData)
       await setTimeout({}, 1000);
       // Get HTML to print from element
       const prtHtml = document.getElementById("receipt").innerHTML;
@@ -542,7 +533,7 @@ export default {
       WinPrint.focus();
       WinPrint.print();
 
-      WinPrint.close();
+      // WinPrint.close();
     }
   },
 

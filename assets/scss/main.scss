@@ -4,7 +4,7 @@ $theme-colors: (
   "print": #333,
   "edit": rgb(1, 51, 99),
   "primary": #0074d9,
-  "success": #75361a,
+  "success": #328059,
   "completed" : #328059,
   "validate": rgb(39, 68, 54),
   "check": #328059,
@@ -110,6 +110,7 @@ select:focus {
   border-top: 0px;
 }
 
+
 .username,
 .password {
   transition: 0.4s;
@@ -170,6 +171,11 @@ select {
 .alert-danger {
   color: #fff;
   background-color: #b31f09;
+  border-color: #fff;
+}
+.alert-success {
+  color: #fff;
+  background-color: #328059;
   border-color: #fff;
 }
 
@@ -262,6 +268,26 @@ a#deliveryreceipt.nuxt-link-exact-active.nuxt-link-active{
   background: #fff;
   color: #743013;
 }
+a#sb-modules.nuxt-link-exact-active.nuxt-link-active{
+  background: #fff;
+  color: #743013;
+}
+a#sb-actions.nuxt-link-exact-active.nuxt-link-active{
+  background: #fff;
+  color: #743013;
+}
+a#sb-roles-and-access.nuxt-link-exact-active.nuxt-link-active{
+  background: #fff;
+  color: #743013;
+}
+a#sb-user-accounts.nuxt-link-exact-active.nuxt-link-active{
+  background: #fff;
+  color: #743013;
+}
+a#sb-activity-logs.nuxt-link-exact-active.nuxt-link-active{
+  background: #fff;
+  color: #743013;
+}
 a#reports.nuxt-link-exact-active.nuxt-link-active{
   background: #fff;
   color: #743013;
@@ -293,11 +319,15 @@ ul ul a {
   height: 100%;
   width: 100%;
 }
+.receipt-logo {
+  height: 18%;
+  width: 80%;
+}
 
 /* End Sidebar */
 
 .component-margin {
-  margin: 3px;
+  margin: auto;
 }
 
 /* Customize Tabs */
@@ -342,10 +372,13 @@ a:hover {
   font-size: 0.875rem;
   /* line-height: 1.5; */
   color: white;
-  background: #743013;
+  background: white;
 }
 //
-
+.bottomlabel{
+  color: gray; 
+  font-size: 11px;
+}
 .form-text {
   font-size: 10px;
   margin: 0px;
@@ -362,6 +395,7 @@ a:hover {
 }
 .table-style {
   font-size: 11.5px;
+  max-height:100%
   
 }
 
@@ -473,4 +507,69 @@ font-size:1rem; color: #743013
   position: absolute;
   right: 20px;
   top: 1px;
+}
+#receipt {
+  height: 50%;
+  width: 100%;
+  position: relative;
+  left: 14px;
+  right: 14px;
+}
+
+span {
+font-size: 13px;
+font-weight: 500;
+}
+.badge-font-size{
+  font-size: 15px
+}
+.page-item.active .page-link {  
+  background-color: #743013 !important;  
+  border-color: #743013 !important;  
+  transition: background-color .3s;
+} 
+.page-item .page-link {
+  color: black
+}
+
+/* Date Range */
+
+.reportrange-text[data-v-fffebcea] {
+  /* background: #fff; */
+  /* cursor: pointer; */
+  /* padding: 5px 10px; */
+  border: 1px solid #ccc;
+  height: 2rem;
+  width: 14rem;
+  font-size: 12px;
+}
+
+.daterangepicker.show-ranges .drp-calendar.left {
+  position: relative;
+  right: 8px;
+}
+
+.daterangepicker.show-ranges .drp-calendar.left {
+   border-left: 0px solid #ddd;
+}
+
+.daterangepicker .ranges li.active {
+  background-color: #743013;
+  color: #fff;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #743013;
+  border-color: transparent;
+  color: #fff;
+}
+
+.daterangepicker .ranges li.active {
+  background-color: #743013;
+  color: #fff;
+}
+.alerticon{
+  font-size:14px;
+  z-index:10000
 }

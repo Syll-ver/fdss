@@ -4,7 +4,7 @@
       <b-tabs
         card
         small
-        active-nav-item-class="font-weight-bold text-uppercase text-success"
+        active-nav-item-class="font-weight-bold text-uppercase text-biotech"
       >
 
 
@@ -25,7 +25,7 @@ import reports from "~/components/transaction/reports.vue";
 
 
 export default {
-  layout: "sidebar",
+  layout: "Sidebar",
   components: {
     reports
   },

@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+<div>
     <Loading v-if="showLoading" />
     <div>
       <b-alert
@@ -23,8 +23,8 @@
           <b-button
             id="add_user"
             size="sm"
-            class="button"
-            style="font-size:12px; box-shadow:0px 10px 20px -10px #000000 "
+            variant="biotech"
+            class="button-style"
             @click="addUser()"
             v-if="actions.addUser"
           >
@@ -33,64 +33,92 @@
         </b-col>
       </b-row>
 
-      <b-row>
-        <b-col cols="4" class="mt-3">
-          <b-form-group>
-            <b-input-group size="sm">
-              <b-form-input
-                v-model="filter"
-                type="search"
-                id="search_user"
-                placeholder="Search User"
-              ></b-form-input>
-            </b-input-group>
-          </b-form-group>
-        </b-col>
+ <b-row>
+      <b-col cols="4" class="mt-3">
+        <b-form-group>
+          <b-input-group size="sm">
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Search Roles"
+            ></b-form-input>
+            <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
 
-        <b-col class="mt-3">
-          <b-dropdown
-            id="filter_module"
-            text="Filter Status"
-            style="font-size:1PX; width:8.4rem; position:relative; right:21px; box-shadow:10px 10px 15px -2px rgba(0,0,0,0.095)"
-            size="sm"
-            variant="secondary"
+      <b-col cols="4" class="mt-3">
+        <!-- <b-input-group prepend="Date" size="sm">
+          <date-range-picker
+            id="date_pending"
+            ref="picker"
+            :opens="opens1"
+            :locale-data="localeData"
+            :autoApply="true"
+            :singleDatePicker="false"
+            :showWeekNumbers="true"
+            v-model="datePicker"
+            @update="updateValues"
           >
+            <div slot="input" id="date_pending" >
+              {{ datePicker.startDate }} - {{ datePicker.endDate }}
+            </div>
+          </date-range-picker>
+          <b-input-group-append style="height:2rem; font-size:12px">
+            <b-button
+              @click="resetDate"
+              id="date_reset_pending"
+              style="font-size:12px"
+              >Reset</b-button
+            >
+          </b-input-group-append>
+        </b-input-group> -->
+      </b-col>
+  <b-col ></b-col>
+ 
+      <b-col cols="2"  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
+          <b-form-select
+            id="perPageSelect_action"
+            size="sm"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group> -->
+      
+          <b-dropdown
+            right
+            id="filter_roles"
+            class="button-sq"
+            size="sm"
+            variant="dark"
+          >
+          <template v-slot:button-content>
+     <font-awesome-icon icon="filter" class="mr-1" />   
+    </template> 
             <b-form-checkbox-group
               id="status_group"
               name="flavour-2"
               class="pl-2"
-              style="font-size:14px"
+              style="font-size:12px"
               v-model="filterStatus"
             >
-              <b-form-checkbox id="active_stat" :value="1"
-                >Active</b-form-checkbox
-              >
-              <b-form-checkbox id="inactive_stat" :value="0"
-                >Inactive</b-form-checkbox
-              >
+              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
           </b-dropdown>
-        </b-col>
-
-        <b-col cols="1" offset="4" class="mb-2 mt-3">
-          <b-form-group class="mb-0">
-            <b-form-select
-              v-model="perPage"
-              id="perPageSelect_user"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-select>
-          </b-form-group>
-        </b-col>
-      </b-row>
+     
+      </b-col>
+    </b-row>
 
       <!-- Main table element -->
       <b-table
         id="user-table"
-        class="table"
-        style="font-size:15.5px; max-height: 100%;"
+        class="table-style"
         show-empty
-        scrollable="true"
+        scrollable
         sticky-header
         no-border-collapse
         :items="filterItems"
@@ -108,12 +136,12 @@
         <template v-slot:cell(actions)="row">
           <b-button
             id="edit_user"
+            variant="edit"
             size="sm"
             @click="edit(row.item)"
-            class="mr-1 button-circle"
-            style="font-size:12px; "
+            class="button-table"
             v-b-tooltip.hover
-            title="Edit"
+            title="Update User"
             v-if="actions.editUser"
           >
             <font-awesome-icon icon="edit" />
@@ -208,7 +236,7 @@
 
       <b-modal
         size="lg"
-        header-bg-variant="success"
+        header-bg-variant="biotech"
         header-text-variant="light"
         body-bg-variant="light"
         id="add-user-modal"
@@ -225,8 +253,8 @@
                   <b-button
                     id="add_user"
                     size="sm"
-                    variant="success"
-                    class="button"
+                    variant="biotech"
+                    class="button-style"
                     style="font-size:12px; box-shadow:0px 10px 20px -10px #000000 "
                     @click="findUsers()"
                   >
@@ -360,10 +388,10 @@
           <b-button
             id="add_add_modal"
             size="sm"
-            variant="success"
+            variant="biotech"
             @click="addUserTable()"
             style="font-size:13px"
-            class="button"
+            class="button-style"
             :disabled="showButtonLoading === true"
           >
             <b-spinner
@@ -378,7 +406,7 @@
             id="cancel_add_modal"
             size="sm"
             @click="cancelUser()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
             >Cancel</b-button
           >
         </template>
@@ -390,7 +418,7 @@
 
       <b-modal
         size="lg"
-        header-bg-variant="success"
+        header-bg-variant="biotech"
         header-text-variant="light"
         body-bg-variant="light"
         id="find-user-modal"
@@ -501,17 +529,16 @@
           <b-button
             id="add_add_modal"
             size="sm"
-            variant="success"
+            variant="biotech"
             @click="selectedUser.length > 0 ? selectUser() : ''"
-            style="font-size:13px"
-            class="button"
+            class="button-style"
             >Select</b-button
           >
           <b-button
             id="cancel_add_modal"
             size="sm"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
             >Cancel</b-button
           >
         </template>
@@ -524,12 +551,12 @@
       <b-modal
         size="lg"
         body-bg-variant="light"
-        header-bg-variant="success"
+        header-bg-variant="biotech"
         header-text-variant="light"
         id="edit-modal"
       >
         <template v-slot:modal-title>
-          <h6>Edit User</h6>
+          <h6>Update User</h6>
         </template>
 
         <b-row>
@@ -540,7 +567,7 @@
                 id="fname_edit_modal"
                 type="text"
                 v-model="selectedUserDetails.FirstName"
-                style="font-size:10px"
+                class="form-text"
                 disabled
               ></b-form-input>
 
@@ -549,7 +576,7 @@
                 id="mname_edit_modal"
                 type="text"
                 v-model="selectedUserDetails.MiddleName"
-                style="font-size:10px"
+                class="form-text"
                 disabled
               ></b-form-input>
 
@@ -558,7 +585,7 @@
                 type="text"
                 id="lname_edit_modal"
                 v-model="selectedUserDetails.LastName"
-                style="font-size:10px"
+                class="form-text"
                 disabled
               ></b-form-input>
             </b-card>
@@ -569,7 +596,7 @@
                 id="email_edit_modal"
                 type="email"
                 v-model="selectedUserDetails.eMail"
-                style="font-size:10px"
+                class="form-text"
                 disabled
               ></b-form-input>
             </b-card>
@@ -594,7 +621,7 @@
                 id="act_grp_add_modal"
                 type="number"
                 v-model="userDetails.U_IS_SAP_USER"
-                style="font-size:10px"
+                class="form-text"
                 disabled
               >
                 <option :value="null">Yes/No</option>
@@ -613,7 +640,7 @@
                 id="act_grp_add_modal"
                 type="text"
                 v-model="userDetails.U_USERNAME"
-                style="font-size:10px"
+                class="form-text"
                 :disabled="userDetails.U_IS_SAP_USER === 1 ? '' : disabled"
               ></b-form-input>
             </b-card>
@@ -624,7 +651,7 @@
                 id="role_edit_modal"
                 type="number"
                 v-model="userDetails.U_ROLE_CODE"
-                style="font-size:10px"
+                class="form-text"
               >
                 <option :value="null" disabled>Select Role</option>
                 <option
@@ -666,7 +693,7 @@
                 type="number"
                 id="stat_edit_modal"
                 v-model="userDetails.U_IS_ACTIVE"
-                style="font-size:10px"
+                class="form-text"
               >
                 <option :value="1">Active</option>
                 <option :value="0">Inactive</option>
@@ -680,7 +707,7 @@
             >
               <small class="ml-1">Company</small>
               <b-form-select
-                style="font-size:10px"
+                class="form-text"
                 v-model="userDetails.U_COMPANY_ACCESS"
               >
                 <option :value="null" disabled>Select Company</option>
@@ -701,17 +728,16 @@
           <b-button
             size="sm"
             id="edt_edit_modal"
-            variant="success"
+            variant="biotech"
             @click="editTable()"
-            style="font-size:13px"
-            class="button"
+            class="button-style"
             >Edit</b-button
           >
           <b-button
             size="sm"
             id="cncl_edit_modal"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
             >Cancel</b-button
           >
         </template>
@@ -723,7 +749,7 @@
 
       <b-modal
         size="sm"
-        header-bg-variant="success"
+        header-bg-variant="biotech"
         header-text-variant="light"
         id="update-user-modal"
       >
@@ -738,16 +764,16 @@
         <template v-slot:modal-footer="{ ok, cancel }">
           <b-button
             size="sm"
-            class="button"
-            variant="success"
+            class="button-style"
+            variant="biotech"
             @click="confirmUpdate()"
-            style="font-size:13px"
+            
             >Update</b-button
           >
           <b-button
             size="sm"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
             >Cancel</b-button
           >
         </template>
@@ -773,29 +799,29 @@
         <template v-slot:modal-footer="{ ok, cancel }">
           <b-button
             size="sm"
-            variant="danger"
+            variant="biotech"
             @click="confirmReset()"
-            style="font-size:13px"
+            class="button-style"
             >Reset</b-button
           >
           <b-button
             size="sm"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
             >Cancel</b-button
           >
         </template>
       </b-modal>
       <!-- Reset modal -->
     </div>
-  </b-container>
+</div>
 </template>
 
 <script>
 import moment from "moment";
 import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
-import Loading from "~/components/Loading.vue";
+import Loading from "~/components/Loading/Loading.vue";
 
 export default {
   components: {

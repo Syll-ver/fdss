@@ -1,29 +1,31 @@
 <template>
-  <b-container fluid>
+<div>
     <div>
       <b-alert
+        id="alert"
+        class="alerticon"
         :show="alert.showAlert"
         dismissible
         :variant="alert.variant"
         @dismissed="alert.showAlert = null"
       >
         <font-awesome-icon
-          :icon="alert.variant == 'success' ? 'check-circle' : 'exclamation'"
-          class="mr-1"
-          style="font-size:20px"
+          :icon="alert.variant == 'danger' ?  'exclamation' : 'check-circle'"
+          class="mr-1 alerticon"
+          
         />
         {{ alert.message }}
       </b-alert>
     </div>
-    <div>
+    
       <!-- Main table -->
       <b-row>
         <b-col>
           <b-button
             id="add_role"
             size="sm"
-            class="button"
-            style="font-size:12px; box-shadow:0px 10px 20px -10px #000000 "
+            class="button-style"
+            variant="biotech"
             @click="addRole()"
             v-if="actions.addRoleAndAccess"
           >
@@ -32,67 +34,94 @@
         </b-col>
       </b-row>
 
-      <b-row>
-        <b-col cols="4" class="mt-3">
-          <b-form-group>
-            <b-input-group size="sm">
-              <b-form-input
-                v-model="filter"
-                type="search"
-                id="search_role"
-                placeholder="Search Role"
-              ></b-form-input>
-            </b-input-group>
-          </b-form-group>
-        </b-col>
+<b-row>
+      <b-col cols="4" class="mt-3">
+        <b-form-group>
+          <b-input-group size="sm">
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Search Roles"
+            ></b-form-input>
+            <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
 
-        <b-col class="mt-3">
-          <b-dropdown
-            id="filter_module"
-            text="Filter Status"
-            style="font-size:1PX; width:8.4rem; position:relative; right:21px; box-shadow:10px 10px 15px -2px rgba(0,0,0,0.095)"
-            size="sm"
-            variant="secondary"
+      <b-col cols="4" class="mt-3">
+        <!-- <b-input-group prepend="Date" size="sm">
+          <date-range-picker
+            id="date_pending"
+            ref="picker"
+            :opens="opens1"
+            :locale-data="localeData"
+            :autoApply="true"
+            :singleDatePicker="false"
+            :showWeekNumbers="true"
+            v-model="datePicker"
+            @update="updateValues"
           >
+            <div slot="input" id="date_pending" >
+              {{ datePicker.startDate }} - {{ datePicker.endDate }}
+            </div>
+          </date-range-picker>
+          <b-input-group-append style="height:2rem; font-size:12px">
+            <b-button
+              @click="resetDate"
+              id="date_reset_pending"
+              style="font-size:12px"
+              >Reset</b-button
+            >
+          </b-input-group-append>
+        </b-input-group> -->
+      </b-col>
+  <b-col ></b-col>
+ 
+      <b-col cols="2"  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
+          <b-form-select
+            id="perPageSelect_action"
+            size="sm"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group> -->
+      
+          <b-dropdown
+            right
+            id="filter_roles"
+            class="button-sq"
+            size="sm"
+            variant="dark"
+          >
+          <template v-slot:button-content>
+     <font-awesome-icon icon="filter" class="mr-1" />   
+    </template> 
             <b-form-checkbox-group
               id="status_group"
               name="flavour-2"
               class="pl-2"
-              style="font-size:14px"
+              style="font-size:12px"
               v-model="filterStatus"
             >
-              <b-form-checkbox id="active_stat" :value="1"
-                >Active</b-form-checkbox
-              >
-              <b-form-checkbox id="inactive_stat" :value="0"
-                >Inactive</b-form-checkbox
-              >
+              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
           </b-dropdown>
-        </b-col>
-
-        <b-col cols="1" offset="4" class="mb-2 mt-3">
-          <b-form-group class="mb-0">
-            <b-form-select
-              v-model="perPage"
-              id="perPageSelect_roles_and_access"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-select>
-          </b-form-group>
-        </b-col>
-      </b-row>
+     
+      </b-col>
+    </b-row>
 
       <!-- Main table element -->
       <b-table
         id="role-table"
-        class="table"
-        style="font-size:11.5px; max-height: 100%;"
+        class="table-style"
         show-empty
-        scrollable="true"
+        scrollable
         sticky-header
         no-border-collapse
-        stacked="md"
         :items="filterItems"
         :fields="filterFields"
         :current-page="currentPage"
@@ -109,11 +138,11 @@
           <b-button
             id="edit_roles_and_access"
             size="sm"
+            variant="edit"
             @click="edit(row.item)"
-            class="mr-1 button-circle"
-            style="font-size:12px; "
+            class="table-button"
             v-b-tooltip.hover
-            title="Edit Roles"
+            title="Update Roles"
             v-if="actions.editRoleAndAccess"
           >
             <font-awesome-icon icon="edit" />
@@ -121,14 +150,12 @@
         </template>
 
         <template v-slot:cell(U_IS_ACTIVE)="row">
-          <div style="font-size:13.5px">
             <b-badge
-              style="width:70px"
+              class="table-badge"
               pill
               :variant="row.item.U_IS_ACTIVE ? 'success' : 'secondary'"
               >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
             >
-          </div>
         </template>
       </b-table>
 
@@ -139,22 +166,22 @@
           label-cols-sm
           class="mb-0 mt-1 text-left"
           cols="3"
-          align-h="center"
+          align-h="receipt"
         >
-          <div size="sm" style="color: gray; font-size: 11px;">
+          <div size="sm" class="bottomlabel">
             {{ bottomLabel }}
           </div>
         </b-col>
         <b-col cols="4" offset="5">
           <b-pagination
-            id="modules-pagination"
+            id="roles-pagination"
             pills
             v-model="currentPage"
             :total-rows="rows"
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="roles-table"
             limit="3"
           ></b-pagination>
         </b-col>
@@ -166,7 +193,7 @@
 
       <b-modal
         size="xl"
-        header-bg-variant="success"
+        header-bg-variant="biotech"
         header-text-variant="light"
         body-bg-variant="light"
         id="add-role-modal"
@@ -180,7 +207,7 @@
         <b-card class="cardShadow">
           <!-- <small class="ml-1"> Role</small>
           <b-form-input type="text" style="font-size:10px"></b-form-input>-->
-
+<!-- 
           <b-row>
             <b-col cols="2">
               <b-form-checkbox
@@ -203,18 +230,18 @@
                 <option value="2">2</option>
                 <option value="3">3</option>
               </b-form-select>
-            </b-col>
+            </b-col> -->
 
-            <b-col cols="3" v-else>
+            <b-col cols="3">
               <b-form-input
                 id="role_name_add_modal"
                 type="text"
-                style="font-size:10px"
+                class="form-text"
                 placeholder="Type Role Name"
                 v-model="roleName"
               ></b-form-input>
             </b-col>
-          </b-row>
+     
         </b-card>
         <b-card class="cardShadow mt-4 mb-1">
           <b-row class="mt-4 mb-1 ml-3">
@@ -239,10 +266,10 @@
             </b-col>
 
             <b-col cols="4">
-              <span><b>Supplier Module</b></span>
+              <span><b>Delivery Receipt Module</b></span>
               <b-form-checkbox-group
-                id="checkbox_supplier_module_add_modal"
-                name="supplier module actions"
+                id="checkbox_delivery_receipt_module_add_modal"
+                name="delivery receipt Module actions"
                 stacked
                 switches
                 v-model="selectedAction"
@@ -250,7 +277,7 @@
                 <b-form-checkbox
                   :value="action.Code"
                   v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Suppliers Module'
+                    action => action.U_MODULE_NAME === 'Delivery Receipt Module'
                   )"
                   :key="i"
                   >{{ action.U_ACTION_NAME }}</b-form-checkbox
@@ -259,10 +286,10 @@
             </b-col>
 
             <b-col cols="4">
-              <span><b>Customer Module</b></span>
+              <span><b>Reports Module</b></span>
               <b-form-checkbox-group
-                id="checkbox_customer_module_add_modal"
-                name="customer module actions"
+                id="checkbox_reports_module_add_modal"
+                name="reports module actions"
                 stacked
                 switches
                 v-model="selectedAction"
@@ -270,7 +297,7 @@
                 <b-form-checkbox
                   :value="action.Code"
                   v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Customers Module'
+                    action => action.U_MODULE_NAME === 'Reports Module'
                   )"
                   :key="i"
                   >{{ action.U_ACTION_NAME }}</b-form-checkbox
@@ -278,12 +305,12 @@
               </b-form-checkbox-group>
             </b-col>
           </b-row>
-          <b-row class="mt-4 mb-1 ml-3">
+          <!-- <b-row class="mt-4 mb-1 ml-3">
             <b-col cols="4">
-              <span><b>Item Module</b></span>
+              <span><b>Delivery Receipt Module</b></span>
               <b-form-checkbox-group
-                id="checkbox_item_module_add_modal"
-                name="item module actions"
+                id="checkbox_delivery_module_add_modal"
+                name="Delivery Receipt module actions"
                 stacked
                 switches
                 v-model="selectedAction"
@@ -291,7 +318,7 @@
                 <b-form-checkbox
                   :value="action.Code"
                   v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Item Module'
+                    action => action.U_MODULE_NAME === 'Delivery Receipt Module'
                   )"
                   :key="i"
                   >{{ action.U_ACTION_NAME }}</b-form-checkbox
@@ -300,10 +327,10 @@
             </b-col>
 
             <b-col cols="4">
-              <span><b>Item Master Data Module</b></span>
+              <span><b>Reports Module</b></span>
               <b-form-checkbox-group
-                id="checkbox_item_master_data_module_add_modal"
-                name="item master data module actions"
+                id="checkbox_reports_module_add_modal"
+                name="reports module actions"
                 stacked
                 switches
                 v-model="selectedAction"
@@ -311,14 +338,14 @@
                 <b-form-checkbox
                   :value="action.Code"
                   v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Item Master Data Module'
+                    action => action.U_MODULE_NAME === 'Reports Module'
                   )"
                   :key="i"
                   >{{ action.U_ACTION_NAME }}</b-form-checkbox
                 >
               </b-form-checkbox-group>
-            </b-col>
-
+            </b-col> -->
+<!-- 
             <b-col cols="4">
               <span><b>Approval Module</b></span>
               <b-form-checkbox-group
@@ -357,18 +384,18 @@
                   >{{ action.U_ACTION_NAME }}</b-form-checkbox
                 >
               </b-form-checkbox-group>
-            </b-col>
-          </b-row>
+            </b-col> -->
+         
         </b-card>
 
         <template v-slot:modal-footer="{ ok, cancel }">
           <b-button
             id="add_roles_and_access_modal"
             size="sm"
-            variant="success"
+            variant="biotech"
             @click="addRoleAccessTable()"
             style="font-size:13px"
-            class="button"
+            class="button-style"
             :disabled="showButtonLoading === true"
           >
             <b-spinner
@@ -382,7 +409,7 @@
             id="cancel_add_roles_and_access_modal"
             size="sm"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
             >Cancel</b-button
           >
         </template>
@@ -394,46 +421,26 @@
 
       <b-modal
         size="xl"
-        header-bg-variant="success"
+        header-bg-variant="biotech"
         header-text-variant="light"
         body-bg-variant="light"
         id="edit-role-modal"
+        no-close-on-backdrop
         @hide="clearForm()"
         scrollable
       >
         <template v-slot:modal-title>
-          <h6>Edit Role</h6>
+          <h6>Update Role</h6>
         </template>
         <b-card class="cardShadow">
           <b-row>
-            <b-col cols="2">
-              <b-form-checkbox
-                id="user_approver"
-                v-model="checkApprover"
-                :value="true"
-                :unchecked-value="false"
-                >Approver
-              </b-form-checkbox>
-            </b-col>
+           
 
-            <b-col cols="2" v-if="checkApprover">
-              <b-form-select
-                type="text"
-                style="font-size:10px"
-                v-model="approverLevel"
-              >
-                <option :value="null" disabled>Select Level</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </b-form-select>
-            </b-col>
-
-            <b-col cols="3" v-else>
+            <b-col cols="3" >
               <b-form-input
                 id="edit_role_name_edit_modal"
                 type="text"
-                style="font-size:10px"
+                class="form-text"
                 v-model="roleName"
               ></b-form-input>
             </b-col>
@@ -442,7 +449,7 @@
               <b-form-select
                 id="edit_status_edit_modal"
                 type="text"
-                style="font-size:10px"
+                class="form-text"
                 v-model="roleForm.U_IS_ACTIVE"
               >
                 <option :value="1">Active</option>
@@ -474,11 +481,11 @@
               </b-form-checkbox-group>
             </b-col>
 
-            <b-col cols="4">
-              <span><b>Supplier Module</b></span>
+                <b-col cols="4">
+              <span><b>Delivery Receipt Module</b></span>
               <b-form-checkbox-group
-                id="checkbox_supplier_module_edit_modal"
-                name="supplier module actions"
+                id="checkbox_delivery_receipt_module_add_modal"
+                name="delivery receipt Module actions"
                 stacked
                 switches
                 v-model="selectedAction"
@@ -486,7 +493,7 @@
                 <b-form-checkbox
                   :value="action.Code"
                   v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Suppliers Module'
+                    action => action.U_MODULE_NAME === 'Delivery Receipt Module'
                   )"
                   :key="i"
                   >{{ action.U_ACTION_NAME }}</b-form-checkbox
@@ -495,10 +502,10 @@
             </b-col>
 
             <b-col cols="4">
-              <span><b>Customer Module</b></span>
+              <span><b>Reports Module</b></span>
               <b-form-checkbox-group
-                id="checkbox_customer_module_edit_modal"
-                name="customer module actions"
+                id="checkbox_reports_module_add_modal"
+                name="reports module actions"
                 stacked
                 switches
                 v-model="selectedAction"
@@ -506,87 +513,7 @@
                 <b-form-checkbox
                   :value="action.Code"
                   v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Customers Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col>
-          </b-row>
-          <b-row class="mt-4 mb-1 ml-3">
-            <b-col cols="4">
-              <span><b>Item Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_item_module_edit_modal"
-                name="item module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Item Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col>
-
-            <b-col cols="4">
-              <span><b>Item Master Data Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_item_master_data_module_edit_modal"
-                name="item master data module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Item Master Data Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col>
-            <b-col cols="4">
-              <span><b>Approval Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_approval_module_add_modal"
-                name="approval module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in listActions.filter(
-                    action => action.U_MODULE_NAME === 'Approval Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col>
-
-            <b-col cols="4">
-              <span><b>Report Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_report_module_edit_modal"
-                name="report module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in listActions.filter(
-                    action => action.U_MODULE_NAME === 'Report Module'
+                    action => action.U_MODULE_NAME === 'Reports Module'
                   )"
                   :key="i"
                   >{{ action.U_ACTION_NAME }}</b-form-checkbox
@@ -605,10 +532,9 @@
           <b-button
             id="edit_roles_and_access_edit_modal"
             size="sm"
-            variant="success"
+            variant="biotech"
             @click="editRoleTable()"
-            style="font-size:13px"
-            class="button"
+            class="button-style"
             :disabled="showButtonLoading === true"
           >
             <b-spinner
@@ -622,7 +548,7 @@
             size="sm"
             id="cancel_roles_and_access_edit_modal"
             @click="cancel()"
-            style="font-size:13px;border: 0px;"
+            class="button-style"
             >Cancel</b-button
           >
         </template>
@@ -630,7 +556,7 @@
 
       <!-- Edit User -->
     </div>
-  </b-container>
+
 </template>
 
 <script>
@@ -812,7 +738,7 @@ export default {
               user_actions: JSON.parse(localStorage.user_actions),
               SessionId: localStorage.SessionId
             });
-            this.showAlert("Success", "success");
+            this.showAlert("Successfully Added", "success");
 
             this.$bvModal.hide("add-role-modal");
 
@@ -884,7 +810,7 @@ export default {
               user_actions: JSON.parse(localStorage.user_actions),
               SessionId: localStorage.SessionId
             });
-            this.showAlert("Success", "success");
+            this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-role-modal");
 

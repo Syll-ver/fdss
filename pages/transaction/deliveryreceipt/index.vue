@@ -4,7 +4,7 @@
       <b-tabs
         card
         small
-        active-nav-item-class="font-weight-bold text-uppercase text-success"
+        active-nav-item-class="font-weight-bold text-uppercase text-biotech"
       >
         <b-tab title="Delivery Receipt">
           <div>
@@ -20,7 +20,7 @@
 import deliveryreceipt from "~/components/transaction/deliveryreceipt.vue";
 
 export default {
-  layout: "sidebar",
+  layout: "Sidebar",
   components: {
     deliveryreceipt
   },

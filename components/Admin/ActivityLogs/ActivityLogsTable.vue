@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+<div>
     <!-- Main table -->
 
     <b-row>
@@ -12,11 +12,13 @@
               id="search_activity"
               placeholder="Search Activity"
             ></b-form-input>
+            <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
-
-      <b-col cols="4" sm="7" class="mt-3">
+      <b-col cols="4" class="mt-3">
         <b-input-group prepend="Date" style="height:10px" size="sm">
           <!-- <b-input-group-prepend>
               <div style="background-color: green">
@@ -45,16 +47,39 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
+  <b-col ></b-col>
 
-      <b-col cols="1" offset class="mb-2 mt-3">
-        <b-form-group class="mb-0">
+      <b-col cols="2"  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
           <b-form-select
-            v-model="perPage"
-            id="perPageSelect_activity"
+            id="perPageSelect_action"
             size="sm"
             :options="pageOptions"
           ></b-form-select>
-        </b-form-group>
+        </b-form-group> -->
+      
+          <b-dropdown
+            right
+            id="filter_roles"
+            class="button-sq"
+            size="sm"
+            variant="dark"
+          >
+          <template v-slot:button-content>
+     <font-awesome-icon icon="filter" class="mr-1" />   
+    </template> 
+            <b-form-checkbox-group
+              id="status_group"
+              name="flavour-2"
+              class="pl-2"
+              style="font-size:12px"
+              v-model="filterStatus"
+            >
+              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-dropdown>
+     
       </b-col>
     </b-row>
 
@@ -190,7 +215,7 @@
     </b-modal>
 
     <!-- View Activity  -->
-  </b-container>
+</div>
 </template>
 
 <script>
@@ -403,113 +428,23 @@ export default {
 }
 
 .daterangepicker.show-ranges .drp-calendar.left {
-  border-left: 0px solid #ddd;
+   border-left: 0px solid #ddd;
 }
 
 .daterangepicker .ranges li.active {
-  background-color: #0d874a;
+  background-color: #743013;
   color: #fff;
 }
 
 .daterangepicker td.active,
 .daterangepicker td.active:hover {
-  background-color: #0d874a;
+  background-color: #743013;
   border-color: transparent;
   color: #fff;
 }
 
-.table {
-  font-size: 11.5px;
-}
-
-.alert {
-  position: fixed;
-  top: 90%;
-  right: 1%;
-  z-index: 10000;
-}
-.alert-danger {
+.daterangepicker .ranges li.active {
+  background-color: #743013;
   color: #fff;
-  background-color: #b31f09;
-  border-color: #fff;
-}
-.alert-success {
-  color: #fff;
-  background-color: #00a651;
-  border-color: #fff;
-}
-.page-link {
-  color: hsl(150, 82%, 29%);
-}
-
-.button {
-  background-color: hsl(150, 82%, 29%);
-  border: 0px;
-}
-ul {
-  list-style-type: none;
-}
-li {
-  margin-bottom: 12px;
-}
-.button {
-  font-size: 75%;
-  border: 0px;
-}
-.logo {
-  height: 5%;
-  width: 5%;
-}
-.table {
-  overflow-y: hidden;
-  font-size: 75%;
-}
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  margin: 0;
-}
-
-.button-circle {
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-}
-
-.page-item.active .page-link {
-  z-index: 1;
-  color: #fff;
-  background-color: #0d874a;
-  border-color: #0d874a;
-}
-.borders {
-  border: 1px solid black;
-}
-.signature {
-  font-weight: bold;
-  font-size: 13px;
-  position: relative;
-  font-style: italic;
-  bottom: 11px;
-  left: 52px;
-}
-
-.steppers {
-  background-color: #00a651;
-  width: 49rem;
-}
-
-.key-class {
-  color: #116818;
-  margin-right: 5px;
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
-}
-.value-class {
-  color: #485500;
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
 }
 </style>
