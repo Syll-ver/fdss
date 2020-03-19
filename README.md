@@ -1,6 +1,6 @@
-# Business-Partner-Master-Data-System
+# REvive-Automated-DR
 
-> BP Master Data
+> REvive-Automated-DR
 
 ## Build Setup
 
