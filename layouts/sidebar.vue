@@ -1,6 +1,5 @@
 <template>
- <div class="wrapper">
-    <Loading v-if="showLoading" />
+  <div class="wrapper">
     <nav id="sidebarBFI">
       <div class="sidebar-header">
         <div>
@@ -28,13 +27,13 @@
                 :key="i"
                 :style="
                   adminroute.active
-                    ? 'background: #fff; border-radius:3px'
+                    ? 'background: #00803e; border-radius:3px'
                     : ''
                 "
                 @click="setAdminActive(i)"
               >
-                <router-link :to="adminroute.link" :id="adminroute.id"
-                  ><font-awesome-icon
+                <router-link :to="adminroute.link" :id="adminroute.id">
+                  <font-awesome-icon
                     :icon="adminroute.icon"
                     :class="adminroute.class"
                   />
@@ -45,71 +44,23 @@
           </li>
 
           <li
-            v-if-else="isAdmin"
             v-for="(route, i) in routes"
             :key="i"
             :style="
-              route.active ? 'background: #fff; border-radius:3px' : ''
+              route.active ? 'background: #00803e; border-radius:3px' : ''
             "
             @click="setActive(i)"
             class="mt-2"
           >
-            <router-link :to="route.link" :id="route.id"
-              ><font-awesome-icon :icon="route.icon" :class="route.class" />
-              {{ route.name }}</router-link
-            >
-          </li>
-                   <li
-            v-for="(route, i) in routes"
-            :key="i"
-            :style="
-              route.active ? 'background: #fff; border-radius:3px' : ''
-            "
-             @click="setActive(i)"
-            class="mt-2 pending"
-          >
-            <router-link :id="route.id" :to="route.link">
-              <font-awesome-icon :icon="route.icon" :class="route.class"  />
+            <router-link :to="route.link" :id="route.id">
+              <font-awesome-icon :icon="route.icon" :class="route.class" />
               {{ route.name }}
             </router-link>
           </li>
-
-          <!-- <li>
-            <a
-              @click="visiblePrice = !visiblePrice"
-              data-toggle="collapsePrice"
-              aria-expanded="false"
-              class="dropdown-toggle mb-2"
-            >
-              <font-awesome-icon icon="coins" class="ml-2 mr-2" />Price Approval
-            </a>
-
-            <b-collapse id="collapsePrice" class="mt-1" v-model="visiblePrice">
-              <li
-                v-for="(priceroute, i) in priceroutes"
-                class="ml-3 mt-1"
-                :key="i"
-                :style="
-                  priceroute.active
-                    ? 'background: #00803e; border-radius:3px'
-                    : ''
-                "
-                @click="setPriceApprovalActive(i)"
-              >
-                <router-link :to="priceroute.link" :id="priceroute.id"
-                  ><font-awesome-icon
-                    :icon="priceroute.icon"
-                    :class="priceroute.class"
-                  />
-                  <span :style="priceroute.style">{{ priceroute.name }}</span>
-                </router-link>
-              </li>
-            </b-collapse>
-          </li> -->
         </ul>
       </div>
     </nav>
-<br>
+
     <!-- HEADER NAVIGATION BAR-->
     <div class="content" fluid>
       <div class="right">
@@ -139,12 +90,15 @@
               variant="secondary"
             >
               <font-awesome-icon
-                style="font-size:12.5px; margin-bottom: 2px;"
+                style="font-size:12.5px; margin-right: 2px"
                 icon="power-off"
               />
             </b-button>
           </b-col>
         </b-row>
+      </div>
+      <div class="nuxt-table ml-3">
+        <nuxt />
       </div>
     </div>
 
@@ -158,14 +112,10 @@
       no-close-on-backdrop
     >
       <template v-slot:modal-title>
-        <h6>
-          Confirm Log-out
-        </h6>
+        <h6>Confirm Log-out</h6>
       </template>
 
-      <div style="font-size: 13px">
-        Are you sure you want to 'Log-out'?
-      </div>
+      <div style="font-size: 13px">Are you sure you want to 'Log-out'?</div>
 
       <template v-slot:modal-footer="{ ok, cancel }">
         <b-button
@@ -173,8 +123,8 @@
           size="sm"
           @click="cancel()"
           style="font-size:13px;border: 0px;"
-          >No
-        </b-button>
+          >No</b-button
+        >
 
         <b-button
           id="btn-save-logout"
@@ -182,8 +132,8 @@
           variant="dark"
           @click="logout()"
           style="font-size:13px"
-          >Yes
-        </b-button>
+          >Yes</b-button
+        >
       </template>
     </b-modal>
 
@@ -219,7 +169,7 @@
         <b-button
           id="saveprocess_md"
           size="sm"
-          variant="dark"
+          variant="success"
           @click="$router.push('/')"
           style="font-size:13px"
           class="button px-4"
@@ -227,10 +177,6 @@
         >
       </template>
     </b-modal>
-<div class="nuxt-table ml-3">
-      <nuxt :key="reload" />
-    </div>
-
   </div>
 </template>
 
@@ -240,7 +186,7 @@ export default {
     const user_details = JSON.parse(localStorage.user_details);
     const user_role = JSON.parse(localStorage.user_role);
     const user_actions = JSON.parse(localStorage.user_actions);
-    this.user = `${user_details.FirstName} ${user_details.LastName}`;
+    this.user = `${user_details.LastName}`;
     this.role = user_role.Name;
 
     if (user_actions["Admin Module"]) {
@@ -291,77 +237,26 @@ export default {
       }
     }
 
-    if (!user_actions["Suppliers Module"]) {
-      const index = this.routes.findIndex(route => (route.name = "Suppliers"));
+    if (!user_actions["Delivery Receipt Module"]) {
+      const index = this.routes.findIndex(route => (route.name == "Delivery Receipt"));
       this.routes.splice(index, 1);
     }
 
-    if (!user_actions["Customers Module"]) {
-      const index = this.routes.findIndex(route => (route.name = "Customers"));
+    if (!user_actions["Reports Module"]) {
+      const index = this.routes.findIndex(route => (route.name == "Reports"));
       this.routes.splice(index, 1);
     }
-
-    // const reports_module = JSON.parse(localStorage.accessRights)[
-    //   "reportsModule"
-    // ];
-    // const transaction_module = JSON.parse(localStorage.accessRights)[
-    //   "transactionModule"
-    // ];
-    // const admin_module = JSON.parse(localStorage.accessRights)["adminModule"];
-
-    // const routeIndex = this.routes.findIndex(
-    //   route => route.link === this.$route.fullPath
-    // );
-
-    // if (reports_module.length !== 0) {
-    //   this.userActions.reportsTab = true;
-    //   this.routes[1].show = true;
-    // }
-
-    // if (transaction_module.length !== 0) {
-    //   this.userActions.transactionTab = true;
-    //   this.routes[0].show = true;
-    // }
-
-    // if (admin_module.length !== 0) {
-    //   this.userActions.adminTab = true;
-    // }
   },
 
   data() {
     return {
-      // userActions: {
-      //   adminTab: false,
-      //   transactionTab: false,
-      //   reportsTab: false
-      // },
       role: "",
       user: "",
       activelinks: [],
       isAdmin: false,
+      //PAaccess: false,
       visible: false,
       visiblePrice: false,
-            routes: [
-        {
-          id: "deliveryreceipt",
-          link: "/transaction/deliveryreceipt",
-          name: "Delivery Receipt",
-          icon: "home",
-          style: "position:relative;left:6px",
-          class: "ml-2",
-          active: false
-        },
-         {
-          id: "reports",
-          link: "/transaction/reports",
-          name: "Reports",
-          icon: "file",
-          class: "ml-2 mr-1",
-          active: false
-        },
-
-      ],
-
 
       adminroutes: [
         {
@@ -404,6 +299,15 @@ export default {
           active: false
         },
 
+        // {
+        //   link: "/admin/signatories",
+        //   name: "Signatories",
+        //   style: "position:relative;left:11px",
+        //   id: "sb-signatories",
+        //   icon: "file-signature",
+        //   class: "ml-2",
+        //   active: false
+        // },
 
         {
           link: "/admin/activity-logs",
@@ -418,75 +322,23 @@ export default {
 
       routes: [
         {
-          link: "/suppliers",
-          name: "Suppliers",
-          icon: "users",
-          id: "sb_suppliers",
-          style: "position:relative;left:5px",
+          id: "deliveryreceipt",
+          link: "/transaction/deliveryreceipt",
+          name: "Delivery Receipt",
+          icon: "file-signature",
+          style: "position:relative;left:6px",
           class: "ml-2",
           active: false
         },
         {
-          link: "/customers",
-          name: "Customers",
-          icon: "user-tie",
-          style: "position:relative;left:5px",
-          id: "sb_customers",
+          id: "reports",
+          link: "/transaction/reports",
+          name: "Reports",
+          icon: "file",
           class: "ml-2 mr-1",
           active: false
         }
-        // {
-        //   link: "/",
-        //   name: "Items",
-        //   icon: "list-ul",
-        //   style: "position:relative;left:5px",
-        //   id: "sb_items",
-        //   class: "ml-2 mr-1",
-        //   active: false
-        // }
       ],
-
-      priceroutes: [
-        {
-          link: "/price-approval/listForApproval",
-          name: "List For Approval",
-          icon: "tasks",
-          style: "position:relative;left:6px",
-          id: "sb_listForApproval",
-          class: "ml-2",
-          active: false
-        },
-
-        // {
-        //   link: "/price-approval/listForApproval",
-        //   name: "List of Approval",
-        //   icon: "tasks",
-        //   style: "position:relative;left:6px",
-        //   id: "sb-listOfApproval",
-        //   class: "ml-2",
-        //   active: false
-        // },
-
-        // {
-        //   link: "/price-approval/items",
-        //   name: "Item Master Data",
-        //   icon: "list",
-        //   style: "position:relative;left:7px",
-        //   id: "sb-itemMasterData",
-        //   class: "ml-2",
-        //   active: false
-        // },
-
-        // {
-        //   link: "/price-approval/reports",
-        //   name: "Reports",
-        //   style: "position:relative;left:5px",
-        //   id: "sb-reports",
-        //   icon: "copy",
-        //   class: "ml-2",
-        //   active: false
-        // }
-      ]
     };
   },
 
@@ -511,28 +363,6 @@ export default {
           adminroute.active = true;
         } else {
           adminroute.active = false;
-        }
-      });
-    },
-
-     async setActive(i) {
-
-      this.routes.map((route, index) => {
-        if (index === i) {
-          route.active = true;
-        } else {
-          route.active = false;
-        }
-      });
-    },
-
-    async setPriceApprovalActive(i) {
-      this.routes.map(route => (route.active = false));
-      this.priceroutes.map((priceroute, index) => {
-        if (index === i) {
-          priceroute.active = true;
-        } else {
-          priceroute.active = false;
         }
       });
     },

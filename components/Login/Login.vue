@@ -139,10 +139,9 @@ export default {
           if (this.user.name == this.user.password) {
             this.$router.push("/change-password");
           } else {
-            if (
-              result.data.user_role.Name.search("Admin Staff") >= 0 ||
-              result.data.user_role.Name.search("Financials") >= 0
-            ) {
+            if 
+              (result.data.user_role.Name.search("Admin Staff") >= 0) 
+             {
               this.$router.push("/transaction/deliveryreceipt");
             } else if (result.data.user_role.Name.search("Administrator") >= 0) {
               this.$router.push("/admin/modules");

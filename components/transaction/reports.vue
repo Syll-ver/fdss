@@ -100,11 +100,33 @@
               >
             </b-form-checkbox-group>
           </b-dropdown>
+           <b-button
+            size="sm"
+            style="font-size:15px;"
+            variant="dark"
+            v-b-tooltip.hover
+            title="Print Report"
+            @click="print"
+          >
+            <font-awesome-icon style icon="print" />
+          </b-button>
+          <b-button
+            align="right"
+            size="sm"
+            variant="completed"
+            style="font-size:15px "
+            v-b-tooltip.hover
+            title="Export to Excel"
+            @click="exportReports"
+          >
+            <font-awesome-icon icon="file-excel" />
+          </b-button>
      
       </b-col>
     </b-row>
 
     <!-- Main table element -->
+    <div id="printTable">
     <b-table
       id="delivery_receipt_table"
       show-empty
@@ -119,11 +141,12 @@
       :current-page="currentPage"
       :per-page="perPage"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      :sort-direction="sortDirection"
-      @row-cliked="showDR(row)"
+  
+      @row-clicked="show"
       
     >
+        <!-- :sort-desc.sync="sortDesc"
+      :sort-direction="sortDirection" -->
       <template v-slot:cell(U_STATUS)="row">
         <!-- <b-badge
           v-show="row.item.U_STATUS === 'Pending'"
@@ -222,7 +245,7 @@
       </template> -->
 
     </b-table>
-
+    </div>
 
 
  <b-row>
@@ -249,322 +272,22 @@
 
     <!-- Main table -->
 
-    <!-- Add Transaction -->
-
-    <b-modal
-      size="m"
-      header-bg-variant="biotech"
-      header-text-variant="light"
-      body-bg-variant="gray"
-      id="add-transaction-modal"
-      no-close-on-backdrop
-      scrollable
-    >
-      <template v-slot:modal-title>
-        <h6>New Delivery Receipt</h6>
-      </template>
-
-          <b-card class="card-shadow">
-
-            <small class="text-left">Transaction Type</small>
-            <b-form-select
-              id="transact_type"
-              v-model=" U_TRANSACTION_TYPE"
-              class="form-text"
-              :options="transaction_types"
-              required
-            >
-            
-
-            </b-form-select>
-             <small class="text-left">Item</small>
-            <b-form-select
-              id="commodity"
-              v-model=" U_CMMDTY"
-              class="form-text"
-              :options="commodity"
-              required
-            >
-          
-            </b-form-select>
-
-            <small class="text-left">Farmer's Name</small>
-            <b-form-select
-              id="customer"
-              class="form-text"
-              v-model=" U_FRMR_NAME"
-              :options="farmer"
-              @change="test"
-              required
-              
-            >
-            </b-form-select>
-
-            <small class="text-left">Address</small>
-            <b-form-input
-              id="farmer_add"
-              class="form-text"
-              v-model=" U_FRMR_ADD"
-              
-            />
-            <b-row>
-            <b-col cols="6">
-             <small class="text-left">Helper's Name</small>
-              <b-form-input
-              id="helper_name"
-              placeholder="First Name"
-              class="form-text"
-              v-model=" U_HLPR_FNAME"
-            />
-            </b-col>
-            <b-col cols="6">
-            <small class="text-left">&nbsp;</small>
-            <b-form-input
-              id="tendered"
-              placeholder="Last Name"
-              v-model="U_HLPR_LNAME"
-              class="form-text"
-            >
-            </b-form-input>
-            </b-col>
-            </b-row>
-             <b-row>
-            <b-col cols="6">
-             <small class="text-left">Driver's Name</small>
-              <b-form-input
-              id="helper_name"
-              placeholder="First Name"
-              class="form-text"
-              v-model=" U_DRVR_FNAME"
-            />
-            </b-col>
-            <b-col cols="6">
-              <small class="text-left">&nbsp;</small>
-            <b-form-input
-              id="tendered"
-              placeholder="Last Name"
-              v-model=" U_DRVR_LNAME"
-              class="form-text"
-            >
-            </b-form-input>
-            </b-col>
-            </b-row>
-          
-            <small class="text-left">Plate Number</small>
-            <b-form-input
-              id="tendered"
-              v-model=" U_PLATE_NUMBER"
-              class="form-text"
-            >
-            </b-form-input>
-
-            <b-row v-if="U_TRANSACTION_TYPE === '2'">
-            <b-col cols="6">
-            <small class="text-left"># of Sacks</small>
-            <b-form-input type="number" id="sacks" class="form-text" v-model="U_SACKS" />
-            </b-col>
-            <b-col cols="6">
-            <small class="text-left"># of Empty Sacks</small>
-            <b-form-input type="number" id="emptysacks" class="form-text" v-model="U_EMPTY_SACKS" />
-            </b-col>
-            </b-row>
-                <b-row v-else>
-                </b-row>
-          </b-card>
-
-
-      <template v-slot:modal-footer="{cancel }">
-        <b-button
-          id="add_action_modal"
-          size="sm"
-          class="button-style"
-          variant="biotech"
-          @click="newDR()"
-          
-        >
-        <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <b-spinner
-            v-show="showButtonLoading === true"
-            small
-            label="Spinning"
-          ></b-spinner
-          >Create
-        </b-button>
-        <b-button
-          id="cancel_add_action_modal"
-          size="sm"
-          class="button-style"
-          @click="cancel()"
-          >Cancel</b-button
-        >
-      </template>
-    </b-modal>
-
-    <!-- Edit Transaction -->
-
-    <b-modal
-      size="m"
-      header-bg-variant="biotech"
-      header-text-variant="light"
-      body-bg-variant="gray"
-      id="edit-transaction-modal"
-      scrollable
-    >
-      <template v-slot:modal-title>
-        <h6>Update Transaction</h6>
-      </template>
-
-       <b-card class="card-shadow">
-
-
-            <small class="text-left">Transaction Type</small>
-            <b-form-select
-              id="transact_type"
-              v-model=" U_TRANSACTION_TYPE"
-              class="form-text"
-              :options="transaction_types"
-              disabled
-            >
-            
-
-            </b-form-select>
-             <small class="text-left">Item</small>
-            <b-form-select
-              id="commodity"
-              v-model=" U_CMMDTY"
-              class="form-text"
-              :options="commodity"
-              disabled
-            >
-          
-            </b-form-select>
-
-            <small class="text-left">Farmer's Name</small>
-            <b-form-input
-              id="customer"
-              class="form-text"
-              v-model=" U_FRMR_NAME"
-              disabled
-              
-            >
-            </b-form-input>
-
-            <small class="text-left">Address</small>
-            <b-form-input
-              id="farmer_add"
-              class="form-text"
-              v-model=" U_FRMR_ADD"
-              disabled
-            />
-            <b-row>
-            <b-col cols="6">
-             <small class="text-left">Helper's Name</small>
-              <b-form-input
-              id="helper_name"
-              placeholder="First Name"
-              class="form-text"
-              v-model=" U_HLPR_FNAME"
-            />
-            </b-col>
-            <b-col cols="6">
-            <small class="text-left">&nbsp;</small>
-            <b-form-input
-              id="tendered"
-              placeholder="Last Name"
-              v-model="U_HLPR_LNAME"
-              class="form-text"
-            >
-            </b-form-input>
-            </b-col>
-            </b-row>
-             <b-row>
-            <b-col cols="6">
-             <small class="text-left">Driver's Name</small>
-              <b-form-input
-              id="helper_name"
-              placeholder="First Name"
-              class="form-text"
-              v-model=" U_DRVR_FNAME"
-            />
-            </b-col>
-            <b-col cols="6">
-              <small class="text-left">&nbsp;</small>
-            <b-form-input
-              id="tendered"
-              placeholder="Last Name"
-              v-model=" U_DRVR_LNAME"
-              class="form-text"
-            >
-            </b-form-input>
-            </b-col>
-            </b-row>
-          
-            <small class="text-left">Plate Number</small>
-            <b-form-input
-              id="tendered"
-              v-model=" U_PLATE_NUMBER"
-              class="form-text"
-            >
-            </b-form-input>
-
-            <b-row v-if="U_TRANSACTION_TYPE === '2'">
-            <b-col cols="6">
-            <small class="text-left"># of Sacks</small>
-            <b-form-input type="number" id="sacks" class="form-text" v-model="U_SACKS" />
-            </b-col>
-            <b-col cols="6">
-            <small class="text-left"># of Empty Sacks</small>
-            <b-form-input type="number" id="emptysacks" class="form-text" v-model="U_EMPTY_SACKS" />
-            </b-col>
-            </b-row>
-                <b-row v-else>
-                </b-row>
-
-          </b-card>
-
-
-       
-
-      <template v-slot:modal-footer="{cancelEdit }">
-        <b-button
-          id="edit_action_modal"
-          size="sm"
-          class="button-style"
-          variant="biotech"
-          @click="updateDR(U_TRX_ID)"
-          
-          :disabled="showButtonLoading === true"
-        >
-          <b-spinner
-            v-show="showButtonLoading === true"
-            small
-            label="Spinning"
-          ></b-spinner
-          >Save
-        </b-button>
-        <b-button
-          id="cancel_edit_action_modal"
-          size="sm"
-          class="button-style"
-          @click="cancelEdit()"
-          >Cancel</b-button
-        >
-      </template>
-    </b-modal>
-
-    <!-- Edit Transaction -->
+  
 
     <!-- View Transaction -->
 
     <b-modal
       size="m"
-      header-bg-variant="success"
+      header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
       id="view-transaction-modal"
+      no-close-on-backdrop
       scrollable
     >
-      <template v-slot:modal-title>
+
+
+  <template v-slot:modal-title>
         <h6>View Delivery Receipt</h6>
       </template>
 
@@ -583,18 +306,18 @@
     <center>
  
             <span>
-              DELIVERY RECEIPT | PICK-UP
+              DELIVERY RECEIPT | {{ U_TRANSACTION_TYPE }}
             </span>
             <br>
             <span><small>
-              Date: 27-Jan-2020 | 10:00 AM
+              Date: {{U_DTE_CRTD}} 
             </small></span>
     </center>
 
         <br />
 
  <span>
-Transaction Number : CDF-00001
+Transaction Number : {{ U_TRX_NO }}
 </span>
 <br/><br>
 
@@ -612,17 +335,12 @@ Transaction Number : CDF-00001
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : Jose Trevor
+                : {{ U_FRMR_NAME }}
               </span>
             </div>
              <div class="dotted-border">
               <span class="mt-1">
-                : Purok 8 Block 10, San. Vicente, Banga,
-              </span>
-            </div>
-            <div class="dotted-border">
-              <span class="mt-1">
-                &nbsp; South Cotabato, 9511
+                : {{ U_FRMR_ADD }}
               </span>
             </div>
           </b-col>
@@ -640,7 +358,7 @@ Transaction Number : CDF-00001
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : Corn on Cobs
+                : U_CMMDTY
               </span>
             </div>
           </b-col>
@@ -657,7 +375,7 @@ Transaction Number : CDF-00001
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : Jon Magnolia
+                : {{U_DRVR_NAME}}
               </span>
             </div>
           </b-col>
@@ -672,12 +390,13 @@ Transaction Number : CDF-00001
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : XXZ-9919
+                : {{U_PLATE_NUMBER}}
               </span>
             </div>
           </b-col>
         </b-row>
-                        <b-row>
+        <div v-if="U_TRANSACTION_TYPE === 'Pick-up'">
+                        <b-row >
           <b-col cols="4">
             <span>
               Number of Sacks
@@ -707,52 +426,102 @@ Transaction Number : CDF-00001
             </div>
           </b-col>
         </b-row>
-
-        <br />
-        <br>
-        <br>
-
-        <b-row>
-          <b-col>
-            <b-form inline>
-              <span>
-                Approved By:
-              </span>
-              &nbsp;&nbsp;&nbsp;
-              <span style="border-bottom-style: solid; border-width:1px;font-size:9px">
-               &nbsp;JOSE TREVOR&nbsp;
-              </span>
-            </b-form>
+        </div>
+<div v-else>
+               <b-row >
+          <b-col cols="4">
+            <span>
+              Number of Sacks
+            </span>
           </b-col>
 
-          <b-col cols="auto" class="mr-3">
-          
+          <b-col cols="8">
+            <div class="dotted-border">
               <span>
-                Reviewed By:
+                : {{U_SACKS}}
               </span>
-              &nbsp;&nbsp;&nbsp;
-              <span style="border-bottom-style: solid; border-width:1px;font-size:9px">
-               &nbsp;JON MAGNOLIA&nbsp;
-              </span>
-          
+            </div>
           </b-col>
         </b-row>
-        <br><br>
+                       <b-row>
+          <b-col cols="4">
+            <span>
+               Empty Sacks
+            </span>
+          </b-col>
+
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span>
+                : {{U_EMPTY_SACKS}}
+              </span>
+            </div>
+          </b-col>
+        </b-row>
+</div>
+    
+   
+      <!-- <b-row>
+          <b-col cols="6">           
+            <span style="font-size:9px">
+              {{U_FRMR_NAME}}
+            </span>
+          </b-col>
+          <b-col cols="6" text-align="center">           
+            <span style="font-size:9px">
+              {{U_HLPR_NAME}}
+            </span>
+          </b-col>
+      </b-row> -->
+
+<br>
+        <b-row class="my-4">
+          <b-col cols="6">
+
+              <center>
+              <span style="font-size:9px">
+                {{U_FRMR_NAME}}
+              </span>
+              <br>
+              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+               &nbsp;&nbsp; FARMER'S NAME & SIGNATURE
+               &nbsp;&nbsp; </B>
+              </span>
+              </center>
+
+          </b-col >
+
+          <b-col cols="6" >
+              
+              <center>
+              <span style="font-size:9px;margin:0;padding:0">
+                {{U_HLPR_NAME}}
+              </span>
+              <br>
+              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REVIEWED BY
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </B>
+              </span>
+              </center> 
+                
+          </b-col>
+        </b-row>
+ 
+
         <center>
-        <span>
-         Verified By:
+          
+        <span style="font-size:9px">
+            &nbsp;&nbsp;{{U_CRTD_BY}}&nbsp;&nbsp;
         </span>
-         &nbsp;&nbsp;&nbsp;
-        <span style="border-bottom-style: solid; border-width:1px;font-size:9px">
-            &nbsp;IRYNNE DOROMAL&nbsp;
+      <br>
+        <span style="border-top-style: solid; border-width:1px;font-size:9px;">
+            <b>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED BY
+              &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
         </span>
+
         </center>
         <b-row style="float:right" class="mr-1 mt-1">
-          <span>
-            <b>
-           
-            </b>
-          </span>
+
         </b-row>
 <br>
         <!-- <b-row class="mt-4">
@@ -814,6 +583,8 @@ import Receipt from "~/components/transaction/Receipt.vue";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import Loading from "~/components/Loading/Loading.vue";
+import Papa from "papaparse";
+import VueHtmlToPaper from "vue-html-to-paper";
 
 
 export default {
@@ -832,7 +603,7 @@ export default {
   data() {
     return {
       filterStatus:["Completed","Cancelled"],
-       showButtonLoading: false,
+       showLoading: false,
       alert: {
         showAlert: 0,
         variant: "biotech",
@@ -843,7 +614,20 @@ export default {
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
       U_CMMDTY:null,
-
+      U_DRVR_LNAME:null,
+      U_DRVR_FNAME:null,
+      U_HLPR_FNAME:null,
+      U_HLPR_LNAME:null,
+      U_PLATE_NUMBER:null,
+      U_DTE_CRTD:null,
+      U_TME_CRTD:null,
+      U_CRTD_BY:null,
+      U_TRX_NO:null,
+      U_DRVR_NAME:null,
+      U_SACKS:null,
+      U_EMPTY_SACKS:null,
+      U_HLPR_NAME:null,
+      opens1:"",
     
       
       transaction_types:[],
@@ -969,35 +753,26 @@ export default {
   },
 
   methods: {
-   
-    edit(data) {
-       console.log(data)
-       this.U_TRX_ID = data.U_TRX_ID;
-      this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
-      this.U_CMMDTY = data.U_ITEM;
-      this.U_FRMR_NAME = data.U_FRMR_NAME;
-      this.U_FRMR_ADD = data.U_FRMR_ADD;
-      const driver_name = data.U_DRVR_NAME.split(", ");
-      const helper_name = data.U_HLPR_NAME.split(", ");
-      this.U_HLPR_FNAME= helper_name[1];
-      this.U_HLPR_LNAME= helper_name[0] ;
-      this.U_DRVR_FNAME= driver_name[1];
-      this.U_DRVR_LNAME= driver_name[0] ;
-      this.U_SACKS= data.U_SACKS;
-      this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
-      this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
-      //      farmer_id: this.U_FRMR_NAME.id,  
-      //      driver_name: this.U_DRVR_LNAME +", " + this.U_DRVR_FNAME,
-      //      helper_name: this.U_HLPR_LNAME +", " + this.U_HLPR_FNAME,
-      //      no_of_bags: this.U_SACKS,
-      //      no_of_empty_bags: this.U_EMPTY_SACKS,
-      //      employee_id: userDetails.Code,
-      //      plate_number: this.U_PLATE_NUMBER
-      // this.moduleForm.Code = data.Code;
-      // this.moduleForm.Name = data.Name;
-      // this.moduleForm.U_IS_ACTIVE = data.U_IS_ACTIVE;
-      this.$bvModal.show("edit-transaction-modal");
+    print() {
+      // Pass the element id here
+      this.$htmlToPaper("printTable");
     },
+     exportReports() {
+      const csv = Papa.unparse(this.items, { header: true });
+      let csvData = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      let csvURL = null;
+      if (navigator.msSaveBlob) {
+        csvURL = navigator.msSaveBlob(csvData, `${moment().format()}.csv`);
+      } else {
+        csvURL = window.URL.createObjectURL(csvData);
+      }
+      var tempLink = document.createElement("a");
+      tempLink.href = csvURL;
+      tempLink.setAttribute("download", `${moment().format()}.csv`);
+      tempLink.click();
+    },
+   
+  
      async getTransactionType() {
       const res = await axios({
         method: "POST",
@@ -1055,85 +830,25 @@ export default {
       
       this.U_FRMR_ADD= this.U_FRMR_NAME.address
     },
-    async newDR() {
-      try {
-        this.showLoading = true;
-        let items= [];
-
-        const userDetails = JSON.parse(localStorage.user_details);
-      
-          // const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
-        const json = {
-           transaction_type_id: this.U_TRANSACTION_TYPE,
-           item_id: this.U_CMMDTY ,
-           farmer_id: this.U_FRMR_NAME.id,  
-           driver_name: this.U_DRVR_LNAME +", "+ this.U_DRVR_FNAME,
-           helper_name: this.U_HLPR_LNAME +", " + this.U_HLPR_FNAME,
-           no_of_bags: this.U_SACKS,
-           no_of_empty_bags: this.U_EMPTY_SACKS,
-           employee_id: userDetails.Code,
-           plate_number: this.U_PLATE_NUMBER
-        };
-
-        const res = await axios({
-          method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/add`,
-          headers: {
-            Authorization: `B1SESSION=${localStorage.SessionId}`
-          },
-          data: {
-            ...json
-          }
-        });
-        this.showLoading = false;
-        this.getTransactions();
-        this.$bvModal.hide("add-transaction-modal");
-      } catch (e) {
-        console.log(e);
-        this.showLoading = false;
-        
-      }
+show(data) {
+       console.log(data)
+       this.U_DTE_CRTD = data.U_DTE_CRTD;
+       this.U_TME_CRTD = data.U_TME_CRTD;
+      this.U_CRTD_BY = data.U_CRTD_BY;
+      this.U_TRX_ID = data.U_TRX_ID;
+      this.U_TRX_NO = data.U_TRX_NO;
+      this.U_TRANSACTION_TYPE = data.U_TRANSACTION_TYPE;
+      this.U_CMMDTY = data.U_ITEM;
+      this.U_FRMR_NAME = data.U_FRMR_NAME;
+      this.U_FRMR_ADD = data.U_FRMR_ADD;
+      this.U_DRVR_NAME = data.U_DRVR_NAME;
+      this.U_HLPR_NAME = data.U_HLPR_NAME;
+      this.U_SACKS= data.U_SACKS;
+      this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
+      this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
+      this.$bvModal.show("view-transaction-modal");
     },
-    async updateDR(U_TRX_ID) {
-     console.log(U_TRX_ID)
-      try {
-        this.showLoading = true;
-        let items= [];
-
-        const userDetails = JSON.parse(localStorage.user_details);
-
-        const json = {
-          //  transaction_type_id: this.U_TRANSACTION_TYPE,
-          //  item_id: this.U_CMMDTY ,
-          //  farmer_id: this.U_FRMR_NAME,  
-           driver_name: this.U_DRVR_LNAME +", " + this.U_DRVR_FNAME,
-           helper_name: this.U_HLPR_LNAME +", " + this.U_HLPR_FNAME,
-           no_of_bags: this.U_SACKS,
-           no_of_empty_bags: this.U_EMPTY_SACKS,
-           employee_id: userDetails.Code,
-           plate_number: this.U_PLATE_NUMBER
-        };
-
-        const res = await axios({
-         
-          method: "PUT",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/update/${U_TRX_ID}`,
-          headers: {
-            Authorization: `B1SESSION=${localStorage.SessionId}`
-          },
-          data: {
-            ...json
-          }
-        });
-        this.showLoading = false;
-        this.getTransactions();
-        this.$bvModal.hide("edit-transaction-modal");
-      } catch (e) {
-        console.log(e);
-        this.showLoading = false;
-        
-      }
-    },
+  
 
       onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -1183,7 +898,7 @@ export default {
       await this.getTransactions();
       this.totalRows = this.items.length;
     },
-    async getTransactions() {
+  async getTransactions() {
       console.log(JSON.parse(localStorage.user_details))
       try {
         const userDetails = JSON.parse(localStorage.user_details)
@@ -1212,9 +927,11 @@ export default {
          console.log(v);
         for (let i = 0; i < v.length; i++) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
-          // const t = this.intToTime(v[i].CREATED_TIME);
-          // const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
+          const t = this.intToTime(v[i].CREATED_TIME);
+          const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
           this.items.push({
+              U_TRX_NO: v[i].U_TRX_NO,
+              // U_TME_CRTD : t,
               U_TRX_ID: v[i].TRANSACTION_ID,
               U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
               U_ITEM: v[i].ITEM_ID,
@@ -1224,7 +941,7 @@ export default {
               U_CMMDTY: v[i].ITEM_NAME ,
               U_FRMR_NAME : v[i].FARMER_NAME ,  
               U_FRMR_ADD : v[i].FARMER_ADDRESS ,  
-              U_DTE_CRTD: d,
+              U_DTE_CRTD: date,
               U_CRTD_BY: v[i].CREATED_BY,
               U_STATUS: v[i].STATUS,
               U_PLATE_NUMBER: v[i].PLATE_NUMBER,
@@ -1239,12 +956,14 @@ export default {
       } catch (e) {
         console.log(e);
         this.showLoading = false;
+      
       }
     }
   },
   reloadFunction() {
     this.values = [{ label: "2" }, { label: "3" }];
   },
+ 
 }
     // End 
 

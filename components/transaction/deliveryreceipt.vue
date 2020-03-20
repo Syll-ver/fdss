@@ -1,5 +1,20 @@
 <template>
   <div >
+        <b-alert
+        id="alert_action"
+        class="alerticon"
+        :show="alert.showAlert"
+        dismissible
+        :variant="alert.variant"
+        @dismissed="alert.showAlert = null"
+      >
+        <font-awesome-icon
+          :icon="alert.variant == 'danger' ? 'exclamation' : 'check-circle'"
+          class="mr-1 alerticon"
+        
+        />
+        {{ alert.message }}
+      </b-alert>
         <Loading v-if="showLoading" />
 
     <Receipt ref="Receipt" v-show="false" />
@@ -18,6 +33,7 @@
           class="button-style"
           size="sm"
           @click="$bvModal.show('add-transaction-modal')"
+          
         >
           <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Receipt
         </b-button>
@@ -99,11 +115,11 @@
               style="font-size:12px"
               v-model="filterStatus"
             >
-              <b-form-checkbox id="pending_supp_stat" value="Pending"
-                >Pending</b-form-checkbox
+              <b-form-checkbox id="Pick-up" value="Pick-up"
+                >Pick-up</b-form-checkbox
               >
-              <b-form-checkbox id="cancelled_cust_stat" value="Cancelled"
-                >Cancelled</b-form-checkbox
+              <b-form-checkbox id="delivery" value="Delivery"
+                >Delivery</b-form-checkbox
               >
             </b-form-checkbox-group>
           </b-dropdown>
@@ -140,7 +156,7 @@
           >{{ row.item.U_STATUS }}
         </b-badge>
 
-        <b-badge
+        <!-- <b-badge
           v-show="row.item.U_STATUS === 'Cancelled'"
           class="table-badge"
           pill
@@ -154,7 +170,7 @@
           pill
           variant="completed"
           >{{ row.item.U_STATUS }}
-        </b-badge>
+        </b-badge> -->
       </template>
 
       <template v-slot:cell(actions)="row">
@@ -219,7 +235,7 @@
           size="sm"
           v-b-tooltip.hover
           title="Cancel Transaction"
-          @click="deleted(row.item)"
+          @click="cancel(row.item)"
         >
           <font-awesome-icon icon="ban" />
         </b-button>
@@ -321,6 +337,7 @@
               placeholder="First Name"
               class="form-text"
               v-model=" U_HLPR_FNAME"
+              required
             />
             </b-col>
             <b-col cols="6">
@@ -330,6 +347,7 @@
               placeholder="Last Name"
               v-model="U_HLPR_LNAME"
               class="form-text"
+              required
             >
             </b-form-input>
             </b-col>
@@ -342,6 +360,7 @@
               placeholder="First Name"
               class="form-text"
               v-model=" U_DRVR_FNAME"
+              required
             />
             </b-col>
             <b-col cols="6">
@@ -351,6 +370,7 @@
               placeholder="Last Name"
               v-model=" U_DRVR_LNAME"
               class="form-text"
+              required
             >
             </b-form-input>
             </b-col>
@@ -361,6 +381,7 @@
               id="tendered"
               v-model=" U_PLATE_NUMBER"
               class="form-text"
+              required
             >
             </b-form-input>
 
@@ -379,28 +400,25 @@
           </b-card>
 
 
-      <template v-slot:modal-footer="{cancel }">
+      <template v-slot:modal-footer="{Clear }">
         <b-button
           id="add_action_modal"
           size="sm"
           class="button-style"
           variant="biotech"
           @click="newDR()"
+          :disabled="showLoading === true"
           
         >
         <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <b-spinner
-            v-show="showButtonLoading === true"
-            small
-            label="Spinning"
-          ></b-spinner
-          >Create
+           <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>
+          Create
         </b-button>
         <b-button
           id="cancel_add_action_modal"
           size="sm"
           class="button-style"
-          @click="cancel(row.item)"
+          @click="Clear(row)"
           >Cancel</b-button
         >
       </template>
@@ -414,6 +432,7 @@
       header-text-variant="light"
       body-bg-variant="gray"
       id="edit-transaction-modal"
+      no-close-on-backdrop
       scrollable
     >
       <template v-slot:modal-title>
@@ -539,10 +558,10 @@
           variant="biotech"
           @click="updateDR(U_TRX_ID)"
           
-          :disabled="showButtonLoading === true"
+          :disabled="showLoading === true"
         >
           <b-spinner
-            v-show="showButtonLoading === true"
+            v-show="showLoading === true"
             small
             label="Spinning"
           ></b-spinner
@@ -568,6 +587,7 @@
       header-text-variant="light"
       body-bg-variant="gray"
       id="view-transaction-modal"
+      no-close-on-backdrop
       scrollable
     >
       <template v-slot:modal-title>
@@ -886,8 +906,8 @@ export default {
   },
   data() {
     return {
-      filterStatus:["Pending","Cancelled"],
-       showButtonLoading: false,
+      filterStatus:["Pick-up","Delivery"],
+       showLoading: false,
       alert: {
         showAlert: 0,
         variant: "biotech",
@@ -898,7 +918,23 @@ export default {
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
       U_CMMDTY:null,
-
+      alert: {
+        showAlert: 0,
+        variant: "biotech",
+        message: ""
+      },
+      U_DRVR_LNAME:null,
+      U_DRVR_FNAME:null,
+      U_HLPR_FNAME:null,
+      U_HLPR_LNAME:null,
+      U_PLATE_NUMBER:null,
+      U_DTE_CRTD:null,
+      U_CRTD_BY:null,
+      U_TRX_NO:null,
+      U_DRVR_NAME:null,
+      U_SACKS:null,
+      U_EMPTY_SACKS:null,
+      U_HLPR_NAME:null,
     
       
       transaction_types:[],
@@ -907,6 +943,7 @@ export default {
       commodity:[],
       status:"",
       // Datepicker
+      opens1:"",
       opens: "receipt",
       datePicker: {
         startDate: moment().format("MMM DD, YYYY"),
@@ -990,7 +1027,7 @@ export default {
    computed: {
     filterItems() {
       return this.items.filter(request => {
-        if (this.filterStatus.includes(request.U_STATUS)) {
+        if (this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
           return request;
         }
       });
@@ -1025,31 +1062,53 @@ export default {
   },
 
   methods: {
+     showAlert(message, variant) {
+      this.alert = {
+        showAlert: 3,
+        variant,
+        message
+      };
+    
+    },
+  
      printReceipt(data) {
       
       // this.showReceipt = true;
       this.$refs.Receipt.print(data);
       // data.U_STATUS = "Printed";
     },
-    cancel(data){
-       this.U_CRTD_BY = data.U_CRTD_BY;
-      this.U_TRX_ID = data.U_TRX_ID;
-      this.U_TRX_NO = data.U_TRX_NO;
-      this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
-      this.U_CMMDTY = data.U_ITEM;
-      this.U_FRMR_NAME = data.U_FRMR_NAME;
-      this.U_FRMR_ADD = data.U_FRMR_ADD;
-      const driver_name = data.U_DRVR_NAME.split(", ");
-      const helper_name = data.U_HLPR_NAME.split(", ");
-      this.U_HLPR_FNAME= helper_name[1];
-      this.U_HLPR_LNAME= helper_name[0] ;
-      this.U_DRVR_FNAME= driver_name[1];
-      this.U_DRVR_LNAME= driver_name[0] ;
-      this.U_SACKS= data.U_SACKS;
-      this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
-      this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
+    async cancel(row){
+       console.log(row);
+      try{
+      this.showLoading = true
+      const userDetails = JSON.parse(localStorage.user_details);
+
+      const employee_id = userDetails.Code;
+
+      const res = await axios({
+        method: "PUT",
+        url: `${this.$axios.defaults.baseURL}/api/transaction/cancel/${row.U_TRX_ID}`,
+        headers: {
+          Authorization: `B1SESSION=${localStorage.SessionId}`
+        },
+        data: {
+          employee_id,
+          U_TRX_ID: this.U_TRX_ID,
+       
+        }
+      });
+       this.showLoading = false
+       this.showAlert("Successfully Cancelled", "success");
+      this.getTransactions();
+      } catch(e){
+        console.log(e)
+         this.showLoading = false
+         this.showAlert(res.message, "danger");
+      }
+    
 
     },
+
    
     edit(data) {
        console.log(data)
@@ -1147,17 +1206,18 @@ export default {
     },
     async newDR() {
       try {
+        
         this.showLoading = true;
         let items= [];
 
         const userDetails = JSON.parse(localStorage.user_details);
-      
+     
           // const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
         const json = {
            transaction_type_id: this.U_TRANSACTION_TYPE,
            item_id: this.U_CMMDTY ,
            farmer_id: this.U_FRMR_NAME.id,  
-           driver_name: this.U_DRVR_LNAME +", "+ this.U_DRVR_FNAME,
+           driver_name: this.U_DRVR_LNAME +", " + this.U_DRVR_FNAME,
            helper_name: this.U_HLPR_LNAME +", " + this.U_HLPR_FNAME,
            no_of_bags: this.U_SACKS,
            no_of_empty_bags: this.U_EMPTY_SACKS,
@@ -1178,9 +1238,17 @@ export default {
         this.showLoading = false;
         this.getTransactions();
         this.$bvModal.hide("add-transaction-modal");
+        this.showAlert("Successfully Added", "success");
+        // this.$refs.Receipt.print(data);
       } catch (e) {
         console.log(e);
         this.showLoading = false;
+         if (e.response && e.response.data.error) {
+            this.showAlert(e.response.data.error, "danger");
+          } else {
+            this.showAlert("Please input all fields", "danger");
+          }
+     
         
       }
     },
@@ -1218,9 +1286,16 @@ export default {
         this.showLoading = false;
         this.getTransactions();
         this.$bvModal.hide("edit-transaction-modal");
+        this.showAlert("Successfully Updated", "success");
       } catch (e) {
         console.log(e);
         this.showLoading = false;
+                 if (e.response && e.response.data.error) {
+            this.showAlert(e.response.data.error, "danger");
+          } else {
+            this.showAlert("Please input all fields", "danger");
+          }
+     
         
       }
     },
@@ -1330,6 +1405,7 @@ export default {
       } catch (e) {
         console.log(e);
         this.showLoading = false;
+      
       }
     }
   },
