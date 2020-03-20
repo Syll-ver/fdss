@@ -4,6 +4,13 @@
 
     <Receipt ref="Receipt" v-show="false" />
     <!-- Main table -->
+
+      <VueQrcode
+                id="QRcode"
+                type="String"
+                value="asd"
+                :options="{ width: 300 }"
+              ></VueQrcode>
     <b-row>
       <b-col>
         <b-button
@@ -863,13 +870,12 @@ import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import Loading from "~/components/Loading/Loading.vue";
 
-
-
 export default {
   components: {
     Receipt,
     DateRangePicker,
-    Loading
+    Loading,
+ 
   },
   async created() {
     await this.getTransactions();
