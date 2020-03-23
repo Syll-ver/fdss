@@ -271,6 +271,43 @@
 
     <!-- Main table -->
 
+    <!-- Confirm Cancel -->
+     <b-modal
+      size="sm"
+      header-bg-variant="biotech"
+      header-text-variant="light"
+      id="bv-modal-confirmCancel"
+      class="modal-small"
+      no-close-on-backdrop
+      hide-header-close
+    >
+      <template v-slot:modal-title>
+        <h6>Confirmation:</h6>
+      </template>
+      <h6>Are you sure?</h6>
+      <div style="font-size: 13px">
+        This will automatically 'Cancel' your created Delivery Receipt.
+      </div>
+      <template v-slot:modal-footer="{ ok, cancel }">
+                <b-button
+          id="btn_submit_request"
+          size="sm"
+          variant="biotech"
+          @click="confirmCancel()"
+          class="button-style"
+          >Yes
+        </b-button>
+        <b-button
+          id="btn_cancel_requestSupplier"
+          size="sm"
+          @click="cancel()"
+          class="button-style"
+          >No
+        </b-button>
+
+      </template>
+    </b-modal>
+
     <!-- Add Transaction -->
 
     <b-modal
@@ -1077,8 +1114,8 @@ export default {
       this.$refs.Receipt.print(data);
       // data.U_STATUS = "Printed";
     },
-    async cancel(row){
-       console.log(row);
+    async confirmCancel(U_TRX_ID){
+       console.log(U_TRX_ID);
       try{
       this.showLoading = true
       const userDetails = JSON.parse(localStorage.user_details);
@@ -1087,7 +1124,7 @@ export default {
 
       const res = await axios({
         method: "PUT",
-        url: `${this.$axios.defaults.baseURL}/api/transaction/cancel/${row.U_TRX_ID}`,
+        url: `${this.$axios.defaults.baseURL}/api/transaction/cancel/${U_TRX_ID}`,
         headers: {
           Authorization: `B1SESSION=${localStorage.SessionId}`
         },
@@ -1107,6 +1144,27 @@ export default {
       }
     
 
+    },
+    
+    cancel(data) {
+       console.log(data)
+      this.U_CRTD_BY = data.U_CRTD_BY;
+      this.U_TRX_ID = data.U_TRX_ID;
+      this.U_TRX_NO = data.U_TRX_NO;
+      this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
+      this.U_CMMDTY = data.U_ITEM;
+      this.U_FRMR_NAME = data.U_FRMR_NAME;
+      this.U_FRMR_ADD = data.U_FRMR_ADD;
+      const driver_name = data.U_DRVR_NAME.split(", ");
+      const helper_name = data.U_HLPR_NAME.split(", ");
+      this.U_HLPR_FNAME= helper_name[1];
+      this.U_HLPR_LNAME= helper_name[0] ;
+      this.U_DRVR_FNAME= driver_name[1];
+      this.U_DRVR_LNAME= driver_name[0] ;
+      this.U_SACKS= data.U_SACKS;
+      this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
+      this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
+      this.$bvModal.show("bv-modal-confirmCancel");
     },
 
    
@@ -1238,7 +1296,7 @@ export default {
         this.showLoading = false;
         this.getTransactions();
         this.$bvModal.hide("add-transaction-modal");
-        this.showAlert("Successfully Added", "success");
+        this.showAlert("Successfully Created", "success");
         // this.$refs.Receipt.print(data);
       } catch (e) {
         console.log(e);

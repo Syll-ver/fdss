@@ -1,6 +1,5 @@
-# AutomatedDeliveryReceipt
-
-> AutomatedDeliveryReceipt
+# Automated Delivery Receipt
+> Automated Delivery Receipt
 
 ## Build Setup
 
