@@ -2,7 +2,7 @@
   <div id="receipt">
 
     <b-row>
-      <b-card class="check-card mr-4" style="width:31rem; height:45rem">
+      <b-card class="check-card mr-4" style="width:31rem; height:41rem">
         <!-- <b-row>
           <b-col cols="6"> -->
                   
