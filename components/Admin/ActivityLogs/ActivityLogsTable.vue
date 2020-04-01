@@ -86,7 +86,7 @@
     <!-- Main table element -->
     <b-table
       id="activity-table"
-      style="font-size:15.5px; max-height: 100%;"
+      class="table-style"
       show-empty
       scrollable="true"
       sticky-header

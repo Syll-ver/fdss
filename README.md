@@ -1,5 +1,5 @@
-# Automated Delivery Receipt
-> Automated Delivery Receipt
+# Farmer Delivery Booking System
+> Farmer Delivery Booking System
 
 ## Build Setup
 

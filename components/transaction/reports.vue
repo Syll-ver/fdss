@@ -395,6 +395,21 @@ Transaction Number : {{ U_TRX_NO }}
             </div>
           </b-col>
         </b-row>
+         <b-row>
+          <b-col cols="4">
+            <span>
+              Requested Sacks
+            </span>
+          </b-col>
+
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span>
+                : {{U_REQUESTED_SACKS}}
+              </span>
+            </div>
+          </b-col>
+        </b-row>
         <div v-if="U_TRANSACTION_TYPE === 'Pick-up'">
                         <b-row >
           <b-col cols="4">
@@ -406,7 +421,7 @@ Transaction Number : {{ U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : 
+                : {{U_SACKS}}
               </span>
             </div>
           </b-col>
@@ -421,7 +436,7 @@ Transaction Number : {{ U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : 
+                : {{U_EMPTY_SACKS}}
               </span>
             </div>
           </b-col>
@@ -616,6 +631,7 @@ export default {
       U_CMMDTY:null,
       U_DRVR_LNAME:null,
       U_DRVR_FNAME:null,
+      U_REQUESTED_SACKS:null,
       U_HLPR_FNAME:null,
       U_HLPR_LNAME:null,
       U_PLATE_NUMBER:null,
@@ -657,49 +673,49 @@ export default {
           key: "U_TRX_NO",
           label: "Transaction No.",
           sortable: true,
-          sortDirection: "desc"
+          sortDirection: "asc"
         },
 
         {
           key: "U_TRANSACTION_TYPE",
           label: "Transaction Type",
           sortable: true,
-          sortDirection: "desc"
+          sortDirection: "asc"
         },
 
         {
           key: "U_CMMDTY",
           label: "Commodity",
           sortable: true,
-          sortDirection: "desc"
+          sortDirection: "asc"
         },
 
         {
           key: "U_FRMR_NAME",
           label: "Farmer's Name",
           sortable: true,
-          sortDirection: "desc"
+          sortDirection: "asc"
         },
 
         {
           key: "U_CRTD_BY",
           label: "Created By",
           sortable: true,
-          sortDirection: "desc"
+          sortDirection: "asc"
         },
 
         {
           key: "U_DTE_CRTD",
           label: "Date Created",
           sortable: true,
-          sortDirection: "desc"
+          sortDirection: "asc"
         },
 
         {
           key: "U_STATUS",
           label: "Status",
           sortable: true,
-          sortDirection: "desc"
+          sortDirection: "asc"
         },
 
         // { key: "actions", label: "Actions", class: "text-center" }
@@ -843,6 +859,7 @@ show(data) {
       this.U_FRMR_ADD = data.U_FRMR_ADD;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
+      this.U_REQUESTED_SACKS = data.U_REQUESTED_SACKS;
       this.U_SACKS= data.U_SACKS;
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
@@ -945,6 +962,7 @@ show(data) {
               U_CRTD_BY: v[i].CREATED_BY,
               U_STATUS: v[i].STATUS,
               U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+              U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
               U_HLPR_NAME: v[i].HELPER_NAME,
               U_DRVR_NAME: v[i].DRIVER_NAME,
               U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,

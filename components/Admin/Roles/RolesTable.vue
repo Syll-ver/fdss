@@ -542,7 +542,7 @@
               small
               label="Spinning"
             ></b-spinner
-            >Edit
+            >Update
           </b-button>
           <b-button
             size="sm"

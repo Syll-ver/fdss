@@ -7,11 +7,11 @@
         dismissible
         :variant="alert.variant"
         @dismissed="alert.showAlert = null"
+        class="alerticon"
       >
         <font-awesome-icon
           :icon="alert.variant == 'success' ? 'check-circle' : 'exclamation'"
-          class="mr-1"
-          style="font-size:20px"
+          class="mr-1 alerticon"
         />
         {{ alert.message }}
       </b-alert>
@@ -139,7 +139,7 @@
             variant="edit"
             size="sm"
             @click="edit(row.item)"
-            class="button-table"
+            class="table-button"
             v-b-tooltip.hover
             title="Update User"
             v-if="actions.editUser"
@@ -152,22 +152,19 @@
             size="sm"
             variant="info"
             @click="update(row.item)"
-            class="mr-1 button-circle"
-            style="font-size:12px; "
+            class="table-button" 
             v-b-tooltip.hover
             title="Update"
             v-if="actions.updateUser && row.item.ApplicationUserID"
           >
             <font-awesome-icon icon="sync" />
           </b-button>
-
           <b-button
             id="reset_user_password"
             size="sm"
             @click="resetpassword(row.item)"
-            class="mr-1 button-circle"
+            class="table-button"
             variant="danger"
-            style="font-size:12px; "
             v-b-tooltip.hover
             title="Reset Password"
             v-if="actions.resetPassword && !row.item.ApplicationUserID"
@@ -731,7 +728,7 @@
             variant="biotech"
             @click="editTable()"
             class="button-style"
-            >Edit</b-button
+            >Update</b-button
           >
           <b-button
             size="sm"
@@ -784,7 +781,7 @@
 
       <b-modal
         size="sm"
-        header-bg-variant="danger"
+        header-bg-variant="biotech"
         header-text-variant="light"
         id="reset-modal"
       >
@@ -1048,7 +1045,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           } else {
-            this.showAlert("Success", "success");
+            this.showAlert("Successfully Updated", "success");
             this.$bvModal.hide("update-user-modal");
             this.clearForm();
           }
@@ -1132,7 +1129,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           } else {
-            this.showAlert("Success", "success");
+            this.showAlert("Successfully Reseted", "success");
             this.$bvModal.hide("reset-modal");
             this.clearForm();
           }
@@ -1186,7 +1183,7 @@ export default {
             }
             this.showButtonLoading = false;
           } else {
-            this.showAlert("Success", "success");
+            this.showAlert("Successfully Added", "success");
 
             this.$bvModal.hide("add-user-modal");
 
@@ -1236,7 +1233,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           } else {
-            this.showAlert("Success", "success");
+            this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-modal");
 

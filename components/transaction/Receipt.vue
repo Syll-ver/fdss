@@ -114,6 +114,21 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
             </div>
           </b-col>
         </b-row>
+         <b-row>
+          <b-col cols="4">
+            <span>
+              Requested Sacks
+            </span>
+          </b-col>
+
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span>
+                : {{receiptData.U_REQUESTED_SACKS}}
+              </span>
+            </div>
+          </b-col>
+        </b-row>
         <div v-if="receiptData.U_TRANSACTION_TYPE === 'Pick-up'">
                         <b-row >
           <b-col cols="4">
@@ -133,7 +148,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Empty Sacks
+               Returned Sacks
             </span>
           </b-col>
 
@@ -165,7 +180,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Empty Sacks
+               Returned Sacks 
             </span>
           </b-col>
 

@@ -34,6 +34,20 @@
                     v-on:keyup.enter="Confirm()"
                   />
                 </b-input-group-prepend>
+                <div class="container1">
+                 <h5>Create Your Pincode</h5>
+                <div class="pinBox">
+                  <input
+                    id="input-pincode"
+                    class="pinEntry"
+                    v-model="user.U_PIN"
+                    type="password"
+                    maxlength="4"
+                    name="pin"
+                    pattern="[0-9]{4}"
+                  />
+                </div>
+                </div>
 
                 <b-alert :show="alert.showAlert" dismissible variant="danger">{{ alert.message }}</b-alert>
 
@@ -86,7 +100,8 @@ export default {
       },
       user: {
         name: null,
-        password: null
+        password: null,
+        U_PIN:null
       }
     };
   },
@@ -124,6 +139,7 @@ export default {
       };
     },
     async Confirm() {
+  
       if (this.user.password1 == this.user.password2) {
         const password = (this.user.password1, this.user.password2);
 
@@ -133,11 +149,12 @@ export default {
           data: {
             U_USERNAME: localStorage.username,
             U_PASSWORD: password,
+             U_PIN: this.user.U_PIN,
             SessionId: localStorage.SessionId
           }
         })
           .then(result => {
-            this.showAlert("Success", "success");
+            this.showAlert("Successfully Changed Password", "success");
             setTimeout(() => {
               this.$router.push("/");
             }, 1000);

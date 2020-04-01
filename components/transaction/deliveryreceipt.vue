@@ -19,13 +19,13 @@
 
     <Receipt ref="Receipt" v-show="false" />
     <!-- Main table -->
-
+<!-- 
       <VueQrcode
                 id="QRcode"
                 type="String"
                 value="asd"
                 :options="{ width: 300 }"
-              ></VueQrcode>
+              ></VueQrcode> -->
     <b-row>
       <b-col>
         <b-button
@@ -156,15 +156,15 @@
           >{{ row.item.U_STATUS }}
         </b-badge>
 
-        <!-- <b-badge
-          v-show="row.item.U_STATUS === 'Cancelled'"
+        <b-badge
+          v-show="row.item.U_STATUS === 'Printed'"
           class="table-badge"
           pill
-          variant="danger"
+          variant="edit"
           >{{ row.item.U_STATUS }}
         </b-badge>
 
-        <b-badge
+       <!--  <b-badge
           v-show="row.item.U_STATUS === 'Completed'"
           class="table-badge"
           pill
@@ -174,30 +174,14 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <div v-if="row.item.U_STATUS === 'Cancelled'">
+        <div v-if="row.item.U_STATUS === 'Pending'">
        
-
-        <b-button
-          variant="secondary"
-          id="view"
-          class="table-button"
-          size="sm"
-          @click="show(row.item)"
-          v-b-tooltip.hover
-          title="View Delivery Receipt"
-        >
-         <!-- @click="$bvModal.show('view-transaction-modal')" -->
-          <font-awesome-icon icon="folder-open" />
-        </b-button>
-
-        </div>
-        <div v-else>
-           <b-button
+          <b-button
           variant="print"
           id="print"
           class="table-button"
           size="sm"
-          @click="printReceipt(row.item)"
+          @click="printed(row.item)"
           v-b-tooltip.hover
           title="Print Delivery Receipt"
         >
@@ -239,6 +223,39 @@
         >
           <font-awesome-icon icon="ban" />
         </b-button>
+      
+         <!-- @click="$bvModal.show('view-transaction-modal')" -->
+      
+
+        </div>
+        <div v-else>
+           <b-button
+          variant="print"
+          id="print"
+          class="table-button"
+          size="sm"
+          @click="printReceipt(row.item)"
+          v-b-tooltip.hover
+          title="Print Delivery Receipt"
+        >
+          <font-awesome-icon icon="print" />
+        </b-button>
+
+      
+
+        <b-button
+          variant="secondary"
+          id="view"
+          class="table-button"
+          size="sm"
+          @click="show(row.item)"
+          v-b-tooltip.hover
+          title="View Delivery Receipt"
+        >
+          <font-awesome-icon icon="folder-open" />
+        </b-button>
+
+       
       
         </div>
       </template>
@@ -282,13 +299,13 @@
       hide-header-close
     >
       <template v-slot:modal-title>
-        <h6>Confirmation:</h6>
+        <h6>Confirmation Message</h6>
       </template>
       <h6>Are you sure?</h6>
       <div style="font-size: 13px">
         This will automatically 'Cancel' your created Delivery Receipt.
       </div>
-      <template v-slot:modal-footer="{ ok, cancel }">
+      <template v-slot:modal-footer="{ }">
                 <b-button
           id="btn_submit_request"
           size="sm"
@@ -300,7 +317,7 @@
         <b-button
           id="btn_cancel_requestSupplier"
           size="sm"
-          @click="cancel()"
+          @click="close1()"
           class="button-style"
           >No
         </b-button>
@@ -308,6 +325,42 @@
       </template>
     </b-modal>
 
+
+ <b-modal
+      size="sm"
+      header-bg-variant="biotech"
+      header-text-variant="light"
+      id="bv-modal-confirmPrint"
+      class="modal-small"
+      no-close-on-backdrop
+      hide-header-close
+    >
+      <template v-slot:modal-title>
+        <h6>Confirmation Message</h6>
+      </template>
+      <h6>Are you sure you want to print this Delivery Receipt?</h6>
+      <div style="font-size: 13px">
+        You cannot UPDATE and CANCEL anymore the transaction after doing this.
+      </div>
+      <template v-slot:modal-footer="{ }">
+                <b-button
+          id="btn_submit_request"
+          size="sm"
+          variant="biotech"
+          @click="printed()"
+          class="button-style"
+          >Yes
+        </b-button>
+        <b-button
+          id="btn_cancel_requestSupplier"
+          size="sm"
+          @click="close()"
+          class="button-style"
+          >No
+        </b-button>
+
+      </template>
+    </b-modal>
     <!-- Add Transaction -->
 
     <b-modal
@@ -422,13 +475,22 @@
             >
             </b-form-input>
 
+            <small class="text-left"># of Requested Sacks</small>
+            <b-form-input
+              id="requestedsacks"
+              v-model=" U_REQUESTED_SACKS"
+              class="form-text"
+              required
+            >
+            </b-form-input>
+
             <b-row v-if="U_TRANSACTION_TYPE === '2'">
             <b-col cols="6">
             <small class="text-left"># of Sacks</small>
             <b-form-input type="number" id="sacks" class="form-text" v-model="U_SACKS" />
             </b-col>
             <b-col cols="6">
-            <small class="text-left"># of Empty Sacks</small>
+            <small class="text-left"># of Returned Sacks</small>
             <b-form-input type="number" id="emptysacks" class="form-text" v-model="U_EMPTY_SACKS" />
             </b-col>
             </b-row>
@@ -437,13 +499,13 @@
           </b-card>
 
 
-      <template v-slot:modal-footer="{Clear }">
+      <template v-slot:modal-footer="{}">
         <b-button
           id="add_action_modal"
           size="sm"
           class="button-style"
           variant="biotech"
-          @click="newDR()"
+          @click="saveDR()"
           :disabled="showLoading === true"
           
         >
@@ -455,7 +517,7 @@
           id="cancel_add_action_modal"
           size="sm"
           class="button-style"
-          @click="Clear(row)"
+          @click="close()"
           >Cancel</b-button
         >
       </template>
@@ -470,6 +532,7 @@
       body-bg-variant="gray"
       id="edit-transaction-modal"
       no-close-on-backdrop
+      hide-header-close
       scrollable
     >
       <template v-slot:modal-title>
@@ -568,6 +631,14 @@
               class="form-text"
             >
             </b-form-input>
+            <small class="text-left"># of Requested Sacks</small>
+            <b-form-input
+              id="requestedsacks"
+              v-model=" U_REQUESTED_SACKS"
+              class="form-text"
+              required
+            >
+            </b-form-input>
 
             <b-row v-if="U_TRANSACTION_TYPE === '2'">
             <b-col cols="6">
@@ -587,7 +658,7 @@
 
        
 
-      <template v-slot:modal-footer="{cancelEdit }">
+      <template v-slot:modal-footer="{}">
         <b-button
           id="edit_action_modal"
           size="sm"
@@ -608,7 +679,7 @@
           id="cancel_edit_action_modal"
           size="sm"
           class="button-style"
-          @click="cancelEdit()"
+          @click="close"
           >Cancel</b-button
         >
       </template>
@@ -625,6 +696,7 @@
       body-bg-variant="gray"
       id="view-transaction-modal"
       no-close-on-backdrop
+      hide-header-close
       scrollable
     >
       <template v-slot:modal-title>
@@ -698,7 +770,7 @@ Transaction Number : {{ U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : U_CMMDTY
+                : {{U_CMMDTY}}
               </span>
             </div>
           </b-col>
@@ -735,6 +807,21 @@ Transaction Number : {{ U_TRX_NO }}
             </div>
           </b-col>
         </b-row>
+         <b-row>
+          <b-col cols="4">
+            <span>
+              Requested Sacks
+            </span>
+          </b-col>
+
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span>
+                : {{U_REQUESTED_SACKS}}
+              </span>
+            </div>
+          </b-col>
+        </b-row>
         <div v-if="U_TRANSACTION_TYPE === 'Pick-up'">
                         <b-row >
           <b-col cols="4">
@@ -754,7 +841,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Empty Sacks
+               Returned Sacks
             </span>
           </b-col>
 
@@ -786,7 +873,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Empty Sacks
+               Returned Sacks
             </span>
           </b-col>
 
@@ -815,7 +902,7 @@ Transaction Number : {{ U_TRX_NO }}
       </b-row> -->
 
 <br>
-        <b-row class="my-4">
+        <b-row class="my-2">
           <b-col cols="6">
 
               <center>
@@ -885,16 +972,110 @@ Transaction Number : {{ U_TRX_NO }}
 
           </b-card>
 
-      <template v-slot:modal-footer="{close}">
+      <template v-slot:modal-footer="{}">
         <b-button
           id="cancel_add_action_modal"
           size="sm"
           class="button-style"
-          @click="close()"
+          @click="close1"
           >Close</b-button
         >
       </template>
     </b-modal>
+    <!-- <alert/> -->
+    <!-- ALERT SUCCESSFUL -->
+    <b-modal
+      id="pin"
+      no-close-on-backdrop
+      hide-header-close
+      header-bg-variant="success"
+      header-text-variant="light"
+    >
+      <template v-slot:modal-title>
+        <h6>Security Purposes</h6>
+      </template>
+      <div class="container1">
+        <h5>Enter Your Pincode</h5>
+        <div class="pinBox">
+          <input
+            id="input-code"
+            class="pinEntry"
+            ref="pins"
+            v-model="pincode"
+            type="password"
+            maxlength="4"
+            name="pin"
+            pattern="[0-9]{4}"
+          />
+        </div>
+      </div>
+
+      <template v-slot:modal-footer>
+        <p class="pinError">{{pinError}}</p>
+        <b-button
+          id="save"
+          size="sm"
+          variant="success"
+          @click="confirmpin()"
+          style="font-size:13px"
+        >Save</b-button>
+        <b-button
+          id="cancel"
+          size="sm"
+          @click="closePinModal()"
+          style="font-size:13px;border: 0px;"
+        >Cancel</b-button>
+      </template>
+    </b-modal>
+
+    <!-- signature modal -->
+    <b-modal
+      id="signature"
+      no-close-on-backdrop
+      header-bg-variant="biotech"
+      header-text-variant="light"
+      size="xl"
+      hide-header-close
+    >
+      <template v-slot:modal-title>
+        <h6>Draw Signature</h6>
+      </template>
+
+      <div>
+        <div class="col-12">
+          <VueSignaturePad
+            id="signature"
+            width="100%"
+            height="450px"
+            ref="signaturePad"
+            :options="{
+              onBegin: () => {
+                $refs.signaturePad.resizeCanvas();
+              }
+            }"
+          />
+        </div>
+        <div class="col-3 mt-2">
+          <!-- <b-button variant="dark" style="font-size:13px;border: 0px;" @click="clear">Undo</b-button> -->
+        </div>
+      </div>
+
+      <template v-slot:modal-footer>
+        <b-button
+          id="rmaf-verify"
+          size="sm"
+          variant="biotech"
+          @click="addSignature()"
+          style="font-size:13px"
+        >Save</b-button>
+        <b-button
+          id="rmaf-verify-cancel"
+          size="sm"
+          @click="closeSignatureModal()"
+          style="font-size:13px;border: 0px;"
+        >Cancel</b-button>
+      </template> 
+    </b-modal>  
   <div>
       <b-alert
         id="alert"
@@ -926,12 +1107,14 @@ import Receipt from "~/components/transaction/Receipt.vue";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import Loading from "~/components/Loading/Loading.vue";
+import VueSignaturePad from "vue-signature-pad";
 
 export default {
   components: {
     Receipt,
     DateRangePicker,
     Loading,
+    VueSignaturePad
  
   },
   async created() {
@@ -951,15 +1134,15 @@ export default {
         message: ""
       },
       showReceipt: false,
-      U_TRANSACTION_TYPE: null,
-      U_FRMR_NAME:null,
-      U_FRMR_ADD:null,
-      U_CMMDTY:null,
       alert: {
         showAlert: 0,
         variant: "biotech",
         message: ""
       },
+      U_TRANSACTION_TYPE: null,
+      U_FRMR_NAME:null,
+      U_FRMR_ADD:null,
+      U_CMMDTY:null,
       U_DRVR_LNAME:null,
       U_DRVR_FNAME:null,
       U_HLPR_FNAME:null,
@@ -970,6 +1153,7 @@ export default {
       U_TRX_NO:null,
       U_DRVR_NAME:null,
       U_SACKS:null,
+      U_REQUESTED_SACKS:null,
       U_EMPTY_SACKS:null,
       U_HLPR_NAME:null,
     
@@ -1049,6 +1233,9 @@ export default {
 
         { key: "actions", label: "Actions", class: "text-center" }
       ],
+      signaturePath: null,
+      pincode: null,
+      pinError: null,
       totalRows: 1,
       currentPage: 1,
       perPage: 5,
@@ -1099,6 +1286,180 @@ export default {
   },
 
   methods: {
+    async saveDR(){
+     this.$bvModal.show("pin");
+        setTimeout(() => {
+          this.$refs.pins.focus();
+        }, 500);
+        return;
+    },
+       async closePinModal() {
+    
+        this.pincode = null;
+        this.$bvModal.hide("pin");
+        return;
+     
+      
+    },
+      async confirmpin() {
+      try {
+        this.showLoading = true;
+        const userDetails = JSON.parse(localStorage.user_details);
+        const employee_id = userDetails.Code;
+        const res = await axios({
+          method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/transaction/check-pin`,
+          data: {
+            employee_id,
+            pin: this.pincode,
+            mode: localStorage.mode
+          },
+          headers: {
+            authorization: `B1SESSION=${localStorage.session}`
+          }
+        });
+        this.showLoading = false;
+
+                console.log("hide me");
+                this.$bvModal.hide("pin");
+                this.$bvModal.show("signature");
+                return;
+            
+           
+         
+      } catch (er) {
+        this.showLoading = false;
+        this.pinError = er.response.data.error;
+        setTimeout(() => {
+          this.pinError = null;
+        }, 2000);
+      }
+    },
+        async addSignature() {
+      this.showLoading = true;
+      const userDetails = JSON.parse(localStorage.user_details);
+      const employee_id = userDetails.Code;
+
+      function srcToFile(src, fileName, mimeType) {
+        return fetch(src)
+          .then(function(res) {
+            return res.arrayBuffer();
+          })
+          .then(function(buf) {
+            return new File([buf], fileName, { type: mimeType });
+          });
+      }
+
+      const data = this.$refs.signaturePad.saveSignature();
+
+      if (data.data) {
+        const image = new Image();
+        image.src = data.data;
+        // const fileName =
+        //   moment().format("YYYY-MM-DD_HHmmss") + "_" + employeeId;
+
+        const time = moment().format("YYYY-MM-DD_HHmmss");
+        const fileName = `${time}-${employee_id}.png`;
+        const url = this.$axios.defaults.baseURL;
+        const path = await srcToFile(image.src, fileName, "image/png").then(
+          async function(file) {
+            var fd = new FormData();
+            fd.append("image", file, file.name);
+            fd.append("mode", localStorage.mode);
+
+            const res = await axios.post(`${url}/api/transaction/add`, fd, {
+              headers: { Authorization: `B1SESSION=${localStorage.session}` }
+            });
+
+            const path = res.data.imagePath;
+
+            return path;
+          }
+        );
+
+        this.signaturePath = path;
+        this.showLoading = false;
+
+        await this.newDR();
+      } else {
+        this.showLoading = false;
+        this.errorMsg = "Please draw your signature.";
+        this.showAlertErr();
+      }
+    },
+    closeSignatureModal() {
+      if (this.transactionStatus.toLowerCase() == "for inbound") {
+        this.onOffReceiveInbound();
+        this.pincode = null;
+        this.$bvModal.hide("signature");
+        return;
+      }
+      if (this.transactionStatus.toLowerCase() == "for outbound") {
+        this.onOffReceiveOutbound();
+        this.pincode = null;
+        this.$bvModal.hide("signature");
+        return;
+      }
+      if (this.transactionStatus.toLowerCase() == "others") {
+        if (this.inboundBool == false && this.inboundCounter == 1) {
+          this.onOffReceiveInbound();
+          this.pincode = null;
+          this.$bvModal.hide("signature");
+          return;
+        }
+        if (this.outboundBool == false && this.outboundCounter == 1) {
+          this.onOffReceiveOutbound();
+          this.pincode = null;
+          this.$bvModal.hide("signature");
+          return;
+        }
+      }
+    },
+    close() {
+      
+     this.U_TRANSACTION_TYPE= null,
+      this.U_FRMR_NAME=null,
+      this.U_FRMR_ADD=null,
+      this.U_CMMDTY=null,
+      this.U_DRVR_LNAME=null,
+      this.U_DRVR_FNAME=null,
+      this.U_HLPR_FNAME=null,
+      this.U_HLPR_LNAME=null,
+      this.U_PLATE_NUMBER=null,
+      this.U_DTE_CRTD=null,
+      this.U_CRTD_BY=null,
+      this.U_TRX_NO=null,
+      this.U_DRVR_NAME=null,
+      this.U_REQUESTED_SACKS=null,
+      this.U_SACKS=null,
+      this.U_EMPTY_SACKS=null,
+      this.U_HLPR_NAME=null
+      this.$bvModal.hide("add-transaction-modal");
+       this.$bvModal.hide("edit-transaction-modal");
+    },
+    close1() {
+     
+      
+     this.U_TRANSACTION_TYPE= null,
+      this.U_FRMR_NAME=null,
+      this.U_FRMR_ADD=null,
+      this.U_CMMDTY=null,
+      this.U_DRVR_LNAME=null,
+      this.U_DRVR_FNAME=null,
+      this.U_HLPR_FNAME=null,
+      this.U_HLPR_LNAME=null,
+      this.U_PLATE_NUMBER=null,
+      this.U_DTE_CRTD=null,
+      this.U_CRTD_BY=null,
+      this.U_TRX_NO=null,
+      this.U_DRVR_NAME=null,
+      this.U_REQUESTED_SACKS=null,
+      this.U_SACKS=null,
+      this.U_EMPTY_SACKS=null,
+      this.U_HLPR_NAME=null
+      this.$bvModal.hide("bv-modal-confirmCancel");
+       this.$bvModal.hide("view-transaction-modal");
+    },
      showAlert(message, variant) {
       this.alert = {
         showAlert: 3,
@@ -1108,13 +1469,38 @@ export default {
     
     },
   
-     printReceipt(data) {
+     async printReceipt(data) {
       
-      // this.showReceipt = true;
-      this.$refs.Receipt.print(data);
-      // data.U_STATUS = "Printed";
+      this.$refs.Receipt.print(data)
+
     },
-    async confirmCancel(U_TRX_ID){
+    //    console.log(data);
+    //    if (this.U_STATUS === 'Pending'){
+    //   this.showLoading = true
+    //   const userDetails = JSON.parse(localStorage.user_details);
+
+    //   const employee_id = userDetails.Code;
+
+    //   const res = await axios({
+    //     method: "PUT",
+    //     url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data}`,
+    //     headers: {
+    //       Authorization: `B1SESSION=${localStorage.SessionId}`
+    //     },
+    //     data: {
+    //       employee_id,
+       
+    //     }
+    //   });
+ 
+    //   // this.showReceipt = true;
+    //   this.$refs.Receipt.print(data);
+    //   // data.U_STATUS = "Printed";
+    //    } else{
+    //   this.$refs.Receipt.print(data);
+    //    }
+    // },
+      async printed(U_TRX_ID){
        console.log(U_TRX_ID);
       try{
       this.showLoading = true
@@ -1124,7 +1510,39 @@ export default {
 
       const res = await axios({
         method: "PUT",
-        url: `${this.$axios.defaults.baseURL}/api/transaction/cancel/${U_TRX_ID}`,
+        url: `${this.$axios.defaults.baseURL}/api/transaction/print/${U_TRX_ID.U_TRX_ID}`,
+        headers: {
+          Authorization: `B1SESSION=${localStorage.SessionId}`
+        },
+        data: {
+          employee_id,
+          U_TRX_ID: this.U_TRX_ID,
+       
+        }
+      });
+       this.showLoading = false
+        this.$refs.Receipt.print(U_TRX_ID);
+        // this.$bvModal.hide("bv-modal-confirmPrint");
+      this.getTransactions();
+      } catch(e){
+        console.log(e)
+         this.showLoading = false
+         this.showAlert(res.message, "danger");
+      }
+    
+
+    },
+    async confirmCancel(U_TRX_ID){
+      //  console.log(this.U_TRX_ID);
+      try{
+      this.showLoading = true
+      const userDetails = JSON.parse(localStorage.user_details);
+
+      const employee_id = userDetails.Code;
+
+      const res = await axios({
+        method: "PUT",
+        url: `${this.$axios.defaults.baseURL}/api/transaction/cancel/${this.U_TRX_ID}`,
         headers: {
           Authorization: `B1SESSION=${localStorage.SessionId}`
         },
@@ -1136,6 +1554,7 @@ export default {
       });
        this.showLoading = false
        this.showAlert("Successfully Cancelled", "success");
+       this.$bvModal.hide("bv-modal-confirmCancel");
       this.getTransactions();
       } catch(e){
         console.log(e)
@@ -1161,10 +1580,27 @@ export default {
       this.U_HLPR_LNAME= helper_name[0] ;
       this.U_DRVR_FNAME= driver_name[1];
       this.U_DRVR_LNAME= driver_name[0] ;
+      this.U_REQUESTED_SACKS= data.U_REQUESTED_SACKS;
       this.U_SACKS= data.U_SACKS;
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.$bvModal.show("bv-modal-confirmCancel");
+    },
+    print(data) {
+       console.log(data)
+      // this.U_CRTD_BY = data.U_CRTD_BY;
+      // this.U_TRX_ID = data.U_TRX_ID;
+      // this.U_TRX_NO = data.U_TRX_NO;
+      // this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
+      // this.U_CMMDTY = data.U_ITEM;
+      // this.U_FRMR_NAME = data.U_FRMR_NAME;
+      // this.U_FRMR_ADD = data.U_FRMR_ADD;
+      // this.U_DRVR_NAME = data.U_DRVR_NAME;
+      // this.U_HLPR_NAME = data.U_HLPR_NAME;
+      // this.U_SACKS= data.U_SACKS;
+      // this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
+      // this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
+      this.$bvModal.show("bv-modal-confirmPrint");
     },
 
    
@@ -1183,6 +1619,7 @@ export default {
       this.U_HLPR_LNAME= helper_name[0] ;
       this.U_DRVR_FNAME= driver_name[1];
       this.U_DRVR_LNAME= driver_name[0] ;
+      this.U_REQUESTED_SACKS= data.U_REQUESTED_SACKS;
       this.U_SACKS= data.U_SACKS;
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
@@ -1195,11 +1632,12 @@ export default {
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
       this.U_TRANSACTION_TYPE = data.U_TRANSACTION_TYPE;
-      this.U_CMMDTY = data.U_ITEM;
+      this.U_CMMDTY = data.U_CMMDTY;
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
+      this.U_REQUESTED_SACKS= data.U_REQUESTED_SACKS;
       this.U_SACKS= data.U_SACKS;
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
@@ -1266,6 +1704,23 @@ export default {
       try {
         
         this.showLoading = true;
+      //   this.U_TRANSACTION_TYPE= null;
+      // this.U_FRMR_NAME=null;
+      // this.U_FRMR_ADD=null;
+      // this.U_CMMDTY=null;
+      // this.U_DRVR_LNAME=null;
+      // this.U_DRVR_FNAME=null;
+      // this.U_HLPR_FNAME=null;
+      // this.U_HLPR_LNAME=null;
+      // this.U_PLATE_NUMBER=null;
+      // this.U_DTE_CRTD=null;
+      // this.U_CRTD_BY=null;
+      // this.U_TRX_NO=null;
+      // this.U_DRVR_NAME=null;
+      // this.U_SACKS=null;
+      // this.U_EMPTY_SACKS=null;
+      // this.U_HLPR_NAME=null;
+    
         let items= [];
 
         const userDetails = JSON.parse(localStorage.user_details);
@@ -1277,10 +1732,12 @@ export default {
            farmer_id: this.U_FRMR_NAME.id,  
            driver_name: this.U_DRVR_LNAME +", " + this.U_DRVR_FNAME,
            helper_name: this.U_HLPR_LNAME +", " + this.U_HLPR_FNAME,
+           no_of_requested_bags: this.U_REQUESTED_SACKS,
            no_of_bags: this.U_SACKS,
            no_of_empty_bags: this.U_EMPTY_SACKS,
            employee_id: userDetails.Code,
-           plate_number: this.U_PLATE_NUMBER
+           plate_number: this.U_PLATE_NUMBER,
+           signature: this.signaturePath
         };
 
         const res = await axios({
@@ -1297,6 +1754,7 @@ export default {
         this.getTransactions();
         this.$bvModal.hide("add-transaction-modal");
         this.showAlert("Successfully Created", "success");
+        this.close();
         // this.$refs.Receipt.print(data);
       } catch (e) {
         console.log(e);
@@ -1324,6 +1782,7 @@ export default {
           //  farmer_id: this.U_FRMR_NAME,  
            driver_name: this.U_DRVR_LNAME +", " + this.U_DRVR_FNAME,
            helper_name: this.U_HLPR_LNAME +", " + this.U_HLPR_FNAME,
+           no_of_requested_bags: this.U_REQUESTED_SACKS,
            no_of_bags: this.U_SACKS,
            no_of_empty_bags: this.U_EMPTY_SACKS,
            employee_id: userDetails.Code,
@@ -1454,6 +1913,7 @@ export default {
               U_PLATE_NUMBER: v[i].PLATE_NUMBER,
               U_HLPR_NAME: v[i].HELPER_NAME,
               U_DRVR_NAME: v[i].DRIVER_NAME,
+              U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
               U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
               U_SACKS: v[i].NUMBER_OF_BAGS
           });

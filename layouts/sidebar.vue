@@ -5,7 +5,7 @@
         <div>
           <b-img src="/rlogo.png" class="sidebar-image" center>
           </b-img><center>
-          <p class="h9" >AUTOMATED DR SYSTEM</p>
+          <p class="h9" >FARMER DELIVERY BOOKING SYSTEM</p>
           </center>
         </div>
         <hr class="hr-style" />
