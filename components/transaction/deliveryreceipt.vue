@@ -331,6 +331,16 @@
       </template>
 
       <b-card class="card-shadow">
+        
+        
+            <small >Schedule Date</small>
+            <br>
+              <date-pick
+        v-model="U_SCHEDULED_DATE"
+        :pickTime="true"
+        :format="'YYYY-MM-DD HH:mm'"
+    ></date-pick>
+    <br>
         <small class="text-left">Transaction Type</small>
         <b-form-select
           id="transact_type"
@@ -916,9 +926,12 @@ import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import Loading from "~/components/Loading/Loading.vue";
 import VueSignaturePad from "vue-signature-pad";
+import DatePick from 'vue-date-pick';
+import 'vue-date-pick/dist/vueDatePick.css';
 
 export default {
   components: {
+    DatePick,
     Receipt,
     DateRangePicker,
     Loading,
@@ -933,6 +946,7 @@ export default {
   },
   data() {
     return {
+       U_SCHEDULED_DATE:null,
       filterStatus: ["Pick-up", "Delivery"],
       showLoading: false,
       alert: {
