@@ -1531,8 +1531,11 @@ export default {
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME)
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME)
         fd.append("no_of_requested_bags",this.U_REQUESTED_SACKS )
+
+        if(this.U_SACKS && this.U_EMPTY_SACKS){
         fd.append("no_of_bags", this.U_SACKS)
-        fd.append("no_of_empty_bags", this.U_EMPTY_SACKS,)
+        fd.append("no_of_empty_bags", this.U_EMPTY_SACKS)
+        }
         fd.append("employee_id", userDetails.Code)
         fd.append("plate_number", this.U_PLATE_NUMBER)
 
