@@ -273,7 +273,7 @@
       <div style="font-size: 13px">This will automatically 'Cancel' your created Delivery Receipt.</div>
       <br><b-form-textarea
       id="remarks"
-      v-model="text"
+      v-model="remarks"
       placeholder="Please Input Remarks..."
       rows="3"
       max-rows="6"
@@ -1401,7 +1401,8 @@ export default {
           },
           data: {
             employee_id,
-            U_TRX_ID: this.U_TRX_ID
+            U_TRX_ID: this.U_TRX_ID,
+            remarks: this.remarks
           }
         });
         this.showLoading = false;
@@ -1417,6 +1418,7 @@ export default {
 
     cancel(data) {
       console.log(data);
+      this.remarks = null
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
