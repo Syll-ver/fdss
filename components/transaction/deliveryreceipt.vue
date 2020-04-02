@@ -271,6 +271,13 @@
       </template>
       <h6>Are you sure?</h6>
       <div style="font-size: 13px">This will automatically 'Cancel' your created Delivery Receipt.</div>
+      <b-form-textarea
+      id="remarks"
+      v-model="text"
+      placeholder="Please Input Remarks..."
+      rows="3"
+      max-rows="6"
+    ></b-form-textarea>
       <template v-slot:modal-footer="{ }">
         <b-button
           id="btn_submit_request"
@@ -809,7 +816,7 @@
       id="pin"
       no-close-on-backdrop
       hide-header-close
-      header-bg-variant="success"
+      header-bg-variant="biotech"
       header-text-variant="light"
     >
       <template v-slot:modal-title>
@@ -836,7 +843,7 @@
         <b-button
           id="save"
           size="sm"
-          variant="success"
+          variant="biotech"
           @click="confirmpin()"
           style="font-size:13px"
         >Save</b-button>
@@ -946,6 +953,7 @@ export default {
   },
   data() {
     return {
+      remarks:null,
       datetimeScheme: {
         singleDate: true,
         alignRight: true,
