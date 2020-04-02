@@ -271,7 +271,7 @@
       </template>
       <h6>Are you sure?</h6>
       <div style="font-size: 13px">This will automatically 'Cancel' your created Delivery Receipt.</div>
-      <b-form-textarea
+      <br><b-form-textarea
       id="remarks"
       v-model="text"
       placeholder="Please Input Remarks..."
