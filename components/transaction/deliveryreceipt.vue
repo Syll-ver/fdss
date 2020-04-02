@@ -318,13 +318,13 @@
     <!-- Add Transaction -->
 
     <b-modal
-      size="m"
+      size="large"
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-transaction-modal"
       no-close-on-backdrop
-      scrollable
+      no-scrollable
     >
       <template v-slot:modal-title>
         <h6>New Delivery Receipt</h6>
@@ -335,12 +335,14 @@
         
             <small >Schedule Date</small>
             <br>
-              <date-pick
-        v-model="U_SCHEDULED_DATE"
-        :pickTime="true"
-        :format="'YYYY-MM-DD HH:mm'"
-    ></date-pick>
-    <br>
+            <!-- <date-time-picker
+    :startDate = "startDate"         
+    :endDate = "endDate"              
+    :singleDate = "true"             
+    @onChange = "onChange"            
+  /> -->
+              <date-time-picker  v-bind="datetimeScheme" @onChange="onChangeHandler" />
+  
         <small class="text-left">Transaction Type</small>
         <b-form-select
           id="transact_type"
@@ -926,12 +928,12 @@ import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import Loading from "~/components/Loading/Loading.vue";
 import VueSignaturePad from "vue-signature-pad";
-import DatePick from 'vue-date-pick';
-import 'vue-date-pick/dist/vueDatePick.css';
+import '@lazy-copilot/datetimepicker/dist/datetimepicker.css'
+import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 
 export default {
   components: {
-    DatePick,
+    DateTimePicker,
     Receipt,
     DateRangePicker,
     Loading,
@@ -946,6 +948,15 @@ export default {
   },
   data() {
     return {
+      datetimeScheme: {
+          singleDate: true,
+          alignRight: true,
+          timeFormat: 'HH:mm',
+          id: 'U_SCHEDULED_DATE',
+          label: 'Select Date',
+          required: true,
+          
+        },
        U_SCHEDULED_DATE:null,
       filterStatus: ["Pick-up", "Delivery"],
       showLoading: false,
@@ -1105,6 +1116,9 @@ export default {
   },
 
   methods: {
+     onChangeHandler: function(data) {
+        console.log(data.startDate);
+     },
     async saveDR() {
       this.$bvModal.show("pin");
       setTimeout(() => {
@@ -1781,5 +1795,36 @@ export default {
 .daterangepicker .ranges li.active {
   background-color: #743013;
   color: #fff;
+}
+.dateTimePickerWrapper .calendarTrigger .iconCalendar[data-v-9336155c] {
+    top:-10px;
+    color: #b7c2c9;
+}
+.dateTimePickerWrapper .calendarTrigger[data-v-9336155c] {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    min-width: 300px;
+    height: 30px;
+    border-radius: 3px;
+    
+    background: #fff;
+    border: 1px solid #d5dbde;
+    transition-duration: 1s;
+}
+.dateTimePickerWrapper .calendarTrigger .calendarInput[data-v-9336155c] {
+  background: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #75361a;
+  font-size: 12px;
+  padding: 15px 20px 20px 50px;
+  outline: none;
+  z-index: 1;
+  cursor: pointer;
 }
 </style>
