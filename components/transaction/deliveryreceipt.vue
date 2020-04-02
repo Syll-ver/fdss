@@ -331,18 +331,10 @@
       </template>
 
       <b-card class="card-shadow">
-        
-        
-            <small >Schedule Date</small>
-            <br>
-            <!-- <date-time-picker
-    :startDate = "startDate"         
-    :endDate = "endDate"              
-    :singleDate = "true"             
-    @onChange = "onChange"            
-  /> -->
-              <date-time-picker  v-bind="datetimeScheme" @onChange="onChangeHandler" />
-  
+        <small>Schedule Date</small>
+        <br />
+        <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
+
         <small class="text-left">Transaction Type</small>
         <b-form-select
           id="transact_type"
@@ -474,6 +466,10 @@
       </template>
 
       <b-card class="card-shadow">
+        <small>Schedule Date</small>
+        <br />
+        <date-time-picker v-bind="datetimeScheme2" @onChange="onChangeHandler" />
+
         <small class="text-left">Transaction Type</small>
         <b-form-select
           id="transact_type"
@@ -607,6 +603,8 @@
               <br />
 
               <span>Transaction Number : {{ U_TRX_NO }}</span>
+              <br />
+              <span>Schedule : {{ U_SCHEDULED_DATE_AND_TIME }}</span>
               <br />
               <br />
 
@@ -928,7 +926,7 @@ import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import Loading from "~/components/Loading/Loading.vue";
 import VueSignaturePad from "vue-signature-pad";
-import '@lazy-copilot/datetimepicker/dist/datetimepicker.css'
+import "@lazy-copilot/datetimepicker/dist/datetimepicker.css";
 import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 
 export default {
@@ -949,15 +947,26 @@ export default {
   data() {
     return {
       datetimeScheme: {
-          singleDate: true,
-          alignRight: true,
-          timeFormat: 'HH:mm',
-          id: 'U_SCHEDULED_DATE',
-          label: 'Select Date',
-          required: true,
-          
-        },
-       U_SCHEDULED_DATE:null,
+        singleDate: true,
+        alignRight: true,
+        timeFormat: "HH:mm",
+        // id: 'U_SCHEDULED_DATE',
+        label: "Select Date",
+        required: true
+      },
+
+      datetimeScheme2: {
+        startDate: null,
+        singleDate: true,
+        alignRight: true,
+        timeFormat: "HH:mm",
+        // id: 'U_SCHEDULED_DATE',
+        label: "Select Date",
+        required: true
+      },
+
+      U_SCHEDULED_DATE: null,
+      U_SCHEDULED_TIME: null,
       filterStatus: ["Pick-up", "Delivery"],
       showLoading: false,
       alert: {
@@ -988,7 +997,7 @@ export default {
       U_REQUESTED_SACKS: null,
       U_EMPTY_SACKS: null,
       U_HLPR_NAME: null,
-
+      U_SCHEDULED_DATE_AND_TIME: null,
       transaction_types: [],
       farmer: [],
       farmerAdd: [],
@@ -1048,8 +1057,8 @@ export default {
         },
 
         {
-          key: "U_DTE_CRTD",
-          label: "Date Created",
+          key: "U_SCHEDULED_DATE_AND_TIME",
+          label: "Date Scheduled",
           sortable: true,
           sortDirection: "desc"
         },
@@ -1116,9 +1125,23 @@ export default {
   },
 
   methods: {
-     onChangeHandler: function(data) {
-        console.log(data.startDate);
-     },
+    fixTime(t) {
+      try {
+        const arr = t.split(":", 2);
+        const raw = `${arr[0]}${arr[1]}`;
+        const time = raw;
+        return time;
+      } catch (e) {
+        console.log("Error: ", e);
+      }
+    },
+    onChangeHandler: function(data) {
+      (this.U_SCHEDULED_DATE = moment(data.startDate).format("YYYY-MM-DD")),
+        (this.U_SCHEDULED_TIME = this.fixTime(
+          moment(data.startDate).format("HH:mm")
+        ));
+        console.log(data)
+    },
     async saveDR() {
       this.$bvModal.show("pin");
       setTimeout(() => {
@@ -1262,6 +1285,8 @@ export default {
         (this.U_SACKS = null),
         (this.U_EMPTY_SACKS = null),
         (this.U_HLPR_NAME = null);
+      this.U_SCHEDULED_DATE = null;
+      this.U_SCHEDULED_TIME = null;
       this.$bvModal.hide("add-transaction-modal");
       this.$bvModal.hide("edit-transaction-modal");
     },
@@ -1420,8 +1445,7 @@ export default {
       this.$bvModal.show("bv-modal-confirmPrint");
     },
 
-    edit(data) {
-      console.log(data);
+    async edit(data) {
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
@@ -1439,6 +1463,19 @@ export default {
       this.U_SACKS = data.U_SACKS;
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
+      this.U_SCHEDULED_DATE = data.U_SCHEDULED_DATE;
+      this.U_SCHEDULED_TIME = data.U_SCHEDULED_TIME;
+      
+      this.datetimeScheme2.startDate = new Date(
+        moment(
+          `${data.U_SCHEDULED_DATE} ${this.intToTime(data.U_SCHEDULED_TIME)}`
+        ).format("YYYY-MM-DD HH:mm")
+      );
+      console.log(
+        new Date(moment(`${data.U_SCHEDULED_DATE} ${this.intToTime(data.U_SCHEDULED_TIME)}`).format(
+          "YYYY-MM-DD HH:mm"
+        ))
+      );
       this.$bvModal.show("edit-transaction-modal");
     },
     show(data) {
@@ -1457,6 +1494,7 @@ export default {
       this.U_SACKS = data.U_SACKS;
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
+      this.U_SCHEDULED_DATE_AND_TIME = data.U_SCHEDULED_DATE_AND_TIME;
       this.$bvModal.show("view-transaction-modal");
     },
     async getTransactionType() {
@@ -1534,7 +1572,7 @@ export default {
         // this.U_HLPR_NAME=null;
 
         let items = [];
-  
+
         const userDetails = JSON.parse(localStorage.user_details);
 
         const json = {
@@ -1553,29 +1591,34 @@ export default {
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
-        fd.append("transaction_type_id",this.U_TRANSACTION_TYPE )
-        fd.append("item_id", this.U_CMMDTY)
-        fd.append("farmer_id", this.U_FRMR_NAME.id)
-        fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME)
-        fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME)
-        fd.append("no_of_requested_bags",this.U_REQUESTED_SACKS )
+        fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
+        fd.append("item_id", this.U_CMMDTY);
+        fd.append("farmer_id", this.U_FRMR_NAME.id);
+        fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
+        fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
+        fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
 
-        if(this.U_SACKS && this.U_EMPTY_SACKS){
-        fd.append("no_of_bags", this.U_SACKS)
-        fd.append("no_of_empty_bags", this.U_EMPTY_SACKS)
+        if (this.U_SACKS && this.U_EMPTY_SACKS) {
+          fd.append("no_of_bags", this.U_SACKS);
+          fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
         }
-        fd.append("employee_id", userDetails.Code)
-        fd.append("plate_number", this.U_PLATE_NUMBER)
-
+        fd.append("employee_id", userDetails.Code);
+        fd.append("plate_number", this.U_PLATE_NUMBER);
+        fd.append("scheduled_date", this.U_SCHEDULED_DATE);
+        fd.append("scheduled_time", this.U_SCHEDULED_TIME);
 
         // await json.each(data, function(key, value) {
         //   fd.append(key, value);
         // });
-         console.log(fd)
-        const res = await axios.post(`${this.$axios.defaults.baseURL}/api/transaction/add`, fd, {
-          headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
-        });
-     
+
+        const res = await axios.post(
+          `${this.$axios.defaults.baseURL}/api/transaction/add`,
+          fd,
+          {
+            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
+          }
+        );
+
         // const res = await axios({
         //   method: "POST",
         //   url: `${this.$axios.defaults.baseURL}/api/transaction/add`,
@@ -1603,7 +1646,6 @@ export default {
       }
     },
     async updateDR(U_TRX_ID) {
-      console.log(U_TRX_ID);
       try {
         this.showLoading = true;
         let items = [];
@@ -1620,7 +1662,9 @@ export default {
           no_of_bags: this.U_SACKS,
           no_of_empty_bags: this.U_EMPTY_SACKS,
           employee_id: userDetails.Code,
-          plate_number: this.U_PLATE_NUMBER
+          plate_number: this.U_PLATE_NUMBER,
+          scheduled_date: this.U_SCHEDULED_DATE,
+          scheduled_time: this.U_SCHEDULED_TIME
         };
 
         const res = await axios({
@@ -1697,7 +1741,6 @@ export default {
       this.totalRows = this.items.length;
     },
     async getTransactions() {
-      console.log(JSON.parse(localStorage.user_details));
       try {
         const userDetails = JSON.parse(localStorage.user_details);
         const roleDetails = JSON.parse(localStorage.user_role);
@@ -1722,11 +1765,15 @@ export default {
         });
 
         const v = res.data.view;
-        console.log(v);
+
         for (let i = 0; i < v.length; i++) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           // const t = this.intToTime(v[i].CREATED_TIME);
           // const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
+
+          const sd = moment(v[i].SCHEDULED_DATE).format("MMM DD, YYYY");
+          const st = this.intToTime(v[i].SCHEDULED_TIME);
+          const sdate = moment(`${sd}  ${st}`).format("MMM DD, YYYY hh:mm A");
           this.items.push({
             U_TRX_NO: v[i].U_TRX_NO,
             U_TRX_ID: v[i].TRANSACTION_ID,
@@ -1746,7 +1793,10 @@ export default {
             U_DRVR_NAME: v[i].DRIVER_NAME,
             U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
             U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-            U_SACKS: v[i].NUMBER_OF_BAGS
+            U_SACKS: v[i].NUMBER_OF_BAGS,
+            U_SCHEDULED_DATE_AND_TIME: sdate,
+            U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
+            U_SCHEDULED_TIME: v[i].SCHEDULED_TIME
           });
         }
 
@@ -1797,21 +1847,21 @@ export default {
   color: #fff;
 }
 .dateTimePickerWrapper .calendarTrigger .iconCalendar[data-v-9336155c] {
-    top:-10px;
-    color: #b7c2c9;
+  top: -10px;
+  color: #b7c2c9;
 }
 .dateTimePickerWrapper .calendarTrigger[data-v-9336155c] {
-    position: relative;
-    overflow: hidden;
-    display: block;
-    width: 100%;
-    min-width: 300px;
-    height: 30px;
-    border-radius: 3px;
-    
-    background: #fff;
-    border: 1px solid #d5dbde;
-    transition-duration: 1s;
+  position: relative;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  min-width: 300px;
+  height: 30px;
+  border-radius: 3px;
+
+  background: #fff;
+  border: 1px solid #d5dbde;
+  transition-duration: 1s;
 }
 .dateTimePickerWrapper .calendarTrigger .calendarInput[data-v-9336155c] {
   background: #fff;

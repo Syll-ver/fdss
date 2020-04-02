@@ -38,7 +38,9 @@
  <span>
 Transaction Number : {{ receiptData.U_TRX_NO }}
 </span>
-<br/><br>
+<br/>
+<span>Schedule : {{ receiptData.U_SCHEDULED_DATE_AND_TIME }}</span>
+              <br /><br>
 
         <b-row>
           <b-col cols="4">
