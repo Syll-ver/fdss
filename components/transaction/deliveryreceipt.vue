@@ -231,6 +231,17 @@
           >
             <font-awesome-icon icon="folder-open" />
           </b-button>
+            <b-button
+            variant="danger"
+            id="void"
+            class="table-button"
+            size="sm"
+            v-b-tooltip.hover
+            title="Cancel Transaction"
+            @click="cancel(row.item)"
+          >
+            <font-awesome-icon icon="ban" />
+          </b-button>
         </div>
       </template>
     </b-table>
@@ -466,7 +477,7 @@
       id="edit-transaction-modal"
       no-close-on-backdrop
       hide-header-close
-      scrollable
+      no-scrollable
     >
       <template v-slot:modal-title>
         <h6>Update Transaction</h6>
@@ -1185,12 +1196,14 @@ export default {
         this.$bvModal.hide("pin");
         this.$bvModal.show("signature");
         return;
-      } catch (er) {
+      } catch (e) {
+        console.log(e);
         this.showLoading = false;
-        this.pinError = er.response.data.error;
-        setTimeout(() => {
-          this.pinError = null;
-        }, 2000);
+        if (e.response && e.response.data.error) {
+          this.showAlert(e.response.data.error, "danger");
+        } else {
+          this.showAlert("Invalid Pin!", "danger");
+        }
       }
     },
     async addSignature() {
@@ -1243,37 +1256,15 @@ export default {
         await this.newDR(file);
       } else {
         this.showLoading = false;
-        this.errorMsg = "Please draw your signature.";
-        this.showAlertErr();
+         this.showAlert("Please input all fields", "danger");
       }
     },
     closeSignatureModal() {
-      if (this.transactionStatus.toLowerCase() == "for inbound") {
-        this.onOffReceiveInbound();
+     
         this.pincode = null;
         this.$bvModal.hide("signature");
         return;
-      }
-      if (this.transactionStatus.toLowerCase() == "for outbound") {
-        this.onOffReceiveOutbound();
-        this.pincode = null;
-        this.$bvModal.hide("signature");
-        return;
-      }
-      if (this.transactionStatus.toLowerCase() == "others") {
-        if (this.inboundBool == false && this.inboundCounter == 1) {
-          this.onOffReceiveInbound();
-          this.pincode = null;
-          this.$bvModal.hide("signature");
-          return;
-        }
-        if (this.outboundBool == false && this.outboundCounter == 1) {
-          this.onOffReceiveOutbound();
-          this.pincode = null;
-          this.$bvModal.hide("signature");
-          return;
-        }
-      }
+      
     },
     close() {
       (this.U_TRANSACTION_TYPE = null),
