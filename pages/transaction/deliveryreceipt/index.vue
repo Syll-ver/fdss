@@ -6,7 +6,7 @@
         small
         active-nav-item-class="font-weight-bold text-uppercase text-biotech"
       >
-        <b-tab title="Delivery Receipt">
+        <b-tab title="Delivery Slip">
           <div>
             <deliveryreceipt />
           </div>

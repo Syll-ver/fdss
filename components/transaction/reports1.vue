@@ -379,7 +379,7 @@
             <b-form-input type="number" id="sacks" class="form-text" />
             </b-col>
             <b-col cols="6">
-            <small class="text-left"># of Empty Sacks</small>
+            <small class="text-left"># of Returned Sacks</small>
             <b-form-input type="number" id="emptysacks" class="form-text" />
             </b-col>
             </b-row>

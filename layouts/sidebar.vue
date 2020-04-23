@@ -324,7 +324,7 @@ export default {
         {
           id: "deliveryreceipt",
           link: "/transaction/deliveryreceipt",
-          name: "Delivery Receipt",
+          name: "Delivery Slip",
           icon: "file-signature",
           style: "position:relative;left:6px",
           class: "ml-2",

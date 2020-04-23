@@ -1,7 +1,7 @@
 {
-  "name": "FarmerDeliveryBookingSystem",
+  "name": "FarmerDeliverySlipSystem",
   "version": "1.0.0",
-  "description": "FarmerDeliveryBookingSystem",
+  "description": "FarmerDeliverySlipSystem",
   "author": "Jastin Jay Evangelista",
   "private": true,
   "scripts": {

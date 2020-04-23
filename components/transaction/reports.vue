@@ -25,7 +25,7 @@
               v-model="filter"
               type="search"
               id="search_delivery_receipt"
-              placeholder="Search Delivery Receipt"
+              placeholder="Search Delivery Slip"
             ></b-form-input>
             <b-input-group-append>
             <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
@@ -288,7 +288,7 @@
 
 
   <template v-slot:modal-title>
-        <h6>View Delivery Receipt</h6>
+        <h6>View Delivery Slip</h6>
       </template>
 
          <b-card class="card-shadow">
@@ -306,7 +306,7 @@
     <center>
  
             <span>
-              DELIVERY RECEIPT | {{ U_TRANSACTION_TYPE }}
+              DELIVERY SLIP | {{ U_TRANSACTION_TYPE }}
             </span>
             <br>
             <span><small>
@@ -429,7 +429,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Empty Sacks
+               Returned Sacks
             </span>
           </b-col>
 
@@ -461,7 +461,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Empty Sacks
+               Returned Sacks
             </span>
           </b-col>
 
@@ -706,7 +706,13 @@ export default {
 
         {
           key: "U_DTE_CRTD",
-          label: "Date Created",
+          label: "Date Completed",
+          sortable: true,
+          sortDirection: "asc"
+        },
+        {
+          key: "U_RMRKS",
+          label: "Remarks",
           sortable: true,
           sortDirection: "asc"
         },
@@ -961,6 +967,7 @@ show(data) {
               U_DTE_CRTD: date,
               U_CRTD_BY: v[i].CREATED_BY,
               U_STATUS: v[i].STATUS,
+              U_RMRKS: v[i].REMARKS,
               U_PLATE_NUMBER: v[i].PLATE_NUMBER,
               U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
               U_HLPR_NAME: v[i].HELPER_NAME,

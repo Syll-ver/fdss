@@ -33,7 +33,7 @@
           size="sm"
           @click="$bvModal.show('add-transaction-modal')"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Receipt
+          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
         </b-button>
       </b-col>
     </b-row>
@@ -46,7 +46,7 @@
               v-model="filter"
               type="search"
               id="search_delivery_receipt"
-              placeholder="Search Delivery Receipt"
+              placeholder="Search Delivery Slip"
             ></b-form-input>
             <b-input-group-append>
               <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
@@ -164,7 +164,7 @@
             size="sm"
             @click="printed(row.item)"
             v-b-tooltip.hover
-            title="Print Delivery Receipt"
+            title="Print Delivery Slip"
           >
             <font-awesome-icon icon="print" />
           </b-button>
@@ -188,7 +188,7 @@
             size="sm"
             @click="show(row.item)"
             v-b-tooltip.hover
-            title="View Delivery Receipt"
+            title="View Delivery Slip"
           >
             <font-awesome-icon icon="folder-open" />
           </b-button>
@@ -215,7 +215,7 @@
             size="sm"
             @click="printReceipt(row.item)"
             v-b-tooltip.hover
-            title="Print Delivery Receipt"
+            title="Print Delivery Slip"
           >
             <font-awesome-icon icon="print" />
           </b-button>
@@ -227,7 +227,7 @@
             size="sm"
             @click="show(row.item)"
             v-b-tooltip.hover
-            title="View Delivery Receipt"
+            title="View Delivery Slip"
           >
             <font-awesome-icon icon="folder-open" />
           </b-button>
@@ -281,7 +281,7 @@
         <h6>Confirmation Message</h6>
       </template>
       <h6>Are you sure?</h6>
-      <div style="font-size: 13px">This will automatically 'Cancel' your created Delivery Receipt.</div>
+      <div style="font-size: 13px">This will automatically 'Cancel' your created Delivery Slip.</div>
       <br><b-form-textarea
       id="remarks"
       v-model="remarks"
@@ -318,7 +318,7 @@
       <template v-slot:modal-title>
         <h6>Confirmation Message</h6>
       </template>
-      <h6>Are you sure you want to print this Delivery Receipt?</h6>
+      <h6>Are you sure you want to print this Delivery Slip?</h6>
       <div
         style="font-size: 13px"
       >You cannot UPDATE and CANCEL anymore the transaction after doing this.</div>
@@ -345,7 +345,7 @@
       no-scrollable
     >
       <template v-slot:modal-title>
-        <h6>New Delivery Receipt</h6>
+        <h6>New Delivery Slip</h6>
       </template>
 
       <b-card class="card-shadow">
@@ -599,7 +599,7 @@
       scrollable
     >
       <template v-slot:modal-title>
-        <h6>View Delivery Receipt</h6>
+        <h6>View Delivery Slip</h6>
       </template>
 
       <b-card class="card-shadow">
@@ -611,7 +611,7 @@
               </span>
 
               <center>
-                <span>DELIVERY RECEIPT | {{ U_TRANSACTION_TYPE }}</span>
+                <span>DELIVERY SLIP | {{ U_TRANSACTION_TYPE }}</span>
                 <br />
                 <span>
                   <small>Date: {{U_DTE_CRTD }}</small>
@@ -737,6 +737,7 @@
                     </div>
                   </b-col>
                 </b-row>
+                
               </div>
 
               <!-- <b-row>
