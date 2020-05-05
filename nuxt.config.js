@@ -53,7 +53,7 @@ module.exports = {
     extend(config, ctx) {}
   },
   axios: {
-    baseURL: "http://172.31.22.216:9100"
+    baseURL: "http://172.16.4.168:9100"
   },
 
   server: { port: 4000}

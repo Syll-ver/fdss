@@ -3,7 +3,7 @@
     <nav id="sidebarBFI">
       <div class="sidebar-header">
         <div>
-          <b-img src="/rlogo.png" class="sidebar-image" center>
+          <b-img src="/logo.png" class="sidebar-image" center>
           </b-img><center>
           <p class="h9" >FARMER'S SLIP SYSTEM</p>
           </center>

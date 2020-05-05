@@ -9,7 +9,7 @@
               <img class="sidebar_header" src="/REvives.png" />
 
               <h6 class="title">
-                FARMER'S SLIP <br> SYSTEM
+                FARMER'S DELIVERY<br>SLIP SYSTEM
               </h6>
               <h2 class="subtitle">
             Version 1.0.0
