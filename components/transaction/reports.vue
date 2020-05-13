@@ -625,6 +625,7 @@ export default {
         message: ""
       },
       showReceipt: false,
+      BLANKET_REFERENCE: null,
       U_TRANSACTION_TYPE: null,
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
@@ -713,6 +714,12 @@ export default {
         {
           key: "U_RMRKS",
           label: "Remarks",
+          sortable: true,
+          sortDirection: "asc"
+        },
+        {
+          key: "BLANKET_REFERENCE",
+          label: "Sales Blanket Ref.",
           sortable: true,
           sortDirection: "asc"
         },
@@ -854,6 +861,7 @@ export default {
     },
 show(data) {
        console.log(data)
+       this.BLANKET_REFERENCE = data.BLANKET_REFERENCE;
        this.U_DTE_CRTD = data.U_DTE_CRTD;
        this.U_TME_CRTD = data.U_TME_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -955,6 +963,7 @@ show(data) {
           this.items.push({
               U_TRX_NO: v[i].U_TRX_NO,
               // U_TME_CRTD : t,
+              BLANKET_REFERENCE: v[i].BLANKET_REFERENCE,
               U_TRX_ID: v[i].TRANSACTION_ID,
               U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
               U_ITEM: v[i].ITEM_ID,
