@@ -341,6 +341,7 @@
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-transaction-modal"
+      hide-header-close
       no-close-on-backdrop
       no-scrollable
     >
@@ -362,30 +363,51 @@
           required
         ></b-form-select>
         <small class="text-left">Item</small>
-        <b-form-select
+        <multiselect 
+          id="commodity"
+          placeholder="Select Item" 
+          v-model=" U_CMMDTY"
+          class="form-text"
+          :options="commodity"
+          required
+          label="text"
+          track-by="text"
+          ></multiselect>
+        <!-- <b-form-select
           id="commodity"
           v-model=" U_CMMDTY"
           class="form-text"
           :options="commodity"
           required
-        ></b-form-select>
+        ></b-form-select> -->
 
         <small class="text-left">Farmer's Name</small>
-        <b-form-select
+        <multiselect 
+          id="customer"
+          :options="farmer"  
+          placeholder="Select Farmer" 
+          class="form-text"
+          v-model="U_FRMR_NAME"
+          label="text"
+          track-by="text"
+          @input="test"
+          required></multiselect>
+        <!-- <b-form-select
           id="customer"
           class="form-text"
           v-model=" U_FRMR_NAME"
           :options="farmer"
           @change="test"
           required
-        ></b-form-select>
+        ></b-form-select> -->
 
         <small class="text-left">Address</small>
-        <b-form-input id="farmer_add" class="form-text" v-model=" U_FRMR_ADD" />
+        <b-form-input disabled id="farmer_add" class="form-text" v-model=" U_FRMR_ADD" />
         <b-row>
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
             <b-form-input
+              
               id="helper_name"
               placeholder="First Name"
               class="form-text"
@@ -431,7 +453,7 @@
         <b-form-input id="tendered" v-model=" U_PLATE_NUMBER" class="form-text" required></b-form-input>
 
         <small class="text-left"># of Requested Sacks</small>
-        <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
+        <b-form-input id="requestedsacks" type="number" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
 
         <b-row v-if="U_TRANSACTION_TYPE === '2'">
           <b-col cols="6">
@@ -947,9 +969,10 @@ import Loading from "~/components/Loading/Loading.vue";
 import VueSignaturePad from "vue-signature-pad";
 import "@lazy-copilot/datetimepicker/dist/datetimepicker.css";
 import { DateTimePicker } from "@lazy-copilot/datetimepicker";
-
+import Multiselect from 'vue-multiselect'
 export default {
   components: {
+    Multiselect,
     DateTimePicker,
     Receipt,
     DateRangePicker,
@@ -1163,6 +1186,8 @@ export default {
         console.log(data)
     },
     async saveDR() {
+      console.log(this.U_FRMR_NAME.value.id)
+      console.log(this.U_CMMDTY.value)
       this.$bvModal.show("pin");
       setTimeout(() => {
         this.$refs.pins.focus();
@@ -1551,7 +1576,9 @@ export default {
       }
     },
     test() {
-      this.U_FRMR_ADD = this.U_FRMR_NAME.address;
+      console.log(this.U_FRMR_NAME)
+
+      this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
     },
     async newDR(signature) {
       try {
@@ -1576,11 +1603,12 @@ export default {
         let items = [];
 
         const userDetails = JSON.parse(localStorage.user_details);
-
+      // console.log(this.U_FRMR_NAME.value.id)
+      // console.log(this.U_CMMDTY.value)
         const json = {
           transaction_type_id: this.U_TRANSACTION_TYPE,
-          item_id: this.U_CMMDTY,
-          farmer_id: this.U_FRMR_NAME.id,
+          item_id: this.U_CMMDTY.value,
+          farmer_id: this.U_FRMR_NAME.value.id,
           driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
           helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
           no_of_requested_bags: this.U_REQUESTED_SACKS,
@@ -1591,11 +1619,13 @@ export default {
           signature: this.signaturePath
         };
 
+        // console.log("@here", json)
+
         var fd = new FormData();
         fd.append("", signature, signature.name);
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
-        fd.append("item_id", this.U_CMMDTY);
-        fd.append("farmer_id", this.U_FRMR_NAME.id);
+        fd.append("item_id", this.U_CMMDTY.value);
+        fd.append("farmer_id", this.U_FRMR_NAME.value.id);
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
         fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
@@ -1880,3 +1910,4 @@ export default {
   cursor: pointer;
 }
 </style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
