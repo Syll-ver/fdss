@@ -401,7 +401,7 @@
         ></b-form-select> -->
 
         <small class="text-left">Address</small>
-        <b-form-input id="farmer_add" class="form-text" v-model=" U_FRMR_ADD" />
+        <b-form-input disabled id="farmer_add" class="form-text" v-model=" U_FRMR_ADD" />
         <b-row>
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
@@ -451,7 +451,7 @@
         <b-form-input id="tendered" v-model=" U_PLATE_NUMBER" class="form-text" required></b-form-input>
 
         <small class="text-left"># of Requested Sacks</small>
-        <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
+        <b-form-input id="requestedsacks" type="number" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
 
         <b-row v-if="U_TRANSACTION_TYPE === '2'">
           <b-col cols="6">
@@ -1572,7 +1572,10 @@ export default {
       }
     },
     test() {
-      this.U_FRMR_ADD = this.U_FRMR_NAME.address;
+            console.log(this.U_FRMR_NAME)
+
+      this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
+ 
     },
     async newDR(signature) {
       try {
