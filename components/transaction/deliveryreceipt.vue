@@ -341,7 +341,6 @@
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-transaction-modal"
-      hide-header-close
       no-close-on-backdrop
       no-scrollable
     >
@@ -402,12 +401,11 @@
         ></b-form-select> -->
 
         <small class="text-left">Address</small>
-        <b-form-input disabled id="farmer_add" class="form-text" v-model=" U_FRMR_ADD" />
+        <b-form-input id="farmer_add" class="form-text" v-model=" U_FRMR_ADD" />
         <b-row>
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
             <b-form-input
-              
               id="helper_name"
               placeholder="First Name"
               class="form-text"
@@ -453,7 +451,7 @@
         <b-form-input id="tendered" v-model=" U_PLATE_NUMBER" class="form-text" required></b-form-input>
 
         <small class="text-left"># of Requested Sacks</small>
-        <b-form-input id="requestedsacks" type="number" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
+        <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
 
         <b-row v-if="U_TRANSACTION_TYPE === '2'">
           <b-col cols="6">
@@ -969,10 +967,9 @@ import Loading from "~/components/Loading/Loading.vue";
 import VueSignaturePad from "vue-signature-pad";
 import "@lazy-copilot/datetimepicker/dist/datetimepicker.css";
 import { DateTimePicker } from "@lazy-copilot/datetimepicker";
-import Multiselect from 'vue-multiselect'
+
 export default {
   components: {
-    Multiselect,
     DateTimePicker,
     Receipt,
     DateRangePicker,
@@ -1186,8 +1183,6 @@ export default {
         console.log(data)
     },
     async saveDR() {
-      console.log(this.U_FRMR_NAME.value.id)
-      console.log(this.U_CMMDTY.value)
       this.$bvModal.show("pin");
       setTimeout(() => {
         this.$refs.pins.focus();
@@ -1576,9 +1571,7 @@ export default {
       }
     },
     test() {
-      console.log(this.U_FRMR_NAME)
-
-      this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
+      this.U_FRMR_ADD = this.U_FRMR_NAME.address;
     },
     async newDR(signature) {
       try {
@@ -1603,8 +1596,7 @@ export default {
         let items = [];
 
         const userDetails = JSON.parse(localStorage.user_details);
-      // console.log(this.U_FRMR_NAME.value.id)
-      // console.log(this.U_CMMDTY.value)
+
         const json = {
           transaction_type_id: this.U_TRANSACTION_TYPE,
           item_id: this.U_CMMDTY.value,
@@ -1618,8 +1610,6 @@ export default {
           plate_number: this.U_PLATE_NUMBER,
           signature: this.signaturePath
         };
-
-        // console.log("@here", json)
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
@@ -1910,4 +1900,3 @@ export default {
   cursor: pointer;
 }
 </style>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
