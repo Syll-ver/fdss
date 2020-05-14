@@ -967,9 +967,10 @@ import Loading from "~/components/Loading/Loading.vue";
 import VueSignaturePad from "vue-signature-pad";
 import "@lazy-copilot/datetimepicker/dist/datetimepicker.css";
 import { DateTimePicker } from "@lazy-copilot/datetimepicker";
-
+import Multiselect from 'vue-multiselect'
 export default {
   components: {
+    Multiselect,
     DateTimePicker,
     Receipt,
     DateRangePicker,
@@ -1899,4 +1900,4 @@ export default {
   z-index: 1;
   cursor: pointer;
 }
-</style>
+</style><style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
