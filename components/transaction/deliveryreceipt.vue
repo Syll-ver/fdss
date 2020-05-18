@@ -1658,7 +1658,7 @@ export default {
         this.showLoading = false;
         this.getTransactions();
         this.$bvModal.hide("add-transaction-modal");
-        this.showAlert("Successfully Created", "success");
+        this.showAlert(res.data.posted.msg, "success");
         this.close();
         // this.$refs.Receipt.print(data);
       } catch (e) {
