@@ -2,13 +2,13 @@
   <div id="receipt">
 
     <b-row>
-      <b-card class="check-card mr-4" style="width:31rem; height:41rem">
+      <b-card class="check-card mr-4" style="width:31rem; height:70rem">
         <!-- <b-row>
           <b-col cols="6"> -->
                   
   
             <span>
-                 <b-img src="/revive.png" class="receipt-logo" center/>
+                 <b-img src="/logo1.jpg" class="receipt-logo" center/>
               
             
            
@@ -200,12 +200,12 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           <b-col cols="6">
 
               <center>
-              <span style="font-size:9px">
+              <span style="font-size:18px;border-bottom-style: solid; border-width:1px;margin:0;padding:0">
                 {{receiptData.U_FRMR_NAME}}
               </span>
               <br>
-              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
-               &nbsp;&nbsp; FARMER'S NAME & SIGNATURE
+              <span style="font-size:14px;"><B>
+               &nbsp;&nbsp; FARMER'S NAME AND SIGNATURE
                &nbsp;&nbsp; </B>
               </span>
               </center>
@@ -215,11 +215,11 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           <b-col cols="6" >
               
               <center>
-              <span style="font-size:9px;margin:0;padding:0">
+              <span style="font-size:18px;border-bottom-style: solid; border-width:1px;margin:0;padding:0">
                 {{receiptData.U_HLPR_NAME}}
               </span>
               <br>
-              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+              <span style="font-size:14px;"><B>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REVIEWED BY
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </B>
               </span>
@@ -231,11 +231,11 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
 
         <center>
           
-        <span style="font-size:9px">
+        <span style="font-size:18px;border-bottom-style: solid; border-width:1px;">
             &nbsp;&nbsp;{{receiptData.U_CRTD_BY}}&nbsp;&nbsp;
         </span>
       <br>
-        <span style="border-top-style: solid; border-width:1px;font-size:9px;">
+        <span style="font-size:14px;">
             <b>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED BY
               &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
         </span>
@@ -245,15 +245,17 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
 
 <br>
  
-                <b-row class="mt-1">
+               
+ <b-img :src="data2"  style="width:200px;height:200px;margin-top:13px" center/>
+ <b-row class="mt-1">
           <b-col>
-            <span style="font-size:10px" class="mr-2">
+            <span style="font-size:14px" class="mr-2">
               <i>
                 This does not serve as an Official Receipt
               </i>
             </span>
 
-            <span style="font-size:12px; float:right" class="mr-1">
+            <span style="font-size:14px; float:right" class="mr-1">
               <b>
                 Farmer's Copy
               </b>
@@ -261,18 +263,15 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           </b-col>
         </b-row>
         
- <b-img :src="data2"  style="width:200px;height:200px;margin-top:13px" center/>
-
       
          
       </b-card>
 
-  <VueQrcode
-                id="QRcode"
-                type="String"
-                :value="JSON.stringify(receiptData)"
-                
-              ></VueQrcode>
+      <VueQrcode
+        id="QRcode"
+        type="String"
+        :value="JSON.stringify(receiptData1)"
+      ></VueQrcode>
     </b-row>
   </div>
 </template>
@@ -284,24 +283,31 @@ export default {
   },
   data() {
     return{
-      receiptData:{},
+      receiptData:{U_TRX_NO: "Test"},
       data2: null
     }
+  },
+
+  props:{
+    
   },
  
   computed: {},
 
   methods: {
-   
+   async generateQr(){
+     let tempLink = document.getElementById("QRcode");
+     this.data2 = tempLink.toDataURL("image/png");
+   },
     
     async print(data) {
       this.receiptData = {...data}
+      this.receiptData1 = {U_TRX_NO:data.U_TRX_NO}
 
-      console.log(this.receiptData)
+      // console.log(this.receiptData)
       await setTimeout({}, 3000);
       // Get HTML to print from element
-       let tempLink = document.getElementById("QRcode");
-       this.data2 = tempLink.toDataURL("image/png");
+       await generateQr();
       const prtHtml = await document.getElementById("receipt").innerHTML;
 
      
@@ -375,7 +381,7 @@ WinPrint.document.addEventListener(
   }
 }
 span {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
 }
 </style>
