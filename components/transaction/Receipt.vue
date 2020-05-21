@@ -307,7 +307,7 @@ export default {
       // console.log(this.receiptData)
       await setTimeout({}, 3000);
       // Get HTML to print from element
-       await generateQr();
+       await this.generateQr();
       const prtHtml = await document.getElementById("receipt").innerHTML;
 
      
