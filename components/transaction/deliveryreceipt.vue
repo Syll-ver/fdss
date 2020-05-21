@@ -341,6 +341,7 @@
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-transaction-modal"
+      hide-header-close
       no-close-on-backdrop
       no-scrollable
     >
@@ -406,6 +407,7 @@
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
             <b-form-input
+              
               id="helper_name"
               placeholder="First Name"
               class="form-text"
@@ -1184,6 +1186,8 @@ export default {
         console.log(data)
     },
     async saveDR() {
+      console.log(this.U_FRMR_NAME.value.id)
+      console.log(this.U_CMMDTY.value)
       this.$bvModal.show("pin");
       setTimeout(() => {
         this.$refs.pins.focus();
@@ -1572,10 +1576,9 @@ export default {
       }
     },
     test() {
-            console.log(this.U_FRMR_NAME)
+      console.log(this.U_FRMR_NAME)
 
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
- 
     },
     async newDR(signature) {
       try {
@@ -1600,7 +1603,8 @@ export default {
         let items = [];
 
         const userDetails = JSON.parse(localStorage.user_details);
-
+      // console.log(this.U_FRMR_NAME.value.id)
+      // console.log(this.U_CMMDTY.value)
         const json = {
           transaction_type_id: this.U_TRANSACTION_TYPE,
           item_id: this.U_CMMDTY.value,
@@ -1614,6 +1618,8 @@ export default {
           plate_number: this.U_PLATE_NUMBER,
           signature: this.signaturePath
         };
+
+        // console.log("@here", json)
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
@@ -1658,6 +1664,7 @@ export default {
         this.showLoading = false;
         this.getTransactions();
         this.$bvModal.hide("add-transaction-modal");
+        console.log(res)
         this.showAlert(res.data.posted.msg, "success");
         this.close();
         // this.$refs.Receipt.print(data);
@@ -1903,4 +1910,5 @@ export default {
   z-index: 1;
   cursor: pointer;
 }
-</style><style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+</style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
