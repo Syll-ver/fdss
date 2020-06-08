@@ -113,6 +113,8 @@
       </b-col>
     </b-row>
 
+    
+
     <!-- Main table element -->
     <b-table
       id="delivery_receipt_table"
@@ -380,6 +382,14 @@
           :options="commodity"
           required
         ></b-form-select> -->
+         <small class="text-left">Price List</small>
+        <b-form-select
+          id="pricelist"
+          v-model=" U_PRICELIST"
+          class="form-text"
+          :options="pricelist"
+          required
+        ></b-form-select>
 
         <small class="text-left">Farmer's Name</small>
         <multiselect 
@@ -918,7 +928,7 @@
           />
         </div>
         <div class="col-3 mt-2">
-          <!-- <b-button variant="dark" style="font-size:13px;border: 0px;" @click="clear">Undo</b-button> -->
+          <b-button variant="dark" style="font-size:13px;border: 0px;" @click="clearSignature">Undo</b-button>
         </div>
       </div>
 
@@ -980,6 +990,7 @@ export default {
     VueSignaturePad
   },
   async created() {
+    await this.getPriceList();
     await this.getTransactions();
     await this.getTransactionType();
     await this.getFarmer();
@@ -1023,6 +1034,8 @@ export default {
         variant: "biotech",
         message: ""
       },
+      U_PRICELIST:null,
+      pricelist:[],
       U_TRANSACTION_TYPE: null,
       U_FRMR_NAME: null,
       U_FRMR_ADD: null,
@@ -1168,6 +1181,9 @@ export default {
   },
 
   methods: {
+     clearSignature() {
+      this.$refs.signaturePad.undoSignature();
+    },
     fixTime(t) {
       try {
         const arr = t.split(":", 2);
@@ -1221,6 +1237,7 @@ export default {
         console.log("hide me");
         this.$bvModal.hide("pin");
         this.$bvModal.show("signature");
+        this.pincode = null;
         return;
       } catch (e) {
         console.log(e);
@@ -1541,6 +1558,24 @@ export default {
         });
       }
     },
+     async getPriceList() {
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/api/items/selectPl
+`,
+        headers: {
+          Authorization: localStorage.SessionId
+        }
+      });
+      const v = res.data.view;
+
+    ;  for (let i = 0; i < v.length; i++) {
+        this.pricelist.push({
+          text: v[i].ListName,
+          value: v[i].ListNum
+        });
+      }
+    },
     async getCommodity() {
       const res = await axios({
         method: "POST",
@@ -1606,6 +1641,7 @@ export default {
       // console.log(this.U_FRMR_NAME.value.id)
       // console.log(this.U_CMMDTY.value)
         const json = {
+          priceList: this.U_PRICELIST,
           transaction_type_id: this.U_TRANSACTION_TYPE,
           item_id: this.U_CMMDTY.value,
           farmer_id: this.U_FRMR_NAME.value.id,
@@ -1623,6 +1659,7 @@ export default {
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
+        fd.append("priceList", this.U_PRICELIST);
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value);
         fd.append("farmer_id", this.U_FRMR_NAME.value.id);
@@ -1814,6 +1851,7 @@ export default {
             U_ITEM: v[i].ITEM_ID,
             U_SUPP: v[i].SUPPLIER_ID,
             U_TRX_NO: v[i].TRANSACTION_NUMBER,
+            U_PRICELIST: v[i].priceList,
             U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
             U_CMMDTY: v[i].ITEM_NAME,
             U_FRMR_NAME: v[i].FARMER_NAME,
