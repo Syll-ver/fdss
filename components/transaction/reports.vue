@@ -105,10 +105,10 @@
             style="font-size:15px;"
             variant="dark"
             v-b-tooltip.hover
-            title="Print Report"
+            title="Eport PDF"
             @click="print"
           >
-            <font-awesome-icon style icon="print" />
+            <font-awesome-icon style icon="file-pdf" />
           </b-button>
           <b-button
             align="right"
@@ -593,6 +593,8 @@ Transaction Number : {{ U_TRX_NO }}
 
 <script>
 import moment from "moment";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import axios from "axios";
 import Receipt from "~/components/transaction/Receipt.vue";
 import DateRangePicker from "vue2-daterange-picker";
@@ -625,7 +627,6 @@ export default {
         message: ""
       },
       showReceipt: false,
-      BLANKET_REFERENCE: null,
       U_TRANSACTION_TYPE: null,
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
@@ -717,12 +718,6 @@ export default {
           sortable: true,
           sortDirection: "asc"
         },
-        {
-          key: "BLANKET_REFERENCE",
-          label: "Sales Blanket Ref.",
-          sortable: true,
-          sortDirection: "asc"
-        },
 
         {
           key: "U_STATUS",
@@ -782,9 +777,68 @@ export default {
   },
 
   methods: {
-    print() {
+    async print() {
       // Pass the element id here
-      this.$htmlToPaper("printTable");
+      // this.$htmlToPaper("printTable");
+          //  this.$bvModal.hide("export-pdf-modal");
+      let content = [];
+      // let Total = 0;
+
+     await new Promise(resolve => {
+        this.filterItems.forEach(acknowledgement => {
+          const valuesArray = [];
+          // const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
+          // const t = this.intToTime(v[i].CREATED_TIME);
+          // const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
+          valuesArray.push(acknowledgement.U_DTE_CRTD);
+          valuesArray.push(acknowledgement.U_TRX_NO);
+          valuesArray.push(acknowledgement.U_TRANSACTION_TYPE);
+          valuesArray.push(acknowledgement.U_CMMDTY);
+          valuesArray.push(acknowledgement.U_FRMR_NAME);
+          valuesArray.push(acknowledgement.U_CRTD_BY);
+          valuesArray.push(acknowledgement.U_RMRKS);
+        
+     
+
+          content.push(valuesArray);
+        });
+        resolve();
+      });
+    
+
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.text("REvive Croptech Incorporated", 65, 12);
+
+      doc.setFontSize(12);
+      doc.text("Farmers' Deliver Slip", 78, 17);
+
+      doc.setFontSize(10);
+      doc.text(
+        `as of ${this.datePicker.startDate} to  ${this.datePicker.endDate}`,
+        76,
+        21
+      );
+
+      doc.autoTable({
+        theme: "striped",
+        headStyles: { fillColor: [40, 167, 69] },
+        margin: { top: 2, right: 2, bottom: 0, left: 2 },
+        styles: { fontSize: 6, cellWidth: "auto" },
+        head: [["Date Completed", "Transaction No.", "Type", "Commodity", "Farmer's Name", "Created By"]],
+        body: content,
+        margin: { top: 28 }
+      });
+
+      doc.save(
+        `Farmers' Delivery Slip (${this.dateRange.date_from} - ${this.dateRange.date_to}).pdf`
+      );
+
+      return doc;
+
+
+
+      
     },
      exportReports() {
       const csv = Papa.unparse(this.items, { header: true });
@@ -861,7 +915,6 @@ export default {
     },
 show(data) {
        console.log(data)
-       this.BLANKET_REFERENCE = data.BLANKET_REFERENCE;
        this.U_DTE_CRTD = data.U_DTE_CRTD;
        this.U_TME_CRTD = data.U_TME_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -963,7 +1016,6 @@ show(data) {
           this.items.push({
               U_TRX_NO: v[i].U_TRX_NO,
               // U_TME_CRTD : t,
-              BLANKET_REFERENCE: v[i].BLANKET_REFERENCE,
               U_TRX_ID: v[i].TRANSACTION_ID,
               U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
               U_ITEM: v[i].ITEM_ID,
