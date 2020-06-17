@@ -2,7 +2,8 @@
 FROM node:10-alpine as build-stage
 WORKDIR /usr/src/app
 COPY package*.json ./
-
+RUN apk update
+RUN apk add --no-cache git
 RUN npm install
 COPY . .
 RUN npm run build
