@@ -25,6 +25,8 @@
     "cross-env": "^5.2.0",
     "express": "^4.16.4",
     "font-awesome-icons": "^1.6.0",
+    "jspdf": "^1.5.3",
+    "jspdf-autotable": "^3.5.4",
     "moment": "^2.24.0",
     "nuxt": "^2.0.0",
     "nuxt-vue-multiselect": "^1.0.4",
