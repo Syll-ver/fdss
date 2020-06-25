@@ -192,7 +192,7 @@
             <b-badge
               style="width:70px"
               pill
-              :variant="row.item.U_IS_ACTIVE ? 'success' : 'secondary'"
+              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
               >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
             >
           </div>
