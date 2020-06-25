@@ -177,7 +177,7 @@
           <div style="font-size:11.5px">
             {{
               listRoles.find(
-                listRoles => listRoles.role_id === row.item.role_id
+                listRoles => listRoles.role_id === row.item.role_id 
               )
                 ? listRoles.find(
                     listRoles => listRoles.Code === row.item.U_ROLE_CODE
@@ -192,7 +192,7 @@
             <b-badge
               style="width:70px"
               pill
-              :variant="row.item.U_IS_ACTIVE ? 'success' : 'secondary'"
+              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
               >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
             >
           </div>
@@ -347,14 +347,14 @@
 
                 <option
                   :value="role.Code"
-                  v-for="(role, i) in listRoles"
+                  v-for="(role, i) in filterListRoles"
                   :key="i"
                   >{{ role.Name }}</option
                 >
               </b-form-select>
             </b-card>
 
-            <b-card
+            <!-- <b-card
               class="cardShadow mt-4"
               style="position:relative; bottom:14px"
             >
@@ -364,7 +364,11 @@
                 v-model="userDetails.U_COMPANY_ACCESS"
               >
                 <option :value="null" disabled>Select Company</option>
-                <option :value="null">None</option>
+                
+
+
+
+
 
                 <option
                   v-for="(company, i) in companyList"
@@ -373,7 +377,7 @@
                   >{{ company.COMPANYNAME }}</option
                 >
               </b-form-select>
-            </b-card>
+            </b-card> -->
           </b-col>
 
           <!-- <b-col cols="6" class="mt-3">
@@ -699,7 +703,7 @@
           </b-col>
 
           <b-col cols="6" class="mt-4 mb-1">
-            <b-card
+            <!-- <b-card
               class="cardShadow"
             >
               <small class="ml-1">Company</small>
@@ -717,7 +721,7 @@
                   >{{ company.COMPANYNAME }}</option
                 >
               </b-form-select>
-            </b-card>
+            </b-card> -->
           </b-col>
         </b-row>
 
@@ -951,6 +955,14 @@ export default {
     filterItems() {
       return this.Users.filter(Users => {
         return this.filterStatus.includes(Users.U_IS_ACTIVE);
+      });
+    },
+
+    filterListRoles(){
+      return this.listRoles.filter(Roles => {
+        const results =
+          Roles.U_IS_ACTIVE == 1
+        return results;
       });
     },
 
