@@ -358,7 +358,7 @@ Transaction Number : {{ U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : U_CMMDTY
+                : {{U_CMMDTY}}
               </span>
             </div>
           </b-col>
@@ -921,7 +921,7 @@ show(data) {
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
       this.U_TRANSACTION_TYPE = data.U_TRANSACTION_TYPE;
-      this.U_CMMDTY = data.U_ITEM;
+      this.U_CMMDTY = data.U_CMMDTY;
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
