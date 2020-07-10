@@ -1393,6 +1393,7 @@ export default {
       this.U_TRANSACTION_TYPE = null,
       this.U_FRMR_NAME = null,
       this.U_FRMR_ADD = null,
+      this.U_UOM = {value: "", text: ""},
       this.U_CMMDTY =  {value: "", text: ""},
       this.U_DRVR_LNAME = null,
       this.U_DRVR_FNAME = null,
@@ -1416,6 +1417,7 @@ export default {
       this.U_TRANSACTION_TYPE = null,
       this.U_FRMR_NAME = null,
       this.U_FRMR_ADD = null,
+      this.U_UOM = {value: "", text: ""},
       this.U_CMMDTY =  {value: "", text: ""},
       this.U_DRVR_LNAME = null,
       this.U_DRVR_FNAME = null,
@@ -1570,6 +1572,9 @@ export default {
       // this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       // this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.$bvModal.show("bv-modal-confirmPrint");
+
+
+      
     },
 
     async edit(data) {
