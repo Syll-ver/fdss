@@ -270,7 +270,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
       <VueQrcode
         id="QRcode"
         type="String"
-        :value="JSON.stringify(receiptData1)"
+        :value="JSON.stringify(receiptData)"
       ></VueQrcode>
     </b-row>
   </div>
