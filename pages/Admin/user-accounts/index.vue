@@ -20,7 +20,7 @@
 import UserAccountsTable from "~/components/Admin/UserAccounts/UserAccountsTable";
 
 export default {
-  layout: "Sidebar",
+  layout: "sidebar",
   components: {
     UserAccountsTable
   },

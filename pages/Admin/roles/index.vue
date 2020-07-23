@@ -20,7 +20,7 @@
 import RolesTable from "~/components/Admin/Roles/RolesTable";
 
 export default {
-  layout: "Sidebar",
+  layout: "sidebar",
   components: {
     RolesTable
   },
