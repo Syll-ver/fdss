@@ -20,7 +20,7 @@
 import deliveryreceipt from "~/components/transaction/deliveryreceipt.vue";
 
 export default {
-  layout: "Sidebar",
+  layout: "sidebar",
   components: {
     deliveryreceipt
   },
