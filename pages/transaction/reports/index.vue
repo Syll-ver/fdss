@@ -25,7 +25,7 @@ import reports from "~/components/transaction/reports.vue";
 
 
 export default {
-  layout: "Sidebar",
+  layout: "sidebar",
   components: {
     reports
   },

@@ -20,7 +20,7 @@
 import ActionsTable from "~/components/Admin/Actions/ActionsTable";
 
 export default {
-  layout: "Sidebar",
+  layout: "sidebar",
   components: {
     ActionsTable
   },
