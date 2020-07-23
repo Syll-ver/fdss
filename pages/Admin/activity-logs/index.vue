@@ -20,7 +20,7 @@
 import ActivityLogsTable from "~/components/Admin/ActivityLogs/ActivityLogsTable";
 
 export default {
-  layout: "Sidebar",
+  layout: "sidebar",
   components: {
     ActivityLogsTable
   },

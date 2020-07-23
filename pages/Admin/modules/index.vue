@@ -20,7 +20,7 @@
 import ModulesTable from "~/components/Admin/Modules/ModulesTable";
 
 export default {
-  layout: "Sidebar",
+  layout: "sidebar",
   components: {
     ModulesTable
   },
