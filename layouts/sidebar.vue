@@ -225,6 +225,14 @@ export default {
         );
         this.adminroutes.splice(index, 1);
       }
+       if (
+        !module_actions.find(action => action.U_ACTION_NAME == "View print logs")
+      ) {
+        const index = this.adminroutes.findIndex(
+          route => (route.name = "Print Logs")
+        );
+        this.adminroutes.splice(index, 1);
+      }
       if (
         !module_actions.find(
           action => action.U_ACTION_NAME == "View activity logs"
@@ -299,15 +307,15 @@ export default {
           active: false
         },
 
-        // {
-        //   link: "/admin/signatories",
-        //   name: "Signatories",
-        //   style: "position:relative;left:11px",
-        //   id: "sb-signatories",
-        //   icon: "file-signature",
-        //   class: "ml-2",
-        //   active: false
-        // },
+        {
+          link: "/admin/print-logs",
+          name: "Print Logs",
+          style: "position:relative;left:11px",
+          id: "sb-print-logs",
+          icon: "file-signature",
+          class: "ml-2",
+          active: false
+        },
 
         {
           link: "/admin/activity-logs",
