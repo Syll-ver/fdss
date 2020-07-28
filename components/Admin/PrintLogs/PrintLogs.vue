@@ -78,20 +78,20 @@
               <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
-          </b-dropdown> -->
-     
+          </b-dropdown>
+      -->
       </b-col>
     </b-row>
 
     <!-- Main table element -->
     <b-table
-      id="activity-table"
+      id="print-table"
       class="table-style"
       show-empty
       scrollable="true"
       sticky-header
       no-border-collapse
-      :items="listActivityLogs"
+      :items="listPrintLogs"
       :fields="fields"
       :current-page="currentPage"
       :per-page="perPage"
@@ -111,7 +111,9 @@
         </div>
       </template>
 
-      <template v-slot:cell(actions)="row">
+      <template v-slot:cell(U_CREATED_DATE)="row">{{ formatDate(row.item.U_CREATED_DATE) }}</template>
+
+      <!-- <template v-slot:cell(actions)="row">
         <b-button
           id="view_activity"
           size="sm"
@@ -123,7 +125,7 @@
         >
           <font-awesome-icon icon="folder-open" />
         </b-button>
-      </template>
+      </template> -->
     </b-table>
     <hr />
 
@@ -149,7 +151,7 @@
     <!-- Main table -->
 
     <!-- View Activity -->
-
+<!-- 
     <b-modal
       size="lg"
       header-bg-variant="success"
@@ -212,7 +214,7 @@
           style="font-size:13px;border: 0px;"
         >Close</b-button>
       </template>
-    </b-modal>
+    </b-modal> -->
 
     <!-- View Activity  -->
 </div>
@@ -221,7 +223,6 @@
 <script>
 import moment from "moment";
 import { mapGetters } from "vuex";
-import { mapMutations } from "vuex";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 
@@ -230,25 +231,25 @@ export default {
   data() {
     return {
       isBusy: false,
-      old_values: [],
-      new_values: [],
-      activityLogsForm: {
-        activity_log_id: null,
-        action: null,
-        table_name: null,
-        user_id: null,
-        old_values: null,
-        new_values: null,
-        date: null,
-        userFullName: null
-      },
+    //   old_values: [],
+    //   new_values: [],
+    //   activityLogsForm: {
+    //     activity_log_id: null,
+    //     action: null,
+    //     table_name: null,
+    //     user_id: null,
+    //     old_values: null,
+    //     new_values: null,
+    //     date: null,
+    //     userFullName: null
+    //   },
 
-      items: [
-        {
-          document_type_name: "Sales Invoice",
-          status: "Active"
-        }
-      ],
+    //   items: [
+    //     {
+    //       document_type_name: "Sales Invoice",
+    //       status: "Active"
+    //     }
+    //   ],
 
       datePicker: {
         startDate: moment().format("MMM DD, YYYY"),
@@ -266,31 +267,31 @@ export default {
 
       fields: [
         {
-          key: "U_TABLE",
-          label: "Table Name",
+          key: "U_EMPLOYEE_CODE",
+          label: "Employee ID",
           sortable: true,
           sortDirection: "desc"
         },
 
         {
-          key: "U_OPERATION",
-          label: "Action",
+          key: "CREATED_BY",
+          label: "Employee Name",
           sortable: true,
           sortDirection: "desc"
         },
         {
-          key: "Employee",
-          label: "Inserted/Updated By",
+          key: "U_TRANSACTION_ID",
+          label: "Transaction Number",
           sortable: true,
           sortDirection: "desc"
         },
         {
-          key: "U_LOG_DATE",
-          label: "Date",
+          key: "U_CREATED_DATE",
+          label: "Date Printed",
           sortable: true,
           sortDirection: "desc"
         },
-        { key: "actions", label: "Actions" }
+        // { key: "actions", label: "Actions" }
       ],
 
       totalRows: 1,
@@ -309,23 +310,23 @@ export default {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
 
-      if (end > this.listActivityLogs.length) {
-        end = this.listActivityLogs.length;
+      if (end > this.listPrintLogs.length) {
+        end = this.listPrintLogs.length;
       }
 
-      if (this.listActivityLogs.length === 0) {
+      if (this.listPrintLogs.length === 0) {
         start = 0;
       }
 
-      return `Showing ${start} to ${end} of ${this.listActivityLogs.length} entries`;
+      return `Showing ${start} to ${end} of ${this.listPrintLogs.length} entries`;
     },
 
     rows() {
-      return this.listActivityLogs.length;
+      return this.listPrintLogs.length;
     },
 
     ...mapGetters({
-      listActivityLogs: "Admin/Activity_Logs/getActivityLogs"
+      listPrintLogs: "Admin/Print_Logs/getPrintLogs"
     }),
 
     sortOptions() {
@@ -345,8 +346,10 @@ export default {
       this.datePicker.endDate = moment().format("MMM DD, YYYY");
 
       await this.$store
-        .dispatch("Admin/Activity_Logs/fetchActivtyLogs", {
+        .dispatch("Admin/Printy_Logs/fetchPrintLogs", {
           user_actions: JSON.parse(localStorage.user_actions),
+          
+
           date_range: null,
           SessionId: localStorage.SessionId
         })
@@ -370,7 +373,7 @@ export default {
         ));
 
       await this.$store
-        .dispatch("Admin/Activity_Logs/fetchActivtyLogs", {
+        .dispatch("Admin/Print_Logs/fetchPrintLogs", {
           user_actions: JSON.parse(localStorage.user_actions),
           date_range: {
             date_from: moment(this.datePicker.startDate).format("YYYY-MM-DD"),
@@ -382,13 +385,16 @@ export default {
           this.isBusy = false;
         });
     },
+    formatDate(date) {
+return moment(date).format("DD MMMM, YYYY");
+},
 
-    viewActivity(data) {
-      this.old_values = { ...data.U_OLD_VALUES };
-      this.new_values = { ...data.U_NEW_VALUES };
+    // viewActivity(data) {
+    //   this.old_values = { ...data.U_OLD_VALUES };
+    //   this.new_values = { ...data.U_NEW_VALUES };
 
-      this.$bvModal.show("view-activity-modal");
-    },
+    //   this.$bvModal.show("view-activity-modal");
+    // },
 
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -396,13 +402,13 @@ export default {
       this.currentPage = 1;
     }
   },
-  async created() {
+  async beforeCreate() {
     this.isBusy = true;
     await this.$store
-      .dispatch("Admin/Activity_Logs/fetchActivtyLogs", {
-        user_actions: JSON.parse(localStorage.user_actions),
-        date_range: null,
-        SessionId: localStorage.SessionId
+      .dispatch("Admin/Print_Logs/fetchPrintLogs", {
+        // user_actions: JSON.parse(localStorage.user_actions),
+        // date_range: null,
+        // SessionId: localStorage.SessionId
       })
       .then(res => {
         this.isBusy = false;
