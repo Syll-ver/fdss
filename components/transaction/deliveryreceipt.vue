@@ -105,6 +105,8 @@
             class="pl-2"
             style="font-size:12px"
             v-model="filterStatus"
+            v-b-tooltip.hover
+              title="Filter Transaction Type"
           >
             <b-form-checkbox id="Pick-up" value="Pick-up">Pick-up</b-form-checkbox>
             <b-form-checkbox id="delivery" value="Delivery">Delivery</b-form-checkbox>
@@ -499,7 +501,8 @@
           :disabled="showLoading === true"
         >
           <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Create
+          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner> -->
+          Create
         </b-button>
         <b-button
           id="cancel_add_action_modal"
@@ -658,7 +661,8 @@
           @click="updateDR(U_TRX_ID)"
           :disabled="showLoading === true"
         >
-          <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save
+          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
+          Save
         </b-button>
         <b-button id="cancel_edit_action_modal" size="sm" class="button-style" @click="close">Cancel</b-button>
       </template>
@@ -1279,7 +1283,7 @@ export default {
         this.showAlert("Please input Plate Number", "danger");
       }   else {
         
-     
+      
       // console.log(this.U_CMMDTY.value)
       this.$bvModal.show("pin");
       setTimeout(() => {
@@ -1446,6 +1450,7 @@ export default {
     },
 
     async printReceipt(data) {
+      console.log(data)
       this.$refs.Receipt.print(data);
     },
     //    console.log(data);
@@ -1475,6 +1480,7 @@ export default {
     //    }
     // },
     async printed(U_TRX_ID) {
+
       console.log(U_TRX_ID);
       try {
         this.showLoading = true;
@@ -1490,7 +1496,7 @@ export default {
           },
           data: {
             employee_id,
-            U_TRX_ID: this.U_TRX_ID
+            U_TRX_ID: U_TRX_ID.U_TRX_NO
           }
         });
         this.showLoading = false;
@@ -1530,7 +1536,7 @@ export default {
       } catch (e) {
         console.log(e);
         this.showLoading = false;
-        this.showAlert(res.message, "danger");
+        this.showAlert("Please Input Remarks", "danger");
       }
     },
 
