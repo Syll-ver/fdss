@@ -105,6 +105,8 @@
             class="pl-2"
             style="font-size:12px"
             v-model="filterStatus"
+            v-b-tooltip.hover
+              title="Filter Transaction Type"
           >
             <b-form-checkbox id="Pick-up" value="Pick-up">Pick-up</b-form-checkbox>
             <b-form-checkbox id="delivery" value="Delivery">Delivery</b-form-checkbox>
@@ -499,7 +501,8 @@
           :disabled="showLoading === true"
         >
           <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Create
+          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner> -->
+          Create
         </b-button>
         <b-button
           id="cancel_add_action_modal"
@@ -658,7 +661,8 @@
           @click="updateDR(U_TRX_ID)"
           :disabled="showLoading === true"
         >
-          <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save
+          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
+          Save
         </b-button>
         <b-button id="cancel_edit_action_modal" size="sm" class="button-style" @click="close">Cancel</b-button>
       </template>
@@ -678,11 +682,13 @@
       hide-header-close
       scrollable
     >
+  
       <template v-slot:modal-title>
         <h6>View Delivery Slip</h6>
       </template>
 
       <b-card class="card-shadow">
+           <div id="app" ref="testHtml">
         <div id="receipt">
           <b-row>
             <div class="mr-4" style="width:31rem; height:40rem">
@@ -895,10 +901,13 @@
               </b-row>-->
             </div>
           </b-row>
+             </div>
         </div>
       </b-card>
+   
 
       <template v-slot:modal-footer="{}">
+         <button class="btn btn-danger" @click="generatePdf">generate PDF</button>
         <b-button id="cancel_add_action_modal" size="sm" class="button-style" @click="close1">Close</b-button>
       </template>
     </b-modal>
@@ -1028,8 +1037,10 @@ import VueSignaturePad from "vue-signature-pad";
 import "@lazy-copilot/datetimepicker/dist/datetimepicker.css";
 import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 import Multiselect from 'vue-multiselect'
+import jsPDF from 'jspdf';
 export default {
   components: {
+    jsPDF,
     Multiselect,
     DateTimePicker,
     Receipt,
@@ -1279,7 +1290,7 @@ export default {
         this.showAlert("Please input Plate Number", "danger");
       }   else {
         
-     
+      
       // console.log(this.U_CMMDTY.value)
       this.$bvModal.show("pin");
       setTimeout(() => {
@@ -1404,9 +1415,9 @@ export default {
       this.U_CRTD_BY = null,
       this.U_TRX_NO = null,
       this.U_DRVR_NAME = null,
-      this.U_REQUESTED_SACKS = null,
-      this.U_SACKS = null,
-      this.U_EMPTY_SACKS = null,
+      this.U_REQUESTED_SACKS = 0,
+      this.U_SACKS = 0,
+      this.U_EMPTY_SACKS = 0,
       this.U_HLPR_NAME = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
@@ -1428,9 +1439,9 @@ export default {
       this.U_CRTD_BY = null,
       this.U_TRX_NO = null,
       this.U_DRVR_NAME = null,
-      this.U_REQUESTED_SACKS = null,
-      this.U_SACKS = null,
-      this.U_EMPTY_SACKS = null,
+      this.U_REQUESTED_SACKS = 0,
+      this.U_SACKS = 0,
+      this.U_EMPTY_SACKS = 0,
       this.U_HLPR_NAME = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
@@ -1446,6 +1457,7 @@ export default {
     },
 
     async printReceipt(data) {
+      console.log(data)
       this.$refs.Receipt.print(data);
     },
     //    console.log(data);
@@ -1475,6 +1487,7 @@ export default {
     //    }
     // },
     async printed(U_TRX_ID) {
+
       console.log(U_TRX_ID);
       try {
         this.showLoading = true;
@@ -1490,7 +1503,7 @@ export default {
           },
           data: {
             employee_id,
-            U_TRX_ID: this.U_TRX_ID
+            U_TRX_ID: U_TRX_ID.U_TRX_NO
           }
         });
         this.showLoading = false;
@@ -1530,7 +1543,7 @@ export default {
       } catch (e) {
         console.log(e);
         this.showLoading = false;
-        this.showAlert(res.message, "danger");
+        this.showAlert("Please Input Remarks", "danger");
       }
     },
 
@@ -1786,10 +1799,14 @@ export default {
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
         fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
 
-        if (this.U_SACKS && this.U_EMPTY_SACKS) {
+        // if (this.U_SACKS && this.U_EMPTY_SACKS) {
           fd.append("no_of_bags", this.U_SACKS);
           fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
-        }
+        // }
+        // else{
+        //    fd.append("no_of_bags", 0);
+        //   fd.append("no_of_empty_bags", 0);
+        // }
         fd.append("employee_id", userDetails.Code);
         fd.append("plate_number", this.U_PLATE_NUMBER);
         fd.append("scheduled_date", this.U_SCHEDULED_DATE);
@@ -1906,6 +1923,23 @@ export default {
         return `00:00`;
       }
     },
+        generatePdf(){
+       var doc = new jsPDF('p', 'pt', 'A4');
+        let margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+      
+      doc.fromHTML(this.$refs.testHtml, margins.left, margins.top,{
+        'width' : margins.width
+      });
+      
+      doc.save('test.pdf');
+    
+  },
+
 
     async resetDate() {
       this.isBusy = true;

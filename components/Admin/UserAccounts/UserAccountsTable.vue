@@ -104,6 +104,8 @@
               class="pl-2"
               style="font-size:12px"
               v-model="filterStatus"
+              v-b-tooltip.hover
+              title="Filter Status"
             >
               <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
@@ -393,14 +395,9 @@
             @click="addUserTable()"
             style="font-size:13px"
             class="button-style"
-            :disabled="showButtonLoading === true"
+            :disabled="showLoading === true"
           >
-            <b-spinner
-              v-show="showButtonLoading === true"
-              small
-              label="Spinning"
-            ></b-spinner
-            >Add
+            Add
           </b-button>
 
           <b-button
@@ -490,8 +487,7 @@
 
             <template v-slot:table-busy>
               <div class="text-center text-secondary my-2">
-                <b-spinner small class="align-middle"></b-spinner>
-                <strong>&nbsp;Loading...</strong>
+             
               </div>
             </template>
           </b-table>
@@ -832,7 +828,7 @@ export default {
     return {
       isBusy: false,
       selectedCompany: null,
-      showButtonLoading: false,
+     
       showLoading: false,
       findUser: null,
       filterStatus: [1],
@@ -1070,6 +1066,7 @@ export default {
       this.$bvModal.show("update-user-modal");
     },
     fetchEmployees() {
+       this.showLoading = true;
       this.isBusy = true;
       this.$store
         .dispatch("Admin/Users/searchEmployees", {
@@ -1088,7 +1085,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           }
-
+       this.showLoading = false;
           this.isBusy = false;
         });
     },
@@ -1123,6 +1120,7 @@ export default {
       this.selectedUser = items;
     },
     confirmReset() {
+      this.showLoading = true;
       this.$store
         .dispatch("Admin/Users/resetUserPassword", {
           U_UPDATED_BY: JSON.parse(localStorage.user_details).Code,
@@ -1143,6 +1141,7 @@ export default {
           } else {
             this.showAlert("Successfully Reseted", "success");
             this.$bvModal.hide("reset-modal");
+            this.showLoading = false;
             this.clearForm();
           }
         });
@@ -1173,7 +1172,7 @@ export default {
     },
 
     addUserTable() {
-      this.showButtonLoading = true;
+      this.showLoading = true;
       this.$store
         .dispatch("Admin/Users/addUser", {
           Code: JSON.parse(localStorage.user_details).Code,
@@ -1193,7 +1192,7 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showButtonLoading = false;
+            this.showLoading = false;
           } else {
             this.showAlert("Successfully Added", "success");
 
@@ -1201,12 +1200,13 @@ export default {
 
             this.clearForm();
 
-            this.showButtonLoading = false;
+            this.showLoading = false;
           }
         });
     },
 
     edit(data) {
+      
       this.userDetails = {
         Code: data.Code,
         U_EMPLOYEE_CODE: data.U_EMPLOYEE_CODE,
@@ -1226,6 +1226,7 @@ export default {
       this.$bvModal.show("edit-modal");
     },
     editTable() {
+      this.showLoading = true;
       console.log(this.userDetails);
       this.$store
         .dispatch("Admin/Users/editUser", {
@@ -1245,6 +1246,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           } else {
+            this.showLoading = false;
             this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-modal");
@@ -1277,6 +1279,7 @@ export default {
   },
 
   async beforeCreate() {
+     this.showLoading = true;
     this.$store
       .dispatch("Company/fetchCompany", {
         SessionId: localStorage.SessionId
@@ -1308,6 +1311,7 @@ export default {
         }
       });
     await this.$store
+    
       .dispatch("Admin/Roles/fetchRoles", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId

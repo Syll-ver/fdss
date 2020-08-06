@@ -152,7 +152,7 @@
 
     <b-modal
       size="lg"
-      header-bg-variant="success"
+      header-bg-variant="biotech"
       body-bg-variant="light"
       header-text-variant="light"
       id="view-activity-modal"
@@ -163,7 +163,7 @@
       <b-row>
         <b-col cols="6">
           <label>
-            <strong style="color:#00A651; font-size:1.1rem" class="ml-2">OLD DATA</strong>
+            <strong style="color:biotech; font-size:1.1rem" class="ml-2">OLD DATA</strong>
           </label>
           <b-card class="card-logs cardShadow" style="border-radius:8px; font-size: 14px;">
             <ul class="list-unstyled">
@@ -173,7 +173,7 @@
                 v-for="(oldKey, i) in Object.keys(old_values)"
               >
                 <div class="mb-2">
-                  <font-awesome-icon style="font-size:11px; color: #00A651" icon="circle" />&nbsp;
+                  <font-awesome-icon style="font-size:11px; color: biotech" icon="circle" />&nbsp;
                   <strong style="color:#00401F;">{{ oldKey }}:</strong>&nbsp;
                   <span style="color:#00401F;">{{ old_values[oldKey] }}</span>
                 </div>
@@ -339,6 +339,66 @@ export default {
   },
 
   methods: {
+    //     alterKey(key) {
+    //      function replaceAll(string, search, replace) {
+    //     return string.split(search).join(replace);
+    //   }
+
+    //   let result = replaceAll(key, "_", " ");
+
+    //   if (result.search("U ") == 0) {
+    //     result = result.replace("U ", "");
+    //   }
+
+    //   if (result.search("IS ") == 0) {
+    //     result = result.replace("IS ", "");
+    //   }
+
+    //   if (
+    //     result.search("COMPANY CODE") == 0 ||
+    //     result.search("ROLE CODE") == 0
+    //   ) {
+    //     result = result.replace(" CODE", "");
+    //   }
+
+    //   return result;
+    // },
+
+    // alterKeyValue(key, value) {
+    //   if (key.search("U_CREATED_BY") == 0 || key.search("U_UPDATED_BY") == 0) {
+    //     return this.getUserName(value);
+    //   } else if (
+    //     key.search("U_IS_SAP_USER") == 0 ||
+    //     key.search("U_IS_ACTIVE") == 0
+    //   ) {
+    //     return value ? "Yes" : "No";
+    //   } else if (key.search("U_ROLE_CODE") == 0) {
+    //     return this.getRoleName(value);
+    //   } else if (
+    //     key.search("U_UPDATED_AT") == 0 ||
+    //     key.search("U_CREATED_AT") == 0
+    //   ) {
+    //     return this.formatDate(value);
+    //   } else if (
+    //     key.search("U_UPDATED_TIME") == 0 ||
+    //     key.search("U_CREATED_TIME") == 0
+    //   ) {
+    //     return this.formatTime(value);
+    //   } else if (key.search("U_COMPANY_CODE") == 0) {
+    //     return this.getCompanyName(value);
+    //   } else if (key.search("U_PASSWORD") == 0) {
+    //     return this.formatPassword(value);
+    //   } else if (key.search("U_CARD_TYPE") == 0) {
+    //     return this.getCardType(value);
+    //   } else if (key.search("U_ACTION_CODE") == 0) {
+    //     return this.getActionName(value);
+    //   } else if (key.search("U_ACTIVE") == 0) {
+    //     return value ? "Yes" : "No";
+    //   } else {
+    //     return value;
+    //   }
+    // },
+
     async resetDate() {
       this.isBusy = true;
       this.datePicker.startDate = moment().format("MMM DD, YYYY");

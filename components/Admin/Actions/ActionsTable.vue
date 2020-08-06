@@ -18,6 +18,7 @@
         />
         {{ alert.message }}
       </b-alert>
+      <Loading v-if="showLoading" />
     </div>
       <!-- Main table -->
       <b-row>
@@ -80,6 +81,8 @@
               class="pl-2"
               style="font-size:12px"
               v-model="filterStatus"
+              v-b-tooltip.hover
+              title="Filter Status"
             >
               <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
@@ -223,9 +226,9 @@
             @click="addActionTable()"
             style="font-size:13px"
             class="button-style"
-            :disabled="showButtonLoading === true"
+            :disabled="showLoading === true"
           >
-            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Add
+            Add
           </b-button>
           <b-button
             id="cancel_add_action_modal"
@@ -302,9 +305,9 @@
             variant="biotech"
             @click="editActionTable()"
             class="button-style"
-            :disabled="showButtonLoading === true"
+            :disabled="showLoading === true"
           >
-            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Update
+           Update
           </b-button>
           <b-button id="cancel_action" size="sm" @click="cancel()" class="button-style">Cancel</b-button>
         </template>
@@ -317,14 +320,17 @@
 
 <script>
 import moment from "moment";
+import Loading from "~/components/Loading/Loading.vue";
 import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-  components: {},
+  components: {
+    Loading
+  },
   data() {
     return {
-      showButtonLoading: false,
+      showLoading: false,
       filterStatus: [1],
 
       actions: {
@@ -449,7 +455,7 @@ export default {
       this.alert.showAlert = 0;
     },
     editActionTable() {
-      this.showButtonLoading = true;
+      this.showLoading = true;
       this.$store
         .dispatch("Admin/Actions/editAction", {
           U_UPDATED_BY: JSON.parse(localStorage.user_details).Code,
@@ -467,18 +473,18 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showButtonLoading = false;
+            this.showLoading = false;
           } else {
             this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-action-modal");
             this.clearForm();
-            this.showButtonLoading = false;
+            this.showLoading = false;
           }
         });
     },
     addActionTable() {
-      this.showButtonLoading = true;
+      this.showLoading = true;
 
       this.$store
         .dispatch("Admin/Actions/addAction", {
@@ -498,13 +504,13 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showButtonLoading = false;
+            this.showLoading = false;
           } else {
             this.showAlert("Successfully Added", "success");
 
             this.$bvModal.hide("add-action-modal");
             this.clearForm();
-            this.showButtonLoading = false;
+            this.showLoading = false;
           }
         });
     },

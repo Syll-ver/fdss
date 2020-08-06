@@ -104,7 +104,7 @@
 
     <b-modal
       size="md"
-      header-bg-variant="dark"
+      header-bg-variant="biotech"
       header-text-variant="light"
       id="bv-modal-confirmLogout"
       class="modal"
@@ -118,21 +118,22 @@
       <div style="font-size: 13px">Are you sure you want to 'Log-out'?</div>
 
       <template v-slot:modal-footer="{ ok, cancel }">
+        
+
+        <b-button
+          id="btn-save-logout"
+          size="sm"
+          variant="biotech"
+          @click="logout()"
+          style="font-size:13px"
+          >Yes</b-button
+        >
         <b-button
           id="btn-cancel-logout"
           size="sm"
           @click="cancel()"
           style="font-size:13px;border: 0px;"
           >No</b-button
-        >
-
-        <b-button
-          id="btn-save-logout"
-          size="sm"
-          variant="dark"
-          @click="logout()"
-          style="font-size:13px"
-          >Yes</b-button
         >
       </template>
     </b-modal>
@@ -218,10 +219,10 @@ export default {
         this.adminroutes.splice(index, 1);
       }
       if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View modules")
+        !module_actions.find(action => action.U_ACTION_NAME == "View roles and access rights")
       ) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Modules")
+          route => (route.name = "Roles and Access")
         );
         this.adminroutes.splice(index, 1);
       }
@@ -267,6 +268,7 @@ export default {
       visiblePrice: false,
 
       adminroutes: [
+            
         {
           link: "/admin/modules",
           name: "Modules",
