@@ -682,11 +682,13 @@
       hide-header-close
       scrollable
     >
+  
       <template v-slot:modal-title>
         <h6>View Delivery Slip</h6>
       </template>
 
       <b-card class="card-shadow">
+           <div id="app" ref="testHtml">
         <div id="receipt">
           <b-row>
             <div class="mr-4" style="width:31rem; height:40rem">
@@ -899,10 +901,13 @@
               </b-row>-->
             </div>
           </b-row>
+             </div>
         </div>
       </b-card>
+   
 
       <template v-slot:modal-footer="{}">
+         <button class="btn btn-danger" @click="generatePdf">generate PDF</button>
         <b-button id="cancel_add_action_modal" size="sm" class="button-style" @click="close1">Close</b-button>
       </template>
     </b-modal>
@@ -1032,8 +1037,10 @@ import VueSignaturePad from "vue-signature-pad";
 import "@lazy-copilot/datetimepicker/dist/datetimepicker.css";
 import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 import Multiselect from 'vue-multiselect'
+import jsPDF from 'jspdf';
 export default {
   components: {
+    jsPDF,
     Multiselect,
     DateTimePicker,
     Receipt,
@@ -1408,9 +1415,9 @@ export default {
       this.U_CRTD_BY = null,
       this.U_TRX_NO = null,
       this.U_DRVR_NAME = null,
-      this.U_REQUESTED_SACKS = null,
-      this.U_SACKS = null,
-      this.U_EMPTY_SACKS = null,
+      this.U_REQUESTED_SACKS = 0,
+      this.U_SACKS = 0,
+      this.U_EMPTY_SACKS = 0,
       this.U_HLPR_NAME = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
@@ -1432,9 +1439,9 @@ export default {
       this.U_CRTD_BY = null,
       this.U_TRX_NO = null,
       this.U_DRVR_NAME = null,
-      this.U_REQUESTED_SACKS = null,
-      this.U_SACKS = null,
-      this.U_EMPTY_SACKS = null,
+      this.U_REQUESTED_SACKS = 0,
+      this.U_SACKS = 0,
+      this.U_EMPTY_SACKS = 0,
       this.U_HLPR_NAME = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
@@ -1792,10 +1799,14 @@ export default {
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
         fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
 
-        if (this.U_SACKS && this.U_EMPTY_SACKS) {
+        // if (this.U_SACKS && this.U_EMPTY_SACKS) {
           fd.append("no_of_bags", this.U_SACKS);
           fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
-        }
+        // }
+        // else{
+        //    fd.append("no_of_bags", 0);
+        //   fd.append("no_of_empty_bags", 0);
+        // }
         fd.append("employee_id", userDetails.Code);
         fd.append("plate_number", this.U_PLATE_NUMBER);
         fd.append("scheduled_date", this.U_SCHEDULED_DATE);
@@ -1912,6 +1923,23 @@ export default {
         return `00:00`;
       }
     },
+        generatePdf(){
+       var doc = new jsPDF('p', 'pt', 'A4');
+        let margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+      
+      doc.fromHTML(this.$refs.testHtml, margins.left, margins.top,{
+        'width' : margins.width
+      });
+      
+      doc.save('test.pdf');
+    
+  },
+
 
     async resetDate() {
       this.isBusy = true;
