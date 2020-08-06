@@ -270,7 +270,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
       <VueQrcode
         id="QRcode"
         type="String"
-        :value="JSON.stringify(receiptData)"
+        :value="JSON.stringify(receiptData1)"
       ></VueQrcode>
     </b-row>
   </div>
@@ -301,59 +301,59 @@ export default {
    },
     
     async print(data) {
-      this.receiptData = {...data}
-      this.receiptData1 = {U_TRX_NO:data.U_TRX_NO}
+        this.receiptData = {...data}
+        this.receiptData1 = {U_TRX_NO:data.U_TRX_NO}
 
-      // console.log(this.receiptData)
-      await setTimeout({}, 3000);
-      // Get HTML to print from element
-       await this.generateQr();
-      const prtHtml = await document.getElementById("receipt").innerHTML;
+        // console.log(this.receiptData)
+        await setTimeout({}, 3000);
+        // Get HTML to print from element
+        await this.generateQr();
+        const prtHtml = await document.getElementById("receipt").innerHTML;
 
-     
-      // Get all stylesheets HTML
-
-      let stylesHtml = "";
-      for (const node of [
-        ...document.querySelectorAll('link[rel="stylesheet"], style')
-      ]) {
-        stylesHtml += node.outerHTML;
-      }
-
-      // Open the print window
-      const WinPrint = await window.open(
-        "",
-        "",
-        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-      );
-
-      WinPrint.document.write(`<!DOCTYPE html>
-              <html>
-              <head>
-                  ${stylesHtml}
-              <style>
-                  body {margin-left: 1rem;}
-
-              </style>
-              </head>
-              <body>
-               
-                  ${prtHtml}
-     
-              </body>
-      </html>`);
       
-WinPrint.document.addEventListener(
-        "load",
-         function() {
-            WinPrint.focus(); 
-     
-       WinPrint.document.close();
-      WinPrint.print()
-    
-       },
-        true
-      );
+        // Get all stylesheets HTML
+
+        let stylesHtml = "";
+        for (const node of [
+          ...document.querySelectorAll('link[rel="stylesheet"], style')
+        ]) {
+          stylesHtml += node.outerHTML;
+        }
+
+        // Open the print window
+        const WinPrint = await window.open(
+          "",
+          "",
+          "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+        );
+
+        WinPrint.document.write(`<!DOCTYPE html>
+                <html>
+                <head>
+                    ${stylesHtml}
+                <style>
+                    body {margin-left: 1rem;}
+
+                </style>
+                </head>
+                <body>
+                
+                    ${prtHtml}
+      
+                </body>
+        </html>`);
+        
+  // WinPrint.document.addEventListener(
+  //         "load",
+  //         function() {
+              WinPrint.focus(); 
+      
+        WinPrint.document.close();
+    WinPrint.print( )
+      
+       
+          true
+        
 
       // WinPrint.print();
 
