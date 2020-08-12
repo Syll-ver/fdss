@@ -353,7 +353,32 @@
         <h6>New Delivery Slip</h6>
       </template>
 
+       
+
       <b-card class="card-shadow">
+
+        <small class="text-left">Company</small>
+          <b-form-select
+          id="company"
+          v-model="selectedcompany"
+          class="form-text"
+          :options="companyList"
+          @change="getCommodity(), getFarmer()"
+          required
+        ></b-form-select>
+        <!-- <b-form-select
+          id="company"
+          v-model="selectedcompany"
+          class="form-text"
+
+          required
+        > <option :value="null">Select Company</option>
+                <option
+                  v-for="(company, i) in companyList"
+                  :key="i"
+                  :value="company.ID"
+                  >{{ company.COMPANYNAME }}</option
+                ></b-form-select> -->
         <small>Schedule Date</small>
         <br />
         <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
@@ -1027,6 +1052,8 @@
 </template>
 
 <script>
+// import { mapMutations } from "vuex";
+// import { mapGetters } from "vuex";
 import moment from "moment";
 import axios from "axios";
 import Receipt from "~/components/transaction/Receipt.vue";
@@ -1050,14 +1077,17 @@ export default {
   },
   async created() {
     // await this.getPriceList();
+
     await this.getTransactions();
     await this.getTransactionType();
-    await this.getFarmer();
-    await this.getCommodity();
+    // await this.getFarmer();
+    await this.getCompanyList();
+    // await this.getCommodity();
     this.totalRows = this.items.length;
   },
   data() {
     return {
+      selectedcompany:null,
       remarks:null,
       datetimeScheme: {
         singleDate: true,
@@ -1116,6 +1146,7 @@ export default {
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
       transaction_types: [],
+      companyList:[],
       farmer: [],
       farmerAdd: [],
       commodity: [],
@@ -1205,6 +1236,10 @@ export default {
     };
   },
   computed: {
+    // ...mapGetters({
+  
+    //   companyList: "Company/getCompanyList",
+    // }),
     filterItems() {
       return this.items.filter(request => {
         if (this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
@@ -1242,6 +1277,24 @@ export default {
   },
 
   methods: {
+    //  async beforeCreate() {
+    //  this.showLoading = true;
+    // await this.$store
+    //   .dispatch("Company/fetchCompany", {
+    //     SessionId: localStorage.SessionId
+    //   })
+
+    //   .then(res => {
+    //     if (res && res.name == "Error") {
+    //       if (res.response && res.response.data.errorMsg) {
+    //         if (res.response.data.errorMsg === "Invalid session.") {
+    //           this.$bvModal.show("session_modal");
+    //         }
+    //       }
+    //     }
+    //   });
+    //   this.showLoading = false;
+    //  },
      clearSignature() {
       this.$refs.signaturePad.undoSignature();
     },
@@ -1401,6 +1454,7 @@ export default {
       
     },
     close() {
+      this.selectedcompany= null,
       this.U_TRANSACTION_TYPE = null,
       this.U_FRMR_NAME = null,
       this.U_FRMR_ADD = null,
@@ -1425,6 +1479,7 @@ export default {
       this.$bvModal.hide("edit-transaction-modal");
     },
     close1() {
+      this.selectedcompany= null,
       this.U_TRANSACTION_TYPE = null,
       this.U_FRMR_NAME = null,
       this.U_FRMR_ADD = null,
@@ -1549,7 +1604,7 @@ export default {
 
     cancel(data) {
       console.log(data);
-      this.remarks = null
+      this.remarks = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
@@ -1592,7 +1647,7 @@ export default {
 
     async edit(data) {
       console.log(data);
-
+    
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
@@ -1668,6 +1723,26 @@ export default {
         });
       }
     },
+      async getCompanyList() {
+      //  console.log(this.U_CMMDTY.value.value)
+      this.companyList = [];
+      const res = await axios({
+        method: "GET",
+        url: `${this.$axios.defaults.baseURL}/api/companies`,
+        headers: {
+          Authorization: localStorage.SessionId
+        }
+      });
+      const v = res.data.companies;
+
+      for (let i = 0; i < v.length; i++) {
+        this.companyList.push({
+          text: v[i].NAME,
+          value: v[i].ID
+        });
+       
+      }
+    },
      async getUOM() {
       //  console.log(this.U_CMMDTY.value.value)
       this.unit = [];
@@ -1676,6 +1751,9 @@ export default {
         url: `${this.$axios.defaults.baseURL}/api/items/selectUom/${this.U_CMMDTY.value.value}`,
         headers: {
           Authorization: localStorage.SessionId
+        },
+        data: {
+          company: this.selectedcompany
         }
       });
       const v = res.data.view;
@@ -1707,11 +1785,15 @@ export default {
     //   }
     // },
     async getCommodity() {
+      this.commodity = []
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/items/select`,
         headers: {
           Authorization: localStorage.SessionId
+        },
+        data: {
+          company: this.selectedcompany
         }
       });
       const v = res.data.view;
@@ -1724,11 +1806,15 @@ export default {
       }
     },
     async getFarmer() {
+      this.farmer = []
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
         headers: {
           Authorization: localStorage.SessionId
+        },
+        data: {
+          company: this.selectedcompany
         }
       });
       const v = res.data.view;
@@ -1771,6 +1857,7 @@ export default {
       // console.log(this.U_FRMR_NAME.value.id)
       // console.log(this.U_CMMDTY.value)
         const json = {
+          company: this.selectedcompany,
           uom_id: this.U_UOM.UomEntry,
           // priceList: this.U_PRICELIST,
           transaction_type_id: this.U_TRANSACTION_TYPE,
@@ -1790,7 +1877,7 @@ export default {
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
-        // fd.append("priceList", this.U_PRICELIST);
+        fd.append("company", this.selectedcompany);
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
