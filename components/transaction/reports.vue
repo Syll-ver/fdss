@@ -613,8 +613,8 @@ export default {
   async created() {
     await this.getTransactions();
     await this.getTransactionType();
-    await this.getFarmer();
-    await this.getCommodity();
+    // await this.getFarmer();
+    // await this.getCommodity();
     this.totalRows = this.items.length;
   },
   data() {

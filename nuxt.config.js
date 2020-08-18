@@ -14,6 +14,11 @@ module.exports = {
         content: process.env.npm_package_description || ""
       }
     ],
+    script: [
+      {
+        src: `/epos-2.14.0.js`,
+      },
+    ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.png" }]
   },
   /*
@@ -62,4 +67,5 @@ module.exports = {
   },
 
   server: { port: 7000}
+  // host:'172.16.4.114'}
 };

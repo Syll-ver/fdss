@@ -522,7 +522,7 @@
           </b-row>
         </b-card>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template >
           <b-button
             id="add_add_modal"
             size="sm"
@@ -721,7 +721,7 @@
           </b-col>
         </b-row>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template >
           <b-button
             size="sm"
             id="edt_edit_modal"
@@ -758,7 +758,7 @@
           <h6>Do you want to update user?</h6>
         </div>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template>
           <b-button
             size="sm"
             class="button-style"
@@ -793,7 +793,7 @@
           <h6>Do you want to reset user password?</h6>
         </div>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template >
           <b-button
             size="sm"
             variant="biotech"
@@ -1280,7 +1280,7 @@ export default {
 
   async beforeCreate() {
      this.showLoading = true;
-    this.$store
+   await this.$store
       .dispatch("Company/fetchCompany", {
         SessionId: localStorage.SessionId
       })

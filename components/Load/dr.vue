@@ -29,16 +29,16 @@
       <b-col>
         <b-button
           variant="biotech"
-          class="button-style"
+          class="button-style mr-2 my-4"
           size="sm"
-          @click="$bvModal.show('add-transaction-modal')"
+          @click="newDR()"
         >
           <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
         </b-button>
       </b-col>
     </b-row>
 
-    <b-row>
+    <!-- <b-row>
       <b-col cols="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
@@ -57,11 +57,7 @@
 
       <b-col cols="4" class="mt-3">
         <b-input-group prepend="Date" style="height:10px" size="sm">
-          <!-- <b-input-group-prepend>
-              <div style="background-color: green">
-                <v-icon color="#ffffff" small>fa-calendar-week</v-icon>
-              </div>
-          </b-input-group-prepend>-->
+     
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -87,13 +83,7 @@
       <b-col></b-col>
 
       <b-col cols="2" class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group>-->
+      
 
         <b-dropdown right id="filter_actions" class="button-sq" size="sm" variant="dark">
           <template v-slot:button-content>
@@ -113,12 +103,12 @@
           </b-form-checkbox-group>
         </b-dropdown>
       </b-col>
-    </b-row>
+    </b-row> -->
 
     
 
     <!-- Main table element -->
-    <b-table
+    <!-- <b-table
       id="delivery_receipt_table"
       show-empty
       class="table-style"
@@ -150,13 +140,6 @@
           variant="edit"
         >{{ row.item.U_STATUS }}</b-badge>
 
-        <!--  <b-badge
-          v-show="row.item.U_STATUS === 'Completed'"
-          class="table-badge"
-          pill
-          variant="completed"
-          >{{ row.item.U_STATUS }}
-        </b-badge>-->
       </template>
 
       <template v-slot:cell(actions)="row">
@@ -209,7 +192,6 @@
             <font-awesome-icon icon="ban" />
           </b-button>
 
-          <!-- @click="$bvModal.show('view-transaction-modal')" -->
         </div>
         <div v-else>
           <b-button
@@ -267,12 +249,12 @@
           limit="3"
         ></b-pagination>
       </b-col>
-    </b-row>
+    </b-row> -->
 
     <!-- Main table -->
 
     <!-- Confirm Cancel -->
-    <b-modal
+    <!-- <b-modal
       size="sm"
       header-bg-variant="biotech"
       header-text-variant="light"
@@ -336,10 +318,10 @@
         >Yes</b-button>
         <b-button id="btn_cancel_requestSupplier" size="sm" @click="close()" class="button-style">No</b-button>
       </template>
-    </b-modal>
+    </b-modal> -->
     <!-- Add Transaction -->
 
-    <b-modal
+    <!-- <b-modal
       size="large"
       header-bg-variant="biotech"
       header-text-variant="light"
@@ -366,19 +348,7 @@
           @change="getCommodity(), getFarmer()"
           required
         ></b-form-select>
-        <!-- <b-form-select
-          id="company"
-          v-model="selectedcompany"
-          class="form-text"
-
-          required
-        > <option :value="null">Select Company</option>
-                <option
-                  v-for="(company, i) in companyList"
-                  :key="i"
-                  :value="company.ID"
-                  >{{ company.COMPANYNAME }}</option
-                ></b-form-select> -->
+   
         <small>Schedule Date</small>
         <br />
         <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
@@ -424,14 +394,7 @@
           track-by="text"
           @input="test"
           required></multiselect>
-        <!-- <b-form-select
-          id="customer"
-          class="form-text"
-          v-model=" U_FRMR_NAME"
-          :options="farmer"
-          @change="test"    
-          required
-        ></b-form-select> -->
+      
 
         <small class="text-left">Address</small>
         <b-form-input disabled id="farmer_add" class="form-text" v-model=" U_FRMR_ADD" />
@@ -525,8 +488,7 @@
           @click="saveDR()"
           :disabled="showLoading === true"
         >
-          <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner> -->
+
           Create
         </b-button>
         <b-button
@@ -536,11 +498,11 @@
           @click="close()"
         >Cancel</b-button>
       </template>
-    </b-modal>
+    </b-modal> -->
 
     <!-- Edit Transaction -->
 
-    <b-modal
+    <!-- <b-modal
       size="m"
       header-bg-variant="biotech"
       header-text-variant="light"
@@ -579,16 +541,9 @@
           label="text"
           track-by="text"
           ></multiselect>
-        <!-- <b-form-select
-          id="commodity"
-          v-model=" U_CMMDTY"
-          class="form-text"
-          :options="commodity"
-          @input="getUOM"
-          disabled
-        ></b-form-select> -->
+   
         <small class="text-left">Unit of Measure</small>
-        <!-- {{U_UOM}} -->
+     
         <b-form-select
           id="uom"
           v-model="U_UOM"
@@ -645,8 +600,7 @@
 
         <small class="text-left">Plate Number</small>
         <b-form-input id="tendered" v-model=" U_PLATE_NUMBER" class="form-text"></b-form-input>
-        <!-- <small class="text-left"># of Requested Sacks</small>
-        <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input> -->
+
          <b-row v-if="U_UOM.UomName === 'BAG'">
           <b-col cols="12">
         <small class="text-left"># of Requested Bags</small>
@@ -686,18 +640,18 @@
           @click="updateDR(U_TRX_ID)"
           :disabled="showLoading === true"
         >
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
+ 
           Save
         </b-button>
         <b-button id="cancel_edit_action_modal" size="sm" class="button-style" @click="close">Cancel</b-button>
       </template>
-    </b-modal>
+    </b-modal> -->
 
     <!-- Edit Transaction -->
 
     <!-- View Transaction -->
 
-    <b-modal
+    <!-- <b-modal
       size="m"
       header-bg-variant="biotech"
       header-text-variant="light"
@@ -849,7 +803,7 @@
                   </b-col>
                 </b-row>
                 
-              </div>
+              </div> -->
 
               <!-- <b-row>
           <b-col cols="6">           
@@ -863,7 +817,7 @@
             </span>
           </b-col>
               </b-row>-->
-
+<!-- 
               <br />
               <b-row class="my-2">
                 <b-col cols="6">
@@ -909,21 +863,7 @@
               </center>
               <b-row style="float:right" class="mr-1 mt-1"></b-row>
               <br />
-              <!-- <b-row class="mt-4">
-          <b-col>
-            <span style="font-size:10px" class="mr-2">
-              <i>
-                This does not serve as an Official Receipt
-              </i>
-            </span>
-
-            <span style="font-size:12px; float:right" class="mr-1">
-              <b>
-                Farmer's Copy
-              </b>
-            </span>
-          </b-col>
-              </b-row>-->
+           
             </div>
           </b-row>
              </div>
@@ -935,10 +875,10 @@
          <button class="btn btn-danger" @click="generatePdf">generate PDF</button>
         <b-button id="cancel_add_action_modal" size="sm" class="button-style" @click="close1">Close</b-button>
       </template>
-    </b-modal>
+    </b-modal> -->
     <!-- <alert/> -->
     <!-- ALERT SUCCESSFUL -->
-    <b-modal
+    <!-- <b-modal
       id="pin"
       no-close-on-backdrop
       hide-header-close
@@ -980,10 +920,10 @@
           style="font-size:13px;border: 0px;"
         >Cancel</b-button>
       </template>
-    </b-modal>
+    </b-modal> -->
 
     <!-- signature modal -->
-    <b-modal
+    <!-- <b-modal
       id="signature"
       no-close-on-backdrop
       header-bg-variant="biotech"
@@ -1045,7 +985,7 @@
         />
         {{ alert.message }}
       </b-alert>
-    </div>
+    </div> -->
 
     <!-- View Transaction -->
   </div>
@@ -1076,6 +1016,8 @@ export default {
     VueSignaturePad
   },
   async created() {
+    await this.login();
+    
     // await this.getPriceList();
 
     await this.getTransactions();
@@ -1277,6 +1219,30 @@ export default {
   },
 
   methods: {
+      async login() {
+      this.showLoading = true;
+      await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/login`,
+        data: { username: "admin", password: "1234" }
+      })
+        .then(result => {
+          localStorage.username = "admin";
+          localStorage.user_details = JSON.stringify(result.data.user_details);
+          localStorage.user_role = JSON.stringify(result.data.user_role);
+          localStorage.user_actions = JSON.stringify(result.data.user_actions);
+          localStorage.SessionId = result.data.SessionId;
+         
+        })
+        .catch(err => {
+          this.showLoading = false;
+          if (err.response && err.response.data.errorMsg) {
+            this.showAlert(err.response.data.errorMsg, "danger");
+          } else {
+            this.showAlert(err.message, "danger");
+          }
+        });
+      },
     //  async beforeCreate() {
     //  this.showLoading = true;
     // await this.$store
@@ -1834,7 +1800,39 @@ export default {
     async newDR(signature) {
       try {
         this.showLoading = true;
-        //   this.U_TRANSACTION_TYPE= null;
+        this.item = [];
+        const userDetails = JSON.parse(localStorage.user_details);
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/api/transaction/add-sqa`,
+           headers: { Authorization: `B1SESSION=${localStorage.SessionId}` },
+        data: {
+          company: "36861",
+          transaction_type_id: "2",
+          item_id: "RM16-00013",
+          uom_id:"83",
+          farmer_id: "V100356",
+          driver_name: "AAA" + ", " + "AAA",
+          helper_name: "AAA" + ", " + "AAA",
+          no_of_requested_bags: 100,
+          no_of_bags: 100,
+          no_of_empty_bags: 0,
+          employee_id: userDetails.Code,
+          plate_number: "AAA-3243",
+          signature: this.signaturePath,
+          scheduled_date: "2020-08-14",
+          scheduled_time: "1015",
+        }
+      });
+      const v = res.data.view;
+
+   
+        this.item.push();
+        this.getTransactions();
+         this.showAlert(res.data.posted.msg, "success");
+    
+  
+        // this.U_TRANSACTION_TYPE= null;
         // this.U_FRMR_NAME=null;
         // this.U_FRMR_ADD=null;
         // this.U_CMMDTY=null;
@@ -1849,67 +1847,70 @@ export default {
         // this.U_DRVR_NAME=null;
         // this.U_SACKS=null;
         // this.U_EMPTY_SACKS=null;
-        // this.U_HLPR_NAME=null;
+        // this.U_HLPR_NAME= null;
 
-        let items = [];
+        // let items = [];
 
-        const userDetails = JSON.parse(localStorage.user_details);
+        // const userDetails = JSON.parse(localStorage.user_details);
       // console.log(this.U_FRMR_NAME.value.id)
       // console.log(this.U_CMMDTY.value)
-        const json = {
-          company: this.selectedcompany,
-          uom_id: this.U_UOM.UomEntry,
-          // priceList: this.U_PRICELIST,
-          transaction_type_id: this.U_TRANSACTION_TYPE,
-          item_id: this.U_CMMDTY.value.value,
-          farmer_id: this.U_FRMR_NAME.value.id,
-          driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
-          helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
-          no_of_requested_bags: this.U_REQUESTED_SACKS,
-          no_of_bags: this.U_SACKS,
-          no_of_empty_bags: this.U_EMPTY_SACKS,
-          employee_id: userDetails.Code,
-          plate_number: this.U_PLATE_NUMBER,
-          signature: this.signaturePath
-        };
+        // const json = {
+        //   company: "36861",
+        //   transaction_type_id: "2",
+        //   item_id: "RM16-00013",
+        //   uom_id:"83",
+        //   farmer_id: "V100356",
+        //   driver_name: "AAA" + ", " + "AAA",
+        //   helper_name: "AAA" + ", " + "AAA",
+        //   no_of_requested_bags: 100,
+        //   no_of_bags: 100,
+        //   no_of_empty_bags: 0,
+        //   employee_id: userDetails.Code,
+        //   plate_number: "AAA-3243",
+        //   signature: "dasdasdas",
+        //   scheduled_date: "2020-08-14",
+        //   scheduled_time: "1015",
+        // };
 
         // console.log("@here", json)
 
-        var fd = new FormData();
-        fd.append("", signature, signature.name);
-        fd.append("company", this.selectedcompany);
-        fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
-        fd.append("item_id", this.U_CMMDTY.value.value);
-        fd.append("uom_id", this.U_UOM.UomEntry);
-        fd.append("farmer_id", this.U_FRMR_NAME.value.id);
-        fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
-        fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
-        fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
+        // var fd = new FormData();
+        // fd.append("", signature, signature.name);
+        // fd.append("company", this.selectedcompany);
+        // fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
+        // fd.append("item_id", this.U_CMMDTY.value.value);
+        // fd.append("uom_id", this.U_UOM.UomEntry);
+        // fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+        // fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
+        // fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
+        // fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
 
         // if (this.U_SACKS && this.U_EMPTY_SACKS) {
-          fd.append("no_of_bags", this.U_SACKS);
-          fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
+          // fd.append("no_of_bags", this.U_SACKS);
+          // fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
         // }
         // else{
         //    fd.append("no_of_bags", 0);
         //   fd.append("no_of_empty_bags", 0);
         // }
-        fd.append("employee_id", userDetails.Code);
-        fd.append("plate_number", this.U_PLATE_NUMBER);
-        fd.append("scheduled_date", this.U_SCHEDULED_DATE);
-        fd.append("scheduled_time", this.U_SCHEDULED_TIME);
+        // fd.append("employee_id", userDetails.Code);
+        // fd.append("plate_number", this.U_PLATE_NUMBER);
+        // fd.append("scheduled_date", this.U_SCHEDULED_DATE);
+        // fd.append("scheduled_time", this.U_SCHEDULED_TIME);
 
         // await json.each(data, function(key, value) {
         //   fd.append(key, value);
         // });
 
-        const res = await axios.post(
-          `${this.$axios.defaults.baseURL}/api/transaction/add`,
-          fd,
-          {
-            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
-          }
-        );
+        // const res = await axios.post(
+        //   `${this.$axios.defaults.baseURL}/api/transaction/add`,
+        //   {
+        //     headers: { Authorization: `B1SESSION=${localStorage.SessionId}` },
+        //     data:{
+        //     ...json
+        //     }
+        //   }
+        // );
 
         // const res = await axios({
         //   method: "POST",
@@ -1920,13 +1921,13 @@ export default {
         //   }
         // });
 
-        this.$bvModal.hide("signature");
-        this.showLoading = false;
-        this.getTransactions();
-        this.$bvModal.hide("add-transaction-modal");
-        console.log(res)
-        this.showAlert(res.data.posted.msg, "success");
-        this.close();
+        // this.$bvModal.hide("signature");
+        // this.showLoading = false;
+        // this.getTransactions();
+        // this.$bvModal.hide("add-transaction-modal");
+        // console.log(res)
+        // this.showAlert(res.data.posted.msg, "success");
+        // this.close();
         // this.$refs.Receipt.print(data);
       } catch (e) {
         console.log(e);
@@ -2197,5 +2198,3 @@ export default {
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-
-
