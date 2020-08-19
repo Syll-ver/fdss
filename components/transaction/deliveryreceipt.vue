@@ -492,6 +492,12 @@
         <b-form-input id="requestedsacks" type="number" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
           </b-col>
         </b-row>
+        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD'">
+          <b-col cols="12">
+        <small class="text-left">Quantity</small>
+        <b-form-input id="sacks" type="number" v-model=" U_SACKS" class="form-text" required></b-form-input>
+          </b-col>
+        </b-row>
         <b-row v-else></b-row>
 
 
@@ -1834,22 +1840,22 @@ export default {
     async newDR(signature) {
       try {
         this.showLoading = true;
-        //   this.U_TRANSACTION_TYPE= null;
-        // this.U_FRMR_NAME=null;
-        // this.U_FRMR_ADD=null;
-        // this.U_CMMDTY=null;
-        // this.U_DRVR_LNAME=null;
-        // this.U_DRVR_FNAME=null;
-        // this.U_HLPR_FNAME=null;
-        // this.U_HLPR_LNAME=null;
-        // this.U_PLATE_NUMBER=null;
-        // this.U_DTE_CRTD=null;
-        // this.U_CRTD_BY=null;
-        // this.U_TRX_NO=null;
-        // this.U_DRVR_NAME=null;
-        // this.U_SACKS=null;
-        // this.U_EMPTY_SACKS=null;
-        // this.U_HLPR_NAME=null;
+          this.U_TRANSACTION_TYPE= null;
+        this.U_FRMR_NAME=null;
+        this.U_FRMR_ADD=null;
+        this.U_CMMDTY=null;
+        this.U_DRVR_LNAME=null;
+        this.U_DRVR_FNAME=null;
+        this.U_HLPR_FNAME=null;
+        this.U_HLPR_LNAME=null;
+        this.U_PLATE_NUMBER=null;
+        this.U_DTE_CRTD=null;
+        this.U_CRTD_BY=null;
+        this.U_TRX_NO=null;
+        this.U_DRVR_NAME=null;
+        this.U_SACKS=null;
+        this.U_EMPTY_SACKS=null;
+        this.U_HLPR_NAME=null;
 
         let items = [];
 
