@@ -492,6 +492,12 @@
         <b-form-input id="requestedsacks" type="number" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
           </b-col>
         </b-row>
+        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD'">
+          <b-col cols="12">
+        <small class="text-left">Quantity</small>
+        <b-form-input id="sacks" type="number" v-model=" U_SACKS" class="form-text" required></b-form-input>
+          </b-col>
+        </b-row>
         <b-row v-else></b-row>
 
 

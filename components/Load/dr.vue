@@ -1807,11 +1807,11 @@ export default {
         url: `${this.$axios.defaults.baseURL}/api/transaction/add-sqa`,
            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` },
         data: {
-          company: "36861",
+          company: "71393",
           transaction_type_id: "2",
           item_id: "RM16-00013",
           uom_id:"83",
-          farmer_id: "V100356",
+          farmer_id: "V100340",
           driver_name: "AAA" + ", " + "AAA",
           helper_name: "AAA" + ", " + "AAA",
           no_of_requested_bags: 100,
