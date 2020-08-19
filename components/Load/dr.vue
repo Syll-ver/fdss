@@ -39,7 +39,7 @@
       </b-col>
     </b-row>
 
-    <!-- <b-row>
+    <b-row>
       <b-col cols="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
@@ -104,12 +104,12 @@
           </b-form-checkbox-group>
         </b-dropdown>
       </b-col>
-    </b-row> -->
+    </b-row> 
 
     
 
     <!-- Main table element -->
-    <!-- <b-table
+     <b-table
       id="delivery_receipt_table"
       show-empty
       class="table-style"
@@ -250,7 +250,7 @@
           limit="3"
         ></b-pagination>
       </b-col>
-    </b-row> -->
+    </b-row>
 
     <!-- Main table -->
 
@@ -1821,8 +1821,8 @@ export default {
           employee_id: userDetails.Code,
           plate_number: "AAA-3243",
           signature: this.signaturePath,
-          scheduled_date: "2020-08-14",
-          scheduled_time: "1015",
+          scheduled_date: "2020-08-19",
+          scheduled_time: "2015",
         }
       });
       const v = res.data.view;
