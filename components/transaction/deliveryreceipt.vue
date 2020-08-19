@@ -28,6 +28,7 @@
     <b-row>
       <b-col>
         <b-button
+          id="create"
           variant="biotech"
           class="button-style"
           size="sm"
@@ -1840,22 +1841,22 @@ export default {
     async newDR(signature) {
       try {
         this.showLoading = true;
-        //   this.U_TRANSACTION_TYPE= null;
-        // this.U_FRMR_NAME=null;
-        // this.U_FRMR_ADD=null;
-        // this.U_CMMDTY=null;
-        // this.U_DRVR_LNAME=null;
-        // this.U_DRVR_FNAME=null;
-        // this.U_HLPR_FNAME=null;
-        // this.U_HLPR_LNAME=null;
-        // this.U_PLATE_NUMBER=null;
-        // this.U_DTE_CRTD=null;
-        // this.U_CRTD_BY=null;
-        // this.U_TRX_NO=null;
-        // this.U_DRVR_NAME=null;
-        // this.U_SACKS=null;
-        // this.U_EMPTY_SACKS=null;
-        // this.U_HLPR_NAME=null;
+          this.U_TRANSACTION_TYPE= null;
+        this.U_FRMR_NAME=null;
+        this.U_FRMR_ADD=null;
+        this.U_CMMDTY=null;
+        this.U_DRVR_LNAME=null;
+        this.U_DRVR_FNAME=null;
+        this.U_HLPR_FNAME=null;
+        this.U_HLPR_LNAME=null;
+        this.U_PLATE_NUMBER=null;
+        this.U_DTE_CRTD=null;
+        this.U_CRTD_BY=null;
+        this.U_TRX_NO=null;
+        this.U_DRVR_NAME=null;
+        this.U_SACKS=null;
+        this.U_EMPTY_SACKS=null;
+        this.U_HLPR_NAME=null;
 
         let items = [];
 

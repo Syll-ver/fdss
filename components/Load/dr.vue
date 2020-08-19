@@ -28,6 +28,7 @@
     <b-row>
       <b-col>
         <b-button
+          id="create"
           variant="biotech"
           class="button-style mr-2 my-4"
           size="sm"
