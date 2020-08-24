@@ -283,7 +283,8 @@ export default {
   },
   data() {
     return{
-      receiptData:{U_TRX_NO: "Test"},
+      receiptData:{},
+      receiptData1:{},
       data2: null
     }
   },
