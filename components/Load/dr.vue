@@ -1808,7 +1808,7 @@ export default {
         url: `${this.$axios.defaults.baseURL}/api/transaction/add-sqa`,
            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` },
         data: {
-          company: "71393",
+          company: "36861",
           transaction_type_id: "2",
           item_id: "RM16-00013",
           uom_id:"83",
