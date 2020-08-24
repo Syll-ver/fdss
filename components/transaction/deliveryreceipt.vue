@@ -496,7 +496,7 @@
         <b-row v-if="U_UOM.UomName === 'TRUCK LOAD'">
           <b-col cols="12">
         <small class="text-left">Quantity</small>
-        <b-form-input id="sacks" type="number" v-model=" U_SACKS" class="form-text" required></b-form-input>
+        <b-form-input id="Bags" type="number" v-model=" U_SACKS" class="form-text" required></b-form-input>
           </b-col>
         </b-row>
         <b-row v-else></b-row>
@@ -506,11 +506,11 @@
         <b-row v-if="U_TRANSACTION_TYPE === '2' ">
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of  Bags</small>
-            <b-form-input type="number" id="sacks" class="form-text" v-model="U_SACKS" />
+            <b-form-input type="number" id="Bags" class="form-text" v-model="U_SACKS" />
           </b-col>
        <b-col cols="6" v-else>
             <small class="text-left">Quantity</small>
-            <b-form-input type="number" id="sacks" class="form-text" v-model="U_SACKS" />
+            <b-form-input type="number" id="Bags" class="form-text" v-model="U_SACKS" />
           </b-col>
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of Returned Bags</small>
@@ -560,11 +560,26 @@
       <template v-slot:modal-title>
         <h6>Update Transaction</h6>
       </template>
+     
 
       <b-card class="card-shadow">
+          <small class="text-left">Company</small>
+          <br>
+         <b> {{this.TRANSACTION_COMPANY}}</b>
+          <!-- <b-form-select
+          id="company"
+          v-model="selectedcompany"
+          class="form-text"
+          :options="companyList"
+          @change="getCommodity(), getFarmer()"
+          required
+        ></b-form-select> {{this.TRANSACTION_COMPANY_ID}} -->
+        <br>
+       
         <small>Schedule Date</small>
-        <br />
+        
         <date-time-picker v-bind="datetimeScheme2" @onChange="onChangeHandler" />
+       
 
         <small class="text-left">Transaction Type</small>
         <b-form-select
@@ -581,10 +596,11 @@
           v-model="U_CMMDTY"
           class="form-text"
           :options="commodity"
-          @input="getUOM"
+          @input="updateUOM"
           required
           label="text"
           track-by="text"
+          disabled
           ></multiselect>
         <!-- <b-form-select
           id="commodity"
@@ -595,7 +611,7 @@
           disabled
         ></b-form-select> -->
         <small class="text-left">Unit of Measure</small>
-        <!-- {{U_UOM}} -->
+
         <b-form-select
           id="uom"
           v-model="U_UOM"
@@ -652,12 +668,18 @@
 
         <small class="text-left">Plate Number</small>
         <b-form-input id="tendered" v-model=" U_PLATE_NUMBER" class="form-text"></b-form-input>
-        <!-- <small class="text-left"># of Requested Sacks</small>
+        <!-- <small class="text-left"># of Requested Bags</small>
         <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input> -->
          <b-row v-if="U_UOM.UomName === 'BAG'">
           <b-col cols="12">
         <small class="text-left"># of Requested Bags</small>
         <b-form-input id="requestedsacks" type="number" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
+          </b-col>
+        </b-row>
+         <b-row v-if="U_UOM.UomName === 'TRUCK LOAD'">
+          <b-col cols="12">
+        <small class="text-left">Quantity</small>
+        <b-form-input id="Bags" type="number" v-model=" U_SACKS" class="form-text" required></b-form-input>
           </b-col>
         </b-row>
         <b-row v-else></b-row>
@@ -667,11 +689,12 @@
         <b-row v-if="U_TRANSACTION_TYPE === '2' ">
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of  Bags</small>
-            <b-form-input type="number" id="sacks" class="form-text" v-model="U_SACKS" />
+            <b-form-input type="number" id="Bags" class="form-text" v-model="U_SACKS" />
           </b-col>
+          
        <b-col cols="6" v-else>
             <small class="text-left">Quantity</small>
-            <b-form-input type="number" id="sacks" class="form-text" v-model="U_SACKS" />
+            <b-form-input type="number" id="Bags" class="form-text" v-model="U_SACKS" />
           </b-col>
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of Returned Bags</small>
@@ -725,7 +748,7 @@
           <b-row>
             <div class="mr-4" style="width:31rem; height:40rem">
               <span>
-                <b-img src="/revive.png" class="receipt-logo" center />
+                <b-img src="/logo1.jpg" class="receipt-logo" center />
               </span>
 
               <center>
@@ -799,7 +822,7 @@
               </b-row>
               <b-row>
                 <b-col cols="4">
-                  <span>Requested Sacks</span>
+                  <span>Requested Bags</span>
                 </b-col>
 
                 <b-col cols="8">
@@ -811,7 +834,7 @@
               <div v-if="U_TRANSACTION_TYPE === 'Pick-up'">
                 <b-row>
                   <b-col cols="4">
-                    <span>Number of Sacks</span>
+                    <span>Quantity</span>
                   </b-col>
 
                   <b-col cols="8">
@@ -822,7 +845,7 @@
                 </b-row>
                 <b-row>
                   <b-col cols="4">
-                    <span>Returned Sacks</span>
+                    <span>Returned Bags</span>
                   </b-col>
 
                   <b-col cols="8">
@@ -835,18 +858,18 @@
               <div v-else>
                 <b-row>
                   <b-col cols="4">
-                    <span>Number of Sacks</span>
+                    <span>Quantity</span>
                   </b-col>
 
                   <b-col cols="8">
                     <div class="dotted-border">
-                      <span>: {{U_SACKS}}</span>
+                      <span>: {{U_SACKS }} {{U_UOM.UomEntry}}</span>
                     </div>
                   </b-col>
                 </b-row>
                 <b-row>
                   <b-col cols="4">
-                    <span>Returned Sacks</span>
+                    <span>Returned Bags</span>
                   </b-col>
 
                   <b-col cols="8">
@@ -939,7 +962,7 @@
    
 
       <template v-slot:modal-footer="{}">
-         <button class="btn btn-danger" @click="generatePdf">generate PDF</button>
+         <!-- <button class="btn btn-danger" @click="generatePdf">generate PDF</button> -->
         <b-button id="cancel_add_action_modal" size="sm" class="button-style" @click="close1">Close</b-button>
       </template>
     </b-modal>
@@ -1089,7 +1112,7 @@ export default {
     await this.getTransactionType();
     // await this.getFarmer();
     await this.getCompanyList();
-    // await this.getCommodity();
+    // await this.updateUOM();
     this.totalRows = this.items.length;
   },
   data() {
@@ -1239,7 +1262,7 @@ export default {
       sortDirection: "asc",
       filter: null,
       filterOn: [],
-      receiptData: {}
+      receiptData1: {}
     };
   },
   computed: {
@@ -1654,14 +1677,17 @@ export default {
 
     async edit(data) {
       console.log(data);
-    
+        // this.TRANSACTION_COMPANY_ID ={text: data.TRANSACTION_COMPA};
+      // this.TRANSACTION_COMPANY_ID = data.TRANSACTION_COMPANY_ID;
+      // this.selectedcompany= {text: data.TRANSACTION_COMPANY, value:TRANSACTION_COMPANY_ID};
+      this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
+      this.TRANSACTION_COMPANY_ID = data.TRANSACTION_COMPANY_ID;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
-      // this.U_PRICELIST = data.U_PRICELIST;
       this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
-      // this.U_CMMDTY = data.U_CMMDTY;
       this.U_CMMDTY = {value: data.U_ITEM, text: data.U_CMMDTY},
+      this.U_UOM = {UomName: data.U_UOM, UomEntry: data.U_UOM_ID}
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
       const driver_name = data.U_DRVR_NAME.split(", ");
@@ -1688,7 +1714,9 @@ export default {
         ))
       );
       this.$bvModal.show("edit-transaction-modal");
-      await this.getUOM();
+ 
+      
+      this.updateUOM();
       console.log(this.unit)
       this.U_UOM = {UomName: data.U_UOM, UomEntry: data.U_UOM_ID}
 
@@ -1746,6 +1774,29 @@ export default {
         this.companyList.push({
           text: v[i].NAME,
           value: v[i].ID
+        });
+       
+      }
+    },
+     async updateUOM() {
+      //  console.log(this.U_CMMDTY.value)
+      this.unit = [];
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/api/items/selectUom/${this.U_CMMDTY.value}`,
+        headers: {
+          Authorization: localStorage.SessionId
+        },
+        data: {
+          company: this.TRANSACTION_COMPANY_ID
+        }
+      });
+      const v = res.data.view;
+
+      for (let i = 0; i < v.length; i++) {
+        this.unit.push({
+          text: v[i].UomName,
+          value: {UomName: v[i].UomName, UomEntry: v[i].UomEntry}
         });
        
       }
@@ -1957,7 +2008,8 @@ export default {
           //  item_id: this.U_CMMDTY ,
           //  farmer_id: this.U_FRMR_NAME,
           // pricelist: this,U_PRICELIST,
-          uom_id: this.U_UOM,
+          comapany: this.TRANSACTION_COMPANY_ID,
+          uom_id: this.U_UOM.UomEntry,
           driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
           helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
           no_of_requested_bags: this.U_REQUESTED_SACKS,
@@ -2120,7 +2172,10 @@ export default {
             U_SACKS: v[i].NUMBER_OF_BAGS,
             U_SCHEDULED_DATE_AND_TIME: sdate,
             U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
-            U_SCHEDULED_TIME: v[i].SCHEDULED_TIME
+            U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
+            // selectedcompany: v[i].USER_COMPANY,
+            TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
+            TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY
           });
            
         }
