@@ -732,9 +732,9 @@ export default {
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
-      sortBy: "",
+      sortBy: "U_TRX_NO",
       sortDesc: false,
-      sortDirection: "asc",
+      sortDirection: "desc",
       filter: null,
       filterOn: []
     };

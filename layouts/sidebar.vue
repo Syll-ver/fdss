@@ -268,6 +268,7 @@ export default {
       visiblePrice: false,
 
       adminroutes: [
+     
             
         {
           link: "/admin/modules",
@@ -305,6 +306,16 @@ export default {
           style: "position:relative;left:11px",
           id: "sb-user-accounts",
           icon: "user",
+          class: "ml-2",
+          active: false
+        },
+        
+           {
+          link: "/admin/companies",
+          name: "Companies",
+          icon: "building",
+          style: "position:relative;left:6px",
+          id: "sb-modules",
           class: "ml-2",
           active: false
         },
