@@ -119,7 +119,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
          <b-row>
           <b-col cols="4">
             <span>
-              Requested Sacks
+              Requested Bags
             </span>
           </b-col>
 
@@ -131,11 +131,11 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
             </div>
           </b-col>
         </b-row>
-        <div v-if="receiptData.U_TRANSACTION_TYPE === 'Pick-up'">
+       <div v-if="receiptData.U_TRANSACTION_TYPE === 'Pick-up' && receiptData.U_UOM.UomEntry === 'BAG'">
                         <b-row >
           <b-col cols="4">
             <span>
-              Number of Sacks
+             Quantity
             </span>
           </b-col>
 
@@ -150,7 +150,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Sacks
+               Returned Bags
             </span>
           </b-col>
 
@@ -163,18 +163,42 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           </b-col>
         </b-row>
         </div>
+          <div v-else-if="receiptData.U_TRANSACTION_TYPE === 'Pick-up' && receiptData.U_UOM.UomName === 'TRUCK LOAD'">
+                  <b-row>
+                    <b-col cols="4">
+                      <span>Quantity</span>
+                    </b-col>
+              
+                     <b-col cols="8">
+                      <div class="dotted-border">
+                        <span>: {{ receiptData.U_SACKS }} &nbsp; {{ receiptData.U_UOM.UomEntry }}</span>
+                      </div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col cols="4">
+                      <span>Returned Bags</span>
+                    </b-col>
+
+                    <b-col cols="8">
+                      <div class="dotted-border">
+                        <span>: {{ receiptData.U_EMPTY_SACKS }} &nbsp;{{ receiptData.U_UOM.UomEntry }}</span>
+                      </div>
+                    </b-col>
+                  </b-row>
+                </div>
 <div v-else>
                <b-row >
           <b-col cols="4">
             <span>
-              Number of Sacks
+              Quantity
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{receiptData.U_SACKS}}
+                : {{receiptData.U_SACKS}}{{ receiptData.U_UOM }}
               </span>
             </div>
           </b-col>
@@ -182,7 +206,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Sacks 
+               Returned Bags
             </span>
           </b-col>
 
