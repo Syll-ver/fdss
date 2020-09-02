@@ -421,7 +421,7 @@ Transaction Number : {{ U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{U_SACKS}} {{ U_UOM.UomEntry }}
+                : {{U_SACKS}} {{ U_UOM }}
               </span>
             </div>
           </b-col>
@@ -453,7 +453,7 @@ Transaction Number : {{ U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{U_SACKS}} {{ U_UOM.UomEntry }}
+                : {{U_SACKS}} {{ U_UOM}}
               </span>
             </div>
           </b-col>
@@ -915,6 +915,7 @@ export default {
     },
 show(data) {
        console.log(data)
+       this.U_UOM = data.UOM_NAME;
        this.U_DTE_CRTD = data.U_DTE_CRTD;
        this.U_TME_CRTD = data.U_TME_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;

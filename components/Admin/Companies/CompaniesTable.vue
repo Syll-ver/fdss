@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+<div>
     <Loading v-if="showLoading" />
     <div>
       <b-alert
@@ -146,11 +146,13 @@
 
         <template v-slot:cell(actions)="row">
           <b-button
+            id="companyedit"
+            variant="edit"
             size="sm"
             @click="edit(row.item)"
-            class="mr-1 button-circle"
+            class="table-button"
             v-b-tooltip.hover
-            title="Edit Company"
+            title="Update Company"
             v-if="actions.edit_company"
           >
             <font-awesome-icon icon="edit" />
@@ -186,7 +188,7 @@
             <b-badge
               style="width:70px"
               pill
-              :variant="row.item.U_IS_ACTIVE ? 'success' : 'secondary'"
+              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
               >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
             >
           </div>
@@ -287,14 +289,7 @@
         </b-row>
 
         <template v-slot:modal-footer="{ cancel }">
-          <b-button
-            id="cancel_add_action_modal"
-            size="sm"
-            @click="cancel()"
-            style="font-size:13.5px;border: 0px;"
-            :disabled="showLoading === true"
-            >Cancel</b-button
-          >
+          
           <b-button
             id="add_action_modal"
             size="sm"
@@ -305,6 +300,14 @@
             :disabled="showLoading === true"
             >Add
           </b-button>
+          <b-button
+            id="cancel_add_action_modal"
+            size="sm"
+            @click="cancel()"
+            style="font-size:13.5px;border: 0px;"
+            :disabled="showLoading === true"
+            >Cancel</b-button
+          >
         </template>
       </b-modal>
 
@@ -394,9 +397,7 @@
         </template>
       </b-modal>
     </div>
-
-    <!-- Edit Action -->
-  </b-container>
+</div>
 </template>
 
 <script>

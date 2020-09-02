@@ -294,7 +294,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
       <VueQrcode
         id="QRcode"
         type="String"
-        :value="JSON.stringify(receiptData1)"
+        :value="receiptData1"
       ></VueQrcode>
     </b-row>
   </div>
@@ -327,7 +327,11 @@ export default {
     
     async print(data) {
         this.receiptData = {...data}
-        this.receiptData1 = {U_TRX_NO:data.U_TRX_NO}
+        // console.log(data.U_TRX_NO)
+        // let datas = data.U_TRX_NO;
+        // let qr = datas.split(" ")
+        this.receiptData1 = data.U_TRX_NO
+
 
         // console.log(this.receiptData)
         await setTimeout({}, 3000);
@@ -376,8 +380,7 @@ export default {
         WinPrint.document.close();
     WinPrint.print( )
       
-       
-          true
+      TRUE
         
 
       // WinPrint.print();
