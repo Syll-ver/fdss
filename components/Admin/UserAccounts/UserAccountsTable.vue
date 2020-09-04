@@ -239,6 +239,7 @@
         header-text-variant="light"
         body-bg-variant="light"
         id="add-user-modal"
+      
       >
         <template v-slot:modal-title>
           <h6>Add User</h6>
@@ -420,6 +421,7 @@
         header-text-variant="light"
         body-bg-variant="light"
         id="find-user-modal"
+     
       >
         <template v-slot:modal-title>
           <h6>Find Users</h6>
@@ -522,7 +524,7 @@
           </b-row>
         </b-card>
 
-        <template >
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="add_add_modal"
             size="sm"
@@ -721,7 +723,7 @@
           </b-col>
         </b-row>
 
-        <template >
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             size="sm"
             id="edt_edit_modal"
@@ -793,8 +795,9 @@
           <h6>Do you want to reset user password?</h6>
         </div>
 
-        <template >
+       <template v-slot:modal-footer="{ cancel }">
           <b-button
+            id="Resetbutton"
             size="sm"
             variant="biotech"
             @click="confirmReset()"
@@ -802,6 +805,7 @@
             >Reset</b-button
           >
           <b-button
+            id="cancelbutton"
             size="sm"
             @click="cancel()"
             class="button-style"

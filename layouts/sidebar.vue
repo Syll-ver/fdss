@@ -117,7 +117,7 @@
 
       <div style="font-size: 13px">Are you sure you want to 'Log-out'?</div>
 
-      <template v-slot:modal-footer="{ ok, cancel }">
+      <template v-slot:modal-footer="{  cancel }">
         
 
         <b-button

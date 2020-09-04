@@ -546,6 +546,14 @@
 
         <b-row v-if="U_TRANSACTION_TYPE === '2'">
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
+             <small class="text-left"># of Requested Bags</small>
+            <b-form-input
+              id="requestedsacks"
+              type="number"
+              v-model="U_REQUESTED_SACKS"
+              class="form-text"
+              required
+            ></b-form-input>
             <small class="text-left"># of Bags</small>
             <b-form-input
               type="number"
@@ -917,7 +925,7 @@
                     </div>
                   </b-col>
                 </b-row>
-                <div v-if="U_TRANSACTION_TYPE === 'Pick-up'">
+                <div v-if="U_TRANSACTION_TYPE === 'Pick-up' && U_UOM.UomEntry === 'BAG'">
                   <b-row>
                     <b-col cols="4">
                       <span>Quantity</span>
@@ -941,6 +949,32 @@
                     </b-col>
                   </b-row>
                 </div>
+
+        <div v-else-if="U_TRANSACTION_TYPE === 'Pick-up' && U_UOM.UomName === 'TRUCK LOAD'">
+                  <b-row>
+                    <b-col cols="4">
+                      <span>Quantity</span>
+                    </b-col>
+              
+                     <b-col cols="8">
+                      <div class="dotted-border">
+                        <span>: {{ U_SACKS }} {{ U_UOM.UomEntry }}</span>
+                      </div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col cols="4">
+                      <span>Returned Bags</span>
+                    </b-col>
+
+                    <b-col cols="8">
+                      <div class="dotted-border">
+                        <span>: {{ U_EMPTY_SACKS }}</span>
+                      </div>
+                    </b-col>
+                  </b-row>
+                </div>
+
                 <div v-else>
                   <b-row>
                     <b-col cols="4">

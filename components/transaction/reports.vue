@@ -297,7 +297,7 @@
       <div class=" mr-4" style="width:31rem; height:40rem">
             <span>
              
-                 <b-img src="/revive.png" class="receipt-logo" center/>
+                 <b-img src="/logo1.jpg" class="receipt-logo" center/>
        
            
             </span>
@@ -398,7 +398,7 @@ Transaction Number : {{ U_TRX_NO }}
          <b-row>
           <b-col cols="4">
             <span>
-              Requested Sacks
+              Requested Bags
             </span>
           </b-col>
 
@@ -414,14 +414,14 @@ Transaction Number : {{ U_TRX_NO }}
                         <b-row >
           <b-col cols="4">
             <span>
-              Number of Sacks
+              Quantity
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{U_SACKS}}
+                : {{U_SACKS}} {{ U_UOM }}
               </span>
             </div>
           </b-col>
@@ -429,7 +429,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Sacks
+               Returned Bags
             </span>
           </b-col>
 
@@ -446,14 +446,14 @@ Transaction Number : {{ U_TRX_NO }}
                <b-row >
           <b-col cols="4">
             <span>
-              Number of Sacks
+              Quantity
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{U_SACKS}}
+                : {{U_SACKS}} {{ U_UOM}}
               </span>
             </div>
           </b-col>
@@ -461,7 +461,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Sacks
+               Returned Bags
             </span>
           </b-col>
 
@@ -915,6 +915,7 @@ export default {
     },
 show(data) {
        console.log(data)
+       this.U_UOM = data.UOM_NAME;
        this.U_DTE_CRTD = data.U_DTE_CRTD;
        this.U_TME_CRTD = data.U_TME_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
