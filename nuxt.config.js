@@ -60,8 +60,12 @@ module.exports = {
   axios: {
     // baseURL: "http://172.16.4.168:8000/fdss-api" 
     // baseURL: "http://94.237.66.240:8000" (MASTER)
+<<<<<<< HEAD
     // baseURL: "http://94.237.66.240:8100" (SQA)
     baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
+=======
+    baseURL: "https://fdss-dev.biotechfarms.net/fdss-api" 
+>>>>>>> b19c8837e27b371d67a5963bb0c7716693fd8a15
     // baseURL: "hhtp://94.237.66.240:8200" (UAT)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api"
 
