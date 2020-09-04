@@ -29,6 +29,7 @@
               id="password"
               class="password"
               v-model="user.password"
+              :state="inputValidation"
               placeholder="Password"
               type="password"
               ref="password"
@@ -42,7 +43,7 @@
               id="btn_login"
               class="login"
               @click="login()"
-              :disabled="!inputValidation"
+        
               block
               variant="biotech"
             >
@@ -154,8 +155,13 @@ export default {
         })
         .catch(err => {
           this.showLoading = false;
-          if (err.response && err.response.data.errorMsg) {
+                  if(this.user.name === "" && this.user.password === "") {
+            this.showAlert("Please Input all Fields", "danger");
+                 }
+          else if (err.response && err.response.data.errorMsg) {
             this.showAlert(err.response.data.errorMsg, "danger");
+          
+     
           } else {
             this.showAlert(err.message, "danger");
           }
