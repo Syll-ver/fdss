@@ -218,7 +218,7 @@
           ></b-form-input>
         </b-row>
 
-        <template v-slot:modal-footer="{ addActionTable, cancel }">
+        <template v-slot:modal-footer="{  cancel }">
           <b-button
             id="add_action_modal"
             size="sm"
@@ -298,7 +298,7 @@
           </b-form-select>
         </b-row>
 
-        <template v-slot:modal-footer="{editActionTable, cancel }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="update_action"
             size="sm"
