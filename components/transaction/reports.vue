@@ -86,11 +86,12 @@
     </template> 
             <b-form-checkbox-group
               
-              id="status_group"
+              id="status_group0"
               name="flavour-2"
               class="pl-2"
               style="font-size:12px"
               v-model="filterStatus"
+              title="Filter Transaction Status"
             >
               <b-form-checkbox id="pending_supp_stat" value="Completed"
                 >Completed</b-form-checkbox
@@ -99,6 +100,47 @@
                 >Cancelled</b-form-checkbox
               >
             </b-form-checkbox-group>
+            <b-form-checkbox-group
+            id="status_group"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterTransaction"
+            v-b-tooltip.hover
+            title="Filter Transaction Type "
+          >
+          Transaction Type
+            <b-form-checkbox id="Pick-up" value="Pick-up"
+              >Pick-up</b-form-checkbox
+            >
+            <b-form-checkbox id="delivery" value="Delivery"
+              >Delivery</b-form-checkbox
+            >
+          </b-form-checkbox-group>
+             <b-form-checkbox-group
+            id="status_group1"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterCompany"
+            v-b-tooltip.hover
+            title="Filter Company "
+          >
+         Company<br>
+            <!-- <b-form-checkbox
+                    size="sm"
+                    :id="'choice' + index"
+                    v-for="(items, index) in filterCompany"
+                    :key="index"
+                    :value="items"
+                  >{{ items }}</b-form-checkbox> -->
+                   <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+              >Biotech</b-form-checkbox
+            >
+            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+              >REvive</b-form-checkbox
+            >
+          </b-form-checkbox-group>
           </b-dropdown>
            <b-button
             size="sm"
@@ -613,6 +655,7 @@ export default {
   async created() {
     await this.getTransactions();
     await this.getTransactionType();
+    await this.getCompanyList();
     // await this.getFarmer();
     // await this.getCommodity();
     this.totalRows = this.items.length;
@@ -627,6 +670,7 @@ export default {
         message: ""
       },
       showReceipt: false,
+      TRANSACTION_COMPANY:null,
       U_TRANSACTION_TYPE: null,
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
@@ -647,7 +691,8 @@ export default {
       U_HLPR_NAME:null,
       opens1:"",
     
-      
+      filterCompany:[],
+      filterTransaction:[],
       transaction_types:[],
       farmer:[],
       farmerAdd:[],
@@ -670,7 +715,13 @@ export default {
       },
       items:[],
       itemsFields: [
-         
+           {
+          key: "TRANSACTION_COMPANY",
+          label: "Company",
+          sortable: true,
+          sortDirection: "asc"
+        },
+        
         {
           key: "U_TRX_NO",
           label: "Transaction No.",
@@ -743,6 +794,12 @@ export default {
     filterItems() {
       return this.items.filter(request => {
         if (this.filterStatus.includes(request.U_STATUS)) {
+          return request;
+        }
+        if (this.filterTransaction.includes(request.U_TRANSACTION_TYPE)) {
+          return request;
+        }
+        if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
           return request;
         }
       });
@@ -873,6 +930,28 @@ export default {
         });
       }
     },
+      // },
+    async getCompanyList() {
+      //  console.log(this.U_CMMDTY.value.value)
+      this.companyList = [];
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/admin/companies`,
+        headers: {
+          Authorization: localStorage.SessionId
+        }
+      });
+      const v = res.data.companies;
+
+      for (let i = 0; i < v.length; i++) {
+        if (v[i].U_IS_ACTIVE == 1) {
+          this.companyList.push({
+            text: v[i].COMPANYDBNAME,
+            value: v[i].U_COMPANYCODE
+          });
+        }
+      }
+    },
     async getCommodity() {
       const res = await axios({
         method: "POST",
@@ -915,6 +994,7 @@ export default {
     },
 show(data) {
        console.log(data)
+       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
        this.U_UOM = data.UOM_NAME;
        this.U_DTE_CRTD = data.U_DTE_CRTD;
        this.U_TME_CRTD = data.U_TME_CRTD;
@@ -1016,6 +1096,7 @@ show(data) {
           const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
           this.items.push({
               U_TRX_NO: v[i].U_TRX_NO,
+              TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
               // U_TME_CRTD : t,
               U_TRX_ID: v[i].TRANSACTION_ID,
               U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
