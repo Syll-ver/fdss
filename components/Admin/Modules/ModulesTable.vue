@@ -194,7 +194,7 @@
           ></b-form-input>
         </b-row>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template v-slot:modal-footer="{  cancel }">
           <b-button
             id="add_module_modal"
             size="sm"
@@ -254,7 +254,7 @@
           </b-form-select>
         </b-row>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="edit_module_modal"
             size="sm"
