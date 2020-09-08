@@ -115,13 +115,38 @@
             style="font-size:12px"
             v-model="filterStatus"
             v-b-tooltip.hover
-            title="Filter Transaction Type"
+            title="Filter Transaction Type "
           >
+          Transaction Type
             <b-form-checkbox id="Pick-up" value="Pick-up"
               >Pick-up</b-form-checkbox
             >
             <b-form-checkbox id="delivery" value="Delivery"
               >Delivery</b-form-checkbox
+            >
+          </b-form-checkbox-group>
+           <b-form-checkbox-group
+            id="status_group1"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterCompany"
+            v-b-tooltip.hover
+            title="Filter Company "
+          >
+         Company<br>
+            <!-- <b-form-checkbox
+                    size="sm"
+                    :id="'choice' + index"
+                    v-for="(items, index) in filterCompany"
+                    :key="index"
+                    :value="items"
+                  >{{ items }}</b-form-checkbox> -->
+                   <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+              >Biotech</b-form-checkbox
+            >
+            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+              >REvive</b-form-checkbox
             >
           </b-form-checkbox-group>
         </b-dropdown>
@@ -1280,6 +1305,7 @@ export default {
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
       filterStatus: ["Pick-up", "Delivery"],
+      filterCompany: [],
       showLoading: false,
       alert: {
         showAlert: 0,
@@ -1339,6 +1365,13 @@ export default {
       },
       items: [],
       itemsFields: [
+        {
+          key: "TRANSACTION_COMPANY",
+          label: "Company",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
         {
           key: "U_TRX_NO",
           label: "Transaction No.",
@@ -1415,8 +1448,12 @@ export default {
         if (this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
           return request;
         }
+         if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
+          return request;
+        }
       });
     },
+  
 
     bottomLabel() {
       let end = this.perPage * this.currentPage;
@@ -1845,6 +1882,7 @@ export default {
     },
     show(data) {
       console.log(data);
+      this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
