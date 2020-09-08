@@ -429,7 +429,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Bags
+               Empty Bags
             </span>
           </b-col>
 
@@ -461,7 +461,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Bags
+               Empty Bags
             </span>
           </b-col>
 
