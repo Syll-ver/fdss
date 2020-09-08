@@ -567,7 +567,7 @@
             <b-form-input type="number" id="Bags" class="form-text" v-model="U_SACKS" />
           </b-col> -->
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
-            <small class="text-left"># of Returned Bags</small>
+            <small class="text-left"># of Empty Bags</small>
             <b-form-input
               type="number"
               id="emptysacks"
@@ -783,7 +783,7 @@
             <b-form-input type="number" id="Bags" class="form-text" v-model="U_SACKS" />
           </b-col> -->
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
-            <small class="text-left"># of Returned Bags</small>
+            <small class="text-left"># of Empty Bags</small>
             <b-form-input
               type="number"
               id="emptysacks"
@@ -939,7 +939,7 @@
                   </b-row>
                   <b-row>
                     <b-col cols="4">
-                      <span>Returned Bags</span>
+                      <span>Empty Bags</span>
                     </b-col>
 
                     <b-col cols="8">
@@ -964,7 +964,7 @@
                   </b-row>
                   <b-row>
                     <b-col cols="4">
-                      <span>Returned Bags</span>
+                      <span>Empty Bags</span>
                     </b-col>
 
                     <b-col cols="8">
@@ -989,7 +989,7 @@
                   </b-row>
                   <b-row>
                     <b-col cols="4">
-                      <span>Returned Bags</span>
+                      <span>Empty Bags</span>
                     </b-col>
 
                     <b-col cols="8">

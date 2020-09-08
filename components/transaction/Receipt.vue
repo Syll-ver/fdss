@@ -150,7 +150,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Bags
+               Empty Bags
             </span>
           </b-col>
 
@@ -177,7 +177,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                   </b-row>
                   <b-row>
                     <b-col cols="4">
-                      <span>Returned Bags</span>
+                      <span>Empty Bags</span>
                     </b-col>
 
                     <b-col cols="8">
@@ -206,7 +206,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Bags
+               Empty Bags
             </span>
           </b-col>
 
