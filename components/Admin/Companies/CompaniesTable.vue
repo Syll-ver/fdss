@@ -327,7 +327,7 @@
         @hide="clearForm()"
       >
         <template v-slot:modal-title>
-          <h6>Edit Company</h6>
+          <h6>Update Company</h6>
         </template>
 
         <small class="text-left">Company Code</small>
@@ -378,13 +378,7 @@
         </b-row>
 
         <template v-slot:modal-footer="{ cancel }">
-          <b-button
-            size="sm"
-            @click="cancel()"
-            style="font-size:13.5px;border: 0px;"
-            :disabled="showLoading === true"
-            >Cancel</b-button
-          >
+        
           <b-button
             size="sm"
             variant="biotech"
@@ -392,8 +386,15 @@
             style="font-size:13px"
             class="button"
             :disabled="showLoading === true"
-            >Edit
+            >Update
           </b-button>
+            <b-button
+            size="sm"
+            @click="cancel()"
+            style="font-size:13.5px;border: 0px;"
+            :disabled="showLoading === true"
+            >Cancel</b-button
+          >
         </template>
       </b-modal>
     </div>

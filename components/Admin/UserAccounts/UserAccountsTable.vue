@@ -463,6 +463,8 @@
           <b-table
             class="mt-4"
             ref="selectableTable"
+            id="tablefind"
+            v-model="selectableTable"
             selectable
             show-empty
             :busy="isBusy"
@@ -524,7 +526,7 @@
           </b-row>
         </b-card>
 
-        <template v-slot:modal-footer="{ cancel }">
+        <template v-slot:modal-footer="{ }">
           <b-button
             id="add_add_modal"
             size="sm"
@@ -536,7 +538,7 @@
           <b-button
             id="cancel_add_modal"
             size="sm"
-            @click="cancel()"
+            @click="cancel1()"
             class="button-style"
             >Cancel</b-button
           >
@@ -1118,7 +1120,17 @@ export default {
       this.findUser = null;
     },
     findUsers() {
+      this.showLoading =true;
+      this.selectedCompany = null;
       this.$bvModal.show("find-user-modal");
+      this.showLoading = false;
+    },
+    cancel1(){
+      this.clearForm();
+   
+      this.$bvModal.hide("add-user-modal");
+      this.$bvModal.hide("find-user-modal");
+
     },
     onRowSelected(items) {
       this.selectedUser = items;
