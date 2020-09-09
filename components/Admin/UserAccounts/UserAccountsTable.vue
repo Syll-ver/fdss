@@ -329,9 +329,9 @@
               <b-form-input
                 id="act_grp_add_modal"
                 type="text"
-                v-model="userDetails.U_USERNAME"
+                v-model="selectedUserDetails.EmployeeID"
                 style="font-size:10px"
-                :disabled="userDetails.U_IS_SAP_USER === 1"
+                disabled
               ></b-form-input>
             </b-card>
 
