@@ -1809,7 +1809,7 @@ export default {
            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` },
         data: {
           company: "36861",
-          transaction_type_id: "2",
+          transaction_type2_id: "2",
           item_id: "RM16-00013",
           uom_id:"83",
           farmer_id: "V100340",

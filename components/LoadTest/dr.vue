@@ -1271,7 +1271,7 @@ export default {
   },
   async created() {
     // await this.getPriceList();
-
+    await this.login();
     await this.getTransactions();
     await this.getTransactionType();
     // await this.getFarmer();
@@ -1484,6 +1484,31 @@ export default {
   },
 
   methods: {
+     async login() {
+      this.showLoading = true;
+      await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/login`,
+        data: { username: "admin", password: "1234" }
+      })
+        .then(result => {
+          localStorage.username = "admin";
+          localStorage.user_details = JSON.stringify(result.data.user_details);
+          localStorage.user_role = JSON.stringify(result.data.user_role);
+          localStorage.user_actions = JSON.stringify(result.data.user_actions);
+          localStorage.SessionId = result.data.SessionId;
+         
+        })
+        .catch(err => {
+          this.showLoading = false;
+          if (err.response && err.response.data.errorMsg) {
+            this.showAlert(err.response.data.errorMsg, "danger");
+          } else {
+            this.showAlert(err.message, "danger");
+          }
+        });
+      },
+
     //  async beforeCreate() {
     //  this.showLoading = true;
     // await this.$store

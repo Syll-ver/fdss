@@ -6,7 +6,7 @@
         small
         active-nav-item-class="font-weight-bold text-uppercase text-biotech"
       >
-        <b-tab title="Roles And Access Rights">
+        <b-tab title="Load Test">
         <div>
             <LoadTest/>
         </div>
@@ -21,7 +21,7 @@ import axios from "axios";
 import LoadTest from "@/components/LoadTest/dr";
 export default {
   name: "Dashboard",
-  layout: "sidebar",
+  layout: "loginLayout",
     components: {
       LoadTest
     },
