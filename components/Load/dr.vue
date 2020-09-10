@@ -32,7 +32,7 @@
           variant="biotech"
           class="button-style mr-2 my-4"
           size="sm"
-          @click="newDR()"
+          @click="$bvModal.show('add-transaction-modal')"
         >
           <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
         </b-button>

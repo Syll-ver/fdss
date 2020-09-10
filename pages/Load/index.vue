@@ -1,7 +1,7 @@
 <template>
   <div class="body">
     <main>
-      <LoadTest/>
+      <Load/>
 
       <!-- <div class="my-3 ml-2" id="requests-view">
         <Loading v-if="showLoading" />
@@ -166,12 +166,12 @@
 
 <script>
 import axios from "axios";
-import LoadTest from "@/components/LoadTest/dr";
+import Load from "@/components/Load/dr";
 export default {
   name: "Dashboard",
   layout: "loginLayout",
     components: {
-      LoadTest
+      Load
     },
   data() {
     return {
