@@ -437,9 +437,9 @@
               >
                 <option :value="null">Select Company</option>
                 <option
-                  v-for="(company, i) in companyList"
+                  v-for="(company, i) in filterListCompanies"
                   :key="i"
-                  :value="company.ID"
+                  :value="company.U_COMPANYCODE"
                   >{{ company.COMPANYNAME }}</option
                 >
               </b-form-select>
@@ -950,6 +950,17 @@ export default {
     };
   },
   computed: {
+      ...mapGetters({
+      Users: "Admin/Users/getUsers",
+      listRoles: "Admin/Roles/getListRoles",
+      listCompanies: "Admin/Company/getListCompanies",
+     listSAPcompanies: "SAP/Companies/getCompanyList",
+      companyList: "Company/getCompanyList",
+      SearchedUsers: "Admin/Users/getSearchedUsers"
+    }),
+    filterListCompanies() {
+      return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
+    },  
     filterSearchedUsers() {
       return this.SearchedUsers;
     },
@@ -1012,12 +1023,7 @@ export default {
       return this.filterItems.length;
     },
 
-    ...mapGetters({
-      Users: "Admin/Users/getUsers",
-      listRoles: "Admin/Roles/getListRoles",
-      companyList: "Company/getCompanyList",
-      SearchedUsers: "Admin/Users/getSearchedUsers"
-    }),
+  
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -1072,6 +1078,7 @@ export default {
       this.$bvModal.show("update-user-modal");
     },
     fetchEmployees() {
+      console.log(this.selectedCompany)
        this.showLoading = true;
       this.isBusy = true;
       this.$store
@@ -1079,6 +1086,7 @@ export default {
           SessionId: localStorage.SessionId,
           CompanyDB: this.selectedCompany
         })
+
 
         .then(res => {
           if (res && res.name == "Error") {
@@ -1189,6 +1197,8 @@ export default {
 
     addUserTable() {
       this.showLoading = true;
+      this.userDetails.U_USERNAME = this.selectedUserDetails.EmployeeID;
+     
       this.$store
         .dispatch("Admin/Users/addUser", {
           Code: JSON.parse(localStorage.user_details).Code,
@@ -1196,7 +1206,7 @@ export default {
           user: this.userDetails,
           SessionId: localStorage.SessionId
         })
-        .then(res => {
+        .then(res => {        
           if (res && res.name == "Error") {
             this.showLoading = false;
 
@@ -1296,20 +1306,45 @@ export default {
 
   async beforeCreate() {
      this.showLoading = true;
-   await this.$store
-      .dispatch("Company/fetchCompany", {
-        SessionId: localStorage.SessionId
-      })
+     this.isBusyTable = true;
 
+    await this.$store
+      .dispatch("Admin/Company/fetchListCompany", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId,
+        Admin: "Y"
+      })
       .then(res => {
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
               this.$bvModal.show("session_modal");
             }
+            if (res.response.data.errorMsg === "Session restore error.") {
+              this.$bvModal.show("session_modal");
+            }
           }
         }
       });
+     await this.$store
+      .dispatch("SAP/Companies/fetchCompanyList", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+            if (res.response.data.errorMsg === "Session restore error.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+
+    this.isBusyTable = false;
 
     this.showLoading = true;
     await this.$store
