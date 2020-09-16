@@ -117,7 +117,7 @@
               >Delivery</b-form-checkbox
             >
           </b-form-checkbox-group>
-             <b-form-checkbox-group
+             <!-- <b-form-checkbox-group
             id="status_group1"
             name="flavour-2"
             class="pl-2"
@@ -127,20 +127,20 @@
             title="Filter Company "
           >
          Company<br>
-            <!-- <b-form-checkbox
+            <b-form-checkbox
                     size="sm"
                     :id="'choice' + index"
                     v-for="(items, index) in filterCompany"
                     :key="index"
                     :value="items"
-                  >{{ items }}</b-form-checkbox> -->
+                  >{{ items }}</b-form-checkbox>
                    <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
               >Biotech</b-form-checkbox
             >
             <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
               >REvive</b-form-checkbox
             >
-          </b-form-checkbox-group>
+          </b-form-checkbox-group> -->
           </b-dropdown>
            <b-button
             size="sm"
