@@ -37,6 +37,18 @@
           <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
         </b-button>
       </b-col>
+
+        <b-col>
+        <b-button
+          id="create"
+          variant="biotech"
+          class="button-style"
+          size="sm"
+          @click="postPO()"
+        >
+          <font-awesome-icon icon="plus" class="mr-1" />Post Purchase Order
+        </b-button>
+      </b-col>
     </b-row>
 
     <b-row>
@@ -1546,6 +1558,9 @@ export default {
           moment(data.startDate).format("HH:mm")
         ));
       console.log(data);
+    },
+    async postPO(){
+
     },
     async saveDR() {
       // console.log(this.U_UOM)

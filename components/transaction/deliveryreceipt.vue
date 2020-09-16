@@ -125,7 +125,7 @@
               >Delivery</b-form-checkbox
             >
           </b-form-checkbox-group>
-           <b-form-checkbox-group
+           <!-- <b-form-checkbox-group
             id="status_group1"
             name="flavour-2"
             class="pl-2"
@@ -135,20 +135,14 @@
             title="Filter Company "
           >
          Company<br>
-            <!-- <b-form-checkbox
-                    size="sm"
-                    :id="'choice' + index"
-                    v-for="(items, index) in filterCompany"
-                    :key="index"
-                    :value="items"
-                  >{{ items }}</b-form-checkbox> -->
+         
                    <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
               >Biotech</b-form-checkbox
             >
             <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
               >REvive</b-form-checkbox
             >
-          </b-form-checkbox-group>
+          </b-form-checkbox-group> -->
         </b-dropdown>
       </b-col>
     </b-row>
@@ -408,15 +402,22 @@
       </template>
 
       <b-card class="card-shadow">
-        <small class="text-left">Company</small>
-        <b-form-select
+        <!-- <b-form-input
+          disabled
+          id="farmer_add"
+          class="form-text"
+          v-model="companyList"
+          @change="getCommodity(), getFarmer()"
+        /> -->
+        <!-- <b-form-select
           id="company"
           v-model="selectedcompany"
           class="form-text"
           :options="companyList"
           @change="getCommodity(), getFarmer()"
           required
-        ></b-form-select>
+
+        ></b-form-select> -->
         <!-- <b-form-select
           id="company"
           v-model="selectedcompany"
@@ -645,18 +646,18 @@
       </template>
 
       <b-card class="card-shadow">
-        <small class="text-left">Company</small>
+        <!-- <small class="text-left">Company</small>
         <br />
         <b> {{ this.TRANSACTION_COMPANY }}</b>
-        <!-- <b-form-select
+         <b-form-select
           id="company"
           v-model="selectedcompany"
           class="form-text"
           :options="companyList"
           @change="getCommodity(), getFarmer()"
           required
-        ></b-form-select> {{this.TRANSACTION_COMPANY_ID}} -->
-        <br />
+        ></b-form-select> {{this.TRANSACTION_COMPANY_ID}} 
+        <br /> -->
 
         <small>Schedule Date</small>
 
@@ -765,8 +766,7 @@
           v-model="U_PLATE_NUMBER"
           class="form-text"
         ></b-form-input>
-        <!-- <small class="text-left"># of Requested Bags</small>
-        <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input> -->
+
         <b-row v-if="U_TRANSACTION_TYPE === '1'">
           <b-col cols="12" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of Requested Bags</small>
@@ -794,7 +794,10 @@
         <b-row v-else></b-row>
 
         <b-row v-if="U_TRANSACTION_TYPE === '2'">
-          <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
+          <b-col>
+        <small class="text-left"># of Requested Bags</small>
+        <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
+          </b-col> <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of Bags</small>
             <b-form-input
               type="number"
@@ -1274,8 +1277,9 @@ export default {
 
     await this.getTransactions();
     await this.getTransactionType();
-    // await this.getFarmer();
-    await this.getCompanyList();
+    await this.getFarmer();
+    await this.getCommodity();
+    // await this.getCompanyList();
     // await this.updateUOM();
     this.totalRows = this.items.length;
   },
@@ -1342,7 +1346,7 @@ export default {
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
       transaction_types: [],
-      companyList: [],
+      companyList: null,
       farmer: [],
       farmerAdd: [],
       commodity: [],
@@ -1648,7 +1652,7 @@ export default {
       return;
     },
     close() {
-      (this.selectedcompany = null),
+
         (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
@@ -1673,7 +1677,7 @@ export default {
       this.$bvModal.hide("edit-transaction-modal");
     },
     close1() {
-      (this.selectedcompany = null),
+
         (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
@@ -1920,27 +1924,28 @@ export default {
     //     filterListCompanies() {
     // return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
     // },
-    async getCompanyList() {
-      //  console.log(this.U_CMMDTY.value.value)
-      this.companyList = [];
-      const res = await axios({
-        method: "POST",
-        url: `${this.$axios.defaults.baseURL}/admin/companies`,
-        headers: {
-          Authorization: localStorage.SessionId
-        }
-      });
-      const v = res.data.companies;
+    // async getCompanyList() {
+    //    console.log(this.U_CMMDTY.value.value)
+    //   this.companyList = [];
+    //   const res = await axios({
+    //     method: "POST",
+    //     url: `${this.$axios.defaults.baseURL}/admin/companies`,
+    //     headers: {
+    //       Authorization: localStorage.SessionId
+    //     }
+    //   });
+    //   const v = res.data.companies;
 
-      for (let i = 0; i < v.length; i++) {
-        if (v[i].U_IS_ACTIVE == 1) {
-          this.companyList.push({
-            text: v[i].COMPANYDBNAME,
-            value: v[i].U_COMPANYCODE
-          });
-        }
-      }
-    },
+    //   for (let i = 0; i < v.length; i++) {
+    //     if (v[i].U_IS_ACTIVE == 1) {
+    //       this.companyList.push({
+    //         text: v[i].COMPANYDBNAME,
+    //         value: v[i].U_COMPANYCODE
+    //       });
+    //     }
+    //   }
+     
+    // },
     async updateUOM() {
       //  console.log(this.U_CMMDTY.value)
       this.unit = [];
@@ -1965,6 +1970,7 @@ export default {
     },
     async getUOM() {
       //  console.log(this.U_CMMDTY.value.value)
+      const userDetails = JSON.parse(localStorage.user_details);
       this.unit = [];
       const res = await axios({
         method: "POST",
@@ -1973,7 +1979,7 @@ export default {
           Authorization: localStorage.SessionId
         },
         data: {
-          company: this.selectedcompany
+          company: userDetails.U_COMPANY_CODE
         }
       });
       const v = res.data.view;
@@ -2004,6 +2010,7 @@ export default {
     //   }
     // },
     async getCommodity() {
+      const userDetails = JSON.parse(localStorage.user_details);
       this.commodity = [];
       const res = await axios({
         method: "POST",
@@ -2012,7 +2019,7 @@ export default {
           Authorization: localStorage.SessionId
         },
         data: {
-          company: this.selectedcompany
+          company: userDetails.U_COMPANY_CODE
         }
       });
       const v = res.data.view;
@@ -2025,6 +2032,8 @@ export default {
       }
     },
     async getFarmer() {
+      const userDetails = JSON.parse(localStorage.user_details);
+     
       this.farmer = [];
       const res = await axios({
         method: "POST",
@@ -2033,7 +2042,7 @@ export default {
           Authorization: localStorage.SessionId
         },
         data: {
-          company: this.selectedcompany
+          company: userDetails.U_COMPANY_CODE
         }
       });
       const v = res.data.view;
@@ -2071,12 +2080,13 @@ export default {
         // this.U_HLPR_NAME=null;
 
         let items = [];
+   
 
         const userDetails = JSON.parse(localStorage.user_details);
         // console.log(this.U_FRMR_NAME.value.id)
         // console.log(this.U_CMMDTY.value)
         const json = {
-          company: this.selectedcompany,
+          company: userDetails.U_COMPANY_CODE,
           uom_id: this.U_UOM.UomEntry,
           // priceList: this.U_PRICELIST,
           transaction_type_id: this.U_TRANSACTION_TYPE,
@@ -2096,7 +2106,7 @@ export default {
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
-        fd.append("company", this.selectedcompany);
+        fd.append("company", userDetails.U_COMPANY_CODE);
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
