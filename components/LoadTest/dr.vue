@@ -38,7 +38,7 @@
         </b-button>
       </b-col>
 
-        <b-col>
+        <!-- <b-col>
         <b-button
           id="create"
           variant="biotech"
@@ -48,7 +48,7 @@
         >
           <font-awesome-icon icon="plus" class="mr-1" />Post Purchase Order
         </b-button>
-      </b-col>
+      </b-col> -->
     </b-row>
 
     <b-row>
@@ -2162,22 +2162,22 @@ export default {
         //   fd.append(key, value);
         // });
 
-        const res = await axios.post(
-          `${this.$axios.defaults.baseURL}/api/transaction/add`,
-          fd,
-          {
-            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
-          }
-        );
-
-        // const res = await axios({
-        //   method: "POST",
-        //   url: `${this.$axios.defaults.baseURL}/api/transaction/add`,
+        // const res = await axios.post(
+        //   `${this.$axios.defaults.baseURL}/api/transaction/add-sqa`,
         //   fd,
-        //   headers: {
-        //     Authorization: `B1SESSION=${localStorage.SessionId}`
+        //   {
+        //     headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
         //   }
-        // });
+        // );
+
+        const res = await axios({
+          method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/transaction/add`,
+          fd,
+          headers: {
+            Authorization: `B1SESSION=${localStorage.SessionId}`
+          }
+        });
 
         this.$bvModal.hide("signature");
         this.showLoading = false;
