@@ -32,7 +32,7 @@
           variant="biotech"
           class="button-style mr-2 my-4"
           size="sm"
-          @click="$bvModal.show('add-transaction-modal')"
+          @click="newDR()"
         >
           <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
         </b-button>
@@ -1809,8 +1809,8 @@ export default {
            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` },
         data: {
           company: "36861",
-          transaction_type2_id: "2",
-          item_id: "RM16-00013",
+          transaction_type_id: "2",
+          item_id: "TEST-PADDY-1",
           uom_id:"83",
           farmer_id: "V100340",
           driver_name: "AAA" + ", " + "AAA",
@@ -1821,7 +1821,7 @@ export default {
           employee_id: userDetails.Code,
           plate_number: "AAA-3243",
           signature: this.signaturePath,
-          scheduled_date: "2020-08-19",
+          scheduled_date: "2020-09-17",
           scheduled_time: "2015",
         }
       });
