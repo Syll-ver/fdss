@@ -861,6 +861,12 @@ export default {
       },
 
       fields: [
+          {
+          key: "COMPANY_NAME",
+          label: "Company",
+          sortable: true,
+          sortDirection: "desc"
+        },
         {
           key: "FirstName",
           label: "First Name",

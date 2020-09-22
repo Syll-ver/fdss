@@ -38,7 +38,7 @@
         </b-button>
       </b-col>
 
-        <b-col>
+        <!-- <b-col>
         <b-button
           id="create"
           variant="biotech"
@@ -48,7 +48,7 @@
         >
           <font-awesome-icon icon="plus" class="mr-1" />Post Purchase Order
         </b-button>
-      </b-col>
+      </b-col> -->
     </b-row>
 
     <b-row>
