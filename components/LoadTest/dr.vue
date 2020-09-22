@@ -2163,7 +2163,7 @@ export default {
         // });
 
         const res = await axios.post(
-          `${this.$axios.defaults.baseURL}/api/transaction/add-sqa`,
+          `${this.$axios.defaults.baseURL}/api/transaction/add`,
           fd,
           {
             headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
