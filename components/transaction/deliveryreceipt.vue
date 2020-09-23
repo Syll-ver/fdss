@@ -1274,11 +1274,10 @@ export default {
   },
   async created() {
     // await this.getPriceList();
-
+    await this.getCommodity();
     await this.getTransactions();
     await this.getTransactionType();
     await this.getFarmer();
-    await this.getCommodity();
     // await this.getCompanyList();
     // await this.updateUOM();
     this.totalRows = this.items.length;
