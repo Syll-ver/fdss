@@ -329,7 +329,7 @@
               <b-form-input
                 id="act_grp_add_modal"
                 type="text"
-                v-model="selectedUserDetails.EmployeeID"
+                v-model="selectedUserDetails.ExternalEmployeeNumber"
                 style="font-size:10px"
                 disabled
               ></b-form-input>
@@ -642,7 +642,7 @@
                 type="text"
                 v-model="userDetails.U_USERNAME"
                 class="form-text"
-                :disabled="userDetails.U_IS_SAP_USER === 1 ? '' : disabled"
+                disabled
               ></b-form-input>
             </b-card>
 
@@ -934,6 +934,7 @@ export default {
       ],
       selectedUser: [],
       selectedUserDetails: {
+        ExternalEmployeeNumber: null,
         EmployeeID: null,
         FirstName: null,
         LastName: null,
@@ -1113,6 +1114,7 @@ export default {
       this.clearForm();
       this.$bvModal.hide("add-user-modal");
       this.selectedUserDetails = {
+        ExternalEmployeeNumber: null,
         EmployeeID: null,
         FirstName: null,
         LastName: null,
@@ -1123,7 +1125,7 @@ export default {
 
     selectUser() {
       this.selectedUserDetails = { ...this.selectedUser[0] };
-      this.userDetails.U_EMPLOYEE_CODE = this.selectedUserDetails.EmployeeID;
+      this.userDetails.U_EMPLOYEE_CODE = this.selectedUserDetails.ExternalEmployeeNumber;
       this.userDetails.U_IS_SAP_USER = 0;
       this.userDetails.U_COMPANY_CODE = this.selectedCompany;
       if (this.selectedUser[0].UserCode) {
@@ -1183,6 +1185,7 @@ export default {
         U_IS_ACTIVE: null
       };
       this.selectedUserDetails = {
+        ExternalEmployeeNumber: null,
         EmployeeID: null,
         FirstName: null,
         LastName: null,
@@ -1203,7 +1206,7 @@ export default {
 
     addUserTable() {
       this.showLoading = true;
-      this.userDetails.U_USERNAME = this.selectedUserDetails.EmployeeID;
+      this.userDetails.U_USERNAME = this.selectedUserDetails.ExternalEmployeeNumber;
      
       this.$store
         .dispatch("Admin/Users/addUser", {
