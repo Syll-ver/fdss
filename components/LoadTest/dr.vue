@@ -2044,7 +2044,10 @@ export default {
     //   }
     // },
     async getCommodity() {
+      this.showLoading = true;
+      this.U_CMMDTY.value = null;
       this.commodity = [];
+   
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/items/select`,
@@ -2062,10 +2065,18 @@ export default {
           text: v[i].ItemName,
           value: v[i].ItemCode
         });
+         this.showLoading = false;
       }
+      // } catch  {
+      //   // console.log(e);
+      //   this.showLoading = false;
+      // }
     },
     async getFarmer() {
+      this.showLoading = true;
+      this.U_FRMR_NAME=null;
       this.farmer = [];
+      
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
@@ -2083,7 +2094,13 @@ export default {
           text: v[i].SUPPLIER_NAME,
           value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
         });
+        this.showLoading = false;
       }
+    //  } catch  {
+    //     // console.log(e);
+    //     this.showLoading = false;
+    //   }  
+      
     },
     test() {
       console.log(this.U_FRMR_NAME);
