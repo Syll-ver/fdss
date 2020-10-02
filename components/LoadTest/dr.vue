@@ -461,7 +461,7 @@
           v-model="U_CMMDTY.value"
           class="form-text"
           :options="commodity"
-          @input="getUOM , getFarmer"
+          @input="getUOM()"
           required
           label="text"
           track-by="text"
