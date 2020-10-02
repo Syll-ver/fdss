@@ -426,7 +426,7 @@
           v-model="selectedcompany"
           class="form-text"
           :options="companyList"
-          @change="getCommodity(), getFarmer()"
+          @change="getCommodity(), getFarmer(), clearnew()"
           required
         ></b-form-select>
         <!-- <b-form-select
@@ -461,7 +461,7 @@
           v-model="U_CMMDTY.value"
           class="form-text"
           :options="commodity"
-          @input="getUOM"
+          @input="getUOM , getFarmer"
           required
           label="text"
           track-by="text"
@@ -1496,6 +1496,30 @@ export default {
   },
 
   methods: {
+    clearnew(){
+       
+        (this.U_TRANSACTION_TYPE = null),
+        (this.U_FRMR_NAME = null),
+        (this.U_FRMR_ADD = null),
+        (this.U_UOM = { value: "", text: "" }),
+        (this.U_CMMDTY = { value: "", text: "" }),
+        (this.U_DRVR_LNAME = null),
+        (this.U_DRVR_FNAME = null),
+        (this.U_HLPR_FNAME = null),
+        (this.U_HLPR_LNAME = null),
+        (this.U_PLATE_NUMBER = null),
+        (this.U_DTE_CRTD = null),
+        (this.U_CRTD_BY = null),
+        (this.U_TRX_NO = null),
+        (this.U_DRVR_NAME = null),
+        (this.U_REQUESTED_SACKS = 0),
+        (this.U_SACKS = 0),
+        (this.U_EMPTY_SACKS = 0),
+        (this.U_HLPR_NAME = null);
+      this.U_SCHEDULED_DATE = null;
+      this.U_SCHEDULED_TIME = null;
+
+    },
      async login() {
       this.showLoading = true;
       await axios({
@@ -1962,6 +1986,7 @@ export default {
     // },
     async getCompanyList() {
       //  console.log(this.U_CMMDTY.value.value)
+      this.showLoading = true;
       this.companyList = [];
       const res = await axios({
         method: "POST",
@@ -1978,11 +2003,13 @@ export default {
             text: v[i].COMPANYDBNAME,
             value: v[i].U_COMPANYCODE
           });
+          this.showLoading = false;
         }
       }
     },
     async updateUOM() {
       //  console.log(this.U_CMMDTY.value)
+      this.showLoading = true;
       this.unit = [];
       const res = await axios({
         method: "POST",
@@ -2001,9 +2028,11 @@ export default {
           text: v[i].UomName,
           value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
         });
+        this.showLoading = false;
       }
     },
     async getUOM() {
+      this.showLoading = true;
       //  console.log(this.U_CMMDTY.value.value)
       this.unit = [];
       const res = await axios({
@@ -2023,6 +2052,7 @@ export default {
           text: v[i].UomName,
           value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
         });
+        this.showLoading = false;
       }
     },
     //  async getPriceList() {
@@ -2045,9 +2075,7 @@ export default {
     // },
     async getCommodity() {
       this.showLoading = true;
-      this.U_CMMDTY.value = null;
       this.commodity = [];
-   
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/items/select`,
