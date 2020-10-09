@@ -2232,11 +2232,9 @@ export default {
         // fd.append("", signature, signature.name);
         fd.append("company", 99197);
         fd.append("transaction_type_id", 1);
-        fd.append("item_id", "FG21-00003");
+        fd.append("item_id", "FG21-00005");
         fd.append("uom_id", 1);
-        // fd.append("farmer_id", 'V1000023');
-
-        fd.append("farmer_id", "FG21-00005");
+        fd.append("farmer_id", 'V1000023');
         fd.append("driver_name", "def, abc");
         fd.append("helper_name", "def, abc");
         fd.append("no_of_requested_bags", 200);
