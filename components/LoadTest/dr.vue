@@ -2180,22 +2180,22 @@ export default {
         const userDetails = JSON.parse(localStorage.user_details);
         // console.log(this.U_FRMR_NAME.value.id)
         // console.log(this.U_CMMDTY.value)
-        const json = {
-          company: this.selectedcompany,
-          uom_id: this.U_UOM.UomEntry,
-          // priceList: this.U_PRICELIST,
-          transaction_type_id: this.U_TRANSACTION_TYPE,
-          item_id: this.U_CMMDTY.value.value,
-          farmer_id: this.U_FRMR_NAME.value.id,
-          driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
-          helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
-          no_of_requested_bags: this.U_REQUESTED_SACKS,
-          no_of_bags: this.U_SACKS,
-          no_of_empty_bags: this.U_EMPTY_SACKS,
-          employee_id: userDetails.Code,
-          plate_number: this.U_PLATE_NUMBER,
-          signature: this.signaturePath,
-        };
+        // const json = {
+        //   company: this.selectedcompany,
+        //   uom_id: this.U_UOM.UomEntry,
+        //   // priceList: this.U_PRICELIST,
+        //   transaction_type_id: this.U_TRANSACTION_TYPE,
+        //   item_id: this.U_CMMDTY.value.value,
+        //   farmer_id: this.U_FRMR_NAME.value.id,
+        //   driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
+        //   helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
+        //   no_of_requested_bags: this.U_REQUESTED_SACKS,
+        //   no_of_bags: this.U_SACKS,
+        //   no_of_empty_bags: this.U_EMPTY_SACKS,
+        //   employee_id: userDetails.Code,
+        //   plate_number: this.U_PLATE_NUMBER,
+        //   signature: this.signaturePath,
+        // };
 
         // console.log("@here", json)
 
