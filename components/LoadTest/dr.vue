@@ -2243,7 +2243,7 @@ export default {
         fd.append("employee_id", userDetails.Code);
         fd.append("plate_number", 'abc-123');
         fd.append("scheduled_date", '2020-10-09');
-        fd.append("scheduled_time", 0933);
+        fd.append("scheduled_time", '0933');
 
         const res = await axios.post(
           `${this.$axios.defaults.baseURL}/api/transaction/add-sqa`,
