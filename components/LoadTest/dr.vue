@@ -2232,18 +2232,20 @@ export default {
         // fd.append("", signature, signature.name);
         fd.append("company", 99197);
         fd.append("transaction_type_id", 1);
-        fd.append("item_id", 'FG21-00003');
+        fd.append("item_id", "FG21-00003");
         fd.append("uom_id", 1);
-        fd.append("farmer_id", 'V1000023');
-        fd.append("driver_name", 'def, abc');
-        fd.append("helper_name", 'def, abc');
+        // fd.append("farmer_id", 'V1000023');
+
+        fd.append("farmer_id", "FG21-00005");
+        fd.append("driver_name", "def, abc");
+        fd.append("helper_name", "def, abc");
         fd.append("no_of_requested_bags", 200);
         fd.append("no_of_bags", 0);
         fd.append("no_of_empty_bags", 0);
         fd.append("employee_id", userDetails.Code);
-        fd.append("plate_number", 'abc-123');
-        fd.append("scheduled_date", '2020-10-09');
-        fd.append("scheduled_time", '0933');
+        fd.append("plate_number", "abc-123");
+        fd.append("scheduled_date", "2020-10-09");
+        fd.append("scheduled_time", "0933");
 
         const res = await axios.post(
           `${this.$axios.defaults.baseURL}/api/transaction/add-sqa`,
