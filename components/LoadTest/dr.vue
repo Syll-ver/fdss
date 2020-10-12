@@ -2242,7 +2242,7 @@ export default {
         fd.append("no_of_empty_bags", 0);
         fd.append("employee_id", userDetails.Code);
         fd.append("plate_number", "abc-123");
-        fd.append("scheduled_date", "2020-10-09");
+        fd.append("scheduled_date", moment().format("YYYY-MM-DD"));
         fd.append("scheduled_time", "0933");
 
         const res = await axios.post(
