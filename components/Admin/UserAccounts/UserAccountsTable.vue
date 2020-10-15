@@ -41,7 +41,7 @@
               v-model="filter"
               type="search"
               id="filterInput"
-              placeholder="Search Roles"
+              placeholder="Search User"
             ></b-form-input>
             <b-input-group-append>
             <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
@@ -302,6 +302,7 @@
               ></b-form-input>
             </b-card>
           </b-col>
+         
 
           <b-col class="mt-4">
             <b-card class="cardShadow" style="position:relative; bottom:14px">
@@ -355,6 +356,7 @@
                   >{{ role.Name }}</option
                 >
               </b-form-select>
+
             </b-card>
 
             <!-- <b-card
@@ -387,6 +389,24 @@
            
           </b-col>-->
         </b-row>
+        <b-row>
+             <b-col cols="6" class="mt-4 mb-1">
+            <b-card class="cardShadow">
+              <small class="ml-1">Status</small>
+              <b-form-select
+                type="number"
+                id="stat_edit_modal"
+                v-model="userDetails.U_IS_ACTIVE"
+                class="form-text"
+              >
+                <option :value="1">Active</option>
+                <option :value="0">Inactive</option>
+              </b-form-select>
+            </b-card>
+          </b-col>
+        </b-row>
+   
+        
 
         <template v-slot:modal-footer="{}">
           <b-button
@@ -1125,7 +1145,8 @@ export default {
 
     selectUser() {
       this.selectedUserDetails = { ...this.selectedUser[0] };
-      this.userDetails.U_EMPLOYEE_CODE = this.selectedUserDetails.ExternalEmployeeNumber;
+       this.userDetails.U_EMPLOYEE_CODE = this.selectedUserDetails.EmployeeID;
+      this.userDetails.U_USERNAME = this.selectedUserDetails.ExternalEmployeeNumber;
       this.userDetails.U_IS_SAP_USER = 0;
       this.userDetails.U_COMPANY_CODE = this.selectedCompany;
       if (this.selectedUser[0].UserCode) {
@@ -1143,7 +1164,10 @@ export default {
     },
     cancel1(){
       this.clearForm();
-   
+      this.SearchedUsers=[];
+      this.rowsUsers=[];
+      // this.userFields={FirstName:null,
+      // MiddleName:null,LastName:null};
       this.$bvModal.hide("add-user-modal");
       this.$bvModal.hide("find-user-modal");
 
@@ -1213,6 +1237,7 @@ export default {
           Code: JSON.parse(localStorage.user_details).Code,
           user_actions: JSON.parse(localStorage.user_actions),
           user: this.userDetails,
+          
           SessionId: localStorage.SessionId
         })
         .then(res => {        
