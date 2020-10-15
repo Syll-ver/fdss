@@ -65,6 +65,6 @@ module.exports = {
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api"
   },
 
-  server: { port: 7000}
-  // host:'172.16.4.114'}
+  server: { port: 7000,
+  host:'172.16.4.114'}
 };

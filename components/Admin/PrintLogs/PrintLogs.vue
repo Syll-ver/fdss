@@ -10,7 +10,7 @@
               v-model="filter"
               type="search"
               id="search_activity"
-              placeholder="Search Activity"
+              placeholder="Search PrintLogs"
             ></b-form-input>
             <b-input-group-append>
             <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
