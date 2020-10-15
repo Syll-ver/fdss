@@ -58,21 +58,15 @@ module.exports = {
     extend(config, ctx) {}
   },
   axios: {
-<<<<<<< HEAD
     // baseURL: "http://172.16.4.168:8000/fdss-api" 
     // baseURL: "http://94.237.66.240:8000" (MASTER)
     // baseURL: "http://94.237.66.240:8100" (SQA)
     baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
-=======
-    baseURL: "http://172.16.4.168:8000/fdss-api" 
-    // baseURL: "https://fdss-dev.biotechfarms.net/fdss-api"
-    // baseURL: "https://fdss-loadtest.biotechfarms.net/fdss-api" 
->>>>>>> a38acff25ec4636997ab013a137e9fe11baaa09d
     // baseURL: "hhtp://94.237.66.240:8200" (UAT)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api"
 
   },
 
-  server: { port: 7000,
-  host:'172.16.4.114'}
+  server: { port: 7000}
+  // host:'172.16.4.114'}
 };
