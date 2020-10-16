@@ -184,7 +184,7 @@
         </template>
 
         <small class="text-left">Module Name</small>
-        <b-row align-h="receipt">
+        <b-row >
           <b-form-input
             size="xs"
             id="add_module_name_modal"

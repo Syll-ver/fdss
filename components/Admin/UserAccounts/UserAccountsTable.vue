@@ -961,7 +961,7 @@ export default {
         MiddleName: null,
         eMail: null
       },
-
+      selectableTable: null,
       totalRows: 1,
       currentPage: 1,
       perPage: 5,
