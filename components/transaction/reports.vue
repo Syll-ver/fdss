@@ -91,8 +91,10 @@
               class="pl-2"
               style="font-size:12px"
               v-model="filterStatus"
+              v-b-tooltip.hover
               title="Filter Transaction Status"
             >
+            Status <br>
               <b-form-checkbox id="pending_supp_stat" value="Completed"
                 >Completed</b-form-checkbox
               >
@@ -672,6 +674,7 @@ export default {
       showReceipt: false,
       TRANSACTION_COMPANY:null,
       U_TRANSACTION_TYPE: null,
+      U_UOM: null,
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
       U_CMMDTY:null,
@@ -692,7 +695,7 @@ export default {
       opens1:"",
     
       filterCompany:[],
-      filterTransaction:[],
+      filterTransaction:["Pick-up","Delivery"],
       transaction_types:[],
       farmer:[],
       farmerAdd:[],
@@ -793,16 +796,41 @@ export default {
    computed: {
     filterItems() {
       return this.items.filter(request => {
-        if (this.filterStatus.includes(request.U_STATUS)) {
+        if (this.filterStatus.includes(request.U_STATUS) && this.filterTransaction.includes(request.U_TRANSACTION_TYPE) ) {
           return request;
         }
-        if (this.filterTransaction.includes(request.U_TRANSACTION_TYPE)) {
+        if (this.filterTransaction.includes(request.U_TRANSACTION_TYPE) && this.filterStatus.includes(request.U_STATUS) ) {
           return request;
         }
         if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
           return request;
         }
       });
+      //  const pageSize = () => {
+      //   return this.items.filter((request) => {
+
+      //     return (
+      //       this.filterStatus.includes(
+      //         request.U_TRANSACTION_TYPE
+      //       ) &&
+      //       this.filterStatus.includes(request.U_STATUS) 
+            
+      //     );
+      //   });
+      // };
+
+      // const pages = pageSize();
+      // this.totalRows = pages.length;
+
+      // return this.items.filter((request) => {
+      //   return (
+      //     this.filterStatus.includes(request.U_TRANSACTION_TYPE) &&
+      //     this.filterStatus.includes(request.U_STATUS)
+      //  );
+      // });
+
+
+
     },
 
      bottomLabel() {
