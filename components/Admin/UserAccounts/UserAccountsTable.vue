@@ -127,7 +127,7 @@
                     :id="'choice' + i"
                     v-for="(company, i) in filterListCompanies"
                     :key="i"
-                    :value="company.COMPANYDBNAME"
+                    :value="company.U_COMPANYCODE"
                   >{{company.COMPANYDBNAME  }}</b-form-checkbox>
                    <!-- <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
               >Biotech</b-form-checkbox
