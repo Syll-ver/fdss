@@ -106,10 +106,36 @@
               v-model="filterStatus"
               v-b-tooltip.hover
               title="Filter Status"
-            >
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+            >Status<br>
+              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox><br>
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
+
+ <b-form-checkbox-group
+            id="status_group1"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterCompany"
+            v-b-tooltip.hover
+            title="Filter Company "
+          >
+         Company<br>
+       
+            <b-form-checkbox
+                    size="sm"
+                    :id="'choice' + i"
+                    v-for="(company, i) in filterListCompanies"
+                    :key="i"
+                    :value="company.U_COMPANYCODE"
+                  >{{company.COMPANYDBNAME  }}</b-form-checkbox>
+                   <!-- <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+              >Biotech</b-form-checkbox
+            >
+            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+              >REvive</b-form-checkbox> -->
+          </b-form-checkbox-group>
+
           </b-dropdown>
      
       </b-col>
@@ -857,7 +883,7 @@ export default {
      
       showLoading: false,
       findUser: null,
-      filterStatus: [1],
+      filterStatus: [1,0],
       actions: {
         addUser: false,
         editUser: false,
@@ -961,7 +987,8 @@ export default {
         MiddleName: null,
         eMail: null
       },
-
+      filterCompany: ["REVIVE","BIOTECH"],
+      selectableTable: null,
       totalRows: 1,
       currentPage: 1,
       perPage: 5,
@@ -977,6 +1004,16 @@ export default {
     };
   },
   computed: {
+    // altCompanyName() {
+    //   console.log(this.listCompanies)
+    //   if(this.filterCompany) {
+    //     if( this.listCompanies.filter(
+    //       company => company.U_COMPANYNAME.toLowerCase().search("revive") < 0
+    //     )) {
+          
+    //     }
+    //   }
+    // },
       ...mapGetters({
       Users: "Admin/Users/getUsers",
       listRoles: "Admin/Roles/getListRoles",
@@ -994,7 +1031,7 @@ export default {
 
     filterItems() {
       return this.Users.filter(Users => {
-        return this.filterStatus.includes(Users.U_IS_ACTIVE);
+        return this.filterStatus.includes(Users.U_IS_ACTIVE) && this.filterCompany.includes(Users.U_COMPANY_CODE) ;
       });
     },
 
