@@ -1414,6 +1414,9 @@ export default {
           }
         }
       });
+      this.listCompanies.forEach(company => {
+        this.filterCompany.push(company.U_COMPANYCODE)
+      })
 
     this.isBusyTable = false;
 
