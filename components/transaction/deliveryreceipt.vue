@@ -1530,28 +1530,28 @@ export default {
       // console.log(this.U_FRMR_NAME.value.id)
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
-      } else if (this.U_TRANSACTION_TYPE === null) {
+      } else if (this.U_TRANSACTION_TYPE == null) {
         this.showAlert("Please select Transaction Type", "danger");
-      } else if (this.U_CMMDTY === null) {
+      } else if (this.U_CMMDTY == null) {
         this.showAlert("Please select Commodity", "danger");
-      } else if (this.U_UOM === null) {
+      } else if (this.U_UOM == null) {
         this.showAlert("Please select Unit of Measure", "danger");
-      } else if (this.U_FRMR_NAME === null) {
+      } else if (this.U_FRMR_NAME == null) {
         this.showAlert("Please select Farmer Name", "danger");
-      } else if (this.U_HLPR_FNAME === null || this.U_HLPR_LNAME === null) {
+      } else if (this.U_HLPR_FNAME == null || this.U_HLPR_LNAME == null) {
         this.showAlert("Please input Helper Name", "danger");
-      } else if (this.U_DRVR_FNAME === null || this.U_DRVR_LNAME === null) {
+      } else if (this.U_DRVR_FNAME == null || this.U_DRVR_LNAME == null) {
         this.showAlert("Please input Driver Name", "danger");
-      } else if (this.U_PLATE_NUMBER === null) {
+      } else if (this.U_PLATE_NUMBER == null) {
         this.showAlert("Please input Plate Number", "danger");
-      // } else if (this.U_TRANSACTION_TYPE === "2" || this.U_UOM.UomName === "TRUCK LOAD" || this.U_SACKS < "0" ) {
+      } else if ( this.U_UOM.UomName == "TRUCK LOAD" && this.U_SACKS < 1 ) {
+        this.showAlert("Please quantity of bags  not less than zero", "danger");
+      } else if (this.U_TRANSACTION_TYPE == 2 && this.U_SACKS < 1) {
+        this.showAlert("Please input # of bags not less than zero", "danger");
+      // } else if (this.U_SACKS < "1" ) {
       //   this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
-      // } else if (this.U_TRANSACTION_TYPE === "2" || this.U_SACKS < "0") {
-      //   this.showAlert("Please input quantity/# of bags not less than zero", "danger");
-      } else if (this.U_SACKS < "1" ) {
-        this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
       } else {
-        // console.log(this.U_CMMDTY.value)
+        console.log(this.U_CMMDTY.value)
         this.$bvModal.show("pin");
         setTimeout(() => {
           this.$refs.pins.focus();
