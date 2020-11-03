@@ -415,7 +415,7 @@
            
           </b-col>-->
         </b-row>
-        <b-row>
+        <!-- <b-row>
              <b-col cols="6" class="mt-4 mb-1">
             <b-card class="cardShadow">
               <small class="ml-1">Status</small>
@@ -431,7 +431,7 @@
             </b-card>
           </b-col>
         </b-row>
-   
+    -->
         
 
         <template v-slot:modal-footer="{}">
