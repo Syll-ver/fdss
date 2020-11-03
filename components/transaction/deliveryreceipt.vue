@@ -1544,6 +1544,12 @@ export default {
         this.showAlert("Please input Driver Name", "danger");
       } else if (this.U_PLATE_NUMBER === null) {
         this.showAlert("Please input Plate Number", "danger");
+      } else if (this.U_TRANSACTION_TYPE === "2" || this.U_UOM.UomName === "TRUCK LOAD" || this.U_SACKS > "0" ) {
+        this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
+      } else if (this.U_TRANSACTION_TYPE === "2" || this.U_SACKS > "0") {
+        this.showAlert("Please input quantity/# of bags not less than zero", "danger");
+      } else if (this.U_SACKS > "0" ) {
+        this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
       } else {
         // console.log(this.U_CMMDTY.value)
         this.$bvModal.show("pin");
