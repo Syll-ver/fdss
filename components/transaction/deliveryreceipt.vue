@@ -1545,7 +1545,7 @@ export default {
       } else if (this.U_PLATE_NUMBER == null) {
         this.showAlert("Please input Plate Number", "danger");
       } else if ( this.U_UOM.UomName == "TRUCK LOAD" && this.U_SACKS < 1 ) {
-        this.showAlert("Please quantity of bags  not less than zero", "danger");
+        this.showAlert("Please input quantity not less than zero", "danger");
       } else if (this.U_TRANSACTION_TYPE == 2 && this.U_SACKS < 1) {
         this.showAlert("Please input # of bags not less than zero", "danger");
       // } else if (this.U_SACKS < "1" ) {
