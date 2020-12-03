@@ -383,9 +383,9 @@ export default {
       TRUE
         
 
-      // WinPrint.print();
+      WinPrint.print();
 
-      // WinPrint.close();
+      WinPrint.close();
     }
   },
 
