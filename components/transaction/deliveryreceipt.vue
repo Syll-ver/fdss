@@ -1372,70 +1372,70 @@ export default {
           key: "TRANSACTION_COMPANY",
           label: "Company",
           sortable: true,
-          sortDirection: "desc"
+   
         },
 
         {
           key: "U_TRX_NO",
           label: "Transaction No.",
           sortable: true,
-          sortDirection: "desc"
+        
         },
 
         {
           key: "U_TRANSACTION_TYPE",
           label: "Transaction Type",
           sortable: true,
-          sortDirection: "desc"
+     
         },
 
         {
           key: "U_CMMDTY",
           label: "Commodity",
           sortable: true,
-          sortDirection: "desc"
+        
         },
         
         {
           key: "U_UOM",
           label: "Unit of Measure",
           sortable: true,
-          sortDirection: "desc"
+      
         },
 
          {
           key: "U_SACKS",
           label: "Quantity",
           sortable: true,
-          sortDirection: "desc"
+
         },
 
         {
           key: "U_FRMR_NAME",
           label: "Farmer's Name",
           sortable: true,
-          sortDirection: "desc"
+    
         },
 
         {
           key: "U_CRTD_BY",
           label: "Created By",
           sortable: true,
-          sortDirection: "desc"
+         
         },
 
         {
           key: "U_SCHEDULED_DATE_AND_TIME",
           label: "Date Scheduled",
           sortable: true,
-          sortDirection: "desc"
+       
         },
 
         {
           key: "U_STATUS",
           label: "Status",
           sortable: true,
-          sortDirection: "desc"
+    
         },
 
         { key: "actions", label: "Actions", class: "text-center" }
@@ -1448,7 +1448,7 @@ export default {
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "U_SCHEDULED_DATE_AND_TIME",
-      sortDesc: false,
+      sortDesc: true,
       sortDirection: "asc",
       filter: null,
       filterOn: [],
