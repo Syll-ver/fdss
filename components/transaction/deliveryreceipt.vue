@@ -1395,6 +1395,20 @@ export default {
           sortable: true,
           sortDirection: "desc"
         },
+        
+        {
+          key: "U_UOM",
+          label: "Unit of Measure",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+         {
+          key: "U_SACKS",
+          label: "Quantity",
+          sortable: true,
+          sortDirection: "desc"
+        },
 
         {
           key: "U_FRMR_NAME",
@@ -1435,7 +1449,7 @@ export default {
       pageOptions: [5, 10, 15],
       sortBy: "U_SCHEDULED_DATE_AND_TIME",
       sortDesc: false,
-      sortDirection: "desc",
+      sortDirection: "asc",
       filter: null,
       filterOn: [],
       receiptData1: {}
