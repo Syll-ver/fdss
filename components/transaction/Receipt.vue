@@ -131,7 +131,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
             </div>
           </b-col>
         </b-row>
-       <div v-if="receiptData.U_TRANSACTION_TYPE === 'Pick-up' && receiptData.U_UOM.UomEntry === 'BAG'">
+       <div v-if="receiptData.U_TRANSACTION_TYPE == 'Pick-up' && receiptData.U_UOM.UomEntry == 'BAG'">
                         <b-row >
           <b-col cols="4">
             <span>
@@ -163,7 +163,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           </b-col>
         </b-row>
         </div>
-          <div v-else-if="receiptData.U_TRANSACTION_TYPE === 'Pick-up' && receiptData.U_UOM.UomName === 'TRUCK LOAD'">
+          <div v-else-if="receiptData.U_TRANSACTION_TYPE == 'Pick-up' && receiptData.U_UOM.UomName == 'TRUCK LOAD'">
                   <b-row>
                     <b-col cols="4">
                       <span>Quantity</span>
@@ -280,9 +280,9 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
             </span>
 
             <span style="font-size:14px; float:right" class="mr-1">
-              <b>
+              <!-- <b>
                 Farmer's Copy
-              </b>
+              </b> -->
             </span>
           </b-col>
         </b-row>
