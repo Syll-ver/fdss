@@ -674,7 +674,7 @@ export default {
       showReceipt: false,
       TRANSACTION_COMPANY:null,
       U_TRANSACTION_TYPE: null,
-      U_UOM: null,
+     U_UOM: { UomName: "", UomEntry: "" },
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
       U_CMMDTY:null,
@@ -744,6 +744,20 @@ export default {
           label: "Commodity",
           sortable: true,
           sortDirection: "asc"
+        },
+
+        {
+          key: "U_UOM",
+          label: "Unit of Measure",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+         {
+          key: "U_SACKS",
+          label: "Quantity",
+          sortable: true,
+          sortDirection: "desc"
         },
 
         {
@@ -862,6 +876,7 @@ export default {
   },
 
   methods: {
+    
     async print() {
       // Pass the element id here
       // this.$htmlToPaper("printTable");
@@ -1023,7 +1038,7 @@ export default {
 show(data) {
        console.log(data)
        this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
-       this.U_UOM = data.UOM_NAME;
+      (this.U_UOM = data.U_UOM);
        this.U_DTE_CRTD = data.U_DTE_CRTD;
        this.U_TME_CRTD = data.U_TME_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -1126,6 +1141,7 @@ show(data) {
               U_TRX_NO: v[i].U_TRX_NO,
               TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
               // U_TME_CRTD : t,
+              U_UOM: v[i].UOM_NAME,
               U_TRX_ID: v[i].TRANSACTION_ID,
               U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
               U_ITEM: v[i].ITEM_ID,

@@ -268,7 +268,7 @@ export default {
       visiblePrice: false,
 
       adminroutes: [
-
+{},
             
         {
           link: "/admin/modules",
@@ -354,11 +354,12 @@ export default {
         {
           id: "reports",
           link: "/transaction/reports",
-          name: "Reports",
+          name: "Reports", 
           icon: "file",
           class: "ml-2 mr-1",
           active: false
-        }
+        },
+        {}
       ],
     };
   },
