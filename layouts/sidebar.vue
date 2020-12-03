@@ -194,14 +194,14 @@ export default {
       this.isAdmin = true;
 
       const module_actions = user_actions["Admin Module"];
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View modules")
-      ) {
-        const index = this.adminroutes.findIndex(
-          route => (route.name = "Modules")
-        );
-        this.adminroutes.splice(index, 1);
-      }
+      // if (
+      //   !module_actions.find(action => action.U_ACTION_NAME == "View modules")
+      // ) {
+      //   const index = this.adminroutes.findIndex(
+      //     route => (route.name = "Modules")
+      //   );
+      //   this.adminroutes.splice(index, 1);
+      // }
       if (
         !module_actions.find(action => action.U_ACTION_NAME == "View actions")
       ) {
@@ -268,7 +268,7 @@ export default {
       visiblePrice: false,
 
       adminroutes: [
-{},
+    {},
             
         {
           link: "/admin/modules",
