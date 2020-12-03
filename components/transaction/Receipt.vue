@@ -383,7 +383,7 @@ export default {
       TRUE
         
 
-      WinPrint.print();
+  
 
       WinPrint.close();
     }
@@ -392,7 +392,7 @@ export default {
   beforeCreate() {},
 
   created() {
-    //   this.print();
+      // this.print();
   }
 };
 </script>
