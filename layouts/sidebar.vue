@@ -268,11 +268,7 @@ export default {
       visiblePrice: false,
 
       adminroutes: [
-<<<<<<< HEAD
     {},
-=======
-{},
->>>>>>> 24a1fd68d77041e32d8623c22da8d5819d0d29a1
             
         {
           link: "/admin/modules",
