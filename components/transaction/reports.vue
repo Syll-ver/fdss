@@ -341,7 +341,7 @@
       <div class=" mr-4" style="width:31rem; height:40rem">
             <span>
              
-                 <b-img src="/logo1.jpg" class="receipt-logo" center/>
+                 <b-img src="/logo1.png" class="receipt-logo" center/>
        
            
             </span>

@@ -8,7 +8,7 @@
                   
   
             <span>
-                 <b-img src="/logo1.jpg" class="receipt-logo" center/>
+                 <b-img src="/logo1.png" class="receipt-logo" center/>
               
             
            
@@ -131,7 +131,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
             </div>
           </b-col>
         </b-row>
-       <div v-if="receiptData.U_TRANSACTION_TYPE == 'Pick-up' && receiptData.U_UOM.UomEntry == 'BAG'">
+       <div v-if="receiptData.U_TRANSACTION_TYPE == 'Pick-up' && receiptData.U_UOM.UomName == 'TRUCK LOAD'">
                         <b-row >
           <b-col cols="4">
             <span>
@@ -163,7 +163,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           </b-col>
         </b-row>
         </div>
-          <div v-else-if="receiptData.U_TRANSACTION_TYPE == 'Pick-up' && receiptData.U_UOM.UomName == 'TRUCK LOAD'">
+          <div v-else-if="receiptData.U_TRANSACTION_TYPE == 'Delivery'">
                   <b-row>
                     <b-col cols="4">
                       <span>Quantity</span>
@@ -198,7 +198,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{receiptData.U_SACKS}}{{ receiptData.U_UOM }}
+                : 
               </span>
             </div>
           </b-col>
@@ -213,7 +213,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{receiptData.U_EMPTY_SACKS}}
+                :
               </span>
             </div>
           </b-col>

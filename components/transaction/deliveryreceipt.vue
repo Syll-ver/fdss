@@ -249,7 +249,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="printReceipt(row.item)"
+            @click="networkPrint(row.item)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -870,7 +870,7 @@
             <b-row>
               <div class="mr-4" style="width:31rem; height:40rem">
                 <span>
-                  <b-img src="/logo1.jpg" class="receipt-logo" center />
+                  <b-img src="/logo1.png" class="receipt-logo" center />
                 </span>
 
                 <center>
@@ -1242,6 +1242,11 @@
         />
         {{ alert.message }}
       </b-alert>
+        <!-- <VueQrcode
+        id="QRcode"
+        type="String"
+        :value="receiptData1"
+      ></VueQrcode> -->
     </div>
 
     <!-- View Transaction -->
@@ -1262,6 +1267,7 @@ import "@lazy-copilot/datetimepicker/dist/datetimepicker.css";
 import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 import Multiselect from "vue-multiselect";
 import jsPDF from "jspdf";
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 export default {
   components: {
     jsPDF,
@@ -1270,20 +1276,29 @@ export default {
     Receipt,
     DateRangePicker,
     Loading,
-    VueSignaturePad
+    VueSignaturePad,
+    VueQrcode
   },
   async created() {
+
     // await this.getPriceList();
     await this.getCommodity();
     await this.getTransactions();
     await this.getTransactionType();
     await this.getFarmer();
+    await this.networkPrintInit();
+
     // await this.getCompanyList();
     // await this.updateUOM();
     this.totalRows = this.items.length;
   },
   data() {
     return {
+      receiptData:{},
+      receiptData1:{},
+      qrString: null,
+      data2: null,
+      networkPrinter: null,
       selectedcompany: null,
       remarks: null,
       datetimeScheme: {
@@ -1452,7 +1467,7 @@ export default {
       sortDirection: "asc",
       filter: null,
       filterOn: [],
-      receiptData1: {}
+     
     };
   },
   computed: {
@@ -1727,10 +1742,141 @@ export default {
         message
       };
     },
+    async networkPrint(data) {
+      // let QRCode = require("qrcode");
 
+      // this.qrString = JSON.stringify(data.U_TRX_NO);
+
+      // const qr = await QRCode.toDataURL(data.U_TRX_NO);
+      
+      // let canvas1 = document.createElement("canvas");
+      // canvas1.width = 100;
+      // canvas1.height = 100;
+
+      // let biotechLogoContext = canvas1.getContext("2d");
+
+      // const biotechLogo = await new Promise((resolve) => {
+      //   let image1= new Image();
+      //   image1.src = qr;
+      //   image1.onload = () => resolve(image1);
+      // });
+
+      // biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
+
+      // let canvas = document.createElement("canvas");
+      // canvas.width = 200;
+      // canvas.height = 180;
+
+      // let revivelogoContext = canvas.getContext("2d");
+
+      // const revivelogo = await new Promise((resolve) => {
+      //   let image = new Image();
+      //   image.src = "/logo1.png";
+      //   image.onload = () => resolve(image);
+      // });
+
+      // revivelogoContext.drawImage(revivelogo, 0, 0, 180, 150);
+
+      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
+
+      // this.networkPrinter.addImage(revivelogoContext, 0, 0,180, 128);
+
+    
+      this.networkPrinter.addText(`Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`);
+      this.networkPrinter.addText(`${data.U_DTE_CRTD}\n`);
+      
+      this.networkPrinter.addText(`\n`);
+      this.networkPrinter.align('right');
+
+      this.networkPrinter.addText(`Transaction Number: | ${data.U_TRX_NO}\n`);
+      this.networkPrinter.addText(`Delivery Schedule: | ${data.U_SCHEDULED_DATE_AND_TIME}\n`);
+      this.networkPrinter.addText(`\n`);
+      
+      
+
+      this.networkPrinter.addText(`Farmer's Name: | ${data.U_FRMR_NAME}\n`);
+      this.networkPrinter.addText(`Address: | ${data.U_FRMR_ADD}\n`);
+      this.networkPrinter.addText(`Item: | ${data.U_CMMDTY}\n`);
+      this.networkPrinter.addText(`Driver's Name: | ${data.U_DRVR_NAME}\n`);
+      this.networkPrinter.addText(`Plate Number: | ${data.U_PLATE_NUMBER}\n`);
+      this.networkPrinter.addText(`Requested Empty Sacks: | ${data.U_REQUESTED_SACKS}\n`);
+      this.networkPrinter.addText(`Quantity: | ${data.U_SACKS} ${data.U_UOM}\n`);
+      this.networkPrinter.addText(`Returned Empty Sacks: | ${data.U_EMPTY_SACKS }\n`);
+      this.networkPrinter.addText(`\n`);
+
+      // this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
+
+
+      // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
+      // this.networkPrinter.addText(
+      //   `Supplier Code: ${data.header.supplier_code}\n`
+      // );
+      // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
+      // this.networkPrinter.addText(`${data.header.date}\n`);
+      
+      this.networkPrinter.addText("\n");
+
+      this.networkPrinter.send();
+      this.networkPrinter.cut();
+    },
+    async networkPrintInit() {
+      this.showLoading = true;
+      let ePosDev = new epson.ePOSDevice();
+
+      let ipAddress = process.env.networkPrinterIp,
+        port = process.env.networkPrinterPort;
+
+      let deviceId = "bfi_printer";
+      let options = { crypto: false, buffer: false };
+
+      console.log(ipAddress, port)
+
+      const connectionResult = await new Promise((resolve) => {
+        ePosDev.connect(ipAddress, port, (resultConnect) => {
+          resolve(resultConnect);
+        });
+      });
+
+      if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
+        console.log("Connecting to IP address and port failed");
+        return;
+      }
+
+      const createDeviceResult = await new Promise((resolve) => {
+        ePosDev.createDevice(
+          deviceId,
+          ePosDev.DEVICE_TYPE_PRINTER,
+          options,
+          (deviceObj, errorCode) => {
+            resolve(deviceObj);
+          }
+        );
+      });
+
+      console.log(createDeviceResult)
+
+      if (createDeviceResult === null) {
+        console.log("Creating device failed");
+        return;
+      }
+
+      this.networkPrinter = createDeviceResult;
+
+      this.networkPrinter.onreceive = (response) => {
+        console.log(response)
+        if (response.success) {
+          console.log("Callback create device response success");
+        } else {
+          console.log("Callback create device response failed");
+        }
+      };
+
+      this.showLoading = false;
+    },
     async printReceipt(data) {
       console.log(data);
-      this.$refs.Receipt.print(data);
+      // this.$refs.Receipt.print(data);
+      this.networkPrint(data);
     },
     //    console.log(data);
     //    if (this.U_STATUS === 'Pending'){
@@ -1760,6 +1906,7 @@ export default {
     // },
     async printed(U_TRX_ID) {
       console.log(U_TRX_ID);
+ 
       try {
         this.showLoading = true;
         const userDetails = JSON.parse(localStorage.user_details);
@@ -1778,7 +1925,8 @@ export default {
           }
         });
         this.showLoading = false;
-        this.$refs.Receipt.print(U_TRX_ID);
+        this.networkPrint(U_TRX_ID);
+        // this.$refs.Receipt.print(U_TRX_ID);
         // this.$bvModal.hide("bv-modal-confirmPrint");
         this.getTransactions();
       } catch (e) {
