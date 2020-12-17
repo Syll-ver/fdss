@@ -61,7 +61,8 @@ module.exports = {
     // baseURL: "http://172.16.4.168:8000/fdss-api" 
     // baseURL: "http://94.237.66.240:8000" (MASTER)
     // baseURL: "http://94.237.66.240:8100" (SQA)
-    baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
+    // baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
+    baseURL: "https://94.237.65.245:8201/fdss-api" 
     // baseURL: "hhtp://94.237.66.240:8200" (UAT)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api"
 
