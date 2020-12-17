@@ -117,7 +117,7 @@
             v-b-tooltip.hover
             title="Filter Transaction Type "
           >
-          Transaction Type
+            Transaction Type
             <b-form-checkbox id="Pick-up" value="Pick-up"
               >Pick-up</b-form-checkbox
             >
@@ -125,7 +125,7 @@
               >Delivery</b-form-checkbox
             >
           </b-form-checkbox-group>
-           <!-- <b-form-checkbox-group
+          <!-- <b-form-checkbox-group
             id="status_group1"
             name="flavour-2"
             class="pl-2"
@@ -249,7 +249,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="networkPrint(row.item)"
+            @click="printed(row.item)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -572,7 +572,7 @@
 
         <b-row v-if="U_TRANSACTION_TYPE === '2'">
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
-             <small class="text-left"># of Requested Bags</small>
+            <small class="text-left"># of Requested Bags</small>
             <b-form-input
               id="requestedsacks"
               type="number"
@@ -795,9 +795,15 @@
 
         <b-row v-if="U_TRANSACTION_TYPE === '2'">
           <b-col>
-        <small class="text-left"># of Requested Bags</small>
-        <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input>
-          </b-col> <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
+            <small class="text-left"># of Requested Bags</small>
+            <b-form-input
+              id="requestedsacks"
+              v-model="U_REQUESTED_SACKS"
+              class="form-text"
+              required
+            ></b-form-input>
+          </b-col>
+          <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of Bags</small>
             <b-form-input
               type="number"
@@ -953,7 +959,11 @@
                     </div>
                   </b-col>
                 </b-row>
-                <div v-if="U_TRANSACTION_TYPE === 'Pick-up' && U_UOM.UomEntry === 'BAG'">
+                <div
+                  v-if="
+                    U_TRANSACTION_TYPE === 'Pick-up' && U_UOM.UomEntry === 'BAG'
+                  "
+                >
                   <b-row>
                     <b-col cols="4">
                       <span>Quantity</span>
@@ -978,13 +988,18 @@
                   </b-row>
                 </div>
 
-        <div v-else-if="U_TRANSACTION_TYPE === 'Pick-up' && U_UOM.UomName === 'TRUCK LOAD'">
+                <div
+                  v-else-if="
+                    U_TRANSACTION_TYPE === 'Pick-up' &&
+                      U_UOM.UomName === 'TRUCK LOAD'
+                  "
+                >
                   <b-row>
                     <b-col cols="4">
                       <span>Quantity</span>
                     </b-col>
-              
-                     <b-col cols="8">
+
+                    <b-col cols="8">
                       <div class="dotted-border">
                         <span>: {{ U_SACKS }} {{ U_UOM.UomEntry }}</span>
                       </div>
@@ -1242,7 +1257,7 @@
         />
         {{ alert.message }}
       </b-alert>
-        <!-- <VueQrcode
+      <!-- <VueQrcode
         id="QRcode"
         type="String"
         :value="receiptData1"
@@ -1280,7 +1295,6 @@ export default {
     VueQrcode
   },
   async created() {
-
     // await this.getPriceList();
     await this.getCommodity();
     await this.getTransactions();
@@ -1294,8 +1308,9 @@ export default {
   },
   data() {
     return {
-      receiptData:{},
-      receiptData1:{},
+      isPrinterAvailable: true,
+      receiptData: {},
+      receiptData1: {},
       qrString: null,
       data2: null,
       networkPrinter: null,
@@ -1386,71 +1401,61 @@ export default {
         {
           key: "TRANSACTION_COMPANY",
           label: "Company",
-          sortable: true,
-   
+          sortable: true
         },
 
         {
           key: "U_TRX_NO",
           label: "Transaction No.",
-          sortable: true,
-        
+          sortable: true
         },
 
         {
           key: "U_TRANSACTION_TYPE",
           label: "Transaction Type",
-          sortable: true,
-     
+          sortable: true
         },
 
         {
           key: "U_CMMDTY",
           label: "Commodity",
-          sortable: true,
-        
+          sortable: true
         },
-        
+
         {
           key: "U_UOM",
           label: "Unit of Measure",
-          sortable: true,
-      
+          sortable: true
         },
 
-         {
+        {
           key: "U_SACKS",
           label: "Quantity",
-          sortable: true,
-
+          sortable: true
         },
 
         {
           key: "U_FRMR_NAME",
           label: "Farmer's Name",
-          sortable: true,
-    
+          sortable: true
         },
 
         {
           key: "U_CRTD_BY",
           label: "Created By",
-          sortable: true,
-         
+          sortable: true
         },
 
         {
           key: "U_SCHEDULED_DATE_AND_TIME",
           label: "Date Scheduled",
-          sortable: true,
-       
+          sortable: true
         },
 
         {
           key: "U_STATUS",
           label: "Status",
-          sortable: true,
-    
+          sortable: true
         },
 
         { key: "actions", label: "Actions", class: "text-center" }
@@ -1466,8 +1471,7 @@ export default {
       sortDesc: true,
       sortDirection: "asc",
       filter: null,
-      filterOn: [],
-     
+      filterOn: []
     };
   },
   computed: {
@@ -1480,12 +1484,11 @@ export default {
         if (this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
           return request;
         }
-         if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
+        if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
           return request;
         }
       });
     },
-  
 
     bottomLabel() {
       let end = this.perPage * this.currentPage;
@@ -1573,14 +1576,14 @@ export default {
         this.showAlert("Please input Driver Name", "danger");
       } else if (this.U_PLATE_NUMBER == null) {
         this.showAlert("Please input Plate Number", "danger");
-      } else if ( this.U_UOM.UomName == "TRUCK LOAD" && this.U_SACKS < 1 ) {
+      } else if (this.U_UOM.UomName == "TRUCK LOAD" && this.U_SACKS < 1) {
         this.showAlert("Please input quantity not less than zero", "danger");
       } else if (this.U_TRANSACTION_TYPE == 2 && this.U_SACKS < 1) {
         this.showAlert("Please input # of bags not less than zero", "danger");
-      // } else if (this.U_SACKS < "1" ) {
-      //   this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
+        // } else if (this.U_SACKS < "1" ) {
+        //   this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
       } else {
-        console.log(this.U_CMMDTY.value)
+        console.log(this.U_CMMDTY.value);
         this.$bvModal.show("pin");
         setTimeout(() => {
           this.$refs.pins.focus();
@@ -1686,8 +1689,7 @@ export default {
       return;
     },
     close() {
-
-        (this.U_TRANSACTION_TYPE = null),
+      (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
         (this.U_UOM = { value: "", text: "" }),
@@ -1711,8 +1713,7 @@ export default {
       this.$bvModal.hide("edit-transaction-modal");
     },
     close1() {
-
-        (this.U_TRANSACTION_TYPE = null),
+      (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
         (this.U_UOM = { value: "", text: "" }),
@@ -1743,69 +1744,99 @@ export default {
       };
     },
     async networkPrint(data) {
-      // let QRCode = require("qrcode");
+      let QRCode = require("qrcode");
 
-      // this.qrString = JSON.stringify(data.U_TRX_NO);
+      this.qrString = JSON.stringify(data.U_TRX_NO);
 
-      // const qr = await QRCode.toDataURL(data.U_TRX_NO);
-      
-      // let canvas1 = document.createElement("canvas");
-      // canvas1.width = 100;
-      // canvas1.height = 100;
+      const qr = await QRCode.toDataURL(data.U_TRX_NO);
 
-      // let biotechLogoContext = canvas1.getContext("2d");
+      let canvas1 = document.createElement("canvas");
+      canvas1.width = 100;
+      canvas1.height = 100;
 
-      // const biotechLogo = await new Promise((resolve) => {
-      //   let image1= new Image();
-      //   image1.src = qr;
-      //   image1.onload = () => resolve(image1);
-      // });
+      let biotechLogoContext = canvas1.getContext("2d");
 
-      // biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
+      const biotechLogo = await new Promise(resolve => {
+        let image1 = new Image();
+        image1.src = qr;
+        image1.onload = () => resolve(image1);
+      });
 
-      // let canvas = document.createElement("canvas");
-      // canvas.width = 200;
-      // canvas.height = 180;
+      biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
 
-      // let revivelogoContext = canvas.getContext("2d");
+      let canvas = document.createElement("canvas");
+      canvas.width = 200;
+      canvas.height = 100;
 
-      // const revivelogo = await new Promise((resolve) => {
-      //   let image = new Image();
-      //   image.src = "/logo1.png";
-      //   image.onload = () => resolve(image);
-      // });
+      let revivelogoContext = canvas.getContext("2d");
 
-      // revivelogoContext.drawImage(revivelogo, 0, 0, 180, 150);
+      const revivelogo = await new Promise(resolve => {
+        let image = new Image();
+        image.src = "/logo1.png";
+        image.onload = () => resolve(image);
+      });
+
+      revivelogoContext.drawImage(revivelogo, 0, 0, 180, 100);
 
       this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
+      this.networkPrinter.addImage(revivelogoContext, 0, 0, 180, 95);
+      this.networkPrinter.addText(`CROPTECH INC.\n`);
+      this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
 
-      // this.networkPrinter.addImage(revivelogoContext, 0, 0,180, 128);
-
-    
-      this.networkPrinter.addText(`Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`);
+      this.networkPrinter.addText(
+        `Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`
+      );
       this.networkPrinter.addText(`${data.U_DTE_CRTD}\n`);
-      
+
       this.networkPrinter.addText(`\n`);
-      this.networkPrinter.align('right');
+      // this.networkPrinter.align('right');
+      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
+      // this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
+      this.networkPrinter.addText(`Transaction Number: ${data.U_TRX_NO}\n`);
 
-      this.networkPrinter.addText(`Transaction Number: | ${data.U_TRX_NO}\n`);
-      this.networkPrinter.addText(`Delivery Schedule: | ${data.U_SCHEDULED_DATE_AND_TIME}\n`);
+      this.networkPrinter.addText(
+        `Delivery Schedule: ${data.U_SCHEDULED_DATE_AND_TIME}\n`
+      );
+      this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
+      this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
       this.networkPrinter.addText(`\n`);
-      
-      
-
-      this.networkPrinter.addText(`Farmer's Name: | ${data.U_FRMR_NAME}\n`);
-      this.networkPrinter.addText(`Address: | ${data.U_FRMR_ADD}\n`);
-      this.networkPrinter.addText(`Item: | ${data.U_CMMDTY}\n`);
-      this.networkPrinter.addText(`Driver's Name: | ${data.U_DRVR_NAME}\n`);
-      this.networkPrinter.addText(`Plate Number: | ${data.U_PLATE_NUMBER}\n`);
-      this.networkPrinter.addText(`Requested Empty Sacks: | ${data.U_REQUESTED_SACKS}\n`);
-      this.networkPrinter.addText(`Quantity: | ${data.U_SACKS} ${data.U_UOM}\n`);
-      this.networkPrinter.addText(`Returned Empty Sacks: | ${data.U_EMPTY_SACKS }\n`);
+      this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
+      this.networkPrinter.addText(
+        `Requested Empty Sacks: ${data.U_REQUESTED_SACKS}\n`
+      );
+      if (data.U_TRANSACTION_TYPE == "Delivery") {
+        this.networkPrinter.addText(
+          `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
+        );
+      } else if (
+        data.U_TRANSACTION_TYPE == "Pick-up" &&
+        data.U_UOM.UomName == "TRUCK LOAD"
+      ) {
+        this.networkPrinter.addText(
+          `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
+        );
+      } else {
+        this.networkPrinter.addText(`Quantity:  \n`);
+      }
+      this.networkPrinter.addText(
+        `Returned Empty Sacks: ${data.U_EMPTY_SACKS}\n`
+      );
+      this.networkPrinter.addText(`Driver's Name: ${data.U_DRVR_NAME}\n`);
+      this.networkPrinter.addText(`Plate Number: ${data.U_PLATE_NUMBER}\n`);
       this.networkPrinter.addText(`\n`);
+      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
 
-      // this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
-
+      this.networkPrinter.addText(`SIGNED BY:         REVIEWED BY: \n`);
+      this.networkPrinter.addText(`\n`);
+      this.networkPrinter.addText(
+        `${data.U_FRMR_NAME}    ${data.U_HLPR_NAME}\n`
+      );
+      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
+      this.networkPrinter.addText(`\n`);
+      this.networkPrinter.addText(`VERIFIED BY: \n`);
+      this.networkPrinter.addText(`\n`);
+      this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
+      this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
 
       // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
       // this.networkPrinter.addText(
@@ -1813,11 +1844,10 @@ export default {
       // );
       // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
       // this.networkPrinter.addText(`${data.header.date}\n`);
-      
-      this.networkPrinter.addText("\n");
+
+      // this.networkPrinter.addText("\n");
 
       this.networkPrinter.send();
-      this.networkPrinter.cut();
     },
     async networkPrintInit() {
       this.showLoading = true;
@@ -1829,20 +1859,23 @@ export default {
       let deviceId = "bfi_printer";
       let options = { crypto: false, buffer: false };
 
-      console.log(ipAddress, port)
+      console.log(ipAddress, port);
 
-      const connectionResult = await new Promise((resolve) => {
-        ePosDev.connect(ipAddress, port, (resultConnect) => {
+      const connectionResult = await new Promise(resolve => {
+        ePosDev.connect(ipAddress, port, resultConnect => {
           resolve(resultConnect);
         });
       });
 
       if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
+          this.isPrinterAvailable = false;
         console.log("Connecting to IP address and port failed");
+        this.showLoading = false;
+        // this.showAlert("Print error: Connecting to Printer failed" , "danger");
         return;
       }
 
-      const createDeviceResult = await new Promise((resolve) => {
+      const createDeviceResult = await new Promise(resolve => {
         ePosDev.createDevice(
           deviceId,
           ePosDev.DEVICE_TYPE_PRINTER,
@@ -1853,31 +1886,34 @@ export default {
         );
       });
 
-      console.log(createDeviceResult)
+      console.log(createDeviceResult);
 
       if (createDeviceResult === null) {
         console.log("Creating device failed");
+        this.showLoading = false;
         return;
       }
 
       this.networkPrinter = createDeviceResult;
 
-      this.networkPrinter.onreceive = (response) => {
-        console.log(response)
+      this.networkPrinter.onreceive = response => {
+        console.log(response);
         if (response.success) {
+        
           console.log("Callback create device response success");
         } else {
+        
           console.log("Callback create device response failed");
         }
       };
 
       this.showLoading = false;
     },
-    async printReceipt(data) {
-      console.log(data);
-      // this.$refs.Receipt.print(data);
-      this.networkPrint(data);
-    },
+    // async printReceipt(data) {
+    //   console.log(data);
+    //   // this.$refs.Receipt.print(data);
+    //   this.networkPrint(data);
+    // },
     //    console.log(data);
     //    if (this.U_STATUS === 'Pending'){
     //   this.showLoading = true
@@ -1906,8 +1942,14 @@ export default {
     // },
     async printed(U_TRX_ID) {
       console.log(U_TRX_ID);
- 
+
       try {
+        console.log(this.isPrinterAvailable)
+        if (!this.isPrinterAvailable) {
+          this.showAlert("Print error: Printer not connected", "danger");
+          return;
+        }
+
         this.showLoading = true;
         const userDetails = JSON.parse(localStorage.user_details);
 
@@ -1926,11 +1968,13 @@ export default {
         });
         this.showLoading = false;
         this.networkPrint(U_TRX_ID);
+        this.showAlert("Printed Successfully", "success");
         // this.$refs.Receipt.print(U_TRX_ID);
         // this.$bvModal.hide("bv-modal-confirmPrint");
         this.getTransactions();
       } catch (e) {
         console.log(e);
+        this.showAlert("Print error: Printer not connected", "danger");
         this.showLoading = false;
         this.showAlert(res.message, "danger");
       }
@@ -2016,8 +2060,9 @@ export default {
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
       this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
+      this.U_UOM = data.U_UOM.UomName;
       (this.U_CMMDTY = { value: data.U_ITEM, text: data.U_CMMDTY }),
-        (this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID });
+        // (this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID });
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
       const driver_name = data.U_DRVR_NAME.split(", ");
@@ -2053,6 +2098,7 @@ export default {
     },
     show(data) {
       console.log(data);
+      // this.U_UOM = data.U_UOM.UomName;
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -2111,7 +2157,7 @@ export default {
     //       });
     //     }
     //   }
-     
+
     // },
     async updateUOM() {
       //  console.log(this.U_CMMDTY.value)
@@ -2200,7 +2246,7 @@ export default {
     },
     async getFarmer() {
       const userDetails = JSON.parse(localStorage.user_details);
-     
+
       this.farmer = [];
       const res = await axios({
         method: "POST",
@@ -2247,7 +2293,6 @@ export default {
         // this.U_HLPR_NAME=null;
 
         let items = [];
-   
 
         const userDetails = JSON.parse(localStorage.user_details);
         // console.log(this.U_FRMR_NAME.value.id)
@@ -2615,8 +2660,4 @@ export default {
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-<<<<<<< HEAD
 
-
-=======
->>>>>>> fb06cf6d8f0d4143d222da580e3b929d24090fc9
