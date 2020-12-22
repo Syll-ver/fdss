@@ -1944,11 +1944,11 @@ export default {
       console.log(U_TRX_ID);
 
       try {
-        console.log(this.isPrinterAvailable)
-        if (!this.isPrinterAvailable) {
-          this.showAlert("Print error: Printer not connected", "danger");
-          return;
-        }
+        // console.log(this.isPrinterAvailable)
+        // if (!this.isPrinterAvailable) {
+        //   this.showAlert("Print error: Printer not connected", "danger");
+        //   return;
+        // }
 
         this.showLoading = true;
         const userDetails = JSON.parse(localStorage.user_details);
