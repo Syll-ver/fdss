@@ -1,62 +1,86 @@
 <template>
-  
-   
+<div>
+    <Loading v-if="showLoading" />
     <div>
-       <div>
       <b-alert
-        id="alert_action"
-        class="alerticon"
         :show="alert.showAlert"
         dismissible
         :variant="alert.variant"
         @dismissed="alert.showAlert = null"
       >
         <font-awesome-icon
-          :icon="alert.variant == 'danger' ? 'exclamation' : 'check-circle'"
-          class="mr-1 alerticon"
-        
+          :icon="
+            alert.variant == 'success' ? 'check-circle' : 'exclamation-triangle'
+          "
+          class="mr-1"
+          style="font-size:20px"
         />
         {{ alert.message }}
       </b-alert>
-      <Loading v-if="showLoading" />
     </div>
+    <div>
       <!-- Main table -->
-      <b-row>
+       <b-row>
         <b-col>
           <b-button
             id="add_action"
             size="sm"
             class="button-style"
             variant="biotech"
-            @click="addAction()"
-            v-if="actions.add_action"
+            @click="addCompany()"
+             v-if="actions.add_company"
           >
-            <font-awesome-icon icon="plus" class="mr-1" />Add Action
+            <font-awesome-icon icon="plus" class="mr-1" />Add Company
           </b-button>
         </b-col>
       </b-row>
-
-      <b-row>
-        <b-col cols="4" class="mt-3">
-          <b-form-group>
-            <b-input-group size="sm">
-              <b-form-input
-                v-model="filter"
-                type="search"
-                id="search_action"
-                placeholder="Search Action"
-              ></b-form-input>
-               <b-input-group-append>
+     <b-row>
+      <b-col cols="4" class="mt-3">
+        <b-form-group>
+          <b-input-group size="sm">
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Search Company"
+            ></b-form-input>
+            <b-input-group-append>
             <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
             </b-input-group-append>
-            </b-input-group>
-          </b-form-group>
-        </b-col>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
 
-       <b-col cols="4" class="mt-3">
-           </b-col>
+      <b-col cols="4" class="mt-3">
+        <!-- <b-input-group prepend="Date" size="sm">
+          <date-range-picker
+            id="date_pending"
+            ref="picker"
+            :opens="opens1"
+            :locale-data="localeData"
+            :autoApply="true"
+            :singleDatePicker="false"
+            :showWeekNumbers="true"
+            v-model="datePicker"
+            @update="updateValues"
+          >
+            <div slot="input" id="date_pending" >
+              {{ datePicker.startDate }} - {{ datePicker.endDate }}
+            </div>
+          </date-range-picker>
+          <b-input-group-append style="height:2rem; font-size:12px">
+            <b-button
+              @click="resetDate"
+              id="date_reset_pending"
+              style="font-size:12px"
+              >Reset</b-button
+            >
+          </b-input-group-append>
+        </b-input-group> -->
+      </b-col>
   <b-col ></b-col>
-<b-col cols="2"  class="mt-3" align="right">
+ 
+      <b-col cols="2"  class="mt-3" align="right">
         <!-- <b-form-group class="mb-0">
           <b-form-select
             id="perPageSelect_action"
@@ -94,7 +118,7 @@
 
       <!-- Main table element -->
       <b-table
-        id="table-action"
+        id="company-table"
         class="table-style"
         show-empty
         scrollable
@@ -110,21 +134,26 @@
         :sort-desc.sync="sortDesc"
         :sort-direction="sortDirection"
         @filtered="onFiltered"
+        responsive
+        :busy="isBusyTable"
       >
-        <!-- <template v-slot:table-caption>{{ bottomLabel }}</template> -->
-
-        <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
+        <template v-slot:table-busy>
+          <div class="text-center text-secondary my-2">
+            <b-spinner small class="align-middle"></b-spinner>
+            <strong>&nbsp;Loading...</strong>
+          </div>
+        </template>
 
         <template v-slot:cell(actions)="row">
           <b-button
+            id="companyedit"
+            variant="edit"
             size="sm"
             @click="edit(row.item)"
             class="table-button"
-            variant ="edit"
-            id="edit_action"
             v-b-tooltip.hover
-            title="Update Action"
-            v-if="actions.edit_action"
+            title="Update Company"
+            v-if="actions.edit_company"
           >
             <font-awesome-icon icon="edit" />
           </b-button>
@@ -133,41 +162,76 @@
         <template v-slot:cell(U_MODULE_NAME)="row">
           <div>
             {{
-            row.item.U_MODULE_NAME
-            ? row.item.U_MODULE_NAME
-            : listModules.find(
-            modules => modules.Code === row.item.U_MODULE_CODE
-            ).Name
+              row.item.U_MODULE_NAME
+                ? row.item.U_MODULE_NAME
+                : listModules.find(
+                    modules => modules.Code === row.item.U_MODULE_CODE
+                  ).Name
             }}
           </div>
         </template>
 
+        <template v-slot:cell(CompanyName)="row">
+          {{
+            listCompanies.find(
+              company => company.U_COMPANYCODE == row.item.U_COMPANYCODE
+            )
+              ? listCompanies.find(
+                  company => company.U_COMPANYCODE == row.item.U_COMPANYCODE
+                ).COMPANYNAME
+              : ""
+          }}
+        </template>
+
         <template v-slot:cell(U_IS_ACTIVE)="row">
+          <div style="font-size:13.5px">
             <b-badge
-              class="table-badge"
+              style="width:70px"
               pill
               :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
-            >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
+              >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
+            >
+          </div>
         </template>
       </b-table>
 
       <hr />
 
       <b-row>
-        <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="receipt">
-          <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
+        <!-- <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_company"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> -->
+
+        <b-col
+          label-cols-sm
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center"
+        >
+          <div size="sm" style="color: gray; font-size: 11.5px;">
+            {{ bottomLabel }}
+          </div>
         </b-col>
-        <b-col cols="4" offset="5">
+
+        <b-col>
           <b-pagination
-            id="actions-pagination"
+            id="company-pagination"
             pills
             v-model="currentPage"
             :total-rows="rows"
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="actions-table"
+            aria-controls="company-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
@@ -177,65 +241,73 @@
       <!-- Add Action -->
 
       <b-modal
-        size="sm"
+        size="md"
         header-bg-variant="biotech"
         header-text-variant="light"
         body-bg-variant="light"
-        id="add-action-modal"
+        footer-bg-variant="light"
         no-close-on-backdrop
+        hide-header-close
+        id="add-company-modal"
         @hide="clearForm()"
       >
         <template v-slot:modal-title>
-          <h6>Add Action</h6>
+          <h6>Add Company</h6>
         </template>
 
-        <small class="text-left">Select Module</small>
+        <small class="text-left">Company Code</small>
         <b-row align-h="center">
           <b-form-select
-            id="select_module_modal"
+            id="add-company-code"
+            v-model="company_form.U_COMPANYCODE"
+            style="font-size: 10px;"
+            class="mx-3"
             type="text"
-            class="mx-3 form-text"
-            v-model="action_form.U_MODULE_CODE"
+            @change="selectedCompanyCode()"
           >
-            <option :value="null" disabled>Select Module</option>
+            <option id="select-company-code" :value="null" disabled
+              >Select Company Code</option
+            >
             <option
-              :value="modules.Code"
-              v-for="(modules, i) in listModules.filter(
-                modules => modules.U_IS_ACTIVE
-              )"
+              v-for="(code, i) of listSAPcompanies"
               :key="i"
-            >{{ modules.Name }}</option>
+              :value="code.ID"
+              >{{ code.ID + " - " + code.COMPANYNAME }}</option
+            >
           </b-form-select>
         </b-row>
 
-        <small class="text-left">Action Name</small>
+        <small class="text-left">Company Name</small>
         <b-row align-h="center">
           <b-form-input
-            id="add_ACTION_NAME_modal"
-            type="text"
-            class="mx-3 form-text"
-            v-model="action_form.U_ACTION_NAME"
+            id="add-company-name"
+            v-model="company_form.COMPANYNAME"
+            class="mx-3"
+            style="font-size:10px"
+            disabled
           ></b-form-input>
         </b-row>
 
-        <template v-slot:modal-footer="{  cancel }">
+        <template v-slot:modal-footer="{ cancel }">
+          
           <b-button
             id="add_action_modal"
             size="sm"
             variant="biotech"
-            @click="addActionTable()"
+            @click="addCompanyTable()"
             style="font-size:13px"
-            class="button-style"
+            class="button"
             :disabled="showLoading === true"
-          >
-            Add
+            >Add
           </b-button>
           <b-button
             id="cancel_add_action_modal"
             size="sm"
             @click="cancel()"
-            class="button-style"
-          >Cancel</b-button>
+            style="font-size:13.5px;border: 0px;"
+            :disabled="showLoading === true"
+            >Cancel</b-button
+          >
         </template>
       </b-modal>
 
@@ -244,54 +316,61 @@
       <!-- Edit Action -->
 
       <b-modal
-        size="sm"
+        size="md"
         header-bg-variant="biotech"
         header-text-variant="light"
         body-bg-variant="light"
-        id="edit-action-modal"
+        footer-bg-variant="light"
         no-close-on-backdrop
+        hide-header-close
+        id="edit-company-modal"
         @hide="clearForm()"
       >
         <template v-slot:modal-title>
-          <h6>Update Action</h6>
+          <h6>Update Company</h6>
         </template>
 
-        <small class="text-left">Select Module</small>
+        <small class="text-left">Company Code</small>
         <b-row align-h="center">
           <b-form-select
-            id="update_selected_module"
+            id="edit-company-code"
+            v-model="company_form.U_COMPANYCODE"
+            style="font-size: 10px;"
+            class="mx-3"
             type="text"
+            @change="selectedCompanyCode()"
             disabled
-            class="mx-3 form-text"
-            v-model="action_form.U_MODULE_CODE"
           >
-            <option :value="null">Select Module</option>
+            <option id="select-company-code" :value="null" disabled
+              >Select Company Code</option
+            >
             <option
-              :value="modules.Code"
-              v-for="(modules, i) in listModules"
+              v-for="(code, i) of listSAPcompanies"
               :key="i"
-            >{{ modules.Name }}</option>
+              :value="code.ID"
+              >{{ code.ID + " - " + code.COMPANYNAME }}</option
+            >
           </b-form-select>
         </b-row>
 
-        <small class="text-left">Action Description</small>
+        <small class="text-left">Company Name</small>
         <b-row align-h="center">
           <b-form-input
-            id="update_desc"
-            type="text"
+            id="edit-company-name"
+            v-model="company_form.COMPANYNAME"
+            class="mx-3"
+            style="font-size:10px"
             disabled
-            class="mx-3 form-text"
-            v-model="action_form.U_ACTION_NAME"
           ></b-form-input>
         </b-row>
 
         <small class="text-left">Status</small>
         <b-row align-h="center">
           <b-form-select
-            id="status_update"
-            class="mx-3 form-text"
+            class="mx-3"
             type="text"
-            v-model="action_form.U_IS_ACTIVE"
+            style="font-size:10px"
+            v-model="company_form.U_IS_ACTIVE"
           >
             <option :value="1">Active</option>
             <option :value="0">Inactive</option>
@@ -299,30 +378,34 @@
         </b-row>
 
         <template v-slot:modal-footer="{ cancel }">
+        
           <b-button
-            id="update_action"
             size="sm"
             variant="biotech"
-            @click="editActionTable()"
-            class="button-style"
+            @click="editCompanyTable()"
+            style="font-size:13px"
+            class="button"
             :disabled="showLoading === true"
-          >
-           Update
+            >Update
           </b-button>
-          <b-button id="cancel_action" size="sm" @click="cancel()" class="button-style">Cancel</b-button>
+            <b-button
+            size="sm"
+            @click="cancel()"
+            style="font-size:13.5px;border: 0px;"
+            :disabled="showLoading === true"
+            >Cancel</b-button
+          >
         </template>
       </b-modal>
     </div>
-
-    <!-- Edit Action -->
-
+</div>
 </template>
 
 <script>
 import moment from "moment";
-import Loading from "~/components/Loading/Loading.vue";
 import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
+import Loading from "@/components/Loading/Loading.vue";
 
 export default {
   components: {
@@ -330,43 +413,46 @@ export default {
   },
   data() {
     return {
+      isBusyTable: false,
       showLoading: false,
       filterStatus: [1],
 
       actions: {
-        add_action: false,
-        edit_action: false
+        add_company: false,
+        edit_company: false
       },
+
       alert: {
         showAlert: 0,
-        variant: "biotech",
+        variant: "success",
         message: ""
       },
 
-      action_form: {
-        U_MODULE_CODE: null,
-        U_ACTION_NAME: null,
+      company_form: {
+        Code: null,
+        U_COMPANYCODE: null,
+        COMPANYNAME: null,
         U_IS_ACTIVE: null
       },
 
       fields: [
-        // {
-        //   key: "index",
-        //   label: "#",
-        //   sortable: true,
-        //   sortDirection: "desc"
-        // },
-
         {
-          key: "U_ACTION_NAME",
-          label: "Action Name",
+          key: "Code",
+          label: "Code",
           sortable: true,
           sortDirection: "desc"
         },
 
         {
-          key: "U_MODULE_NAME",
-          label: "Module Name",
+          key: "U_COMPANYCODE",
+          label: "Company Code",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+        {
+          key: "CompanyName",
+          label: "Company Name",
           sortable: true,
           sortDirection: "desc"
         },
@@ -384,7 +470,7 @@ export default {
       totalRows: 1,
       currentPage: 1,
       perPage: 5,
-      pageOptions: [5, 10, 50],
+      pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
@@ -394,8 +480,8 @@ export default {
   },
   computed: {
     filterItems() {
-      return this.listActions.filter(listActions => {
-        return this.filterStatus.includes(listActions.U_IS_ACTIVE);
+      return this.listCompanies.filter(listCompanies => {
+        return this.filterStatus.includes(listCompanies.U_IS_ACTIVE);
       });
     },
 
@@ -404,20 +490,21 @@ export default {
     },
 
     filterFields() {
-      if (this.actions.editAction === false) {
+      if (this.actions.edit_company === false) {
         return this.fields.filter(field => field.key !== "actions");
       } else {
         return this.fields;
       }
     },
     ...mapGetters({
-      listActions: "Admin/Actions/getListActions",
-      listModules: "Admin/Modules/getListModules"
+      listCompanies: "Admin/Company/getListCompanies",
+      listSAPcompanies: "SAP/Companies/getCompanyList"
     }),
 
     getListActions() {
-      return this.listActions;
+      return this.listCompanies;
     },
+
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -445,22 +532,31 @@ export default {
 
   methods: {
     clearForm() {
-      this.action_form = {
-        U_MODULE_CODE: null,
-        U_ACTION_NAME: null,
+      this.company_form = {
+        Code: null,
+        U_COMPANYCODE: null,
+        COMPANYNAME: null,
         U_IS_ACTIVE: null
       };
     },
+
     cancel() {
       this.alert.showAlert = 0;
     },
-    editActionTable() {
+
+    selectedCompanyCode() {
+      this.company_form.COMPANYNAME = this.listSAPcompanies.find(
+        company => company.ID == this.company_form.U_COMPANYCODE
+      ).COMPANYNAME;
+    },
+
+    editCompanyTable() {
       this.showLoading = true;
       this.$store
-        .dispatch("Admin/Actions/editAction", {
+        .dispatch("Admin/Company/editCompany", {
+          company_details: this.company_form,
           U_UPDATED_BY: JSON.parse(localStorage.user_details).Code,
           user_actions: JSON.parse(localStorage.user_actions),
-          action_details: this.action_form,
           SessionId: localStorage.SessionId
         })
         .then(res => {
@@ -469,29 +565,30 @@ export default {
               if (res.response.data.errorMsg === "Invalid session.") {
                 this.$bvModal.show("session_modal");
               }
+              if (res.response.data.errorMsg === "Session restore error.") {
+                this.$bvModal.show("session_modal");
+              }
               this.showAlert(res.response.data.errorMsg, "danger");
             } else {
               this.showAlert(res.message, "danger");
             }
             this.showLoading = false;
           } else {
-            this.showAlert("Successfully Updated", "success");
-
-            this.$bvModal.hide("edit-action-modal");
+            this.showAlert("Success", "success");
+            this.$bvModal.hide("edit-company-modal");
             this.clearForm();
             this.showLoading = false;
           }
         });
     },
-    addActionTable() {
-      this.showLoading = true;
 
+    addCompanyTable() {
+      this.showLoading = true;
       this.$store
-        .dispatch("Admin/Actions/addAction", {
+        .dispatch("Admin/Company/addCompany", {
           U_CREATED_BY: JSON.parse(localStorage.user_details).Code,
           user_actions: JSON.parse(localStorage.user_actions),
-          U_MODULE_CODE: this.action_form.U_MODULE_CODE,
-          U_ACTION_NAME: this.action_form.U_ACTION_NAME,
+          company_details: this.company_form,
           SessionId: localStorage.SessionId
         })
         .then(res => {
@@ -500,48 +597,59 @@ export default {
               if (res.response.data.errorMsg === "Invalid session.") {
                 this.$bvModal.show("session_modal");
               }
+              if (res.response.data.errorMsg === "Session restore error.") {
+                this.$bvModal.show("session_modal");
+              }
               this.showAlert(res.response.data.errorMsg, "danger");
             } else {
               this.showAlert(res.message, "danger");
             }
             this.showLoading = false;
           } else {
-            this.showAlert("Successfully Added", "success");
-
-            this.$bvModal.hide("add-action-modal");
+            this.showAlert("Success", "success");
+            this.$bvModal.hide("add-company-modal");
             this.clearForm();
             this.showLoading = false;
+
+            this.$store
+              .dispatch("Admin/Company/fetchListCompany", {
+                user_actions: JSON.parse(localStorage.user_actions),
+                SessionId: localStorage.SessionId,
+                Admin: "Y"
+              })
+              .then(res => {
+                if (res && res.name == "Error") {
+                  if (res.response && res.response.data.errorMsg) {
+                    if (res.response.data.errorMsg === "Invalid session.") {
+                      this.$bvModal.show("session_modal");
+                    }
+                    if (
+                      res.response.data.errorMsg === "Session restore error."
+                    ) {
+                      this.$bvModal.show("session_modal");
+                    }
+                  }
+                }
+              });
           }
         });
     },
 
-    addAction() {
-      this.$bvModal.show("add-action-modal");
+    addCompany() {
+      this.$bvModal.show("add-company-modal");
     },
 
     edit(data) {
-      this.action_form = { ...data };
-      this.$bvModal.show("edit-action-modal");
-    },
-
-    fetchPendingTransactions() {
-      this.items = this.$store.state.transactions.pendingTransactions;
-      return;
-    },
-    addDocument() {
-      this.transactionForm.documentListValues.push({
-        documentType: null,
-        number: null
-      });
+      this.company_form = { ...data };
+      this.$bvModal.show("edit-company-modal");
     },
 
     resetInfoModal() {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
+
     onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
 
@@ -554,9 +662,31 @@ export default {
     }
   },
 
-  beforeCreate() {
-    this.$store
-      .dispatch("Admin/Actions/fetchListActions", {
+  async beforeCreate() {
+     this.showLoading = true;
+    this.isBusyTable = true;
+
+    await this.$store
+      .dispatch("Admin/Company/fetchListCompany", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId,
+        Admin: "Y"
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+            if (res.response.data.errorMsg === "Session restore error.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+
+    await this.$store
+      .dispatch("SAP/Companies/fetchCompanyList", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
@@ -566,33 +696,23 @@ export default {
             if (res.response.data.errorMsg === "Invalid session.") {
               this.$bvModal.show("session_modal");
             }
-          }
-        }
-      });
-    this.$store
-      .dispatch("Admin/Modules/fetchListModules", {
-        user_actions: JSON.parse(localStorage.user_actions),
-        SessionId: localStorage.SessionId
-      })
-      .then(res => {
-        if (res && res.name == "Error") {
-          if (res.response && res.response.data.errorMsg) {
-            if (res.response.data.errorMsg === "Invalid session.") {
+            if (res.response.data.errorMsg === "Session restore error.") {
               this.$bvModal.show("session_modal");
             }
           }
         }
       });
+
+    this.isBusyTable = false;
   },
 
   created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
-
-    if (userActions.find(action => action.U_ACTION_NAME === "Add action")) {
-      this.actions.add_action = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Add company")) {
+      this.actions.add_company = true;
     }
-    if (userActions.find(action => action.U_ACTION_NAME === "Edit action")) {
-      this.actions.edit_action = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Edit company")) {
+      this.actions.edit_company = true;
     }
   }
 };

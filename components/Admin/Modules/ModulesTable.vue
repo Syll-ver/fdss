@@ -1,6 +1,6 @@
 <template>
  <div >
-
+<Loading v-if="showLoading" />
       <!-- Main table -->
       <b-row>
         <b-col>
@@ -88,6 +88,8 @@
               class="pl-2"
               style="font-size:12px"
               v-model="filterStatus"
+              v-b-tooltip.hover
+              title="Filter Status"
             >
               <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
@@ -182,7 +184,7 @@
         </template>
 
         <small class="text-left">Module Name</small>
-        <b-row align-h="receipt">
+        <b-row >
           <b-form-input
             size="xs"
             id="add_module_name_modal"
@@ -192,16 +194,16 @@
           ></b-form-input>
         </b-row>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template v-slot:modal-footer="{  cancel }">
           <b-button
             id="add_module_modal"
             size="sm"
             variant="biotech"
             @click="saveModule()"
             class="button-style"
-            :disabled="showButtonLoading === true"
+            :disabled="showLoading === true"
           >
-            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Add
+      Add
           </b-button>
           <b-button
             id="cancel_add_module_modal"
@@ -252,16 +254,16 @@
           </b-form-select>
         </b-row>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="edit_module_modal"
             size="sm"
             variant="biotech"
             @click="editModule()"
             class="button-style"
-            :disabled="showButtonLoading === true"
+            :disabled="showLoading === true"
           >
-            <b-spinner v-show="showButtonLoading === true" small label="Spinning"></b-spinner>Update
+            Update
           </b-button>
           <b-button
             id="cancel_edit_module_modal"
@@ -296,14 +298,15 @@
 
 <script>
 import moment from "moment";
+import Loading from "~/components/Loading/Loading.vue";
 import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-  components: {},
+  components: {Loading},
   data() {
     return {
-      showButtonLoading: false,
+      showLoading: false,
       filterStatus: [1],
       actions: {
         add_module: false,
@@ -419,7 +422,7 @@ export default {
       };
     },
     editModule() {
-      this.showButtonLoading = true;
+      this.showLoading = true;
 
       this.$store
         .dispatch("Admin/Modules/modifyModule", {
@@ -438,13 +441,13 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showButtonLoading = false;
+            this.showLoading = false;
           } else {
             this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-module-modal");
             this.clearForm();
-            this.showButtonLoading = false;
+            this.showLoading = false;
           }
         });
     },
@@ -454,7 +457,7 @@ export default {
     },
 
     saveModule() {
-      this.showButtonLoading = true;
+      this.showLoading = true;
       this.$store
         .dispatch("Admin/Modules/createModule", {
           Code: JSON.parse(localStorage.user_details).Code,
@@ -472,13 +475,13 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showButtonLoading = false;
+            this.showLoading = false;
           } else {
             this.showAlert("Successfully Added", "success");
 
             this.$bvModal.hide("add-module-modal");
             this.clearForm();
-            this.showButtonLoading = false;
+            this.showLoading = false;
           }
         });
     },

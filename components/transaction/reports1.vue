@@ -408,7 +408,7 @@
             /> -->
           </b-card>
 
-      <template v-slot:modal-footer="{ ok, cancel }">
+      <template v-slot:modal-footer="{ cancel }">
         <b-button
           id="cancel_add_action_modal"
           size="sm"

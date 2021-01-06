@@ -8,7 +8,7 @@
                   
   
             <span>
-                 <b-img src="/logo1.jpg" class="receipt-logo" center/>
+                 <b-img src="/logo1.png" class="receipt-logo" center/>
               
             
            
@@ -119,7 +119,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
          <b-row>
           <b-col cols="4">
             <span>
-              Requested Sacks
+              Requested Bags
             </span>
           </b-col>
 
@@ -131,11 +131,11 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
             </div>
           </b-col>
         </b-row>
-        <div v-if="receiptData.U_TRANSACTION_TYPE === 'Pick-up'">
+       <div v-if="receiptData.U_TRANSACTION_TYPE == 'Pick-up' && receiptData.U_UOM.UomName == 'TRUCK LOAD'">
                         <b-row >
           <b-col cols="4">
             <span>
-              Number of Sacks
+             Quantity
             </span>
           </b-col>
 
@@ -150,7 +150,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Sacks
+               Empty Bags
             </span>
           </b-col>
 
@@ -163,18 +163,42 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
           </b-col>
         </b-row>
         </div>
+          <div v-else-if="receiptData.U_TRANSACTION_TYPE == 'Delivery'">
+                  <b-row>
+                    <b-col cols="4">
+                      <span>Quantity</span>
+                    </b-col>
+              
+                     <b-col cols="8">
+                      <div class="dotted-border">
+                        <span>: {{ receiptData.U_SACKS }} &nbsp; {{ receiptData.U_UOM.UomEntry }}</span>
+                      </div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col cols="4">
+                      <span>Empty Bags</span>
+                    </b-col>
+
+                    <b-col cols="8">
+                      <div class="dotted-border">
+                        <span>: {{ receiptData.U_EMPTY_SACKS }} &nbsp;{{ receiptData.U_UOM.UomEntry }}</span>
+                      </div>
+                    </b-col>
+                  </b-row>
+                </div>
 <div v-else>
                <b-row >
           <b-col cols="4">
             <span>
-              Number of Sacks
+              Quantity
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{receiptData.U_SACKS}}
+                : 
               </span>
             </div>
           </b-col>
@@ -182,14 +206,14 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Sacks 
+               Empty Bags
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{receiptData.U_EMPTY_SACKS}}
+                :
               </span>
             </div>
           </b-col>
@@ -256,9 +280,9 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
             </span>
 
             <span style="font-size:14px; float:right" class="mr-1">
-              <b>
+              <!-- <b>
                 Farmer's Copy
-              </b>
+              </b> -->
             </span>
           </b-col>
         </b-row>
@@ -270,7 +294,7 @@ Transaction Number : {{ receiptData.U_TRX_NO }}
       <VueQrcode
         id="QRcode"
         type="String"
-        :value="JSON.stringify(receiptData1)"
+        :value="receiptData1"
       ></VueQrcode>
     </b-row>
   </div>
@@ -283,7 +307,8 @@ export default {
   },
   data() {
     return{
-      receiptData:{U_TRX_NO: "Test"},
+      receiptData:{},
+      receiptData1:{},
       data2: null
     }
   },
@@ -301,70 +326,73 @@ export default {
    },
     
     async print(data) {
-      this.receiptData = {...data}
-      this.receiptData1 = {U_TRX_NO:data.U_TRX_NO}
+        this.receiptData = {...data}
+        // console.log(data.U_TRX_NO)
+        // let datas = data.U_TRX_NO;
+        // let qr = datas.split(" ")
+        this.receiptData1 = data.U_TRX_NO
 
-      // console.log(this.receiptData)
-      await setTimeout({}, 3000);
-      // Get HTML to print from element
-       await this.generateQr();
-      const prtHtml = await document.getElementById("receipt").innerHTML;
 
-     
-      // Get all stylesheets HTML
+        // console.log(this.receiptData)
+        await setTimeout({}, 3000);
+        // Get HTML to print from element
+        await this.generateQr();
+        const prtHtml = await document.getElementById("receipt").innerHTML;
 
-      let stylesHtml = "";
-      for (const node of [
-        ...document.querySelectorAll('link[rel="stylesheet"], style')
-      ]) {
-        stylesHtml += node.outerHTML;
-      }
-
-      // Open the print window
-      const WinPrint = await window.open(
-        "",
-        "",
-        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-      );
-
-      WinPrint.document.write(`<!DOCTYPE html>
-              <html>
-              <head>
-                  ${stylesHtml}
-              <style>
-                  body {margin-left: 1rem;}
-
-              </style>
-              </head>
-              <body>
-               
-                  ${prtHtml}
-     
-              </body>
-      </html>`);
       
-WinPrint.document.addEventListener(
-        "load",
-         function() {
-            WinPrint.focus(); 
-     
-       WinPrint.document.close();
-      WinPrint.print()
-    
-       },
-        true
-      );
+        // Get all stylesheets HTML
 
-      // WinPrint.print();
+        let stylesHtml = "";
+        for (const node of [
+          ...document.querySelectorAll('link[rel="stylesheet"], style')
+        ]) {
+          stylesHtml += node.outerHTML;
+        }
 
-      // WinPrint.close();
+        // Open the print window
+        const WinPrint = await window.open(
+          "",
+          "",
+          "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+        );
+
+        WinPrint.document.write(`<!DOCTYPE html>
+                <html>
+                <head>
+                    ${stylesHtml}
+                <style>
+                    body {margin-left: 1rem;}
+
+                </style>
+                </head>
+                <body>
+                
+                    ${prtHtml}
+      
+                </body>
+        </html>`);
+        
+  // WinPrint.document.addEventListener(
+  //         "load",
+  //         function() {
+              WinPrint.focus(); 
+      
+        WinPrint.document.close();
+    WinPrint.print( )
+      
+      TRUE
+        
+
+  
+
+      WinPrint.close();
     }
   },
 
   beforeCreate() {},
 
   created() {
-    //   this.print();
+      // this.print();
   }
 };
 </script>

@@ -41,7 +41,7 @@
               v-model="filter"
               type="search"
               id="filterInput"
-              placeholder="Search Roles"
+              placeholder="Search User"
             ></b-form-input>
             <b-input-group-append>
             <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
@@ -104,10 +104,38 @@
               class="pl-2"
               style="font-size:12px"
               v-model="filterStatus"
-            >
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+              v-b-tooltip.hover
+              title="Filter Status"
+            >Status<br>
+              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox><br>
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
+
+ <b-form-checkbox-group
+            id="status_group1"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterCompany"
+            v-b-tooltip.hover
+            title="Filter Company "
+          >
+         Company<br>
+       
+            <b-form-checkbox
+                    size="sm"
+                    :id="'choice' + i"
+                    v-for="(company, i) in filterListCompanies"
+                    :key="i"
+                    :value="company.U_COMPANYCODE"
+                  >{{company.COMPANYDBNAME  }}</b-form-checkbox>
+                   <!-- <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+              >Biotech</b-form-checkbox
+            >
+            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+              >REvive</b-form-checkbox> -->
+          </b-form-checkbox-group>
+
           </b-dropdown>
      
       </b-col>
@@ -177,7 +205,7 @@
           <div style="font-size:11.5px">
             {{
               listRoles.find(
-                listRoles => listRoles.role_id === row.item.role_id
+                listRoles => listRoles.role_id === row.item.role_id 
               )
                 ? listRoles.find(
                     listRoles => listRoles.Code === row.item.U_ROLE_CODE
@@ -192,7 +220,7 @@
             <b-badge
               style="width:70px"
               pill
-              :variant="row.item.U_IS_ACTIVE ? 'success' : 'secondary'"
+              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
               >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
             >
           </div>
@@ -237,6 +265,7 @@
         header-text-variant="light"
         body-bg-variant="light"
         id="add-user-modal"
+      
       >
         <template v-slot:modal-title>
           <h6>Add User</h6>
@@ -299,6 +328,7 @@
               ></b-form-input>
             </b-card>
           </b-col>
+         
 
           <b-col class="mt-4">
             <b-card class="cardShadow" style="position:relative; bottom:14px">
@@ -326,9 +356,9 @@
               <b-form-input
                 id="act_grp_add_modal"
                 type="text"
-                v-model="userDetails.U_USERNAME"
+                v-model="selectedUserDetails.ExternalEmployeeNumber"
                 style="font-size:10px"
-                :disabled="userDetails.U_IS_SAP_USER === 1"
+                disabled
               ></b-form-input>
             </b-card>
 
@@ -347,14 +377,15 @@
 
                 <option
                   :value="role.Code"
-                  v-for="(role, i) in listRoles"
+                  v-for="(role, i) in filterListRoles"
                   :key="i"
                   >{{ role.Name }}</option
                 >
               </b-form-select>
+
             </b-card>
 
-            <b-card
+            <!-- <b-card
               class="cardShadow mt-4"
               style="position:relative; bottom:14px"
             >
@@ -364,7 +395,11 @@
                 v-model="userDetails.U_COMPANY_ACCESS"
               >
                 <option :value="null" disabled>Select Company</option>
-                <option :value="null">None</option>
+                
+
+
+
+
 
                 <option
                   v-for="(company, i) in companyList"
@@ -373,13 +408,31 @@
                   >{{ company.COMPANYNAME }}</option
                 >
               </b-form-select>
-            </b-card>
+            </b-card> -->
           </b-col>
 
           <!-- <b-col cols="6" class="mt-3">
            
           </b-col>-->
         </b-row>
+        <!-- <b-row>
+             <b-col cols="6" class="mt-4 mb-1">
+            <b-card class="cardShadow">
+              <small class="ml-1">Status</small>
+              <b-form-select
+                type="number"
+                id="stat_edit_modal"
+                v-model="userDetails.U_IS_ACTIVE"
+                class="form-text"
+              >
+                <option :value="1">Active</option>
+                <option :value="0">Inactive</option>
+              </b-form-select>
+            </b-card>
+          </b-col>
+        </b-row>
+    -->
+        
 
         <template v-slot:modal-footer="{}">
           <b-button
@@ -389,14 +442,9 @@
             @click="addUserTable()"
             style="font-size:13px"
             class="button-style"
-            :disabled="showButtonLoading === true"
+            :disabled="showLoading === true"
           >
-            <b-spinner
-              v-show="showButtonLoading === true"
-              small
-              label="Spinning"
-            ></b-spinner
-            >Add
+            Add
           </b-button>
 
           <b-button
@@ -419,6 +467,7 @@
         header-text-variant="light"
         body-bg-variant="light"
         id="find-user-modal"
+     
       >
         <template v-slot:modal-title>
           <h6>Find Users</h6>
@@ -434,9 +483,9 @@
               >
                 <option :value="null">Select Company</option>
                 <option
-                  v-for="(company, i) in companyList"
+                  v-for="(company, i) in filterListCompanies"
                   :key="i"
-                  :value="company.ID"
+                  :value="company.U_COMPANYCODE"
                   >{{ company.COMPANYNAME }}</option
                 >
               </b-form-select>
@@ -460,6 +509,8 @@
           <b-table
             class="mt-4"
             ref="selectableTable"
+            id="tablefind"
+            v-model="selectableTable"
             selectable
             show-empty
             :busy="isBusy"
@@ -486,8 +537,7 @@
 
             <template v-slot:table-busy>
               <div class="text-center text-secondary my-2">
-                <b-spinner small class="align-middle"></b-spinner>
-                <strong>&nbsp;Loading...</strong>
+             
               </div>
             </template>
           </b-table>
@@ -522,7 +572,7 @@
           </b-row>
         </b-card>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template v-slot:modal-footer="{ }">
           <b-button
             id="add_add_modal"
             size="sm"
@@ -534,7 +584,7 @@
           <b-button
             id="cancel_add_modal"
             size="sm"
-            @click="cancel()"
+            @click="cancel1()"
             class="button-style"
             >Cancel</b-button
           >
@@ -638,7 +688,7 @@
                 type="text"
                 v-model="userDetails.U_USERNAME"
                 class="form-text"
-                :disabled="userDetails.U_IS_SAP_USER === 1 ? '' : disabled"
+                disabled
               ></b-form-input>
             </b-card>
 
@@ -699,7 +749,7 @@
           </b-col>
 
           <b-col cols="6" class="mt-4 mb-1">
-            <b-card
+            <!-- <b-card
               class="cardShadow"
             >
               <small class="ml-1">Company</small>
@@ -717,11 +767,11 @@
                   >{{ company.COMPANYNAME }}</option
                 >
               </b-form-select>
-            </b-card>
+            </b-card> -->
           </b-col>
         </b-row>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             size="sm"
             id="edt_edit_modal"
@@ -758,7 +808,7 @@
           <h6>Do you want to update user?</h6>
         </div>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template>
           <b-button
             size="sm"
             class="button-style"
@@ -793,8 +843,9 @@
           <h6>Do you want to reset user password?</h6>
         </div>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+       <template v-slot:modal-footer="{ cancel }">
           <b-button
+            id="Resetbutton"
             size="sm"
             variant="biotech"
             @click="confirmReset()"
@@ -802,6 +853,7 @@
             >Reset</b-button
           >
           <b-button
+            id="cancelbutton"
             size="sm"
             @click="cancel()"
             class="button-style"
@@ -828,10 +880,10 @@ export default {
     return {
       isBusy: false,
       selectedCompany: null,
-      showButtonLoading: false,
+     
       showLoading: false,
       findUser: null,
-      filterStatus: [1],
+      filterStatus: [1,0],
       actions: {
         addUser: false,
         editUser: false,
@@ -855,6 +907,12 @@ export default {
       },
 
       fields: [
+          {
+          key: "COMPANY_NAME",
+          label: "Company",
+          sortable: true,
+          sortDirection: "desc"
+        },
         {
           key: "FirstName",
           label: "First Name",
@@ -922,13 +980,15 @@ export default {
       ],
       selectedUser: [],
       selectedUserDetails: {
+        ExternalEmployeeNumber: null,
         EmployeeID: null,
         FirstName: null,
         LastName: null,
         MiddleName: null,
         eMail: null
       },
-
+      filterCompany: ["REVIVE","BIOTECH"],
+      selectableTable: null,
       totalRows: 1,
       currentPage: 1,
       perPage: 5,
@@ -944,13 +1004,42 @@ export default {
     };
   },
   computed: {
+    // altCompanyName() {
+    //   console.log(this.listCompanies)
+    //   if(this.filterCompany) {
+    //     if( this.listCompanies.filter(
+    //       company => company.U_COMPANYNAME.toLowerCase().search("revive") < 0
+    //     )) {
+          
+    //     }
+    //   }
+    // },
+      ...mapGetters({
+      Users: "Admin/Users/getUsers",
+      listRoles: "Admin/Roles/getListRoles",
+      listCompanies: "Admin/Company/getListCompanies",
+     listSAPcompanies: "SAP/Companies/getCompanyList",
+      companyList: "Company/getCompanyList",
+      SearchedUsers: "Admin/Users/getSearchedUsers"
+    }),
+    filterListCompanies() {
+      return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
+    },  
     filterSearchedUsers() {
       return this.SearchedUsers;
     },
 
     filterItems() {
       return this.Users.filter(Users => {
-        return this.filterStatus.includes(Users.U_IS_ACTIVE);
+        return this.filterStatus.includes(Users.U_IS_ACTIVE) && this.filterCompany.includes(Users.U_COMPANY_CODE) ;
+      });
+    },
+
+    filterListRoles(){
+      return this.listRoles.filter(Roles => {
+        const results =
+          Roles.U_IS_ACTIVE == 1
+        return results;
       });
     },
 
@@ -998,12 +1087,7 @@ export default {
       return this.filterItems.length;
     },
 
-    ...mapGetters({
-      Users: "Admin/Users/getUsers",
-      listRoles: "Admin/Roles/getListRoles",
-      companyList: "Company/getCompanyList",
-      SearchedUsers: "Admin/Users/getSearchedUsers"
-    }),
+  
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -1058,12 +1142,15 @@ export default {
       this.$bvModal.show("update-user-modal");
     },
     fetchEmployees() {
+      console.log(this.selectedCompany)
+       this.showLoading = true;
       this.isBusy = true;
       this.$store
         .dispatch("Admin/Users/searchEmployees", {
           SessionId: localStorage.SessionId,
           CompanyDB: this.selectedCompany
         })
+
 
         .then(res => {
           if (res && res.name == "Error") {
@@ -1076,7 +1163,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           }
-
+       this.showLoading = false;
           this.isBusy = false;
         });
     },
@@ -1084,6 +1171,7 @@ export default {
       this.clearForm();
       this.$bvModal.hide("add-user-modal");
       this.selectedUserDetails = {
+        ExternalEmployeeNumber: null,
         EmployeeID: null,
         FirstName: null,
         LastName: null,
@@ -1094,7 +1182,8 @@ export default {
 
     selectUser() {
       this.selectedUserDetails = { ...this.selectedUser[0] };
-      this.userDetails.U_EMPLOYEE_CODE = this.selectedUserDetails.EmployeeID;
+       this.userDetails.U_EMPLOYEE_CODE = this.selectedUserDetails.EmployeeID;
+      this.userDetails.U_USERNAME = this.selectedUserDetails.ExternalEmployeeNumber;
       this.userDetails.U_IS_SAP_USER = 0;
       this.userDetails.U_COMPANY_CODE = this.selectedCompany;
       if (this.selectedUser[0].UserCode) {
@@ -1105,12 +1194,26 @@ export default {
       this.findUser = null;
     },
     findUsers() {
+      this.showLoading =true;
+      this.selectedCompany = null;
       this.$bvModal.show("find-user-modal");
+      this.showLoading = false;
+    },
+    cancel1(){
+      this.clearForm();
+      this.SearchedUsers=[];
+      this.rowsUsers=[];
+      // this.userFields={FirstName:null,
+      // MiddleName:null,LastName:null};
+      this.$bvModal.hide("add-user-modal");
+      this.$bvModal.hide("find-user-modal");
+
     },
     onRowSelected(items) {
       this.selectedUser = items;
     },
     confirmReset() {
+      this.showLoading = true;
       this.$store
         .dispatch("Admin/Users/resetUserPassword", {
           U_UPDATED_BY: JSON.parse(localStorage.user_details).Code,
@@ -1131,6 +1234,7 @@ export default {
           } else {
             this.showAlert("Successfully Reseted", "success");
             this.$bvModal.hide("reset-modal");
+            this.showLoading = false;
             this.clearForm();
           }
         });
@@ -1142,6 +1246,7 @@ export default {
         U_IS_ACTIVE: null
       };
       this.selectedUserDetails = {
+        ExternalEmployeeNumber: null,
         EmployeeID: null,
         FirstName: null,
         LastName: null,
@@ -1161,15 +1266,18 @@ export default {
     },
 
     addUserTable() {
-      this.showButtonLoading = true;
+      this.showLoading = true;
+      this.userDetails.U_USERNAME = this.selectedUserDetails.ExternalEmployeeNumber;
+     
       this.$store
         .dispatch("Admin/Users/addUser", {
           Code: JSON.parse(localStorage.user_details).Code,
           user_actions: JSON.parse(localStorage.user_actions),
           user: this.userDetails,
+          
           SessionId: localStorage.SessionId
         })
-        .then(res => {
+        .then(res => {        
           if (res && res.name == "Error") {
             this.showLoading = false;
 
@@ -1181,7 +1289,7 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showButtonLoading = false;
+            this.showLoading = false;
           } else {
             this.showAlert("Successfully Added", "success");
 
@@ -1189,12 +1297,13 @@ export default {
 
             this.clearForm();
 
-            this.showButtonLoading = false;
+            this.showLoading = false;
           }
         });
     },
 
     edit(data) {
+      
       this.userDetails = {
         Code: data.Code,
         U_EMPLOYEE_CODE: data.U_EMPLOYEE_CODE,
@@ -1214,6 +1323,7 @@ export default {
       this.$bvModal.show("edit-modal");
     },
     editTable() {
+      this.showLoading = true;
       console.log(this.userDetails);
       this.$store
         .dispatch("Admin/Users/editUser", {
@@ -1233,6 +1343,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           } else {
+            this.showLoading = false;
             this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-modal");
@@ -1265,20 +1376,49 @@ export default {
   },
 
   async beforeCreate() {
-    this.$store
-      .dispatch("Company/fetchCompany", {
-        SessionId: localStorage.SessionId
-      })
+     this.showLoading = true;
+     this.isBusyTable = true;
 
+    await this.$store
+      .dispatch("Admin/Company/fetchListCompany", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId,
+        Admin: "Y"
+      })
       .then(res => {
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
               this.$bvModal.show("session_modal");
             }
+            if (res.response.data.errorMsg === "Session restore error.") {
+              this.$bvModal.show("session_modal");
+            }
           }
         }
       });
+     await this.$store
+      .dispatch("SAP/Companies/fetchCompanyList", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+            if (res.response.data.errorMsg === "Session restore error.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+      this.listCompanies.forEach(company => {
+        this.filterCompany.push(company.U_COMPANYCODE)
+      })
+
+    this.isBusyTable = false;
 
     this.showLoading = true;
     await this.$store
@@ -1296,6 +1436,7 @@ export default {
         }
       });
     await this.$store
+    
       .dispatch("Admin/Roles/fetchRoles", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId

@@ -1,5 +1,7 @@
 <template>
+
   <b-container>
+    <Loading v-if="showLoading" />
     <div class="body">
       <div class="container">
         <div>
@@ -81,13 +83,16 @@
 </template>
 
 <script>
+import Loading from "~/components/Loading/Loading.vue";
 import axios from "axios";
 // import { required, minLength } from "vuelidate/lib/validators";
 // import { validationMixin } from "vuelidate";
 
 export default {
   // mixins: [validationMixin],
-
+components: {
+    Loading
+  },
   name: "LoginForm",
   layout: "loginLayout",
   data() {
@@ -139,7 +144,7 @@ export default {
       };
     },
     async Confirm() {
-  
+  this.showLoading = true;
       if (this.user.password1 == this.user.password2) {
         const password = (this.user.password1, this.user.password2);
 
@@ -166,13 +171,16 @@ export default {
                   this.$router.push("/");
                 }
                 this.showAlert(err.response.data.errorMsg, "danger");
+                this.showLoading = false;
               } else {
                 this.showAlert(err.message, "danger");
+                this.showLoading = false;
               }
             }
           });
       } else {
         this.showAlert("Input Same Password", "danger");
+        this.showLoading = false;
       }
     }
   }

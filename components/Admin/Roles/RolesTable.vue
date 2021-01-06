@@ -16,6 +16,7 @@
         />
         {{ alert.message }}
       </b-alert>
+      <Loading v-if="showLoading" />
     </div>
     
       <!-- Main table -->
@@ -105,6 +106,9 @@
               class="pl-2"
               style="font-size:12px"
               v-model="filterStatus"
+              v-b-tooltip.hover
+              title="Filter Status"
+              
             >
               <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
@@ -153,7 +157,7 @@
             <b-badge
               class="table-badge"
               pill
-              :variant="row.item.U_IS_ACTIVE ? 'success' : 'secondary'"
+              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
               >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
             >
         </template>
@@ -396,14 +400,10 @@
             @click="addRoleAccessTable()"
             style="font-size:13px"
             class="button-style"
-            :disabled="showButtonLoading === true"
+            :disabled="showLoading === true"
           >
-            <b-spinner
-              v-show="showButtonLoading === true"
-              small
-              label="Spinning"
-            ></b-spinner
-            >Add
+            
+            Add
           </b-button>
           <b-button
             id="cancel_add_roles_and_access_modal"
@@ -535,14 +535,9 @@
             variant="biotech"
             @click="editRoleTable()"
             class="button-style"
-            :disabled="showButtonLoading === true"
+            :disabled="showLoading === true"
           >
-            <b-spinner
-              v-show="showButtonLoading === true"
-              small
-              label="Spinning"
-            ></b-spinner
-            >Update
+            Update
           </b-button>
           <b-button
             size="sm"
@@ -561,14 +556,15 @@
 
 <script>
 import moment from "moment";
+import Loading from "~/components/Loading/Loading.vue";
 import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-  components: {},
+  components: {Loading},
   data() {
     return {
-      showButtonLoading: false,
+      showLoading: false,
       filterStatus: [1],
       actions: { addRoleAndAccess: false, editRoleAndAccess: false },
       alert: {
@@ -701,7 +697,7 @@ export default {
       };
     },
     async addRoleAccessTable() {
-      this.showButtonLoading = true;
+      this.showLoading = true;
       if (this.approverLevel) {
         this.roleForm.Name = `Approver ${this.approverLevel}`;
         this.roleForm.U_STAGE_ID = this.approverLevel;
@@ -732,7 +728,7 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showButtonLoading = false;
+            this.showLoading = false;
           } else {
             this.$store.dispatch("Admin/Roles/fetchRoles", {
               user_actions: JSON.parse(localStorage.user_actions),
@@ -743,12 +739,12 @@ export default {
             this.$bvModal.hide("add-role-modal");
 
             this.clearForm();
-            this.showButtonLoading = false;
+            this.showLoading = false;
           }
         });
     },
     editRoleTable() {
-      this.showButtonLoading = true;
+      this.showLoading = true;
       if (this.approverLevel) {
         this.roleForm.Name = `Approver ${this.approverLevel}`;
         this.roleForm.U_STAGE_ID = this.approverLevel;
@@ -804,7 +800,7 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showButtonLoading = false;
+            this.showLoading = false;
           } else {
             this.$store.dispatch("Admin/Roles/fetchRoles", {
               user_actions: JSON.parse(localStorage.user_actions),
@@ -816,7 +812,7 @@ export default {
 
             this.clearForm();
 
-            this.showButtonLoading = false;
+            this.showLoading = false;
           }
         });
     },

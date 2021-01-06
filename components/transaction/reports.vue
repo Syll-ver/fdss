@@ -86,12 +86,15 @@
     </template> 
             <b-form-checkbox-group
               
-              id="status_group"
+              id="status_group0"
               name="flavour-2"
               class="pl-2"
               style="font-size:12px"
               v-model="filterStatus"
+              v-b-tooltip.hover
+              title="Filter Transaction Status"
             >
+            Status <br>
               <b-form-checkbox id="pending_supp_stat" value="Completed"
                 >Completed</b-form-checkbox
               >
@@ -99,16 +102,57 @@
                 >Cancelled</b-form-checkbox
               >
             </b-form-checkbox-group>
+            <b-form-checkbox-group
+            id="status_group"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterTransaction"
+            v-b-tooltip.hover
+            title="Filter Transaction Type "
+          >
+          Transaction Type
+            <b-form-checkbox id="Pick-up" value="Pick-up"
+              >Pick-up</b-form-checkbox
+            >
+            <b-form-checkbox id="delivery" value="Delivery"
+              >Delivery</b-form-checkbox
+            >
+          </b-form-checkbox-group>
+             <!-- <b-form-checkbox-group
+            id="status_group1"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterCompany"
+            v-b-tooltip.hover
+            title="Filter Company "
+          >
+         Company<br>
+            <b-form-checkbox
+                    size="sm"
+                    :id="'choice' + index"
+                    v-for="(items, index) in filterCompany"
+                    :key="index"
+                    :value="items"
+                  >{{ items }}</b-form-checkbox>
+                   <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+              >Biotech</b-form-checkbox
+            >
+            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+              >REvive</b-form-checkbox
+            >
+          </b-form-checkbox-group> -->
           </b-dropdown>
            <b-button
             size="sm"
             style="font-size:15px;"
             variant="dark"
             v-b-tooltip.hover
-            title="Print Report"
+            title="Eport PDF"
             @click="print"
           >
-            <font-awesome-icon style icon="print" />
+            <font-awesome-icon style icon="file-pdf" />
           </b-button>
           <b-button
             align="right"
@@ -297,7 +341,7 @@
       <div class=" mr-4" style="width:31rem; height:40rem">
             <span>
              
-                 <b-img src="/revive.png" class="receipt-logo" center/>
+                 <b-img src="/logo1.png" class="receipt-logo" center/>
        
            
             </span>
@@ -358,7 +402,7 @@ Transaction Number : {{ U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : U_CMMDTY
+                : {{U_CMMDTY}}
               </span>
             </div>
           </b-col>
@@ -398,7 +442,7 @@ Transaction Number : {{ U_TRX_NO }}
          <b-row>
           <b-col cols="4">
             <span>
-              Requested Sacks
+              Requested Bags
             </span>
           </b-col>
 
@@ -414,14 +458,14 @@ Transaction Number : {{ U_TRX_NO }}
                         <b-row >
           <b-col cols="4">
             <span>
-              Number of Sacks
+              Quantity
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{U_SACKS}}
+                : {{U_SACKS}} {{ U_UOM }}
               </span>
             </div>
           </b-col>
@@ -429,7 +473,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Sacks
+               Empty Bags
             </span>
           </b-col>
 
@@ -446,14 +490,14 @@ Transaction Number : {{ U_TRX_NO }}
                <b-row >
           <b-col cols="4">
             <span>
-              Number of Sacks
+              Quantity
             </span>
           </b-col>
 
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{U_SACKS}}
+                : {{U_SACKS}} {{ U_UOM}}
               </span>
             </div>
           </b-col>
@@ -461,7 +505,7 @@ Transaction Number : {{ U_TRX_NO }}
                        <b-row>
           <b-col cols="4">
             <span>
-               Returned Sacks
+               Empty Bags
             </span>
           </b-col>
 
@@ -593,6 +637,8 @@ Transaction Number : {{ U_TRX_NO }}
 
 <script>
 import moment from "moment";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import axios from "axios";
 import Receipt from "~/components/transaction/Receipt.vue";
 import DateRangePicker from "vue2-daterange-picker";
@@ -611,8 +657,9 @@ export default {
   async created() {
     await this.getTransactions();
     await this.getTransactionType();
-    await this.getFarmer();
-    await this.getCommodity();
+    await this.getCompanyList();
+    // await this.getFarmer();
+    // await this.getCommodity();
     this.totalRows = this.items.length;
   },
   data() {
@@ -625,8 +672,9 @@ export default {
         message: ""
       },
       showReceipt: false,
-      BLANKET_REFERENCE: null,
+      TRANSACTION_COMPANY:null,
       U_TRANSACTION_TYPE: null,
+     U_UOM: { UomName: "", UomEntry: "" },
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
       U_CMMDTY:null,
@@ -646,7 +694,8 @@ export default {
       U_HLPR_NAME:null,
       opens1:"",
     
-      
+      filterCompany:[],
+      filterTransaction:["Pick-up","Delivery"],
       transaction_types:[],
       farmer:[],
       farmerAdd:[],
@@ -669,7 +718,13 @@ export default {
       },
       items:[],
       itemsFields: [
-         
+           {
+          key: "TRANSACTION_COMPANY",
+          label: "Company",
+          sortable: true,
+          sortDirection: "asc"
+        },
+        
         {
           key: "U_TRX_NO",
           label: "Transaction No.",
@@ -689,6 +744,20 @@ export default {
           label: "Commodity",
           sortable: true,
           sortDirection: "asc"
+        },
+
+        {
+          key: "U_UOM",
+          label: "Unit of Measure",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+         {
+          key: "U_SACKS",
+          label: "Quantity",
+          sortable: true,
+          sortDirection: "desc"
         },
 
         {
@@ -717,12 +786,6 @@ export default {
           sortable: true,
           sortDirection: "asc"
         },
-        {
-          key: "BLANKET_REFERENCE",
-          label: "Sales Blanket Ref.",
-          sortable: true,
-          sortDirection: "asc"
-        },
 
         {
           key: "U_STATUS",
@@ -737,9 +800,9 @@ export default {
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
-      sortBy: "",
+      sortBy: "U_TRX_NO",
       sortDesc: false,
-      sortDirection: "asc",
+      sortDirection: "desc",
       filter: null,
       filterOn: []
     };
@@ -747,10 +810,41 @@ export default {
    computed: {
     filterItems() {
       return this.items.filter(request => {
-        if (this.filterStatus.includes(request.U_STATUS)) {
+        if (this.filterStatus.includes(request.U_STATUS) && this.filterTransaction.includes(request.U_TRANSACTION_TYPE) ) {
+          return request;
+        }
+        if (this.filterTransaction.includes(request.U_TRANSACTION_TYPE) && this.filterStatus.includes(request.U_STATUS) ) {
+          return request;
+        }
+        if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
           return request;
         }
       });
+      //  const pageSize = () => {
+      //   return this.items.filter((request) => {
+
+      //     return (
+      //       this.filterStatus.includes(
+      //         request.U_TRANSACTION_TYPE
+      //       ) &&
+      //       this.filterStatus.includes(request.U_STATUS) 
+            
+      //     );
+      //   });
+      // };
+
+      // const pages = pageSize();
+      // this.totalRows = pages.length;
+
+      // return this.items.filter((request) => {
+      //   return (
+      //     this.filterStatus.includes(request.U_TRANSACTION_TYPE) &&
+      //     this.filterStatus.includes(request.U_STATUS)
+      //  );
+      // });
+
+
+
     },
 
      bottomLabel() {
@@ -782,9 +876,69 @@ export default {
   },
 
   methods: {
-    print() {
+    
+    async print() {
       // Pass the element id here
-      this.$htmlToPaper("printTable");
+      // this.$htmlToPaper("printTable");
+          //  this.$bvModal.hide("export-pdf-modal");
+      let content = [];
+      // let Total = 0;
+
+     await new Promise(resolve => {
+        this.filterItems.forEach(acknowledgement => {
+          const valuesArray = [];
+          // const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
+          // const t = this.intToTime(v[i].CREATED_TIME);
+          // const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
+          valuesArray.push(acknowledgement.U_DTE_CRTD);
+          valuesArray.push(acknowledgement.U_TRX_NO);
+          valuesArray.push(acknowledgement.U_TRANSACTION_TYPE);
+          valuesArray.push(acknowledgement.U_CMMDTY);
+          valuesArray.push(acknowledgement.U_FRMR_NAME);
+          valuesArray.push(acknowledgement.U_CRTD_BY);
+          valuesArray.push(acknowledgement.U_RMRKS);
+        
+     
+
+          content.push(valuesArray);
+        });
+        resolve();
+      });
+    
+
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.text("REvive Croptech Incorporated", 65, 12);
+
+      doc.setFontSize(12);
+      doc.text("Farmers' Deliver Slip", 78, 17);
+
+      doc.setFontSize(10);
+      doc.text(
+        `as of ${this.datePicker.startDate} to  ${this.datePicker.endDate}`,
+        76,
+        21
+      );
+
+      doc.autoTable({
+        theme: "striped",
+        headStyles: { fillColor: [40, 167, 69] },
+        margin: { top: 2, right: 2, bottom: 0, left: 2 },
+        styles: { fontSize: 6, cellWidth: "auto" },
+        head: [["Date Completed", "Transaction No.", "Type", "Commodity", "Farmer's Name", "Created By"]],
+        body: content,
+        margin: { top: 28 }
+      });
+
+      doc.save(
+        `Farmers' Delivery Slip (${this.dateRange.date_from} - ${this.dateRange.date_to}).pdf`
+      );
+
+      return doc;
+
+
+
+      
     },
      exportReports() {
       const csv = Papa.unparse(this.items, { header: true });
@@ -817,6 +971,28 @@ export default {
           text : v[i].U_DESCRIPTION,
           value: v[i].Code
         });
+      }
+    },
+      // },
+    async getCompanyList() {
+      //  console.log(this.U_CMMDTY.value.value)
+      this.companyList = [];
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/admin/companies`,
+        headers: {
+          Authorization: localStorage.SessionId
+        }
+      });
+      const v = res.data.companies;
+
+      for (let i = 0; i < v.length; i++) {
+        if (v[i].U_IS_ACTIVE == 1) {
+          this.companyList.push({
+            text: v[i].COMPANYDBNAME,
+            value: v[i].U_COMPANYCODE
+          });
+        }
       }
     },
     async getCommodity() {
@@ -861,14 +1037,15 @@ export default {
     },
 show(data) {
        console.log(data)
-       this.BLANKET_REFERENCE = data.BLANKET_REFERENCE;
+       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
+      (this.U_UOM = data.U_UOM);
        this.U_DTE_CRTD = data.U_DTE_CRTD;
        this.U_TME_CRTD = data.U_TME_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
       this.U_TRANSACTION_TYPE = data.U_TRANSACTION_TYPE;
-      this.U_CMMDTY = data.U_ITEM;
+      this.U_CMMDTY = data.U_CMMDTY;
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
@@ -962,8 +1139,9 @@ show(data) {
           const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
           this.items.push({
               U_TRX_NO: v[i].U_TRX_NO,
+              TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
               // U_TME_CRTD : t,
-              BLANKET_REFERENCE: v[i].BLANKET_REFERENCE,
+              U_UOM: v[i].UOM_NAME,
               U_TRX_ID: v[i].TRANSACTION_ID,
               U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
               U_ITEM: v[i].ITEM_ID,

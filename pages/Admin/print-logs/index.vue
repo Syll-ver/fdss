@@ -6,33 +6,30 @@
         small
         active-nav-item-class="font-weight-bold text-uppercase text-biotech"
       >
-
-
-         <b-tab title="Reports">
-          <div>
-           <reports />
-          </div>
+        <b-tab title="Print Logs">
+        <div>
+            <PrintLogsTable/>
+        </div>
         </b-tab>
-
       </b-tabs>
     </b-card>
   </div>
 </template>
 
 <script>
-
-import reports from "~/components/transaction/reports.vue";
-
+import PrintLogsTable from "~/components/Admin/PrintLogs/PrintLogs";
 
 export default {
   layout: "sidebar",
   components: {
-    reports
+    PrintLogsTable
   },
   data() {
-    return {};
-  }
+    return {
+      tabIndex: 0
+    };
+  },
+  methods: {},
 };
 </script>
 
-<style scoped></style>

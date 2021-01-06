@@ -32,11 +32,23 @@
           variant="biotech"
           class="button-style"
           size="sm"
-          @click="$bvModal.show('add-transaction-modal')"
+          @click="newDR('static')"
         >
           <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
         </b-button>
       </b-col>
+
+      <!-- <b-col>
+        <b-button
+          id="create"
+          variant="biotech"
+          class="button-style"
+          size="sm"
+          @click="postPO()"
+        >
+          <font-awesome-icon icon="plus" class="mr-1" />Post Purchase Order
+        </b-button>
+      </b-col> -->
     </b-row>
 
     <b-row>
@@ -59,7 +71,7 @@
       </b-col>
 
       <b-col cols="4" class="mt-3">
-        <b-input-group prepend="Date" style="height:10px" size="sm">
+        <b-input-group prepend="Date" style="height: 10px" size="sm">
           <!-- <b-input-group-prepend>
               <div style="background-color: green">
                 <v-icon color="#ffffff" small>fa-calendar-week</v-icon>
@@ -76,12 +88,12 @@
             v-model="datePicker"
             @update="updateValues"
           >
-            <div id="actvty_date" slot="input" style="min-width: 150px;">
+            <div id="actvty_date" slot="input" style="min-width: 150px">
               {{ datePicker.startDate }} - {{ datePicker.endDate }}
             </div>
           </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button @click="resetDate" id="date-reset" style="font-size:12px"
+          <b-input-group-append style="height: 2rem; font-size: 12px">
+            <b-button @click="resetDate" id="date-reset" style="font-size: 12px"
               >Reset</b-button
             >
           </b-input-group-append>
@@ -112,7 +124,7 @@
             id="status_group"
             name="flavour-2"
             class="pl-2"
-            style="font-size:12px"
+            style="font-size: 12px"
             v-model="filterStatus"
             v-b-tooltip.hover
             title="Filter Transaction Type "
@@ -125,24 +137,32 @@
               >Delivery</b-form-checkbox
             >
           </b-form-checkbox-group>
-          <!-- <b-form-checkbox-group
+          <b-form-checkbox-group
             id="status_group1"
             name="flavour-2"
             class="pl-2"
-            style="font-size:12px"
+            style="font-size: 12px"
             v-model="filterCompany"
             v-b-tooltip.hover
             title="Filter Company "
           >
-         Company<br>
-         
-                   <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+            Company<br />
+            <!-- <b-form-checkbox
+                    size="sm"
+                    :id="'choice' + index"
+                    v-for="(items, index) in filterCompany"
+                    :key="index"
+                    :value="items"
+                  >{{ items }}</b-form-checkbox> -->
+            <b-form-checkbox
+              id="Biotech"
+              value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
               >Biotech</b-form-checkbox
             >
             <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
               >REvive</b-form-checkbox
             >
-          </b-form-checkbox-group> -->
+          </b-form-checkbox-group>
         </b-dropdown>
       </b-col>
     </b-row>
@@ -249,7 +269,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="printed(row.item)"
+            @click="printReceipt(row.item)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -402,22 +422,15 @@
       </template>
 
       <b-card class="card-shadow">
-        <!-- <b-form-input
-          disabled
-          id="farmer_add"
-          class="form-text"
-          v-model="companyList"
-          @change="getCommodity(), getFarmer()"
-        /> -->
-        <!-- <b-form-select
+        <small class="text-left">Company</small>
+        <b-form-select
           id="company"
           v-model="selectedcompany"
           class="form-text"
           :options="companyList"
-          @change="getCommodity(), getFarmer()"
+          @change="getCommodity(), getFarmer(), clearnew()"
           required
-
-        ></b-form-select> -->
+        ></b-form-select>
         <!-- <b-form-select
           id="company"
           v-model="selectedcompany"
@@ -450,7 +463,7 @@
           v-model="U_CMMDTY.value"
           class="form-text"
           :options="commodity"
-          @input="getUOM"
+          @input="getUOM()"
           required
           label="text"
           track-by="text"
@@ -646,18 +659,18 @@
       </template>
 
       <b-card class="card-shadow">
-        <!-- <small class="text-left">Company</small>
+        <small class="text-left">Company</small>
         <br />
         <b> {{ this.TRANSACTION_COMPANY }}</b>
-         <b-form-select
+        <!-- <b-form-select
           id="company"
           v-model="selectedcompany"
           class="form-text"
           :options="companyList"
           @change="getCommodity(), getFarmer()"
           required
-        ></b-form-select> {{this.TRANSACTION_COMPANY_ID}} 
-        <br /> -->
+        ></b-form-select> {{this.TRANSACTION_COMPANY_ID}} -->
+        <br />
 
         <small>Schedule Date</small>
 
@@ -766,7 +779,8 @@
           v-model="U_PLATE_NUMBER"
           class="form-text"
         ></b-form-input>
-
+        <!-- <small class="text-left"># of Requested Bags</small>
+        <b-form-input id="requestedsacks" v-model=" U_REQUESTED_SACKS" class="form-text" required></b-form-input> -->
         <b-row v-if="U_TRANSACTION_TYPE === '1'">
           <b-col cols="12" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of Requested Bags</small>
@@ -794,15 +808,6 @@
         <b-row v-else></b-row>
 
         <b-row v-if="U_TRANSACTION_TYPE === '2'">
-          <b-col>
-            <small class="text-left"># of Requested Bags</small>
-            <b-form-input
-              id="requestedsacks"
-              v-model="U_REQUESTED_SACKS"
-              class="form-text"
-              required
-            ></b-form-input>
-          </b-col>
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
             <small class="text-left"># of Bags</small>
             <b-form-input
@@ -874,9 +879,9 @@
         <div id="app" ref="testHtml">
           <div id="receipt">
             <b-row>
-              <div class="mr-4" style="width:31rem; height:40rem">
+              <div class="mr-4" style="width: 31rem; height: 40rem">
                 <span>
-                  <b-img src="/logo1.png" class="receipt-logo" center />
+                  <b-img src="/logo1.jpg" class="receipt-logo" center />
                 </span>
 
                 <center>
@@ -991,7 +996,7 @@
                 <div
                   v-else-if="
                     U_TRANSACTION_TYPE === 'Pick-up' &&
-                      U_UOM.UomName === 'TRUCK LOAD'
+                    U_UOM.UomName === 'TRUCK LOAD'
                   "
                 >
                   <b-row>
@@ -1060,10 +1065,16 @@
                 <b-row class="my-2">
                   <b-col cols="6">
                     <center>
-                      <span style="font-size:9px">{{ U_FRMR_NAME }}</span>
+                      <span style="font-size: 9px">{{ U_FRMR_NAME }}</span>
                       <br />
                       <span
-                        style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"
+                        style="
+                          font-size: 9px;
+                          border-top-style: solid;
+                          border-width: 1px;
+                          margin: 0;
+                          padding: 0;
+                        "
                       >
                         <B>
                           &nbsp;&nbsp; FARMER'S NAME & SIGNATURE &nbsp;&nbsp;
@@ -1074,12 +1085,18 @@
 
                   <b-col cols="6">
                     <center>
-                      <span style="font-size:9px;margin:0;padding:0">{{
+                      <span style="font-size: 9px; margin: 0; padding: 0">{{
                         U_HLPR_NAME
                       }}</span>
                       <br />
                       <span
-                        style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"
+                        style="
+                          font-size: 9px;
+                          border-top-style: solid;
+                          border-width: 1px;
+                          margin: 0;
+                          padding: 0;
+                        "
                       >
                         <B>
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1092,12 +1109,16 @@
                 </b-row>
 
                 <center>
-                  <span style="font-size:9px"
+                  <span style="font-size: 9px"
                     >&nbsp;&nbsp;{{ U_CRTD_BY }}&nbsp;&nbsp;</span
                   >
                   <br />
                   <span
-                    style="border-top-style: solid; border-width:1px;font-size:9px;"
+                    style="
+                      border-top-style: solid;
+                      border-width: 1px;
+                      font-size: 9px;
+                    "
                   >
                     <b>
                       &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED
@@ -1105,7 +1126,7 @@
                     </b>
                   </span>
                 </center>
-                <b-row style="float:right" class="mr-1 mt-1"></b-row>
+                <b-row style="float: right" class="mr-1 mt-1"></b-row>
                 <br />
                 <!-- <b-row class="mt-4">
           <b-col>
@@ -1174,14 +1195,14 @@
           size="sm"
           variant="biotech"
           @click="confirmpin()"
-          style="font-size:13px"
+          style="font-size: 13px"
           >Save</b-button
         >
         <b-button
           id="cancel"
           size="sm"
           @click="closePinModal()"
-          style="font-size:13px;border: 0px;"
+          style="font-size: 13px; border: 0px"
           >Cancel</b-button
         >
       </template>
@@ -1210,14 +1231,14 @@
             :options="{
               onBegin: () => {
                 $refs.signaturePad.resizeCanvas();
-              }
+              },
             }"
           />
         </div>
         <div class="col-3 mt-2">
           <b-button
             variant="dark"
-            style="font-size:13px;border: 0px;"
+            style="font-size: 13px; border: 0px"
             @click="clearSignature"
             >Undo</b-button
           >
@@ -1230,14 +1251,14 @@
           size="sm"
           variant="biotech"
           @click="addSignature()"
-          style="font-size:13px"
+          style="font-size: 13px"
           >Save</b-button
         >
         <b-button
           id="rmaf-verify-cancel"
           size="sm"
           @click="closeSignatureModal()"
-          style="font-size:13px;border: 0px;"
+          style="font-size: 13px; border: 0px"
           >Cancel</b-button
         >
       </template>
@@ -1257,11 +1278,6 @@
         />
         {{ alert.message }}
       </b-alert>
-      <!-- <VueQrcode
-        id="QRcode"
-        type="String"
-        :value="receiptData1"
-      ></VueQrcode> -->
     </div>
 
     <!-- View Transaction -->
@@ -1282,7 +1298,6 @@ import "@lazy-copilot/datetimepicker/dist/datetimepicker.css";
 import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 import Multiselect from "vue-multiselect";
 import jsPDF from "jspdf";
-import VueQrcode from "@chenfengyuan/vue-qrcode";
 export default {
   components: {
     jsPDF,
@@ -1292,28 +1307,19 @@ export default {
     DateRangePicker,
     Loading,
     VueSignaturePad,
-    VueQrcode
   },
   async created() {
     // await this.getPriceList();
-    await this.getCommodity();
+    await this.login();
     await this.getTransactions();
     await this.getTransactionType();
-    await this.getFarmer();
-    await this.networkPrintInit();
-
-    // await this.getCompanyList();
+    // await this.getFarmer();
+    await this.getCompanyList();
     // await this.updateUOM();
     this.totalRows = this.items.length;
   },
   data() {
     return {
-      isPrinterAvailable: true,
-      receiptData: {},
-      receiptData1: {},
-      qrString: null,
-      data2: null,
-      networkPrinter: null,
       selectedcompany: null,
       remarks: null,
       datetimeScheme: {
@@ -1322,7 +1328,7 @@ export default {
         timeFormat: "HH:mm",
         // id: 'U_SCHEDULED_DATE',
         label: "Select Date",
-        required: true
+        required: true,
       },
 
       datetimeScheme2: {
@@ -1332,7 +1338,7 @@ export default {
         timeFormat: "HH:mm",
         // id: 'U_SCHEDULED_DATE',
         label: "Select Date",
-        required: true
+        required: true,
       },
 
       U_SCHEDULED_DATE: null,
@@ -1343,13 +1349,13 @@ export default {
       alert: {
         showAlert: 0,
         variant: "biotech",
-        message: ""
+        message: "",
       },
       showReceipt: false,
       alert: {
         showAlert: 0,
         variant: "biotech",
-        message: ""
+        message: "",
       },
       // U_PRICELIST:null,
       // pricelist:[],
@@ -1375,7 +1381,7 @@ export default {
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
       transaction_types: [],
-      companyList: null,
+      companyList: [],
       farmer: [],
       farmerAdd: [],
       commodity: [],
@@ -1385,80 +1391,76 @@ export default {
       opens: "receipt",
       datePicker: {
         startDate: moment().format("MMM DD, YYYY"),
-        endDate: moment().format("MMM DD, YYYY")
+        endDate: moment().format("MMM DD, YYYY"),
       },
       dateRange: {
         date_from: moment().format("YYYY-MM-DD"),
-        date_to: moment().format("YYYY-MM-DD")
+        date_to: moment().format("YYYY-MM-DD"),
       },
       localeData: {
         direction: "ltr",
         format: moment().format("mmm dd, yyyy"),
-        separator: " - "
+        separator: " - ",
       },
       items: [],
       itemsFields: [
         {
           key: "TRANSACTION_COMPANY",
           label: "Company",
-          sortable: true
+          sortable: true,
+          sortDirection: "desc",
         },
 
         {
           key: "U_TRX_NO",
           label: "Transaction No.",
-          sortable: true
+          sortable: true,
+          sortDirection: "desc",
         },
 
         {
           key: "U_TRANSACTION_TYPE",
           label: "Transaction Type",
-          sortable: true
+          sortable: true,
+          sortDirection: "desc",
         },
 
         {
           key: "U_CMMDTY",
           label: "Commodity",
-          sortable: true
-        },
-
-        {
-          key: "U_UOM",
-          label: "Unit of Measure",
-          sortable: true
-        },
-
-        {
-          key: "U_SACKS",
-          label: "Quantity",
-          sortable: true
+          sortable: true,
+          sortDirection: "desc",
         },
 
         {
           key: "U_FRMR_NAME",
           label: "Farmer's Name",
-          sortable: true
+          sortable: true,
+          sortDirection: "desc",
         },
 
         {
           key: "U_CRTD_BY",
           label: "Created By",
-          sortable: true
+          sortable: true,
+          sortDirection: "desc",
         },
 
         {
           key: "U_SCHEDULED_DATE_AND_TIME",
           label: "Date Scheduled",
-          sortable: true
+          sortable: true,
+          sortDirection: "desc",
         },
 
         {
           key: "U_STATUS",
           label: "Status",
-          sortable: true
+          sortable: true,
+          sortDirection: "desc",
         },
 
-        { key: "actions", label: "Actions", class: "text-center" }
+        { key: "actions", label: "Actions", class: "text-center" },
       ],
       signaturePath: null,
       pincode: null,
@@ -1468,10 +1470,11 @@ export default {
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "U_SCHEDULED_DATE_AND_TIME",
-      sortDesc: true,
-      sortDirection: "asc",
+      sortDesc: false,
+      sortDirection: "desc",
       filter: null,
-      filterOn: []
+      filterOn: [],
+      receiptData1: {},
     };
   },
   computed: {
@@ -1480,7 +1483,7 @@ export default {
     //   companyList: "Company/getCompanyList",
     // }),
     filterItems() {
-      return this.items.filter(request => {
+      return this.items.filter((request) => {
         if (this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
           return request;
         }
@@ -1511,14 +1514,60 @@ export default {
     sortOptions() {
       // Create an options list from our fields
       return this.fields
-        .filter(f => f.sortable)
-        .map(f => {
+        .filter((f) => f.sortable)
+        .map((f) => {
           return { text: f.label, value: f.key };
         });
-    }
+    },
   },
 
   methods: {
+    clearnew() {
+      (this.U_TRANSACTION_TYPE = null),
+        (this.U_FRMR_NAME = null),
+        (this.U_FRMR_ADD = null),
+        (this.U_UOM = { value: "", text: "" }),
+        (this.U_CMMDTY = { value: "", text: "" }),
+        (this.U_DRVR_LNAME = null),
+        (this.U_DRVR_FNAME = null),
+        (this.U_HLPR_FNAME = null),
+        (this.U_HLPR_LNAME = null),
+        (this.U_PLATE_NUMBER = null),
+        (this.U_DTE_CRTD = null),
+        (this.U_CRTD_BY = null),
+        (this.U_TRX_NO = null),
+        (this.U_DRVR_NAME = null),
+        (this.U_REQUESTED_SACKS = 0),
+        (this.U_SACKS = 0),
+        (this.U_EMPTY_SACKS = 0),
+        (this.U_HLPR_NAME = null);
+      this.U_SCHEDULED_DATE = null;
+      this.U_SCHEDULED_TIME = null;
+    },
+    async login() {
+      this.showLoading = true;
+      await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/login`,
+        data: { username: "admin", password: "1234" },
+      })
+        .then((result) => {
+          localStorage.username = "admin";
+          localStorage.user_details = JSON.stringify(result.data.user_details);
+          localStorage.user_role = JSON.stringify(result.data.user_role);
+          localStorage.user_actions = JSON.stringify(result.data.user_actions);
+          localStorage.SessionId = result.data.SessionId;
+        })
+        .catch((err) => {
+          this.showLoading = false;
+          if (err.response && err.response.data.errorMsg) {
+            this.showAlert(err.response.data.errorMsg, "danger");
+          } else {
+            this.showAlert(err.message, "danger");
+          }
+        });
+    },
+
     //  async beforeCreate() {
     //  this.showLoading = true;
     // await this.$store
@@ -1550,40 +1599,35 @@ export default {
         console.log("Error: ", e);
       }
     },
-    onChangeHandler: function(data) {
+    onChangeHandler: function (data) {
       (this.U_SCHEDULED_DATE = moment(data.startDate).format("YYYY-MM-DD")),
         (this.U_SCHEDULED_TIME = this.fixTime(
           moment(data.startDate).format("HH:mm")
         ));
       console.log(data);
     },
+    async postPO() {},
     async saveDR() {
       // console.log(this.U_UOM)
       // console.log(this.U_FRMR_NAME.value.id)
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
-      } else if (this.U_TRANSACTION_TYPE == null) {
+      } else if (this.U_TRANSACTION_TYPE === null) {
         this.showAlert("Please select Transaction Type", "danger");
-      } else if (this.U_CMMDTY == null) {
+      } else if (this.U_CMMDTY === null) {
         this.showAlert("Please select Commodity", "danger");
-      } else if (this.U_UOM == null) {
+      } else if (this.U_UOM === null) {
         this.showAlert("Please select Unit of Measure", "danger");
-      } else if (this.U_FRMR_NAME == null) {
+      } else if (this.U_FRMR_NAME === null) {
         this.showAlert("Please select Farmer Name", "danger");
-      } else if (this.U_HLPR_FNAME == null || this.U_HLPR_LNAME == null) {
+      } else if (this.U_HLPR_FNAME === null || this.U_HLPR_LNAME === null) {
         this.showAlert("Please input Helper Name", "danger");
-      } else if (this.U_DRVR_FNAME == null || this.U_DRVR_LNAME == null) {
+      } else if (this.U_DRVR_FNAME === null || this.U_DRVR_LNAME === null) {
         this.showAlert("Please input Driver Name", "danger");
-      } else if (this.U_PLATE_NUMBER == null) {
+      } else if (this.U_PLATE_NUMBER === null) {
         this.showAlert("Please input Plate Number", "danger");
-      } else if (this.U_UOM.UomName == "TRUCK LOAD" && this.U_SACKS < 1) {
-        this.showAlert("Please input quantity not less than zero", "danger");
-      } else if (this.U_TRANSACTION_TYPE == 2 && this.U_SACKS < 1) {
-        this.showAlert("Please input # of bags not less than zero", "danger");
-        // } else if (this.U_SACKS < "1" ) {
-        //   this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
       } else {
-        console.log(this.U_CMMDTY.value);
+        // console.log(this.U_CMMDTY.value)
         this.$bvModal.show("pin");
         setTimeout(() => {
           this.$refs.pins.focus();
@@ -1607,11 +1651,11 @@ export default {
           data: {
             employee_id,
             pin: this.pincode,
-            mode: localStorage.mode
+            mode: localStorage.mode,
           },
           headers: {
-            authorization: `B1SESSION=${localStorage.session}`
-          }
+            authorization: `B1SESSION=${localStorage.session}`,
+          },
         });
         this.showLoading = false;
 
@@ -1637,10 +1681,10 @@ export default {
 
       function srcToFile(src, fileName, mimeType) {
         return fetch(src)
-          .then(function(res) {
+          .then(function (res) {
             return res.arrayBuffer();
           })
-          .then(function(buf) {
+          .then(function (buf) {
             return new File([buf], fileName, { type: mimeType });
           });
       }
@@ -1689,7 +1733,8 @@ export default {
       return;
     },
     close() {
-      (this.U_TRANSACTION_TYPE = null),
+      (this.selectedcompany = null),
+        (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
         (this.U_UOM = { value: "", text: "" }),
@@ -1713,7 +1758,8 @@ export default {
       this.$bvModal.hide("edit-transaction-modal");
     },
     close1() {
-      (this.U_TRANSACTION_TYPE = null),
+      (this.selectedcompany = null),
+        (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
         (this.U_UOM = { value: "", text: "" }),
@@ -1740,180 +1786,14 @@ export default {
       this.alert = {
         showAlert: 3,
         variant,
-        message
+        message,
       };
     },
-    async networkPrint(data) {
-      let QRCode = require("qrcode");
 
-      this.qrString = JSON.stringify(data.U_TRX_NO);
-
-      const qr = await QRCode.toDataURL(data.U_TRX_NO);
-
-      let canvas1 = document.createElement("canvas");
-      canvas1.width = 100;
-      canvas1.height = 100;
-
-      let biotechLogoContext = canvas1.getContext("2d");
-
-      const biotechLogo = await new Promise(resolve => {
-        let image1 = new Image();
-        image1.src = qr;
-        image1.onload = () => resolve(image1);
-      });
-
-      biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
-
-      let canvas = document.createElement("canvas");
-      canvas.width = 200;
-      canvas.height = 100;
-
-      let revivelogoContext = canvas.getContext("2d");
-
-      const revivelogo = await new Promise(resolve => {
-        let image = new Image();
-        image.src = "/logo1.png";
-        image.onload = () => resolve(image);
-      });
-
-      revivelogoContext.drawImage(revivelogo, 0, 0, 180, 100);
-
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
-      this.networkPrinter.addImage(revivelogoContext, 0, 0, 180, 95);
-      this.networkPrinter.addText(`CROPTECH INC.\n`);
-      this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
-
-      this.networkPrinter.addText(
-        `Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`
-      );
-      this.networkPrinter.addText(`${data.U_DTE_CRTD}\n`);
-
-      this.networkPrinter.addText(`\n`);
-      // this.networkPrinter.align('right');
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
-      // this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
-      this.networkPrinter.addText(`Transaction Number: ${data.U_TRX_NO}\n`);
-
-      this.networkPrinter.addText(
-        `Delivery Schedule: ${data.U_SCHEDULED_DATE_AND_TIME}\n`
-      );
-      this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
-      this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
-      this.networkPrinter.addText(
-        `Requested Empty Sacks: ${data.U_REQUESTED_SACKS}\n`
-      );
-      if (data.U_TRANSACTION_TYPE == "Delivery") {
-        this.networkPrinter.addText(
-          `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
-        );
-      } else if (
-        data.U_TRANSACTION_TYPE == "Pick-up" &&
-        data.U_UOM.UomName == "TRUCK LOAD"
-      ) {
-        this.networkPrinter.addText(
-          `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
-        );
-      } else {
-        this.networkPrinter.addText(`Quantity:  \n`);
-      }
-      this.networkPrinter.addText(
-        `Returned Empty Sacks: ${data.U_EMPTY_SACKS}\n`
-      );
-      this.networkPrinter.addText(`Driver's Name: ${data.U_DRVR_NAME}\n`);
-      this.networkPrinter.addText(`Plate Number: ${data.U_PLATE_NUMBER}\n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
-
-      this.networkPrinter.addText(`SIGNED BY:         REVIEWED BY: \n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(
-        `${data.U_FRMR_NAME}    ${data.U_HLPR_NAME}\n`
-      );
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`VERIFIED BY: \n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
-      this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
-
-      // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
-      // this.networkPrinter.addText(
-      //   `Supplier Code: ${data.header.supplier_code}\n`
-      // );
-      // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
-      // this.networkPrinter.addText(`${data.header.date}\n`);
-
-      // this.networkPrinter.addText("\n");
-
-      this.networkPrinter.send();
+    async printReceipt(data) {
+      console.log(data);
+      this.$refs.Receipt.print(data);
     },
-    async networkPrintInit() {
-      this.showLoading = true;
-      let ePosDev = new epson.ePOSDevice();
-
-      let ipAddress = process.env.networkPrinterIp,
-        port = process.env.networkPrinterPort;
-
-      let deviceId = "bfi_printer";
-      let options = { crypto: false, buffer: false };
-
-      console.log(ipAddress, port);
-
-      const connectionResult = await new Promise(resolve => {
-        ePosDev.connect(ipAddress, port, resultConnect => {
-          resolve(resultConnect);
-        });
-      });
-
-      if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
-          this.isPrinterAvailable = false;
-        console.log("Connecting to IP address and port failed");
-        this.showLoading = false;
-        // this.showAlert("Print error: Connecting to Printer failed" , "danger");
-        return;
-      }
-
-      const createDeviceResult = await new Promise(resolve => {
-        ePosDev.createDevice(
-          deviceId,
-          ePosDev.DEVICE_TYPE_PRINTER,
-          options,
-          (deviceObj, errorCode) => {
-            resolve(deviceObj);
-          }
-        );
-      });
-
-      console.log(createDeviceResult);
-
-      if (createDeviceResult === null) {
-        console.log("Creating device failed");
-        this.showLoading = false;
-        return;
-      }
-
-      this.networkPrinter = createDeviceResult;
-
-      this.networkPrinter.onreceive = response => {
-        console.log(response);
-        if (response.success) {
-        
-          console.log("Callback create device response success");
-        } else {
-        
-          console.log("Callback create device response failed");
-        }
-      };
-
-      this.showLoading = false;
-    },
-    // async printReceipt(data) {
-    //   console.log(data);
-    //   // this.$refs.Receipt.print(data);
-    //   this.networkPrint(data);
-    // },
     //    console.log(data);
     //    if (this.U_STATUS === 'Pending'){
     //   this.showLoading = true
@@ -1942,14 +1822,7 @@ export default {
     // },
     async printed(U_TRX_ID) {
       console.log(U_TRX_ID);
-
       try {
-        // console.log(this.isPrinterAvailable)
-        // if (!this.isPrinterAvailable) {
-        //   this.showAlert("Print error: Printer not connected", "danger");
-        //   return;
-        // }
-
         this.showLoading = true;
         const userDetails = JSON.parse(localStorage.user_details);
 
@@ -1959,22 +1832,19 @@ export default {
           method: "PUT",
           url: `${this.$axios.defaults.baseURL}/api/transaction/print/${U_TRX_ID.U_TRX_ID}`,
           headers: {
-            Authorization: `B1SESSION=${localStorage.SessionId}`
+            Authorization: `B1SESSION=${localStorage.SessionId}`,
           },
           data: {
             employee_id,
-            U_TRX_ID: U_TRX_ID.U_TRX_NO
-          }
+            U_TRX_ID: U_TRX_ID.U_TRX_NO,
+          },
         });
         this.showLoading = false;
-        this.networkPrint(U_TRX_ID);
-        this.showAlert("Printed Successfully", "success");
-        // this.$refs.Receipt.print(U_TRX_ID);
+        this.$refs.Receipt.print(U_TRX_ID);
         // this.$bvModal.hide("bv-modal-confirmPrint");
         this.getTransactions();
       } catch (e) {
         console.log(e);
-        this.showAlert("Print error: Printer not connected", "danger");
         this.showLoading = false;
         this.showAlert(res.message, "danger");
       }
@@ -1991,13 +1861,13 @@ export default {
           method: "PUT",
           url: `${this.$axios.defaults.baseURL}/api/transaction/cancel/${this.U_TRX_ID}`,
           headers: {
-            Authorization: `B1SESSION=${localStorage.SessionId}`
+            Authorization: `B1SESSION=${localStorage.SessionId}`,
           },
           data: {
             employee_id,
             U_TRX_ID: this.U_TRX_ID,
-            remarks: this.remarks
-          }
+            remarks: this.remarks,
+          },
         });
         this.showLoading = false;
         this.showAlert("Successfully Cancelled", "success");
@@ -2060,9 +1930,8 @@ export default {
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
       this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
-      this.U_UOM = data.U_UOM.UomName;
       (this.U_CMMDTY = { value: data.U_ITEM, text: data.U_CMMDTY }),
-        // (this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID });
+        (this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID });
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
       const driver_name = data.U_DRVR_NAME.split(", ");
@@ -2098,7 +1967,6 @@ export default {
     },
     show(data) {
       console.log(data);
-      // this.U_UOM = data.U_UOM.UomName;
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -2122,86 +1990,90 @@ export default {
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/transaction/types/select`,
         headers: {
-          Authorization: localStorage.SessionId
-        }
+          Authorization: localStorage.SessionId,
+        },
       });
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
         this.transaction_types.push({
           text: v[i].U_DESCRIPTION,
-          value: v[i].Code
+          value: v[i].Code,
         });
       }
     },
     //     filterListCompanies() {
     // return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
     // },
-    // async getCompanyList() {
-    //    console.log(this.U_CMMDTY.value.value)
-    //   this.companyList = [];
-    //   const res = await axios({
-    //     method: "POST",
-    //     url: `${this.$axios.defaults.baseURL}/admin/companies`,
-    //     headers: {
-    //       Authorization: localStorage.SessionId
-    //     }
-    //   });
-    //   const v = res.data.companies;
+    async getCompanyList() {
+      //  console.log(this.U_CMMDTY.value.value)
+      this.showLoading = true;
+      this.companyList = [];
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/admin/companies`,
+        headers: {
+          Authorization: localStorage.SessionId,
+        },
+      });
+      const v = res.data.companies;
 
-    //   for (let i = 0; i < v.length; i++) {
-    //     if (v[i].U_IS_ACTIVE == 1) {
-    //       this.companyList.push({
-    //         text: v[i].COMPANYDBNAME,
-    //         value: v[i].U_COMPANYCODE
-    //       });
-    //     }
-    //   }
-
-    // },
+      for (let i = 0; i < v.length; i++) {
+        if (v[i].U_IS_ACTIVE == 1) {
+          this.companyList.push({
+            text: v[i].COMPANYDBNAME,
+            value: v[i].U_COMPANYCODE,
+          });
+          this.showLoading = false;
+        }
+      }
+    },
     async updateUOM() {
       //  console.log(this.U_CMMDTY.value)
+      this.showLoading = true;
       this.unit = [];
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/items/selectUom/${this.U_CMMDTY.value}`,
         headers: {
-          Authorization: localStorage.SessionId
+          Authorization: localStorage.SessionId,
         },
         data: {
-          company: this.TRANSACTION_COMPANY_ID
-        }
+          company: this.TRANSACTION_COMPANY_ID,
+        },
       });
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
         this.unit.push({
           text: v[i].UomName,
-          value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
+          value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry },
         });
+        this.showLoading = false;
       }
     },
     async getUOM() {
+      this.showLoading = true;
       //  console.log(this.U_CMMDTY.value.value)
-      const userDetails = JSON.parse(localStorage.user_details);
       this.unit = [];
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/items/selectUom/${this.U_CMMDTY.value.value}`,
         headers: {
-          Authorization: localStorage.SessionId
+          Authorization: localStorage.SessionId,
         },
         data: {
-          company: userDetails.U_COMPANY_CODE
-        }
+          company: this.selectedcompany,
+        },
       });
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
         this.unit.push({
           text: v[i].UomName,
-          value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
+          value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry },
         });
+        this.showLoading = false;
       }
     },
     //  async getPriceList() {
@@ -2223,49 +2095,60 @@ export default {
     //   }
     // },
     async getCommodity() {
-      const userDetails = JSON.parse(localStorage.user_details);
+      this.showLoading = true;
       this.commodity = [];
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/items/select`,
         headers: {
-          Authorization: localStorage.SessionId
+          Authorization: localStorage.SessionId,
         },
         data: {
-          company: userDetails.U_COMPANY_CODE
-        }
+          company: this.selectedcompany,
+        },
       });
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
         this.commodity.push({
           text: v[i].ItemName,
-          value: v[i].ItemCode
+          value: v[i].ItemCode,
         });
+        this.showLoading = false;
       }
+      // } catch  {
+      //   // console.log(e);
+      //   this.showLoading = false;
+      // }
     },
     async getFarmer() {
-      const userDetails = JSON.parse(localStorage.user_details);
-
+      this.showLoading = true;
+      this.U_FRMR_NAME = null;
       this.farmer = [];
+
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
         headers: {
-          Authorization: localStorage.SessionId
+          Authorization: localStorage.SessionId,
         },
         data: {
-          company: userDetails.U_COMPANY_CODE
-        }
+          company: this.selectedcompany,
+        },
       });
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
         this.farmer.push({
           text: v[i].SUPPLIER_NAME,
-          value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+          value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS },
         });
+        this.showLoading = false;
       }
+      //  } catch  {
+      //     // console.log(e);
+      //     this.showLoading = false;
+      //   }
     },
     test() {
       console.log(this.U_FRMR_NAME);
@@ -2297,58 +2180,76 @@ export default {
         const userDetails = JSON.parse(localStorage.user_details);
         // console.log(this.U_FRMR_NAME.value.id)
         // console.log(this.U_CMMDTY.value)
-        const json = {
-          company: userDetails.U_COMPANY_CODE,
-          uom_id: this.U_UOM.UomEntry,
-          // priceList: this.U_PRICELIST,
-          transaction_type_id: this.U_TRANSACTION_TYPE,
-          item_id: this.U_CMMDTY.value.value,
-          farmer_id: this.U_FRMR_NAME.value.id,
-          driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
-          helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
-          no_of_requested_bags: this.U_REQUESTED_SACKS,
-          no_of_bags: this.U_SACKS,
-          no_of_empty_bags: this.U_EMPTY_SACKS,
-          employee_id: userDetails.Code,
-          plate_number: this.U_PLATE_NUMBER,
-          signature: this.signaturePath
-        };
+        // const json = {
+        //   company: this.selectedcompany,
+        //   uom_id: this.U_UOM.UomEntry,
+        //   // priceList: this.U_PRICELIST,
+        //   transaction_type_id: this.U_TRANSACTION_TYPE,
+        //   item_id: this.U_CMMDTY.value.value,
+        //   farmer_id: this.U_FRMR_NAME.value.id,
+        //   driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
+        //   helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
+        //   no_of_requested_bags: this.U_REQUESTED_SACKS,
+        //   no_of_bags: this.U_SACKS,
+        //   no_of_empty_bags: this.U_EMPTY_SACKS,
+        //   employee_id: userDetails.Code,
+        //   plate_number: this.U_PLATE_NUMBER,
+        //   signature: this.signaturePath,
+        // };
 
         // console.log("@here", json)
 
         var fd = new FormData();
-        fd.append("", signature, signature.name);
-        fd.append("company", userDetails.U_COMPANY_CODE);
-        fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
-        fd.append("item_id", this.U_CMMDTY.value.value);
-        fd.append("uom_id", this.U_UOM.UomEntry);
-        fd.append("farmer_id", this.U_FRMR_NAME.value.id);
-        fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
-        fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
-        fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
 
-        // if (this.U_SACKS && this.U_EMPTY_SACKS) {
-        fd.append("no_of_bags", this.U_SACKS);
-        fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
-        // }
-        // else{
-        //    fd.append("no_of_bags", 0);
-        //   fd.append("no_of_empty_bags", 0);
-        // }
+        // ##################### Uncomment
+        // fd.append("", signature, signature.name);
+        // fd.append("company", this.selectedcompany);
+        // fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
+        // fd.append("item_id", this.U_CMMDTY.value.value);
+        // fd.append("uom_id", this.U_UOM.UomEntry);
+        // fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+        // fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
+        // fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
+        // fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
+
+        // // if (this.U_SACKS && this.U_EMPTY_SACKS) {
+        // fd.append("no_of_bags", this.U_SACKS);
+        // fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
+        // // }
+        // // else{
+        // //    fd.append("no_of_bags", 0);
+        // //   fd.append("no_of_empty_bags", 0);
+        // // }
+        // fd.append("employee_id", userDetails.Code);
+        // fd.append("plate_number", this.U_PLATE_NUMBER);
+        // fd.append("scheduled_date", this.U_SCHEDULED_DATE);
+        // fd.append("scheduled_time", this.U_SCHEDULED_TIME);
+
+        // // await json.each(data, function(key, value) {
+        // //   fd.append(key, value);
+        // // });
+
+        // fd.append("", signature, signature.name);
+        fd.append("company", 99197);
+        fd.append("transaction_type_id", 1);
+        fd.append("item_id", "FG21-00005");
+        fd.append("uom_id", 1);
+        fd.append("farmer_id", 'V1000023');
+        fd.append("driver_name", "def, abc");
+        fd.append("helper_name", "def, abc");
+        fd.append("no_of_requested_bags", 200);
+        fd.append("no_of_bags", 0);
+        fd.append("no_of_empty_bags", 0);
         fd.append("employee_id", userDetails.Code);
-        fd.append("plate_number", this.U_PLATE_NUMBER);
-        fd.append("scheduled_date", this.U_SCHEDULED_DATE);
-        fd.append("scheduled_time", this.U_SCHEDULED_TIME);
-
-        // await json.each(data, function(key, value) {
-        //   fd.append(key, value);
-        // });
+        fd.append("plate_number", "abc-123");
+        fd.append("scheduled_date", moment().format("YYYY-MM-DD"));
+        fd.append("scheduled_time", "0933");
 
         const res = await axios.post(
-          `${this.$axios.defaults.baseURL}/api/transaction/add`,
+          `${this.$axios.defaults.baseURL}/api/transaction/add-sqa`,
           fd,
           {
-            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
+            headers: { Authorization: `B1SESSION=${localStorage.SessionId}` },
           }
         );
 
@@ -2385,7 +2286,7 @@ export default {
         let items = [];
 
         const userDetails = JSON.parse(localStorage.user_details);
-        const intToTime = i => {
+        const intToTime = (i) => {
           if (i) {
             const str = i.toString();
             const len = str.length;
@@ -2424,18 +2325,18 @@ export default {
           employee_id: userDetails.Code,
           plate_number: this.U_PLATE_NUMBER,
           scheduled_date: this.U_SCHEDULED_DATE,
-          scheduled_time: intToTime(this.U_SCHEDULED_TIME)
+          scheduled_time: intToTime(this.U_SCHEDULED_TIME),
         };
 
         const res = await axios({
           method: "PUT",
           url: `${this.$axios.defaults.baseURL}/api/transaction/update/${U_TRX_ID}`,
           headers: {
-            Authorization: `B1SESSION=${localStorage.SessionId}`
+            Authorization: `B1SESSION=${localStorage.SessionId}`,
           },
           data: {
-            ...json
-          }
+            ...json,
+          },
         });
         this.showLoading = false;
         this.getTransactions();
@@ -2481,11 +2382,11 @@ export default {
         top: 80,
         bottom: 60,
         left: 40,
-        width: 522
+        width: 522,
       };
 
       doc.fromHTML(this.$refs.testHtml, margins.left, margins.top, {
-        width: margins.width
+        width: margins.width,
       });
 
       doc.save("test.pdf");
@@ -2529,14 +2430,14 @@ export default {
           method: "POST",
           url: `${this.$axios.defaults.baseURL}/api/transaction/select`,
           headers: {
-            Authorization: `B1SESSION=${localStorage.SessionId}`
+            Authorization: `B1SESSION=${localStorage.SessionId}`,
           },
           data: {
             date_from: moment(this.datePicker.startDate).format("YYYY-MM-DD"),
             date_to: moment(this.datePicker.endDate).format("YYYY-MM-DD"),
             employee_id,
-            employee_role
-          }
+            employee_role,
+          },
         });
 
         const v = res.data.view;
@@ -2577,7 +2478,7 @@ export default {
             U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
             // selectedcompany: v[i].USER_COMPANY,
             TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
-            TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY
+            TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
           });
         }
 
@@ -2586,11 +2487,11 @@ export default {
         console.log(e);
         this.showLoading = false;
       }
-    }
+    },
   },
   reloadFunction() {
     this.values = [{ label: "2" }, { label: "3" }];
-  }
+  },
 };
 // End
 </script>
@@ -2660,4 +2561,3 @@ export default {
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-

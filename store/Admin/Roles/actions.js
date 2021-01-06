@@ -15,7 +15,8 @@ export default {
     })
       .then(res => {
         if (Array.isArray(res.data.roles))
-          commit("setListRoles", res.data.roles);
+          {commit("setListRoles", res.data.roles);
+          console.log(res.data.roles)}
         else commit("setListRoles", []);
 
         return res;

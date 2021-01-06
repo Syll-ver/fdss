@@ -6,33 +6,30 @@
         small
         active-nav-item-class="font-weight-bold text-uppercase text-biotech"
       >
-
-
-         <b-tab title="Reports">
-          <div>
-           <reports />
-          </div>
+        <b-tab title="Company">
+        <div>
+            <CompaniesTable/>
+        </div>
         </b-tab>
-
       </b-tabs>
     </b-card>
   </div>
 </template>
 
 <script>
-
-import reports from "~/components/transaction/reports.vue";
-
+import CompaniesTable from "~/components/Admin/Companies/CompaniesTable";
 
 export default {
   layout: "sidebar",
   components: {
-    reports
+    CompaniesTable
   },
   data() {
-    return {};
-  }
+    return {
+      tabIndex: 0
+    };
+  },
+  methods: {},
 };
 </script>
 
-<style scoped></style>

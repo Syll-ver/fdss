@@ -14,6 +14,11 @@ module.exports = {
         content: process.env.npm_package_description || ""
       }
     ],
+    script: [
+      {
+        src: `/epos-2.14.0.js`,
+      },
+    ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.png" }]
   },
   /*
@@ -54,11 +59,21 @@ module.exports = {
   },
   axios: {
     // baseURL: "http://172.16.4.168:8000/fdss-api" 
-    baseURL: "https://fdss.biotechfarms.net/fdss-api"
-    // baseURL: "https://fdss-dev.biotechfarms.net/fdss-api" 
+    // baseURL: "http://94.237.66.240:8000" (MASTER)
+    // baseURL: "http://94.237.66.240:8100" (SQA)
+    // baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
+    baseURL: "https://fdss.biotechfarms.net/fdss-api" 
     // baseURL: "hhtp://94.237.66.240:8200" (UAT)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api"
+
+  },
+  env:{
+    serverPrintUrl: "http://localhost:3001",
+    networkPrinterIp: `172.16.4.137`,
+    // networkPrinterIp: `172.16.4.13`,
+    networkPrinterPort: `8008`,
   },
 
   server: { port: 7000}
+  // host:'172.16.4.114'}
 };
