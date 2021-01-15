@@ -703,7 +703,7 @@
                 <option :value="null" disabled>Select Role</option>
                 <option
                   :value="role.Code"
-                  v-for="(role, i) in listRoles"
+                  v-for="(role, i) in filterListRoles"
                   :key="i"
                   >{{ role.Name }}</option
                 >

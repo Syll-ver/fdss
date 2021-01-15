@@ -1,5 +1,9 @@
 <template>
-  <div class>
+  <div class="row m-0 p-0">
+  <div class="container-fluid m-0 p-0">
+    <sidebar />
+  </div>
+  <div class="mainPages col-md-10">
     <b-card no-body class="mt-5">
       <b-tabs
         card
@@ -14,15 +18,18 @@
       </b-tabs>
     </b-card>
   </div>
+  </div>
 </template>
 
 <script>
+import sidebar from "~/layouts/sidebar";
 import ActivityLogsTable from "~/components/Admin/ActivityLogs/ActivityLogsTable";
 
 export default {
-  layout: "sidebar",
+  // layout: "sidebar",
   components: {
-    ActivityLogsTable
+    ActivityLogsTable,
+    sidebar,
   },
   data() {
     return {
@@ -33,3 +40,10 @@ export default {
 };
 </script>
 
+<style scoped>
+  @media (max-width: 768px){
+    .mainPages {
+      margin-left: 20px;
+    }
+  }  
+</style>
