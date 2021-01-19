@@ -1837,6 +1837,11 @@ export default {
       this.networkPrinter.addText(`\n`);
       this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
       this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
+      this.networkPrinter.addText(`\n`);
+      this.networkPrinter.addText(`\n`);
+      this.networkPrinter.addText(`\n`);
+      this.networkPrinter.addText(`\n`);
+
 
       // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
       // this.networkPrinter.addText(
@@ -1941,6 +1946,7 @@ export default {
     //    }
     // },
     async printed(U_TRX_ID) {
+
       console.log(U_TRX_ID);
 
       try {
@@ -2238,10 +2244,13 @@ export default {
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
+        if(v[i].ItemName.startsWith("FG")){
         this.commodity.push({
-          text: v[i].ItemName,
+          text: v[i].ItemCode + ' : ' + v[i].ItemName,
           value: v[i].ItemCode
         });
+          console.log("ITEM FG ONLY", this.commodity);
+      }
       }
     },
     async getFarmer() {
