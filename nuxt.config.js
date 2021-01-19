@@ -69,7 +69,7 @@ module.exports = {
   },
   env:{
     serverPrintUrl: "http://localhost:3001",
-    networkPrinterIp: `172.17.130.23`,
+    networkPrinterIp: `172.16.4.26`,
     // networkPrinterIp: `172.16.4.13`,
     networkPrinterPort: `8008`,
   },
