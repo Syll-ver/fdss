@@ -2244,13 +2244,11 @@ export default {
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
-        if(v[i].ItemName.startsWith("FG")){
         this.commodity.push({
           text: v[i].ItemCode + ' : ' + v[i].ItemName,
           value: v[i].ItemCode
         });
-          console.log("ITEM FG ONLY", this.commodity);
-      }
+
       }
     },
     async getFarmer() {
