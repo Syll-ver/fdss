@@ -4,6 +4,19 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN apk update
 RUN apk add --no-cache git
+
+
+# proxy
+#ENV http_proxy "http://172.16.1.6:3128"
+#ENV https_proxy "http://172.16.1.6:3128"
+
+# under a proxy
+RUN npm config set registry http://registry.npmjs.org/
+RUN npm config set http-proxy http://172.16.1.6:3128
+RUN npm config set https-proxy http://172.16.1.6:3128
+RUN npm config set proxy http://172.16.1.6:3128
+
+
 RUN npm install
 COPY . .
 RUN npm run build
