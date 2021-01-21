@@ -3,7 +3,7 @@
     <div class="container-fluid m-0 p-0">
       <sidebar />
     </div>
-    <div class="mainPages col-md-10">
+    <div class="mainPages">
       <b-card no-body class="mt-5">
         <b-tabs
           card
@@ -41,6 +41,7 @@ export default {
 </script>
 
 <style scoped>
+
   @media (max-width: 768px){
     .mainPages {
       margin-left: 20px;

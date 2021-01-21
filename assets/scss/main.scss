@@ -255,9 +255,9 @@ select {
   #sidebarBFI {
     margin-left: -260px;
   }
-  #sidebarBFI.active {
-    margin-left: 0;
-  }
+  // #sidebarBFI.active {
+  //   margin-left: 0;
+  // }
 
   // .mainPages {
   //   margin-left: -280px;
@@ -274,9 +274,10 @@ select {
   color: #fff;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.65), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   transition: all 0.3s;
-  min-width: 224px;
-  margin-right: 20rem;
-  max-width: 260px;
+  // min-width: 224px;
+  // margin-right: 20rem;
+  // max-width: 260px;
+  width: 260px;
   font-size: 13px;
   z-index: 100;
 }
@@ -660,5 +661,5 @@ font-weight: 500;
   margin-bottom: -50px;
   padding: 5px 5px;
   width: 100rem;
-  // overflow: hidden;
+  overflow: hidden;
 }

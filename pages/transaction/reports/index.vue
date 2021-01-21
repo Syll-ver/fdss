@@ -42,6 +42,10 @@ export default {
 </script>
 
 <style scoped>
+  /* .mainPages {
+      overflow: hidden;
+    } */
+
 @media (max-width: 768px){
     .mainPages {
       margin-left: 20px;
