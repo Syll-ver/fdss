@@ -155,6 +155,7 @@
       scrollable
       sticky-header
       no-border-collapse
+      responsive
       :items="filterItems"
       :filter="filter"
       :filterIncludedFields="filterOn"
@@ -2665,6 +2666,7 @@ export default {
   z-index: 1;
   cursor: pointer;
 }
+
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
