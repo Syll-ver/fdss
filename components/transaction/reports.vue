@@ -390,6 +390,17 @@ Transaction Number : {{ U_TRX_NO }}
           </b-col>
         </b-row>
 
+        <b-row>
+          <b-col cols="4">
+            <span>Plot Code</span>
+          </b-col>
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span> : {{ U_APP_ProjCode }} </span>
+            </div>
+          </b-col>
+        </b-row>
+
 
 
         <b-row>
@@ -655,6 +666,7 @@ export default {
     Loading
   },
   async created() {
+    this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
     await this.getTransactions();
     await this.getTransactionType();
     await this.getCompanyList();
@@ -671,6 +683,7 @@ export default {
         variant: "biotech",
         message: ""
       },
+      companyCode: null,
       showReceipt: false,
       TRANSACTION_COMPANY:null,
       U_TRANSACTION_TYPE: null,
@@ -809,8 +822,11 @@ export default {
   },
    computed: {
     filterItems() {
+      console.log("items",this.items);
       return this.items.filter(request => {
+        console.log("see status",request);
         if (this.filterStatus.includes(request.U_STATUS) && this.filterTransaction.includes(request.U_TRANSACTION_TYPE) ) {
+          
           return request;
         }
         if (this.filterTransaction.includes(request.U_TRANSACTION_TYPE) && this.filterStatus.includes(request.U_STATUS) ) {
@@ -1162,6 +1178,17 @@ show(data) {
               U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
               U_SACKS: v[i].NUMBER_OF_BAGS
           });
+          if(this.companyCode == '4360') {
+            if(v[i].U_PLOT_CODE){
+              this.items.push({
+                U_APP_ProjCode: v[i].U_PLOT_CODE
+              })
+            } else {
+              this.items.push({
+                U_APP_ProjCode: ""
+              })
+            }
+          }
         }
 
         this.showLoading = false;

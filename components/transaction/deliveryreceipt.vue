@@ -40,7 +40,7 @@
     </b-row>
 
     <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -155,6 +155,7 @@
       scrollable
       sticky-header
       no-border-collapse
+      responsive
       :items="filterItems"
       :filter="filter"
       :filterIncludedFields="filterOn"
@@ -492,6 +493,28 @@
           class="form-text"
           v-model="U_FRMR_ADD"
         />
+
+        <small class="text-left" v-show="companyCode == '4360' " >Plot Code</small>
+        <!-- <b-form-input
+          v-show="companyCode == '4360' "
+          disabled
+          id="farmer_plot_code"
+          class="form-text"
+          v-model="U_APP_ProjCode"
+        /> -->
+
+        <multiselect
+          v-show="companyCode == '4360'"
+          id="plot_code"
+          :options="plotCode"
+          placeholder="Select Plot Code"
+          class="form-text"
+          v-model="U_APP_ProjCode"
+          label="text"
+          track-by="text"
+          required
+        ></multiselect>
+
         <b-row>
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
@@ -719,6 +742,16 @@
           v-model="U_FRMR_ADD"
           disabled
         />
+
+        <small v-show="companyCode == '4360' " class="text-left">Plot Code</small>
+        <b-form-input
+          v-show="companyCode == '4360' "
+          disabled
+          id="farmer_plot_code"
+          class="form-text"
+          v-model="U_APP_ProjCode"
+        />
+
         <b-row>
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
@@ -910,6 +943,17 @@
                     </div>
                     <div class="dotted-border">
                       <span class="mt-1">: {{ U_FRMR_ADD }}</span>
+                    </div>
+                  </b-col>
+                </b-row>
+
+                <b-row v-show="companyCode == '4630' ">
+                  <b-col cols="4">
+                    <span>Plot Code</span>
+                  </b-col>
+                  <b-col cols="8">
+                    <div class="dotted-border">
+                      <span> : {{ U_APP_ProjCode }} </span>
                     </div>
                   </b-col>
                 </b-row>
@@ -1295,6 +1339,7 @@ export default {
     VueQrcode
   },
   async created() {
+    this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
     // await this.getPriceList();
     await this.getCommodity();
     await this.getTransactions();
@@ -1334,7 +1379,7 @@ export default {
         label: "Select Date",
         required: true
       },
-
+      plotCodes: [],
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
       filterStatus: ["Pick-up", "Delivery"],
@@ -1359,6 +1404,8 @@ export default {
       U_TRANSACTION_TYPE: null,
       U_FRMR_NAME: null,
       U_FRMR_ADD: null,
+      U_APP_ProjCode: null,
+      U_FRMR_PLOTCODE: [],
       U_CMMDTY: { value: "", text: "" },
       U_DRVR_LNAME: null,
       U_DRVR_FNAME: null,
@@ -1379,6 +1426,7 @@ export default {
       farmer: [],
       farmerAdd: [],
       commodity: [],
+      plotCode: [],
       status: "",
       // Datepicker
       opens1: "",
@@ -1692,6 +1740,7 @@ export default {
       (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
+        (this.U_APP_ProjCode = null),
         (this.U_UOM = { value: "", text: "" }),
         (this.U_CMMDTY = { value: "", text: "" }),
         (this.U_DRVR_LNAME = null),
@@ -1716,6 +1765,7 @@ export default {
       (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
+        (this.U_APP_ProjCode = null),
         (this.U_UOM = { value: "", text: "" }),
         (this.U_CMMDTY = { value: "", text: "" }),
         (this.U_DRVR_LNAME = null),
@@ -1799,6 +1849,9 @@ export default {
       );
       this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
       this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
+      if(this.companyCode == '4360'){
+        this.networkPrinter.addText(`Plot Code: ${data.U_APP_ProjCode}\n`)
+      }
       this.networkPrinter.addText(`\n`);
       this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
       this.networkPrinter.addText(
@@ -1837,12 +1890,6 @@ export default {
       this.networkPrinter.addText(`\n`);
       this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
       this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`\n`);
-
-
       // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
       // this.networkPrinter.addText(
       //   `Supplier Code: ${data.header.supplier_code}\n`
@@ -2026,6 +2073,7 @@ export default {
       this.U_CMMDTY = data.U_ITEM;
       (this.U_UOM = data.U_UOM), (this.U_FRMR_NAME = data.U_FRMR_NAME);
       this.U_FRMR_ADD = data.U_FRMR_ADD;
+      this.U_APP_ProjCode = data.U.U_APP_ProjCode;
       const driver_name = data.U_DRVR_NAME.split(", ");
       const helper_name = data.U_HLPR_NAME.split(", ");
       this.U_HLPR_FNAME = helper_name[1];
@@ -2071,6 +2119,7 @@ export default {
         // (this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID });
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
+      this.U_APP_ProjCode = data.U_APP_ProjCode;
       const driver_name = data.U_DRVR_NAME.split(", ");
       const helper_name = data.U_HLPR_NAME.split(", ");
       this.U_HLPR_FNAME = helper_name[1];
@@ -2114,6 +2163,7 @@ export default {
       this.U_CMMDTY = data.U_CMMDTY;
       (this.U_UOM.UomEntry = data.U_UOM), (this.U_FRMR_NAME = data.U_FRMR_NAME);
       this.U_FRMR_ADD = data.U_FRMR_ADD;
+      this.U_APP_ProjCode = data.U_APP_ProjCode;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
       this.U_REQUESTED_SACKS = data.U_REQUESTED_SACKS;
@@ -2242,11 +2292,13 @@ export default {
         }
       });
       const v = res.data.view;
+      // filter only agri-ops items
+      const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
 
-      for (let i = 0; i < v.length; i++) {
+      for (let i = 0; i < startsWithFG.length; i++) {
         this.commodity.push({
-          text: v[i].ItemCode + ' : ' + v[i].ItemName,
-          value: v[i].ItemCode
+          text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
+          value: startsWithFG[i].ItemCode
         });
 
       }
@@ -2267,17 +2319,65 @@ export default {
       });
       const v = res.data.view;
 
-      for (let i = 0; i < v.length; i++) {
-        this.farmer.push({
-          text: v[i].SUPPLIER_NAME,
-          value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-        });
+      await this.getPlotCodes(); 
+        for (let i = 0; i < v.length; i++) {
+          this.farmer.push({
+            text: v[i].SUPPLIER_NAME,
+            value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+          });
       }
+
+      
+    },
+    titleCase(str){
+      // since getFarmer returns all UPPERCASE and getPlotCodes return Uppercase And Lowercase
+      // can't directly compare; would return undefined
+      // therefore, farmer name has to be Title Case
+      return str.toLowerCase().split(' ').map(function(word) {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      }).join(' ');
+    },
+    async getPlotCodes(){ // from booking service
+      this.plotCodes = [];
+      await axios({
+        method: "POST",
+        url: "https://sqa.revive-agritech.com/booking-microsvc/booking-microsvc/plot_codes",
+      }).then(res => {
+        if(res.data.posted.message == "Successful"){
+          this.plotCodes = res.data.posted
+        }
+      })
+
     },
     test() {
       console.log(this.U_FRMR_NAME);
-
+      this.plotCode = [];
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
+      let frmr = this.titleCase(this.U_FRMR_NAME.text);
+
+      // if company is rci
+      //(since plotcode stuff is only available to rci transactions)
+      if(this.companyCode == '4360'){
+        // if farmer exists in plotcodes
+        // and if farmer plotcode is not empty
+        if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0){
+          // store farmer's plotcodes to variable pc
+          var pc = this.plotCodes.posted[frmr].plotCodes;
+          // push plotcodes in plotcode array
+          for(let i = 0; i < pc.length; i++){
+            this.plotCode.push({
+              text: pc[i],
+              value: pc[i]
+            });
+          }
+        } else {
+          // if farmer does not have plotcode
+          this.plotCode.push({
+            text: v[i].SUPPLIER_NAME,
+            value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS, plotcode: "" }
+          });
+        }
+      }
     },
     async newDR(signature) {
       try {
@@ -2322,6 +2422,7 @@ export default {
         };
 
         // console.log("@here", json)
+        // this.U_APP_ProjCode = this.U_APP_ProjCode
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
@@ -2330,6 +2431,9 @@ export default {
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
         fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+        if(this.companyCode == '4360'){
+          fd.append("plot_code", this.U_APP_ProjCode.value);
+        }
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
         fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
@@ -2350,7 +2454,6 @@ export default {
         // await json.each(data, function(key, value) {
         //   fd.append(key, value);
         // });
-
         const res = await axios.post(
           `${this.$axios.defaults.baseURL}/api/transaction/add`,
           fd,
@@ -2387,6 +2490,8 @@ export default {
       }
     },
     async updateDR(U_TRX_ID) {
+
+      console.log("updated",U_TRX_ID);
       try {
         this.showLoading = true;
         let items = [];
@@ -2570,6 +2675,7 @@ export default {
             U_UOM_ID: v[i].UOM_ID,
             U_FRMR_NAME: v[i].FARMER_NAME,
             U_FRMR_ADD: v[i].FARMER_ADDRESS,
+            U_APP_ProjCode: v[i].U_PLOT_CODE,
             U_DTE_CRTD: d,
             U_CRTD_BY: v[i].CREATED_BY,
             U_STATUS: v[i].STATUS,
@@ -2593,11 +2699,13 @@ export default {
         console.log(e);
         this.showLoading = false;
       }
-    }
+    },
+    
   },
   reloadFunction() {
     this.values = [{ label: "2" }, { label: "3" }];
-  }
+  },
+  
 };
 // End
 </script>
@@ -2665,6 +2773,7 @@ export default {
   z-index: 1;
   cursor: pointer;
 }
+
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 

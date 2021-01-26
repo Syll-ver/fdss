@@ -1,10 +1,10 @@
 <template>
-  <div class="row m-0 p-0">
+  <div class="row m-0 p-0" style="height: 100%">
     <div class="m-0 p-0">
       <sidebar />
     </div>
     <div class="mainPages">
-      <b-card no-body class="mt-5">
+      <b-card no-body class="mt-5 card-content">
         <b-tabs
           card
           small
@@ -38,13 +38,10 @@ export default {
 </script>
 
 <style scoped>
-  /* .mainPages {
-    overflow: hidden;
-  } */
-
   @media (max-width: 768px){
     .mainPages {
       margin-left: 20px;
     }
   }  
+
 </style>
