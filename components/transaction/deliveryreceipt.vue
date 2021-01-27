@@ -2096,6 +2096,7 @@ export default {
     },
 
     cancel(data) {
+      this.U_APP_ProjCode = null;
       console.log(data);
       this.remarks = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -2105,7 +2106,9 @@ export default {
       this.U_CMMDTY = data.U_ITEM;
       (this.U_UOM = data.U_UOM), (this.U_FRMR_NAME = data.U_FRMR_NAME);
       this.U_FRMR_ADD = data.U_FRMR_ADD;
-      this.U_APP_ProjCode = data.U.U_APP_ProjCode;
+      if(data.U_APP_ProjCode){
+        this.U_APP_ProjCode = data.U_APP_ProjCode;
+      }
       const driver_name = data.U_DRVR_NAME.split(", ");
       const helper_name = data.U_HLPR_NAME.split(", ");
       this.U_HLPR_FNAME = helper_name[1];
