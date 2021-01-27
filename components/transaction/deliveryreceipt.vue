@@ -59,7 +59,7 @@
       </b-col>
 
       <b-col cols="4" class="mt-3">
-        <b-input-group prepend="Date" style="height:10px" size="sm">
+        <b-input-group prepend="Date" size="sm">
           <!-- <b-input-group-prepend>
               <div style="background-color: green">
                 <v-icon color="#ffffff" small>fa-calendar-week</v-icon>
@@ -75,8 +75,10 @@
             :showWeekNumbers="true"
             v-model="datePicker"
             @update="updateValues"
+            size="sm"
+            style="height:2rem; font-size:12px"
           >
-            <div id="actvty_date" slot="input" style="min-width: 150px;">
+            <div id="actvty_date" slot="input" style="height:2rem; font-size:14px;">
               {{ datePicker.startDate }} - {{ datePicker.endDate }}
             </div>
           </date-range-picker>
@@ -504,7 +506,7 @@
         /> -->
 
         <multiselect
-          v-show="companyCode == '4360'"
+          v-show="companyCode == '4360' "
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -743,9 +745,9 @@
           disabled
         />
 
-        <small v-show="companyCode == '4360' " class="text-left">Plot Code</small>
+        <small v-show="U_APP_ProjCode" class="text-left">Plot Code</small>
         <b-form-input
-          v-show="companyCode == '4360' "
+          v-show="U_APP_ProjCode"
           disabled
           id="farmer_plot_code"
           class="form-text"
@@ -947,7 +949,7 @@
                   </b-col>
                 </b-row>
 
-                <b-row v-show="companyCode == '4630' ">
+                <b-row v-show="U_APP_ProjCode">
                   <b-col cols="4">
                     <span>Plot Code</span>
                   </b-col>
@@ -1345,6 +1347,9 @@ export default {
     await this.getTransactions();
     await this.getTransactionType();
     await this.getFarmer();
+    if(this.companyCode == '4360'){
+      await this.getPlotCodes(); 
+    }
     await this.networkPrintInit();
 
     // await this.getCompanyList();
@@ -1849,7 +1854,7 @@ export default {
       );
       this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
       this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
-      if(this.companyCode == '4360'){
+      if(data.U_APP_ProjCode){
         this.networkPrinter.addText(`Plot Code: ${data.U_APP_ProjCode}\n`)
       }
       this.networkPrinter.addText(`\n`);
@@ -2319,7 +2324,6 @@ export default {
       });
       const v = res.data.view;
 
-      await this.getPlotCodes(); 
         for (let i = 0; i < v.length; i++) {
           this.farmer.push({
             text: v[i].SUPPLIER_NAME,
@@ -2431,7 +2435,7 @@ export default {
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
         fd.append("farmer_id", this.U_FRMR_NAME.value.id);
-        if(this.companyCode == '4360'){
+        if(this.U_APP_ProjCode){
           fd.append("plot_code", this.U_APP_ProjCode.value);
         }
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);

@@ -18,7 +18,7 @@
     </b-row> -->
 
     <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -55,7 +55,7 @@
             <div
               id="actvty_date"
               slot="input"
-              style="min-width: 150px;"
+              style="height:2rem; font-size:14px;"
             >{{ datePicker.startDate }} - {{ datePicker.endDate }}</div>
           </date-range-picker>
           <b-input-group-append style="height:2rem; font-size:12px">
@@ -390,7 +390,7 @@ Transaction Number : {{ U_TRX_NO }}
           </b-col>
         </b-row>
 
-        <b-row>
+        <b-row v-show="U_APP_ProjCode">
           <b-col cols="4">
             <span>Plot Code</span>
           </b-col>
@@ -690,6 +690,7 @@ export default {
      U_UOM: { UomName: "", UomEntry: "" },
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
+      U_APP_ProjCode: null,
       U_CMMDTY:null,
       U_DRVR_LNAME:null,
       U_DRVR_FNAME:null,
@@ -1064,6 +1065,9 @@ show(data) {
       this.U_CMMDTY = data.U_CMMDTY;
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
+      if(data.U_APP_ProjCode){
+        this.U_APP_ProjCode = data.U_APP_ProjCode;
+      }
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
       this.U_REQUESTED_SACKS = data.U_REQUESTED_SACKS;
@@ -1178,16 +1182,12 @@ show(data) {
               U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
               U_SACKS: v[i].NUMBER_OF_BAGS
           });
-          if(this.companyCode == '4360') {
-            if(v[i].U_PLOT_CODE){
-              this.items.push({
-                U_APP_ProjCode: v[i].U_PLOT_CODE
-              })
-            } else {
-              this.items.push({
-                U_APP_ProjCode: ""
-              })
-            }
+
+          console.log(v[i].U_PLOT_CODE);
+          if(v[i].U_PLOT_CODE){
+            this.items.push({
+              U_APP_ProjCode: v[i].U_PLOT_CODE
+            })
           }
         }
 
