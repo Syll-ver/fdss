@@ -389,7 +389,7 @@ Transaction Number : {{ U_TRX_NO }}
             </div>
           </b-col>
         </b-row>
-
+        
         <b-row v-show="U_APP_ProjCode">
           <b-col cols="4">
             <span>Plot Code</span>
@@ -1053,6 +1053,7 @@ export default {
       this.U_FRMR_ADD= this.U_FRMR_NAME.address
     },
 show(data) {
+  this.U_APP_ProjCode = "";
        console.log(data)
        this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       (this.U_UOM = data.U_UOM);
@@ -1157,7 +1158,36 @@ show(data) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           const t = this.intToTime(v[i].CREATED_TIME);
           const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
-          this.items.push({
+          
+          // this.items.push({
+          //     U_TRX_NO: v[i].U_TRX_NO,
+          //     TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+          //     // U_TME_CRTD : t,
+          //     U_UOM: v[i].UOM_NAME,
+          //     U_TRX_ID: v[i].TRANSACTION_ID,
+          //     U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+          //     U_ITEM: v[i].ITEM_ID,
+          //     U_SUPP: v[i].SUPPLIER_ID,
+          //     U_TRX_NO: v[i].TRANSACTION_NUMBER,
+          //     U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+          //     U_CMMDTY: v[i].ITEM_NAME ,
+          //     U_FRMR_NAME : v[i].FARMER_NAME ,  
+          //     U_FRMR_ADD : v[i].FARMER_ADDRESS ,  
+          //     U_DTE_CRTD: date,
+          //     U_CRTD_BY: v[i].CREATED_BY,
+          //     U_STATUS: v[i].STATUS,
+          //     U_RMRKS: v[i].REMARKS,
+          //     U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+          //     U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+          //     U_HLPR_NAME: v[i].HELPER_NAME,
+          //     U_DRVR_NAME: v[i].DRIVER_NAME,
+          //     U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+          //     U_SACKS: v[i].NUMBER_OF_BAGS
+          // });
+
+          console.log(v[i].U_PLOT_CODE);
+          if(v[i].U_PLOT_CODE === null){
+            this.items.push({
               U_TRX_NO: v[i].U_TRX_NO,
               TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
               // U_TME_CRTD : t,
@@ -1171,6 +1201,7 @@ show(data) {
               U_CMMDTY: v[i].ITEM_NAME ,
               U_FRMR_NAME : v[i].FARMER_NAME ,  
               U_FRMR_ADD : v[i].FARMER_ADDRESS ,  
+              // U_APP_ProjCode: v[i].U_PLOT_CODE,
               U_DTE_CRTD: date,
               U_CRTD_BY: v[i].CREATED_BY,
               U_STATUS: v[i].STATUS,
@@ -1181,13 +1212,34 @@ show(data) {
               U_DRVR_NAME: v[i].DRIVER_NAME,
               U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
               U_SACKS: v[i].NUMBER_OF_BAGS
-          });
-
-          console.log(v[i].U_PLOT_CODE);
-          if(v[i].U_PLOT_CODE){
+            });
+          } else {
             this.items.push({
-              U_APP_ProjCode: v[i].U_PLOT_CODE
-            })
+              U_TRX_NO: v[i].U_TRX_NO,
+              TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+              // U_TME_CRTD : t,
+              U_UOM: v[i].UOM_NAME,
+              U_TRX_ID: v[i].TRANSACTION_ID,
+              U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+              U_ITEM: v[i].ITEM_ID,
+              U_SUPP: v[i].SUPPLIER_ID,
+              U_TRX_NO: v[i].TRANSACTION_NUMBER,
+              U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+              U_CMMDTY: v[i].ITEM_NAME ,
+              U_FRMR_NAME : v[i].FARMER_NAME ,  
+              U_FRMR_ADD : v[i].FARMER_ADDRESS , 
+              U_APP_ProjCode: v[i].U_PLOT_CODE,
+              U_DTE_CRTD: date,
+              U_CRTD_BY: v[i].CREATED_BY,
+              U_STATUS: v[i].STATUS,
+              U_RMRKS: v[i].REMARKS,
+              U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+              U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+              U_HLPR_NAME: v[i].HELPER_NAME,
+              U_DRVR_NAME: v[i].DRIVER_NAME,
+              U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+              U_SACKS: v[i].NUMBER_OF_BAGS
+            });
           }
         }
 
