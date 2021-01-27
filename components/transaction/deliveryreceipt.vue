@@ -14,6 +14,21 @@
       />
       {{ alert.message }}
     </b-alert>
+
+    <b-alert
+      id="alert_action"
+      class="alerticon"
+      :show="alert1.showAlert1"
+      dismissible
+      :variant="alert1.variant1"
+      @dismissed="alert1.showAlert1 = null"
+    >
+      <font-awesome-icon
+        :icon="alert1.variant1 == 'warning' ? 'exclamation' : 'check-circle'"
+        class="mr-1 alerticon"
+      />
+      {{ alert1.message1 }}
+    </b-alert>
     <Loading v-if="showLoading" />
 
     <Receipt ref="Receipt" v-show="false" />
@@ -1401,6 +1416,11 @@ export default {
         variant: "biotech",
         message: ""
       },
+      alert1: {
+        showAlert1: 0,
+        variant1: "biotech",
+        message1: ""
+      },
       // U_PRICELIST:null,
       // pricelist:[],
       unit: [],
@@ -1796,6 +1816,13 @@ export default {
         showAlert: 3,
         variant,
         message
+      };
+    },
+    showAlert1(message1, variant1) {
+      this.alert1 = {
+        showAlert1: 3,
+        variant1,
+        message1
       };
     },
     async networkPrint(data) {
@@ -2376,10 +2403,7 @@ export default {
           }
         } else {
           // if farmer does not have plotcode
-          this.plotCode.push({
-            text: v[i].SUPPLIER_NAME,
-            value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS, plotcode: "" }
-          });
+          this.showAlert1('Farmer does not have plot code', 'warning')
         }
       }
     },
