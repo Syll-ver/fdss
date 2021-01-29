@@ -511,17 +511,8 @@
           v-model="U_FRMR_ADD"
         />
 
-        <small class="text-left" v-show="companyCode == '4360' " >Plot Code</small>
-        <!-- <b-form-input
-          v-show="companyCode == '4360' "
-          disabled
-          id="farmer_plot_code"
-          class="form-text"
-          v-model="U_APP_ProjCode"
-        /> -->
-
+        <small class="text-left">Plot Code</small>
         <multiselect
-          v-show="companyCode == '4360' "
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -1362,9 +1353,9 @@ export default {
     await this.getTransactions();
     await this.getTransactionType();
     await this.getFarmer();
-    if(this.companyCode == '4360'){
-      await this.getPlotCodes(); 
-    }
+    
+    // await this.getPlotCodes(); 
+    
     await this.networkPrintInit();
 
     // await this.getCompanyList();
@@ -2353,12 +2344,29 @@ export default {
         }
       });
       const v = res.data.view;
-
+      await this.getPlotCodes();
+      if(this.companyCode == '4360'){
+        for(var i = 0; i < v.length; i++) {
+          let frmr = this.titleCase(v[i].SUPPLIER_NAME);
+          console.log(frmr);
+          // for(var j = 0; j < this.plotCodes.length; j++) {
+            if(this.plotCodes[frmr] && this.plotCodes[frmr].plotCodes.length > 0){
+              this.farmer.push({
+                text: v[i].SUPPLIER_NAME,
+                value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+              });
+            } else {
+              // do nothing, dont include for rci transactions
+            }
+          // }
+        }
+      } else if(this.companyCode == '4354') {
         for (let i = 0; i < v.length; i++) {
           this.farmer.push({
             text: v[i].SUPPLIER_NAME,
             value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
           });
+        }
       }
 
       
@@ -2378,25 +2386,44 @@ export default {
         url: "https://sqa.revive-agritech.com/booking-microsvc/booking-microsvc/plot_codes",
       }).then(res => {
         if(res.data.posted.message == "Successful"){
-          this.plotCodes = res.data.posted
+          this.plotCodes = res.data.posted.posted;
+          console.log(this.plotCodes);
         }
       })
 
     },
     test() {
       console.log(this.U_FRMR_NAME);
+      console.log(this.plotCodes);
       this.plotCode = [];
+      this.U_APP_ProjCode = "";
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
       let frmr = this.titleCase(this.U_FRMR_NAME.text);
 
       // if company is rci
-      //(since plotcode stuff is only available to rci transactions)
       if(this.companyCode == '4360'){
         // if farmer exists in plotcodes
         // and if farmer plotcode is not empty
-        if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0){
+        if(this.plotCodes[frmr] && this.plotCodes[frmr].plotCodes.length > 0){
           // store farmer's plotcodes to variable pc
-          var pc = this.plotCodes.posted[frmr].plotCodes;
+          var pc = this.plotCodes[frmr].plotCodes;
+          // push plotcodes in plotcode array
+          for(let i = 0; i < pc.length; i++){
+            this.plotCode.push({
+              text: pc[i],
+              value: pc[i]
+            });
+          }
+        } //else {
+          // if farmer does not have plotcode
+          //this.showAlert1('Farmer does not have plot code', 'warning')
+        //}
+      } else if(this.companyCode == '4354') {
+        // if farmer exists in plotcodes
+        // and if farmer plotcode is not empty
+        if(this.plotCodes[frmr] && this.plotCodes[frmr].plotCodes.length > 0){
+          // store farmer's plotcodes to variable pc
+          var pc = this.plotCodes[frmr].plotCodes;
           // push plotcodes in plotcode array
           for(let i = 0; i < pc.length; i++){
             this.plotCode.push({
