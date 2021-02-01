@@ -11,7 +11,7 @@ RUN apk add --no-cache git
 #ENV https_proxy "http://172.16.1.6:3128"
 
 # under a proxy
-#RUN npm config set registry http://registry.npmjs.org/
+RUN npm config set registry http://registry.npmjs.org/
 #RUN npm config set http-proxy http://172.16.1.6:3128
 #RUN npm config set https-proxy http://172.16.1.6:3128
 #RUN npm config set proxy http://172.16.1.6:3128
