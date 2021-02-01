@@ -1748,7 +1748,7 @@ export default {
         //     return path;
         //   }
         // );
-
+// test
         // this.signaturePath = path;
         this.showLoading = false;
 
