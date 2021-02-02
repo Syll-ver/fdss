@@ -2339,6 +2339,20 @@ export default {
         });
 
       }
+
+      if(this.companyCode == '4354') {
+        const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
+        console.log("rice bran", riceBran);
+        this.commodity.push({
+          text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
+          value: riceBran[0].ItemCode
+        })
+
+        console.log("with ricebran", this.commodity);
+
+      }
+
+      // if(this.)
     },
     async getFarmer() {
       const userDetails = JSON.parse(localStorage.user_details);
