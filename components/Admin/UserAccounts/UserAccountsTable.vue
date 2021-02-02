@@ -572,7 +572,7 @@
           </b-row>
         </b-card>
 
-        <template v-slot:modal-footer="{ }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="add_add_modal"
             size="sm"
@@ -584,7 +584,7 @@
           <b-button
             id="cancel_add_modal"
             size="sm"
-            @click="cancel1()"
+            @click="cancel()"
             class="button-style"
             >Cancel</b-button
           >
@@ -808,7 +808,7 @@
           <h6>Do you want to update user?</h6>
         </div>
 
-        <template>
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             size="sm"
             class="button-style"
@@ -1194,21 +1194,28 @@ export default {
       this.findUser = null;
     },
     findUsers() {
-      this.showLoading =true;
+      // this.showLoading =true;
+      // this.selectedCompany = null;
+      // this.$bvModal.show("find-user-modal");
+      // this.showLoading = false;
       this.selectedCompany = null;
+      this.filterUser = "";
+      if (this.selectedCompany == null) {
+        this.SearchedUsers.length = [];
+      }
       this.$bvModal.show("find-user-modal");
-      this.showLoading = false;
+    
     },
-    cancel1(){
-      this.clearForm();
-      this.SearchedUsers=[];
-      this.rowsUsers=[];
-      // this.userFields={FirstName:null,
-      // MiddleName:null,LastName:null};
-      this.$bvModal.hide("add-user-modal");
-      this.$bvModal.hide("find-user-modal");
+    // cancel1(){
+    //   this.clearForm();
+    //   this.SearchedUsers=[];
+    //   this.rowsUsers=[];
+    //   // this.userFields={FirstName:null,
+    //   // MiddleName:null,LastName:null};
+    //   this.$bvModal.hide("add-user-modal");
+    //   this.$bvModal.hide("find-user-modal");
 
-    },
+    // },
     onRowSelected(items) {
       this.selectedUser = items;
     },
