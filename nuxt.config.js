@@ -70,11 +70,19 @@ module.exports = {
   },
   env:{
     serverPrintUrl: "http://localhost:3001",
+<<<<<<< HEAD
     networkPrinterIp: `172.16.4.26`,
+=======
+    networkPrinterIp: `172.16.4.85`,
+>>>>>>> cdf16f7ca7cdf3ecda4ee5e82f236edb78e87c5a
     // networkPrinterIp: `172.16.4.13`,
     networkPrinterPort: `8008`,
   },
 
+<<<<<<< HEAD
   server: { port: 7000}
+=======
+  server: { port: 9000 }
+>>>>>>> cdf16f7ca7cdf3ecda4ee5e82f236edb78e87c5a
   // host:'172.16.4.114'}
 };

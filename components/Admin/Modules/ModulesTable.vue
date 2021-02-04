@@ -2,7 +2,7 @@
  <div >
 <Loading v-if="showLoading" />
       <!-- Main table -->
-      <b-row>
+      <!-- <b-row>
         <b-col>
           <b-button
             id="add_module"
@@ -15,10 +15,10 @@
             <font-awesome-icon icon="plus" class="mr-1" />Add Module
           </b-button>
         </b-col>
-      </b-row>
+      </b-row> -->
 
-       <b-row>
-      <b-col cols="4" class="mt-3">
+    <b-row>
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -27,14 +27,35 @@
               id="filterInput"
               placeholder="Search Module"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col cols="4" class="mt-3">
+      <b-col class="mt-3">
+        <b-dropdown
+            right
+            id="filter_actions"
+            class="button-sq"
+            size="sm"
+            variant="dark"
+          >
+          <template v-slot:button-content>
+            <font-awesome-icon icon="filter" class="mr-1" />   
+          </template>
+
+          <b-form-checkbox-group
+            id="status_group"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterStatus"
+            v-b-tooltip.hover
+            title="Filter Status"
+          >
+            <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+            <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
+          </b-form-checkbox-group>
+          </b-dropdown>
         <!-- <b-input-group prepend="Date" size="sm">
           <date-range-picker
             id="date_pending"
@@ -61,7 +82,6 @@
           </b-input-group-append>
         </b-input-group> -->
       </b-col>
-  <b-col ></b-col>
  
       <b-col cols="2"  class="mt-3" align="right">
         <!-- <b-form-group class="mb-0">
@@ -72,29 +92,18 @@
           ></b-form-select>
         </b-form-group> -->
       
-          <b-dropdown
-            right
-            id="filter_actions"
-            class="button-sq"
+          <b-col>
+          <b-button
+            id="add_module"
             size="sm"
-            variant="dark"
+            class="button-style"
+            variant="biotech"
+            @click="addModule()"
+            v-if="actions.add_module"
           >
-          <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
-            <b-form-checkbox-group
-              id="status_group"
-              name="flavour-2"
-              class="pl-2"
-              style="font-size:12px"
-              v-model="filterStatus"
-              v-b-tooltip.hover
-              title="Filter Status"
-            >
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
-              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-dropdown>
+            <font-awesome-icon icon="plus" class="mr-1" />Add Module
+          </b-button>
+        </b-col>
      
       </b-col>
     </b-row>
@@ -145,13 +154,24 @@
       <hr />
 
       <b-row>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+
         <b-col  label-cols-sm
-        class="mb-0 mt-1 text-left"
-        cols="3"
-        align-h="receipt">
-          <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center">
+          <div size="sm" style="color: gray; font-size: 11.5px;">{{ bottomLabel }}</div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
             id="modules-pagination"
             pills
@@ -162,6 +182,7 @@
             size="sm"
             aria-controls="modules-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
