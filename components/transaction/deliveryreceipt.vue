@@ -40,7 +40,7 @@
                 value="asd"
                 :options="{ width: 300 }"
     ></VueQrcode>-->
-    <b-row>
+    <!-- <b-row>
       <b-col>
         <b-button
           id="create"
@@ -52,7 +52,7 @@
           <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
         </b-button>
       </b-col>
-    </b-row>
+    </b-row> -->
 
     <b-row>
       <b-col cols="3" class="mt-3">
@@ -64,16 +64,16 @@
               id="search_delivery_receipt"
               placeholder="Search Delivery Slip"
             ></b-form-input>
-            <b-input-group-append>
+            <!-- <b-input-group-append>
               <b-button :disabled="!filter" @click="filter = ''"
                 >Clear</b-button
               >
-            </b-input-group-append>
+            </b-input-group-append> -->
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col cols="4" class="mt-3">
+      <b-col class="mt-3">
         <b-input-group prepend="Date" size="sm">
           <!-- <b-input-group-prepend>
               <div style="background-color: green">
@@ -103,18 +103,10 @@
             >
           </b-input-group-append>
         </b-input-group>
+        
       </b-col>
-      <b-col></b-col>
 
-      <b-col cols="2" class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group>-->
-
+      <b-col class="mt-3">
         <b-dropdown
           right
           id="filter_actions"
@@ -162,6 +154,20 @@
           </b-form-checkbox-group> -->
         </b-dropdown>
       </b-col>
+
+      <!-- <b-row> -->
+      <b-col align="right">
+        <b-button
+          id="create"
+          variant="biotech"
+          class="button-style mt-3"
+          size="sm"
+          @click="$bvModal.show('add-transaction-modal')"
+        >
+          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
+        </b-button>
+      </b-col>
+    <!-- </b-row> -->
     </b-row>
 
     <!-- Main table element -->
@@ -173,6 +179,7 @@
       sticky-header
       no-border-collapse
       responsive
+      :busy="isBusy"
       :items="filterItems"
       :filter="filter"
       :filterIncludedFields="filterOn"
@@ -183,6 +190,14 @@
       :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection"
     >
+    <template #table-busy>
+      <div class="text-center text-danger my-2">
+        <b-spinner class="align-middle">
+          <strong>Loading...</strong>
+        </b-spinner>
+      </div>
+    </template>
+
       <template v-slot:cell(U_STATUS)="row">
         <b-badge
           v-show="row.item.U_STATUS === 'Pending'"
@@ -301,25 +316,36 @@
     </b-table>
 
     <b-row>
+      <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
       <b-col
         label-cols-sm
-        class="mb-0 mt-1 text-left"
+        class="mb-0 mt-2 text-left"
         cols="3"
-        align-h="receipt"
+        align-h="center"
       >
-        <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
+        <div size="sm" style="color: gray; font-size: 11.5px;">{{ bottomLabel }}</div>
       </b-col>
-      <b-col cols="4" offset="5">
+      <b-col>
         <b-pagination
-          id="modules-pagination"
+          id="delivery-pagination"
           pills
           v-model="currentPage"
-          :total-rows="rows"
+          :total-rows="totalRows"
           :per-page="perPage"
           align="right"
           size="sm"
           aria-controls="modules-table"
           limit="3"
+          class="mt-1"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -1356,6 +1382,7 @@ export default {
     VueQrcode
   },
   async created() {
+    this.isBusy = true;
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
     // await this.getPriceList();
     await this.getCommodity();
@@ -1366,6 +1393,7 @@ export default {
       await this.getPlotCodes(); 
     }
     await this.networkPrintInit();
+    this.isBusy = false;
 
     // await this.getCompanyList();
     // await this.updateUOM();
@@ -1373,6 +1401,7 @@ export default {
   },
   data() {
     return {
+      isBusy: false,
       isPrinterAvailable: true,
       receiptData: {},
       receiptData1: {},
@@ -1931,12 +1960,14 @@ export default {
       // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
       // this.networkPrinter.addText(`${data.header.date}\n`);
 
-      // this.networkPrinter.addText("\n");
+      this.networkPrinter.addText("\n");
+      this.networkPrinter.addCut(); // for auto cutting
+      
 
       this.networkPrinter.send();
     },
     async networkPrintInit() {
-      this.showLoading = true;
+      // this.showLoading = true;
       let ePosDev = new epson.ePOSDevice();
 
       let ipAddress = process.env.networkPrinterIp,
@@ -1993,7 +2024,7 @@ export default {
         }
       };
 
-      this.showLoading = false;
+      // this.showLoading = false;
     },
     // async printReceipt(data) {
     //   console.log(data);
@@ -2337,22 +2368,16 @@ export default {
           text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
           value: startsWithFG[i].ItemCode
         });
-
       }
 
       if(this.companyCode == '4354') {
         const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
-        console.log("rice bran", riceBran);
         this.commodity.push({
           text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
           value: riceBran[0].ItemCode
         })
-
-        console.log("with ricebran", this.commodity);
-
       }
 
-      // if(this.)
     },
     async getFarmer() {
       const userDetails = JSON.parse(localStorage.user_details);
@@ -2682,7 +2707,8 @@ export default {
         const employee_id = userDetails.Code;
         const employee_role = roleDetails.Name;
 
-        this.showLoading = true;
+        // this.showLoading = true;
+        this.isBusy = true;
         this.items = [];
         const res = await axios({
           method: "POST",
@@ -2741,10 +2767,12 @@ export default {
           });
         }
 
-        this.showLoading = false;
+        // this.showLoading = false;
+        this.isBusy = false;
       } catch (e) {
         console.log(e);
-        this.showLoading = false;
+        // this.showLoading = false;
+        this.isBusy = false;
       }
     },
     

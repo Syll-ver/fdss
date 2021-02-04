@@ -292,14 +292,26 @@
     </div>
 
 
- <b-row>
-        <b-col  label-cols-sm
-        class="mb-0 mt-1 text-left"
-        cols="3"
-        align-h="receipt">
+      <b-row>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+        <b-col
+          label-cols-sm
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center"
+        >
           <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
             id="modules-pagination"
             pills
@@ -308,8 +320,9 @@
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="reports-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
@@ -1136,7 +1149,8 @@ show(data) {
         const employee_id = userDetails.Code
         const employee_role = roleDetails.Name
 
-        this.showLoading = true;
+        // this.showLoading = true;
+        this.isBusy = true;
         this.items = [];
         const res = await axios({
           method: "POST",
@@ -1243,11 +1257,12 @@ show(data) {
           }
         }
 
-        this.showLoading = false;
+        // this.showLoading = false;
+        this.isBusy = false;
       } catch (e) {
         console.log(e);
-        this.showLoading = false;
-      
+        // this.showLoading = false;
+        this.isBusy = false;
       }
     }
   },
