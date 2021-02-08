@@ -16,7 +16,6 @@ RUN apk add --no-cache git
 #RUN npm config set https-proxy http://172.16.1.6:3128
 #RUN npm config set proxy http://172.16.1.6:3128
 
-
 RUN npm install
 COPY . .
 RUN npm run build

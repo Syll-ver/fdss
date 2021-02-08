@@ -3,7 +3,7 @@
     <!-- Main table -->
 
     <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -12,9 +12,6 @@
               id="search_activity"
               placeholder="Search PrintLogs"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
@@ -39,7 +36,7 @@
             <div
               id="actvty_date"
               slot="input"
-              style="min-width: 150px;"
+              style="height:2rem; font-size:14px;"
             >{{ datePicker.startDate }} - {{ datePicker.endDate }}</div>
           </date-range-picker>
           <b-input-group-append style="height:2rem; font-size:12px">
@@ -130,12 +127,27 @@
     <hr />
 
     <b-row>
-      <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="center">
+      <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_printLogs-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+      <b-col
+        label-cols-sm
+        class="mb-0 mt-2 text-left"
+        cols="3"
+        align-h="center"
+      >
         <div size="sm" style="color: gray; font-size: 11px;">{{ bottomLabel }}</div>
       </b-col>
-      <b-col cols="4" offset="5">
+      <b-col>
         <b-pagination
-          id="modules-pagination"
+          id="printLogs-pagination"
           pills
           v-model="currentPage"
           :total-rows="rows"
@@ -144,6 +156,7 @@
           size="sm"
           aria-controls="modules-table"
           limit="3"
+          class="mt-1"
         ></b-pagination>
       </b-col>
     </b-row>
