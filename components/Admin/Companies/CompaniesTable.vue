@@ -31,9 +31,6 @@
               id="filterInput"
               placeholder="Search Company"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>

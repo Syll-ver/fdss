@@ -36,7 +36,7 @@
             <div
               id="actvty_date"
               slot="input"
-              style="min-width: 150px;"
+              style="height:2rem; font-size:14px;"
             >{{ datePicker.startDate }} - {{ datePicker.endDate }}</div>
           </date-range-picker>
           <b-input-group-append style="height:2rem; font-size:12px">
