@@ -3,7 +3,7 @@
     <!-- Main table -->
 
     <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -12,9 +12,6 @@
               id="search_activity"
               placeholder="Search Activity"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
@@ -39,7 +36,7 @@
             <div
               id="actvty_date"
               slot="input"
-              style="min-width: 150px;"
+              style="height:2rem; font-size:14px;"
             >{{ datePicker.startDate }} - {{ datePicker.endDate }}</div>
           </date-range-picker>
           <b-input-group-append style="height:2rem; font-size:12px">
@@ -204,7 +201,7 @@
         </b-col>
       </b-row>
 
-      <template v-slot:modal-footer="{ ok, cancel }">
+      <template v-slot:modal-footer="{ cancel }">
         <b-button
           id="close_view_md"
           size="sm"

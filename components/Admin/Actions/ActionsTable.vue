@@ -21,23 +21,9 @@
       <Loading v-if="showLoading" />
     </div>
       <!-- Main table -->
-      <b-row>
-        <b-col>
-          <b-button
-            id="add_action"
-            size="sm"
-            class="button-style"
-            variant="biotech"
-            @click="addAction()"
-            v-if="actions.add_action"
-          >
-            <font-awesome-icon icon="plus" class="mr-1" />Add Action
-          </b-button>
-        </b-col>
-      </b-row>
 
       <b-row>
-        <b-col cols="4" class="mt-3">
+        <b-col cols="3" class="mt-3">
           <b-form-group>
             <b-input-group size="sm">
               <b-form-input
@@ -46,25 +32,11 @@
                 id="search_action"
                 placeholder="Search Action"
               ></b-form-input>
-               <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
             </b-input-group>
           </b-form-group>
         </b-col>
 
-       <b-col cols="4" class="mt-3">
-           </b-col>
-  <b-col ></b-col>
-<b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
+        <b-col class="mt-3">
           <b-dropdown
             right
             id="filter_actions"
@@ -72,9 +44,9 @@
             size="sm"
             variant="dark"
           >
-          <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
+            <template v-slot:button-content>
+              <font-awesome-icon icon="filter" class="mr-1" />   
+            </template> 
             <b-form-checkbox-group
               id="status_group"
               name="flavour-2"
@@ -88,9 +60,32 @@
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
           </b-dropdown>
+        </b-col>
+        <b-col ></b-col>
+        <b-col  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
+          <b-form-select
+            id="perPageSelect_action"
+            size="sm"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group> -->
+
+          <b-col>
+            <b-button
+              id="add_action"
+              size="sm"
+              class="button-style"
+              variant="biotech"
+              @click="addAction()"
+              v-if="actions.add_action"
+            >
+              <font-awesome-icon icon="plus" class="mr-1" />Add Action
+            </b-button>
+          </b-col>
      
-      </b-col>
-    </b-row>
+        </b-col>
+      </b-row>
 
       <!-- Main table element -->
       <b-table
@@ -154,10 +149,25 @@
       <hr />
 
       <b-row>
-        <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="receipt">
-          <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_actions-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+      <b-col
+        label-cols-sm
+        class="mb-0 mt-2 text-left"
+        cols="3"
+        align-h="center"
+      >
+          <div size="sm" style="color: gray; font-size: 11.5px;"> {{ bottomLabel }}</div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
             id="actions-pagination"
             pills

@@ -19,38 +19,20 @@
     <div>
       <!-- Main table -->
       <b-row>
-        <b-col>
-          <b-button
-            id="add_user"
-            size="sm"
-            variant="biotech"
-            class="button-style"
-            @click="addUser()"
-            v-if="actions.addUser"
-          >
-            <font-awesome-icon icon="plus" class="mr-1" />Add User
-          </b-button>
+        <b-col cols="3" class="mt-3">
+          <b-form-group>
+            <b-input-group size="sm">
+              <b-form-input
+                v-model="filter"
+                type="search"
+                id="filterInput"
+                placeholder="Search User"
+              ></b-form-input>
+            </b-input-group>
+          </b-form-group>
         </b-col>
-      </b-row>
 
- <b-row>
-      <b-col cols="4" class="mt-3">
-        <b-form-group>
-          <b-input-group size="sm">
-            <b-form-input
-              v-model="filter"
-              type="search"
-              id="filterInput"
-              placeholder="Search User"
-            ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-
-      <b-col cols="4" class="mt-3">
+        <b-col cols="4" class="mt-3">
         <!-- <b-input-group prepend="Date" size="sm">
           <date-range-picker
             id="date_pending"
@@ -76,70 +58,80 @@
             >
           </b-input-group-append>
         </b-input-group> -->
-      </b-col>
-  <b-col ></b-col>
- 
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
           <b-dropdown
-            right
-            id="filter_roles"
-            class="button-sq"
-            size="sm"
-            variant="dark"
-          >
-          <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
-            <b-form-checkbox-group
-              id="status_group"
-              name="flavour-2"
-              class="pl-2"
-              style="font-size:12px"
-              v-model="filterStatus"
-              v-b-tooltip.hover
-              title="Filter Status"
-            >Status<br>
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox><br>
-              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
-            </b-form-checkbox-group>
-
- <b-form-checkbox-group
-            id="status_group1"
-            name="flavour-2"
-            class="pl-2"
-            style="font-size:12px"
-            v-model="filterCompany"
-            v-b-tooltip.hover
-            title="Filter Company "
-          >
-         Company<br>
-       
-            <b-form-checkbox
-                    size="sm"
-                    :id="'choice' + i"
-                    v-for="(company, i) in filterListCompanies"
-                    :key="i"
-                    :value="company.U_COMPANYCODE"
-                  >{{company.COMPANYDBNAME  }}</b-form-checkbox>
-                   <!-- <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
-              >Biotech</b-form-checkbox
+              right
+              id="filter_roles"
+              class="button-sq"
+              size="sm"
+              variant="dark"
             >
-            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
-              >REvive</b-form-checkbox> -->
-          </b-form-checkbox-group>
+              <template v-slot:button-content>
+                <font-awesome-icon icon="filter" class="mr-1" />   
+              </template> 
+                <b-form-checkbox-group
+                  id="status_group"
+                  name="flavour-2"
+                  class="pl-2"
+                  style="font-size:12px"
+                  v-model="filterStatus"
+                  v-b-tooltip.hover
+                  title="Filter Status"
+                >Status<br>
 
-          </b-dropdown>
-     
-      </b-col>
-    </b-row>
+                <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox><br>
+                  <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
+                </b-form-checkbox-group>
+
+              <b-form-checkbox-group
+                id="status_group1"
+                name="flavour-2"
+                class="pl-2"
+                style="font-size:12px"
+                v-model="filterCompany"
+                v-b-tooltip.hover
+                title="Filter Company "
+              >
+                Company<br>
+          
+                <b-form-checkbox
+                  size="sm"
+                  :id="'choice' + i"
+                  v-for="(company, i) in filterListCompanies"
+                  :key="i"
+                  :value="company.U_COMPANYCODE"
+                >{{company.COMPANYDBNAME  }}
+                </b-form-checkbox>
+                      <!-- <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+                  >Biotech</b-form-checkbox
+                >
+                <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+                  >REvive</b-form-checkbox> -->
+              </b-form-checkbox-group>
+
+            </b-dropdown>
+        </b-col>
+        <b-col></b-col>
+ 
+        <b-col cols="2"  class="mt-3" align="right">
+          <!-- <b-form-group class="mb-0">
+            <b-form-select
+              id="perPageSelect_action"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group> -->
+          <b-button
+            id="add_user"
+            size="sm"
+            variant="biotech"
+            class="button-style"
+            @click="addUser()"
+            v-if="actions.addUser"
+          >
+            <font-awesome-icon icon="plus" class="mr-1" />Add User
+          </b-button>
+        </b-col>
+      </b-row>
 
       <!-- Main table element -->
       <b-table
@@ -230,19 +222,29 @@
       <hr />
 
       <b-row>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_users-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
         <b-col
           label-cols-sm
-          class="mb-0 mt-1 text-left"
+          class="mb-0 mt-2 text-left"
           cols="3"
           align-h="center"
         >
-          <div size="sm" style="color: gray; font-size: 11px;">
+          <div size="sm" style="color: gray; font-size: 11.5px;">
             {{ bottomLabel }}
           </div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
-            id="modules-pagination"
+            id="user-pagination"
             pills
             v-model="currentPage"
             :total-rows="rows"
@@ -251,6 +253,7 @@
             size="sm"
             aria-controls="modules-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
@@ -572,7 +575,7 @@
           </b-row>
         </b-card>
 
-        <template v-slot:modal-footer="{ }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="add_add_modal"
             size="sm"
@@ -584,7 +587,7 @@
           <b-button
             id="cancel_add_modal"
             size="sm"
-            @click="cancel1()"
+            @click="cancel()"
             class="button-style"
             >Cancel</b-button
           >
@@ -808,7 +811,7 @@
           <h6>Do you want to update user?</h6>
         </div>
 
-        <template>
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             size="sm"
             class="button-style"
@@ -1194,21 +1197,28 @@ export default {
       this.findUser = null;
     },
     findUsers() {
-      this.showLoading =true;
+      // this.showLoading =true;
+      // this.selectedCompany = null;
+      // this.$bvModal.show("find-user-modal");
+      // this.showLoading = false;
       this.selectedCompany = null;
+      this.filterUser = "";
+      if (this.selectedCompany == null) {
+        this.SearchedUsers.length = [];
+      }
       this.$bvModal.show("find-user-modal");
-      this.showLoading = false;
+    
     },
-    cancel1(){
-      this.clearForm();
-      this.SearchedUsers=[];
-      this.rowsUsers=[];
-      // this.userFields={FirstName:null,
-      // MiddleName:null,LastName:null};
-      this.$bvModal.hide("add-user-modal");
-      this.$bvModal.hide("find-user-modal");
+    // cancel1(){
+    //   this.clearForm();
+    //   this.SearchedUsers=[];
+    //   this.rowsUsers=[];
+    //   // this.userFields={FirstName:null,
+    //   // MiddleName:null,LastName:null};
+    //   this.$bvModal.hide("add-user-modal");
+    //   this.$bvModal.hide("find-user-modal");
 
-    },
+    // },
     onRowSelected(items) {
       this.selectedUser = items;
     },
