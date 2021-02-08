@@ -40,7 +40,7 @@
                 value="asd"
                 :options="{ width: 300 }"
     ></VueQrcode>-->
-    <b-row>
+    <!-- <b-row>
       <b-col>
         <b-button
           id="create"
@@ -64,16 +64,16 @@
               id="search_delivery_receipt"
               placeholder="Search Delivery Slip"
             ></b-form-input>
-            <b-input-group-append>
+            <!-- <b-input-group-append>
               <b-button :disabled="!filter" @click="filter = ''"
                 >Clear</b-button
               >
-            </b-input-group-append>
+            </b-input-group-append> -->
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col cols="4" class="mt-3">
+      <b-col class="mt-3">
         <b-input-group prepend="Date" size="sm">
           <!-- <b-input-group-prepend>
               <div style="background-color: green">
