@@ -27,14 +27,11 @@
               id="search_delivery_receipt"
               placeholder="Search Delivery Slip"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
 
-          <b-col cols="4" class="mt-3">
+      <b-col class="mt-3">
         <b-input-group prepend="Date" style="height:10px" size="sm">
           <!-- <b-input-group-prepend>
               <div style="background-color: green">
@@ -63,27 +60,17 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-  <b-col ></b-col>
- 
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-          <b-dropdown
-            right
-            id="filter_actions"
-            class="button-sq"
-            size="sm"
-            variant="dark"
-          >
+      <b-col class="mt-3" align="left">
+        <b-dropdown
+          right
+          id="filter_actions"
+          class="button-sq"
+          size="sm"
+          variant="dark"
+        >
           <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
+            <font-awesome-icon icon="filter" class="mr-1" />   
+          </template> 
             <b-form-checkbox-group
               
               id="status_group0"
@@ -118,7 +105,7 @@
             <b-form-checkbox id="delivery" value="Delivery"
               >Delivery</b-form-checkbox
             >
-          </b-form-checkbox-group>
+            </b-form-checkbox-group>
              <!-- <b-form-checkbox-group
             id="status_group1"
             name="flavour-2"
@@ -165,6 +152,18 @@
           >
             <font-awesome-icon icon="file-excel" />
           </b-button>
+      </b-col>
+ 
+      <b-col cols="2"  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
+          <b-form-select
+            id="perPageSelect_action"
+            size="sm"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group> -->
+      
+        
      
       </b-col>
     </b-row>
@@ -292,14 +291,26 @@
     </div>
 
 
- <b-row>
-        <b-col  label-cols-sm
-        class="mb-0 mt-1 text-left"
-        cols="3"
-        align-h="receipt">
+      <b-row>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+        <b-col
+          label-cols-sm
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center"
+        >
           <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
             id="modules-pagination"
             pills
@@ -308,8 +319,9 @@
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="reports-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
@@ -1136,7 +1148,8 @@ show(data) {
         const employee_id = userDetails.Code
         const employee_role = roleDetails.Name
 
-        this.showLoading = true;
+        // this.showLoading = true;
+        this.isBusy = true;
         this.items = [];
         const res = await axios({
           method: "POST",
@@ -1243,11 +1256,12 @@ show(data) {
           }
         }
 
-        this.showLoading = false;
+        // this.showLoading = false;
+        this.isBusy = false;
       } catch (e) {
         console.log(e);
-        this.showLoading = false;
-      
+        // this.showLoading = false;
+        this.isBusy = false;
       }
     }
   },

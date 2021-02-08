@@ -15,9 +15,15 @@
               @click="visible = !visible"
               data-toggle="collapse"
               aria-expanded="false"
-              class="dropdown-toggle mb-2"
+              class="mb-2"
             >
               <font-awesome-icon icon="user-cog" class="ml-2 mr-2" />Admin
+              <font-awesome-icon
+                :icon="visible == false ? 'caret-right' : 'caret-down'"
+                class="mr-2 mt-1"
+                style="float:right; 
+                "
+              />
             </a>
 
             <b-collapse id="collapse" class="mt-1" v-model="visible">
@@ -49,7 +55,7 @@
             :style="
               route.active ? 'background: #00803e; border-radius:3px' : ''
             "
-            @click="setActive(i)"
+            @click="setActive(i), (visible = false)"
             class="mt-2"
           >
             <router-link :to="route.link" :id="route.id">
@@ -379,6 +385,7 @@ export default {
     },
 
     async setAdminActive(i) {
+      // this.visible = true;
       this.routes.map(route => (route.active = false));
       this.adminroutes.map((adminroute, index) => {
         if (index === i) {

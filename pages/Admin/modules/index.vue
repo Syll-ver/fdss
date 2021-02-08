@@ -1,10 +1,10 @@
 <template>
 <div class="row m-0 p-0">
-  <div class="container-fluid m-0 p-0">
+  <div class="m-0 p-0">
     <sidebar />
   </div>
   <div class="mainPages">
-    <b-card class="mt-5 ">
+    <b-card class="mt-5 card-content">
       <b-tabs
         card
         small
