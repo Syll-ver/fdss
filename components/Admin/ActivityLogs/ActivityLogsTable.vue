@@ -83,11 +83,13 @@
     <!-- Main table element -->
     <b-table
       id="activity-table"
-      class="table-style"
       show-empty
-      scrollable="true"
+      class="table-style"
+      scrollable
       sticky-header
       no-border-collapse
+      responsive
+      :busy="isBusy"
       :items="listActivityLogs"
       :fields="fields"
       :current-page="currentPage"
@@ -98,13 +100,12 @@
       :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection"
       @filtered="onFiltered"
-      :busy="isBusy"
-      responsive
     >
-      <template v-slot:table-busy>
+      <template #table-busy>
         <div class="text-center text-secondary my-2">
-          <b-spinner small class="align-middle"></b-spinner>
-          <strong>&nbsp;Loading...</strong>
+          <b-spinner class="align-middle">
+            <strong>Loading...</strong>
+          </b-spinner>
         </div>
       </template>
 

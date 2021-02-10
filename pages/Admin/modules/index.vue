@@ -4,7 +4,7 @@
     <sidebar />
   </div>
   <div class="mainPages">
-    <b-card class="mt-5 card-content">
+    <b-card no-body class="mt-5 card-content">
       <b-tabs
         card
         small

@@ -192,7 +192,7 @@
     >
     <template #table-busy>
       <div class="text-center text-danger my-2">
-        <b-spinner class="align-middle">
+        <b-spinner class="align-middle"  variant="dark">
           <strong>Loading...</strong>
         </b-spinner>
       </div>
@@ -2360,23 +2360,31 @@ export default {
         }
       });
       const v = res.data.view;
-      // filter only agri-ops items
-      const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
-
-      for (let i = 0; i < startsWithFG.length; i++) {
+      console.log("items", v);
+      for(var i = 0; i < v.length; i++){
         this.commodity.push({
-          text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
-          value: startsWithFG[i].ItemCode
-        });
-      }
-
-      if(this.companyCode == '4354') {
-        const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
-        this.commodity.push({
-          text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
-          value: riceBran[0].ItemCode
+          text: v[i].ItemCode + ' : ' + v[i].ItemName,
+          value: v[i].ItemCode
         })
       }
+
+      // filter only agri-ops items
+      // const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
+
+      // for (let i = 0; i < startsWithFG.length; i++) {
+      //   this.commodity.push({
+      //     text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
+      //     value: startsWithFG[i].ItemCode
+      //   });
+      // }
+
+      // if(this.companyCode == '4354') {
+      //   const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
+      //   this.commodity.push({
+      //     text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
+      //     value: riceBran[0].ItemCode
+      //   })
+      // }
 
     },
     async getFarmer() {
