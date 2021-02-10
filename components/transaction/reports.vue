@@ -177,6 +177,7 @@
       scrollable
       sticky-header
       no-border-collapse
+      :busy="isBusy"
       :items="filterItems"
       :filter="filter"
       :filterIncludedFields="filterOn"
@@ -184,10 +185,16 @@
       :current-page="currentPage"
       :per-page="perPage"
       :sort-by.sync="sortBy"
-  
       @row-clicked="show"
       
     >
+    <template #table-busy>
+      <div class="text-center text-danger my-2">
+        <b-spinner class="align-middle" variant="dark">
+          <strong>Loading...</strong>
+        </b-spinner>
+      </div>
+    </template>
         <!-- :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection" -->
       <template v-slot:cell(U_STATUS)="row">
@@ -678,6 +685,7 @@ export default {
     Loading
   },
   async created() {
+    this.isBusy = true;
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
     await this.getTransactions();
     await this.getTransactionType();
@@ -685,6 +693,7 @@ export default {
     // await this.getFarmer();
     // await this.getCommodity();
     this.totalRows = this.items.length;
+    this.isBusy = false;
   },
   data() {
     return {
@@ -1121,6 +1130,7 @@ show(data) {
       this.datePicker.endDate = moment().format("MMM DD, YYYY");
       await this.getTransactions();
       this.totalRows = this.items.length;
+      this.isBusy = false;
     },
     async updateValues() {
       this.isBusy = true;
@@ -1140,6 +1150,7 @@ show(data) {
       this.totalRows = this.items.length;
     },
   async getTransactions() {
+        this.isBusy = true;
       console.log(JSON.parse(localStorage.user_details))
       try {
         const userDetails = JSON.parse(localStorage.user_details)
@@ -1149,7 +1160,6 @@ show(data) {
         const employee_role = roleDetails.Name
 
         // this.showLoading = true;
-        this.isBusy = true;
         this.items = [];
         const res = await axios({
           method: "POST",

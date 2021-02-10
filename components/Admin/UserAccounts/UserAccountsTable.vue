@@ -141,6 +141,7 @@
         scrollable
         sticky-header
         no-border-collapse
+        :busy="isBusy"
         :items="filterItems"
         :fields="filterFields"
         :current-page="currentPage"
@@ -153,6 +154,14 @@
         @filtered="onFiltered"
         responsive
       >
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner class="align-middle" variant="dark">
+              <strong>Loading...</strong>
+            </b-spinner>
+          </div>
+        </template>
+
         <template v-slot:cell(actions)="row">
           <b-button
             id="edit_user"
@@ -1146,7 +1155,7 @@ export default {
     },
     fetchEmployees() {
       console.log(this.selectedCompany)
-       this.showLoading = true;
+      //  this.showLoading = true;
       this.isBusy = true;
       this.$store
         .dispatch("Admin/Users/searchEmployees", {
@@ -1166,7 +1175,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           }
-       this.showLoading = false;
+      //  this.showLoading = false;
           this.isBusy = false;
         });
     },
@@ -1276,7 +1285,7 @@ export default {
     },
 
     addUserTable() {
-      this.showLoading = true;
+      this.isBusy = true;
       this.userDetails.U_USERNAME = this.selectedUserDetails.ExternalEmployeeNumber;
      
       this.$store
@@ -1289,7 +1298,7 @@ export default {
         })
         .then(res => {        
           if (res && res.name == "Error") {
-            this.showLoading = false;
+            this.isBusy = false;
 
             if (res.response && res.response.data.errorMsg) {
               if (res.response.data.errorMsg === "Invalid session.") {
@@ -1299,7 +1308,7 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showLoading = false;
+            this.isBusy = false;
           } else {
             this.showAlert("Successfully Added", "success");
 
@@ -1307,7 +1316,7 @@ export default {
 
             this.clearForm();
 
-            this.showLoading = false;
+            this.isBusy = false;
           }
         });
     },
@@ -1333,7 +1342,7 @@ export default {
       this.$bvModal.show("edit-modal");
     },
     editTable() {
-      this.showLoading = true;
+      this.isBusy = true;
       console.log(this.userDetails);
       this.$store
         .dispatch("Admin/Users/editUser", {
@@ -1353,7 +1362,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           } else {
-            this.showLoading = false;
+            this.isBusy = false;
             this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-modal");
@@ -1386,7 +1395,7 @@ export default {
   },
 
   async beforeCreate() {
-     this.showLoading = true;
+    //  this.showLoading = true;
      this.isBusyTable = true;
 
     await this.$store
@@ -1428,9 +1437,9 @@ export default {
         this.filterCompany.push(company.U_COMPANYCODE)
       })
 
-    this.isBusyTable = false;
+    // this.isBusyTable = false;
 
-    this.showLoading = true;
+    // this.showLoading = true;
     await this.$store
       .dispatch("Admin/Users/fetchUsers", {
         user_actions: JSON.parse(localStorage.user_actions),
@@ -1461,7 +1470,7 @@ export default {
         }
       });
 
-    this.showLoading = false;
+    this.isBusy = false;
 
     // this.$store.dispatch("Accounting_Group/fetchAccountingGroup", {
     //   token: localStorage.token
