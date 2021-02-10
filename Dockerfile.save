@@ -1,3 +1,4 @@
+y
 # build stage
 FROM node:10-alpine as build-stage
 WORKDIR /usr/src/app
@@ -15,6 +16,7 @@ RUN apk add --no-cache git
 #RUN npm config set http-proxy http://172.16.1.6:3128
 #RUN npm config set https-proxy http://172.16.1.6:3128
 #RUN npm config set proxy http://172.16.1.6:3128
+
 
 RUN npm install
 COPY . .

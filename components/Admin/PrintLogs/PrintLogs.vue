@@ -386,7 +386,7 @@ export default {
         (this.dateRange.date_to = moment(this.datePicker.endDate).format(
           "YYYY-MM-DD"
         ));
-      
+       
     
       await this.$store
         .dispatch("Admin/Print_Logs/fetchPrintLogs", {
