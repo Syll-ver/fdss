@@ -90,7 +90,7 @@
       no-border-collapse
       responsive
       :busy="isBusy"
-      :items="listActivityLogs"
+      :items="filterItems"
       :fields="fields"
       :current-page="currentPage"
       :per-page="perPage"
@@ -102,8 +102,8 @@
       @filtered="onFiltered"
     >
       <template #table-busy>
-        <div class="text-center text-secondary my-2">
-          <b-spinner class="align-middle">
+        <div class="text-center text-danger my-2">
+          <b-spinner class="align-middle" variant="dark">
             <strong>Loading...</strong>
           </b-spinner>
         </div>
@@ -126,20 +126,35 @@
     <hr />
 
     <b-row>
-      <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="center">
+      <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+
+        <b-col  label-cols-sm
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center">
         <div size="sm" style="color: gray; font-size: 11px;">{{ bottomLabel }}</div>
       </b-col>
-      <b-col cols="4" offset="5">
+      <b-col>
         <b-pagination
           id="modules-pagination"
           pills
           v-model="currentPage"
-          :total-rows="rows"
+          :total-rows="totalRows"
           :per-page="perPage"
           align="right"
           size="sm"
           aria-controls="modules-table"
           limit="3"
+          class="mt-1"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -170,10 +185,16 @@
                 :key="i"
                 v-for="(oldKey, i) in Object.keys(old_values)"
               >
-                <div class="mb-2">
+                <div
+                  class="mb-2"
+                  :style="isNotEqual(old_values[oldKey], new_values[oldKey])"
+                >
                   <font-awesome-icon style="font-size:11px; color: biotech" icon="circle" />&nbsp;
                   <strong style="color:#00401F;">{{ oldKey }}:</strong>&nbsp;
                   <span style="color:#00401F;">{{ old_values[oldKey] }}</span>
+                  <!-- <span style="color:#00401F;">{{
+                    alterKeyValue(oldKey, old_values[oldKey])
+                  }}</span> -->
                 </div>
               </li>
             </ul>
@@ -191,7 +212,9 @@
                 :key="i"
                 v-for="(newKey, i) in Object.keys(new_values)"
               >
-                <div class="mb-2">
+                <div class="mb-2"
+                  :style="isNotEqual(old_values[newKey], new_values[newKey])"
+                >
                   <font-awesome-icon style="font-size:11px; color: #A5CD39" icon="circle" />&nbsp;
                   <strong style="color:#344012;">{{ newKey }}:</strong>&nbsp;
                   <span style="color:#344012;">{{ new_values[newKey] }}</span>
@@ -227,7 +250,7 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
-      isBusy: false,
+      isBusy: true,
       old_values: [],
       new_values: [],
       activityLogsForm: {
@@ -291,39 +314,47 @@ export default {
         { key: "actions", label: "Actions" }
       ],
 
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
   computed: {
+    filterItems() {
+      return this.listActivityLogs.filter(listActivityLogs => {
+        return (listActivityLogs.U_TABLE.toLowerCase().match(this.filter.toLowerCase()) || listActivityLogs.U_OPERATION.toLowerCase().match(this.filter.toLowerCase()) || listActivityLogs.Employee.toLowerCase().match(this.filter.toLowerCase()));
+      });
+    },
+
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.listActivityLogs.length) {
         end = this.listActivityLogs.length;
       }
 
-      if (this.listActivityLogs.length === 0) {
+      if (this.filterItems.length === 0) {
         start = 0;
       }
 
-      return `Showing ${start} to ${end} of ${this.listActivityLogs.length} entries`;
-    },
-
-    rows() {
-      return this.listActivityLogs.length;
+      return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
     },
 
     ...mapGetters({
-      listActivityLogs: "Admin/Activity_Logs/getActivityLogs"
+      listActivityLogs: "Admin/Activity_Logs/getActivityLogs",
+      listRoles: "Admin/Roles/getListRoles",
+      listUsers: "Admin/Users/getUsers"
     }),
 
     sortOptions() {
@@ -362,40 +393,47 @@ export default {
     //   return result;
     // },
 
-    // alterKeyValue(key, value) {
-    //   if (key.search("U_CREATED_BY") == 0 || key.search("U_UPDATED_BY") == 0) {
-    //     return this.getUserName(value);
-    //   } else if (
-    //     key.search("U_IS_SAP_USER") == 0 ||
-    //     key.search("U_IS_ACTIVE") == 0
-    //   ) {
-    //     return value ? "Yes" : "No";
-    //   } else if (key.search("U_ROLE_CODE") == 0) {
-    //     return this.getRoleName(value);
-    //   } else if (
-    //     key.search("U_UPDATED_AT") == 0 ||
-    //     key.search("U_CREATED_AT") == 0
-    //   ) {
-    //     return this.formatDate(value);
-    //   } else if (
-    //     key.search("U_UPDATED_TIME") == 0 ||
-    //     key.search("U_CREATED_TIME") == 0
-    //   ) {
-    //     return this.formatTime(value);
-    //   } else if (key.search("U_COMPANY_CODE") == 0) {
-    //     return this.getCompanyName(value);
-    //   } else if (key.search("U_PASSWORD") == 0) {
-    //     return this.formatPassword(value);
-    //   } else if (key.search("U_CARD_TYPE") == 0) {
-    //     return this.getCardType(value);
-    //   } else if (key.search("U_ACTION_CODE") == 0) {
-    //     return this.getActionName(value);
-    //   } else if (key.search("U_ACTIVE") == 0) {
-    //     return value ? "Yes" : "No";
-    //   } else {
-    //     return value;
-    //   }
-    // },
+    alterKeyValue(key, value) {
+      if (key.search("U_CREATED_BY") == 0 || key.search("U_UPDATED_BY") == 0) {
+        return this.getUserName(value);
+      } else if (
+        key.search("U_IS_SAP_USER") == 0 ||
+        key.search("U_IS_ACTIVE") == 0
+      ) {
+        return value ? "Yes" : "No";
+      } else if (key.search("U_ROLE_CODE") == 0) {
+        return this.getRoleName(value);
+      } else if (
+        key.search("U_UPDATED_AT") == 0 ||
+        key.search("U_CREATED_AT") == 0
+      ) {
+        return this.formatDate(value);
+      } else if (
+        key.search("U_UPDATED_TIME") == 0 ||
+        key.search("U_CREATED_TIME") == 0
+      ) {
+        return this.formatTime(value);
+      } else if (key.search("U_COMPANY_CODE") == 0) {
+        return this.getCompanyName(value);
+      } else if (key.search("U_PASSWORD") == 0) {
+        return this.formatPassword(value);
+      } else if (key.search("U_CARD_TYPE") == 0) {
+        return this.getCardType(value);
+      } else if (key.search("U_ACTION_CODE") == 0) {
+        return this.getActionName(value);
+      } else if (key.search("U_ACTIVE") == 0) {
+        return value ? "Yes" : "No";
+      } else {
+        return value;
+      }
+    },
+
+    isNotEqual(old, newVal) {
+      if (old != newVal) {
+        return "background-color:#DDFBBD; border-radius:2px";
+      }
+      return "";
+    },
 
     async resetDate() {
       this.isBusy = true;
@@ -448,14 +486,23 @@ export default {
       this.$bvModal.show("view-activity-modal");
     },
 
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
   async created() {
+    if(!this.filter) {
+      this.totalRows = this.filterItems ? this.filterItems.length : 0
+    }
     this.isBusy = true;
+
+    let dateRange = {
+      startDate: moment().format("YYYY-MM-DD"),
+      endDate: moment().format("YYYY-MM-DD")
+    };
+
     await this.$store
       .dispatch("Admin/Activity_Logs/fetchActivtyLogs", {
         user_actions: JSON.parse(localStorage.user_actions),
@@ -464,6 +511,36 @@ export default {
       })
       .then(res => {
         this.isBusy = false;
+      });
+
+    await this.$store
+      .dispatch("Admin/Users/fetchUsers", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+
+    await this.$store
+      .dispatch("Admin/Roles/fetchRoles", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
       });
   }
 };

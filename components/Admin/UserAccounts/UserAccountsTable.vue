@@ -256,11 +256,11 @@
             id="user-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="user-table"
             limit="3"
             class="mt-1"
           ></b-pagination>
@@ -535,6 +535,7 @@
             @row-selected="onRowSelected"
             responsive="sm"
           >
+          
             <!-- Example scoped slot for select state illustrative purposes -->
             <template v-slot:cell(selected)="{ rowSelected }">
               <template v-if="rowSelected">
@@ -547,23 +548,36 @@
               </template>
             </template>
 
-            <template v-slot:table-busy>
-              <div class="text-center text-secondary my-2">
-             
+            <template #table-busy>
+              <div class="text-center text-danger my-2">
+                <b-spinner class="align-middle"  variant="dark">
+                  <strong>Loading...</strong>
+                </b-spinner>
               </div>
             </template>
+
           </b-table>
 
           <hr />
 
           <b-row align-h="start">
-            <b-col
-              label-cols-sm
-              class="mb-0 mt-1 text-left"
-              cols="3"
-              align-h="center"
-            >
-              <div size="sm" style="color: gray; font-size: 11px;">
+            <!-- <b-col cols="1" class="mb-2 mt-1">
+              <b-form-group class="mb-0">
+                <b-form-select
+                  v-model="perPage"
+                  id="perPageSelect_modules-pagination"
+                  size="sm"
+                  :options="pageOptions"
+                ></b-form-select>
+              </b-form-group>
+            </b-col>  -->
+          <b-col
+            label-cols-sm
+            class="mb-0 mt-2 text-left"
+            cols="3"
+            align-h="center"
+          >
+            <div size="sm" style="color: gray; font-size: 11.5px;">
                 {{ bottomLabelUser }}
               </div>
             </b-col>
@@ -890,7 +904,7 @@ export default {
   },
   data() {
     return {
-      isBusy: false,
+      isBusy: true,
       selectedCompany: null,
      
       showLoading: false,
@@ -1001,7 +1015,7 @@ export default {
       },
       filterCompany: ["REVIVE","BIOTECH"],
       selectableTable: null,
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       currentPageUser: 1,
@@ -1010,9 +1024,9 @@ export default {
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterUser: null,
-      filterOn: []
+      filterOn: [],
     };
   },
   computed: {
@@ -1043,7 +1057,7 @@ export default {
 
     filterItems() {
       return this.Users.filter(Users => {
-        return this.filterStatus.includes(Users.U_IS_ACTIVE) && this.filterCompany.includes(Users.U_COMPANY_CODE) ;
+        return this.filterStatus.includes(Users.U_IS_ACTIVE) && (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
       });
     },
 
@@ -1058,6 +1072,10 @@ export default {
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -1095,11 +1113,6 @@ export default {
       }
     },
 
-    rows() {
-      return this.filterItems.length;
-    },
-
-  
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -1387,17 +1400,20 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
 
   async beforeCreate() {
     //  this.showLoading = true;
-     this.isBusyTable = true;
-
+     this.isBusy = true;
+    
+    if(!this.filter) {
+      this.totalRows = this.filterItems ? this.filterItems.length : 0
+    }
     await this.$store
       .dispatch("Admin/Company/fetchListCompany", {
         user_actions: JSON.parse(localStorage.user_actions),

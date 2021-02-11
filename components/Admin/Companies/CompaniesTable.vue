@@ -127,12 +127,13 @@
         :sort-direction="sortDirection"
         @filtered="onFiltered"
         responsive
-        :busy="isBusyTable"
+        :busy="isBusy"
       >
-        <template v-slot:table-busy>
-          <div class="text-center text-secondary my-2">
-            <b-spinner small class="align-middle"></b-spinner>
-            <strong>&nbsp;Loading...</strong>
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner class="align-middle"  variant="dark">
+              <strong>Loading...</strong>
+            </b-spinner>
           </div>
         </template>
 
@@ -227,7 +228,7 @@
             id="company-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
@@ -415,7 +416,7 @@ export default {
   },
   data() {
     return {
-      isBusyTable: false,
+      isBusy: true,
       showLoading: false,
       filterStatus: [1],
 
@@ -469,26 +470,22 @@ export default {
         { key: "actions", label: "Actions" }
       ],
 
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
   computed: {
     filterItems() {
       return this.listCompanies.filter(listCompanies => {
-        return this.filterStatus.includes(listCompanies.U_IS_ACTIVE);
+        return this.filterStatus.includes(listCompanies.U_IS_ACTIVE) && (listCompanies.COMPANYNAME.toLowerCase().match(this.filter.toLowerCase()) || listCompanies.U_COMPANYCODE.toLowerCase().match(this.filter.toLowerCase()));
       });
-    },
-
-    rows() {
-      return this.filterItems.length;
     },
 
     filterFields() {
@@ -519,6 +516,10 @@ export default {
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -651,7 +652,8 @@ export default {
       this.infoModal.content = "";
     },
 
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     },
 
@@ -665,8 +667,12 @@ export default {
   },
 
   async beforeCreate() {
-     this.showLoading = true;
-    this.isBusyTable = true;
+    if(!this.filter) {
+      this.totalRows = this.filterItems ? this.filterItems.length : 0
+    }
+
+    //  this.showLoading = true;
+    this.isBusy = true;
 
     await this.$store
       .dispatch("Admin/Company/fetchListCompany", {
@@ -705,7 +711,7 @@ export default {
         }
       });
 
-    this.isBusyTable = false;
+    this.isBusy = false;
   },
 
   created() {

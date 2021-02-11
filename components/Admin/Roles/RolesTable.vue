@@ -124,6 +124,7 @@
         scrollable
         sticky-header
         no-border-collapse
+        :busy="isBusy"
         :items="filterItems"
         :fields="filterFields"
         :current-page="currentPage"
@@ -136,6 +137,14 @@
         @filtered="onFiltered"
         responsive
       >
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner class="align-middle"  variant="dark">
+              <strong>Loading...</strong>
+            </b-spinner>
+          </div>
+        </template>
+
         <template v-slot:cell(actions)="row">
           <b-button
             id="edit_roles_and_access"
@@ -189,7 +198,7 @@
           id="roles-pagination"
           pills
           v-model="currentPage"
-          :total-rows="rows"
+          :total-rows="totalRows"
           :per-page="perPage"
           align="right"
           size="sm"
@@ -616,28 +625,32 @@ export default {
 
         { key: "actions", label: "Actions" }
       ],
-
-      totalRows: 1,
+      isBusy: true,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
   computed: {
     filterItems() {
       return this.listRoles.filter(listRoles => {
-        return this.filterStatus.includes(listRoles.U_IS_ACTIVE);
+        return this.filterStatus.includes(listRoles.U_IS_ACTIVE) && (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
       });
     },
 
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -648,10 +661,6 @@ export default {
       }
 
       return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
-    },
-
-    rows() {
-      return this.filterItems.length;
     },
 
     ...mapGetters({
@@ -851,19 +860,27 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
   beforeCreate() {
+
+    if(!this.filter) {
+      this.totalRows = this.filterItems ? this.filterItems.length : 0
+    }
+
+    this.isBusy = true;
+
     this.$store
       .dispatch("Admin/Actions/fetchListActions", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        this.isBusy = false;
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -873,12 +890,14 @@ export default {
         }
       });
 
+    this.isBusy = true;
     this.$store
       .dispatch("Admin/Roles/fetchRoles", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        this.isBusy = false;
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {

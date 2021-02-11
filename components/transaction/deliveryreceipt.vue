@@ -189,6 +189,7 @@
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection"
+      @filtered="onFiltered"
     >
     <template #table-busy>
       <div class="text-center text-danger my-2">
@@ -1401,7 +1402,7 @@ export default {
   },
   data() {
     return {
-      isBusy: false,
+      isBusy: true,
       isPrinterAvailable: true,
       receiptData: {},
       receiptData1: {},
@@ -1565,14 +1566,14 @@ export default {
       signaturePath: null,
       pincode: null,
       pinError: null,
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "U_SCHEDULED_DATE_AND_TIME",
       sortDesc: true,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
@@ -1584,17 +1585,21 @@ export default {
     filterItems() {
       return this.items.filter(request => {
         if (this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
-          return request;
+          return request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase())
         }
         if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
           return request;
         }
-      });
+      })
     },
 
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -1607,9 +1612,6 @@ export default {
       return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
     },
 
-    rows() {
-      return this.filterItems.length;
-    },
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -2402,15 +2404,16 @@ export default {
         }
       });
       const v = res.data.view;
+      // filter supplier id starting with V only
+      const startsWithV = v.filter((code) => code.SUPPLIER_ID.startsWith("V"));
 
-        for (let i = 0; i < v.length; i++) {
-          this.farmer.push({
-            text: v[i].SUPPLIER_NAME,
-            value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-          });
+      for (let i = 0; i < startsWithV.length; i++) {
+        this.farmer.push({
+          text: startsWithV[i].SUPPLIER_NAME,
+          value: { id: startsWithV[i].SUPPLIER_ID, address: startsWithV[i].SUPPLIER_ADDRESS }
+        });
       }
 
-      
     },
     titleCase(str){
       // since getFarmer returns all UPPERCASE and getPlotCodes return Uppercase And Lowercase
@@ -2644,9 +2647,9 @@ export default {
       }
     },
 
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     },
     intToTime(i) {
@@ -2708,6 +2711,11 @@ export default {
       this.totalRows = this.items.length;
     },
     async getTransactions() {
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
+
       try {
         const userDetails = JSON.parse(localStorage.user_details);
         const roleDetails = JSON.parse(localStorage.user_role);
