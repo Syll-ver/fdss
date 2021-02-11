@@ -363,8 +363,10 @@ export default {
           user_actions: JSON.parse(localStorage.user_actions),
           
 
-          date_range: null,
-          SessionId: localStorage.SessionId
+          date_range: {
+            comapny:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
+            },
+          SessionId: localStorage.SessionId,
         })
         .then(res => {
           this.isBusy = false;
@@ -384,15 +386,18 @@ export default {
         (this.dateRange.date_to = moment(this.datePicker.endDate).format(
           "YYYY-MM-DD"
         ));
-
+       
+    
       await this.$store
         .dispatch("Admin/Print_Logs/fetchPrintLogs", {
           user_actions: JSON.parse(localStorage.user_actions),
           date_range: {
             date_from: moment(this.datePicker.startDate).format("YYYY-MM-DD"),
-            date_to: moment(this.datePicker.endDate).format("YYYY-MM-DD")
+            date_to: moment(this.datePicker.endDate).format("YYYY-MM-DD"),
+            company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
           },
-          SessionId: localStorage.SessionId
+          SessionId: localStorage.SessionId,
+          
         })
         .then(res => {
           this.isBusy = false;

@@ -3,8 +3,6 @@ import moment from "moment";
 export default {
 
     async  fetchPrintLogs({ commit }, { date_range, SessionId }) {
-        
-        
 
         return await axios({
             method: 'POST',
@@ -19,7 +17,6 @@ export default {
       
         }).then(res => {
 
-console.log(res.data.view)
 const v = res.data.view
 
 
