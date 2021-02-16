@@ -139,9 +139,9 @@
       >
         <template #table-busy>
           <div class="text-center text-danger my-2">
-            <b-spinner class="align-middle"  variant="dark">
-              <strong>Loading...</strong>
+            <b-spinner small class="align-middle"  variant="dark">
             </b-spinner>
+            <strong class="loading_spinner">Loading...</strong>
           </div>
         </template>
 
@@ -866,7 +866,7 @@ export default {
       this.currentPage = 1;
     }
   },
-  beforeCreate() {
+  async beforeCreate() {
 
     if(!this.filter) {
       this.totalRows = this.filterItems ? this.filterItems.length : 0
@@ -874,13 +874,12 @@ export default {
 
     this.isBusy = true;
 
-    this.$store
+    await this.$store
       .dispatch("Admin/Actions/fetchListActions", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
-        this.isBusy = false;
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -890,14 +889,12 @@ export default {
         }
       });
 
-    this.isBusy = true;
-    this.$store
+    await this.$store
       .dispatch("Admin/Roles/fetchRoles", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
-        this.isBusy = false;
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -906,6 +903,9 @@ export default {
           }
         }
       });
+
+    this.isBusy = false;
+
   },
   created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];

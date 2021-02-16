@@ -193,9 +193,9 @@
     >
     <template #table-busy>
       <div class="text-center text-danger my-2">
-        <b-spinner class="align-middle"  variant="dark">
-          <strong>Loading...</strong>
+        <b-spinner small class="align-middle"  variant="dark">
         </b-spinner>
+        <strong class="loading_spinner">Loading...</strong>
       </div>
     </template>
 
@@ -647,7 +647,7 @@
               class="form-text"
               required
             ></b-form-input>
-            <small class="text-left"># of Bags</small>
+            <small class="text-left"># of Filled Bags</small>
             <b-form-input
               type="number"
               id="Bags"
@@ -683,7 +683,7 @@
           :disabled="showLoading === true"
         >
           <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner> -->
+          <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner> -->
           Create
         </b-button>
         <b-button
@@ -881,7 +881,7 @@
             ></b-form-input>
           </b-col>
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
-            <small class="text-left"># of Bags</small>
+            <small class="text-left"># of Filled Bags</small>
             <b-form-input
               type="number"
               id="Bags"
@@ -916,7 +916,7 @@
           @click="updateDR(U_TRX_ID)"
           :disabled="showLoading === true"
         >
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
+          <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
           Save
         </b-button>
         <b-button
@@ -1685,9 +1685,9 @@ export default {
       } else if (this.U_UOM.UomName == "TRUCK LOAD" && this.U_SACKS < 1) {
         this.showAlert("Please input quantity not less than zero", "danger");
       } else if (this.U_TRANSACTION_TYPE == 2 && this.U_SACKS < 1) {
-        this.showAlert("Please input # of bags not less than zero", "danger");
+        this.showAlert("Please input # of Filled Bags not less than zero", "danger");
         // } else if (this.U_SACKS < "1" ) {
-        //   this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
+        //   this.showAlert("Please input quantity/# of Filled Bags  not less than zero", "danger");
       } else {
         console.log(this.U_CMMDTY.value);
         this.$bvModal.show("pin");
@@ -2362,7 +2362,7 @@ export default {
         }
       });
       const v = res.data.view;
-      console.log("items", v);
+
       for(var i = 0; i < v.length; i++){
         this.commodity.push({
           text: v[i].ItemCode + ' : ' + v[i].ItemName,

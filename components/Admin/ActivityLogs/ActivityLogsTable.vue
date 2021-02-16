@@ -103,9 +103,9 @@
     >
       <template #table-busy>
         <div class="text-center text-danger my-2">
-          <b-spinner class="align-middle" variant="dark">
-            <strong>Loading...</strong>
+          <b-spinner small class="align-middle" variant="dark">
           </b-spinner>
+          <strong class="loading_spinner">Loading...</strong>
         </div>
       </template>
 
@@ -191,10 +191,10 @@
                 >
                   <font-awesome-icon style="font-size:11px; color: biotech" icon="circle" />&nbsp;
                   <strong style="color:#00401F;">{{ oldKey }}:</strong>&nbsp;
-                  <span style="color:#00401F;">{{ old_values[oldKey] }}</span>
-                  <!-- <span style="color:#00401F;">{{
+                  <!-- <span style="color:#00401F;">{{ old_values[oldKey] }}</span> -->
+                  <span style="color:#00401F;">{{
                     alterKeyValue(oldKey, old_values[oldKey])
-                  }}</span> -->
+                  }}</span>
                 </div>
               </li>
             </ul>
@@ -217,7 +217,10 @@
                 >
                   <font-awesome-icon style="font-size:11px; color: #A5CD39" icon="circle" />&nbsp;
                   <strong style="color:#344012;">{{ newKey }}:</strong>&nbsp;
-                  <span style="color:#344012;">{{ new_values[newKey] }}</span>
+                  <!-- <span style="color:#344012;">{{ new_values[newKey] }}</span> -->
+                  <span style="color:#00401F;">{{
+                    alterKeyValue(newKey, new_values[newKey])
+                  }}</span>
                 </div>
               </li>
             </ul>
@@ -241,6 +244,7 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 import DateRangePicker from "vue2-daterange-picker";
@@ -263,6 +267,7 @@ export default {
         date: null,
         userFullName: null
       },
+      transaction_types: [],
 
       items: [
         {
@@ -409,18 +414,25 @@ export default {
       ) {
         return this.formatDate(value);
       } else if (
+        key.search("U_UPDATED_DATE") == 0 ||
+        key.search("U_CREATED_DATE") == 0 ||
+        key.search("U_SCHEDULED_DATE") == 0 
+      ) {
+        return this.formatDate(value);
+      } else if (
         key.search("U_UPDATED_TIME") == 0 ||
-        key.search("U_CREATED_TIME") == 0
+        key.search("U_CREATED_TIME") == 0 ||
+        key.search("U_SCHEDULED_TIME") == 0 
       ) {
         return this.formatTime(value);
-      } else if (key.search("U_COMPANY_CODE") == 0) {
-        return this.getCompanyName(value);
-      } else if (key.search("U_PASSWORD") == 0) {
-        return this.formatPassword(value);
-      } else if (key.search("U_CARD_TYPE") == 0) {
-        return this.getCardType(value);
-      } else if (key.search("U_ACTION_CODE") == 0) {
-        return this.getActionName(value);
+      // } else if (key.search("U_COMPANY_CODE") == 0) {
+      //   return this.getCompanyName(value);
+      // } else if (key.search("U_PASSWORD") == 0) {
+      //   return this.formatPassword(value);
+      // } else if (key.search("U_CARD_TYPE") == 0) {
+      //   return this.getCardType(value);
+      // } else if (key.search("U_ACTION_CODE") == 0) {
+      //   return this.getActionName(value);
       } else if (key.search("U_ACTIVE") == 0) {
         return value ? "Yes" : "No";
       } else {
@@ -428,11 +440,76 @@ export default {
       }
     },
 
+    getUserName(Code){
+      let User = null;
+      let Name = null;
+      if(this.listUsers.find(user => user.Code == Code)) {
+        User = this.listUsers.find(user => user.Code == Code);
+
+        Name = `${User.FirstName} ${User.LastName}`;
+        return Name;
+      }
+    },
+
+    getRoleName(Code) {
+      let Role = null;
+
+      if (this.listRoles.find(role => role.Code == Code)) {
+        Role = this.listRoles.find(role => role.Code == Code).Name;
+      }
+
+      return Role;
+    },
+
+    getActionName(Code) {
+      let Action = null;
+
+      if (this.listActions.find(action => action.Code == Code)) {
+        Action = this.listActions.find(action => action.Code == Code)
+          .U_ACTION_NAME;
+      }
+
+      return Action;
+    },
+
+    formatDate(Code) {
+      return moment(Code).format("MMM DD, YYYY");
+    },
+
+    formatTime(value) {
+      let data = value.toString();
+      if (data.length < 4) {
+        data = "0" + data;
+      }
+      data = data.slice(0, 2) + ":" + data.slice(2);
+      const now = moment().format("YYYY-MM-DD");
+      const concat = now + " " + data;
+      return moment(concat).format("hh:mm A");
+    },
+
     isNotEqual(old, newVal) {
       if (old != newVal) {
         return "background-color:#DDFBBD; border-radius:2px";
       }
       return "";
+    },
+
+    async getTransactionType() {
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/api/transaction/types/select`,
+        headers: {
+          Authorization: localStorage.SessionId
+        }
+      });
+      const v = res.data.view;
+
+      for (let i = 0; i < v.length; i++) {
+        this.transaction_types.push({
+          text: v[i].U_DESCRIPTION,
+          value: v[i].Code
+        });
+      }
     },
 
     async resetDate() {

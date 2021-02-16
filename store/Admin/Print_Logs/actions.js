@@ -3,7 +3,7 @@ import moment from "moment";
 export default {
 
     async  fetchPrintLogs({ commit }, { date_range, SessionId }) {
-
+        console.log(date_range);
         return await axios({
             method: 'POST',
             url: `${this.$axios.defaults.baseURL}/api/transaction/print-logs/select`,

@@ -184,10 +184,17 @@
       :current-page="currentPage"
       :per-page="perPage"
       :sort-by.sync="sortBy"
-  
+      :busy="isBusy"
       @row-clicked="show"
       
     >
+      <template #table-busy>
+        <div class="text-center text-danger my-2">
+          <b-spinner small class="align-middle" variant="dark">
+          </b-spinner>
+          <strong class="loading_spinner">Loading...</strong>
+        </div>
+      </template>
         <!-- :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection" -->
       <template v-slot:cell(U_STATUS)="row">

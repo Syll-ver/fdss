@@ -45,7 +45,6 @@
         </b-input-group>
       </b-col>
   <b-col ></b-col>
-
       <b-col cols="2"  class="mt-3" align="right">
         <!-- <b-form-group class="mb-0">
           <b-form-select
@@ -88,7 +87,7 @@
       scrollable="true"
       sticky-header
       no-border-collapse
-      :items="listPrintLogs"
+      :items="filterItems"
       :fields="fields"
       :current-page="currentPage"
       :per-page="perPage"
@@ -101,10 +100,11 @@
       :busy="isBusy"
       responsive
     >
-      <template v-slot:table-busy>
-        <div class="text-center text-secondary my-2">
-          <b-spinner small class="align-middle"></b-spinner>
-          <strong>&nbsp;Loading...</strong>
+      <template #table-busy>
+        <div class="text-center text-danger my-2">
+          <b-spinner small class="align-middle"  variant="dark">
+          </b-spinner>
+          <strong class="loading_spinner">Loading...</strong>
         </div>
       </template>
 
@@ -150,7 +150,7 @@
           id="printLogs-pagination"
           pills
           v-model="currentPage"
-          :total-rows="rows"
+          :total-rows="totalRows"
           :per-page="perPage"
           align="right"
           size="sm"
@@ -243,7 +243,7 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
-      isBusy: false,
+      isBusy: true,
     //   old_values: [],
     //   new_values: [],
     //   activityLogsForm: {
@@ -307,35 +307,44 @@ export default {
         // { key: "actions", label: "Actions" }
       ],
 
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
   computed: {
+    filterItems(){
+      return this.listPrintLogs.filter(logs => { 
+        return (
+          logs.U_TRANSACTION_ID.toLowerCase().match(this.filter.toLowerCase()) ||
+        logs.CREATED_BY.toLowerCase().match(this.filter.toLowerCase()) 
+        )
+      })
+    },
+
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
 
-      if (end > this.listPrintLogs.length) {
-        end = this.listPrintLogs.length;
+      if(!this.filterItems) {
+        return;
       }
 
-      if (this.listPrintLogs.length === 0) {
+      if (end > this.filterItems.length) {
+        end = this.filterItems.length;
+      }
+
+      if (this.filterItems.length === 0) {
         start = 0;
       }
 
-      return `Showing ${start} to ${end} of ${this.listPrintLogs.length} entries`;
-    },
-
-    rows() {
-      return this.listPrintLogs.length;
+      return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
     },
 
     ...mapGetters({
@@ -357,15 +366,14 @@ export default {
       this.isBusy = true;
       this.datePicker.startDate = moment().format("MMM DD, YYYY");
       this.datePicker.endDate = moment().format("MMM DD, YYYY");
-
       await this.$store
         .dispatch("Admin/Printy_Logs/fetchPrintLogs", {
           user_actions: JSON.parse(localStorage.user_actions),
-          
-
           date_range: {
-            comapny:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
+            company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
             },
+          // date_range: null,
+          // company: (JSON.parse(localStorage.user_details).U_COMPANY_CODE),
           SessionId: localStorage.SessionId,
         })
         .then(res => {
@@ -404,8 +412,8 @@ export default {
         });
     },
     formatDate(date) {
-return moment(date).format("DD MMMM, YYYY");
-},
+      return moment(date).format("DD MMMM, YYYY");
+    },
 
     // viewActivity(data) {
     //   this.old_values = { ...data.U_OLD_VALUES };
@@ -414,19 +422,34 @@ return moment(date).format("DD MMMM, YYYY");
     //   this.$bvModal.show("view-activity-modal");
     // },
 
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
   async beforeCreate() {
+    if(!this.filter) {
+      this.totalRows = this.filterItems ? this.filterItems.length : 0
+    }
+
     this.isBusy = true;
+
+    let date = new Date();
+
+        
     await this.$store
       .dispatch("Admin/Print_Logs/fetchPrintLogs", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        date_range: {
+          date_from: moment(date).format("MMM DD, YYYY"),
+          date_to: moment(date).format("MMM DD, YYYY"),
+          company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
+        },
+        SessionId: localStorage.SessionId,
         // user_actions: JSON.parse(localStorage.user_actions),
         // date_range: null,
-        // SessionId: localStorage.SessionId
+        // SessionId: localStorage.SessionId,
       })
       .then(res => {
         this.isBusy = false;

@@ -85,6 +85,8 @@
 <script>
 import axios from "axios";
 import Loading from "~/components/Loading/Loading.vue";
+import Bowser from "bowser";
+
 export default {
   name: "Login",
   components: { Loading },
@@ -100,8 +102,18 @@ export default {
         dismissSecs: 0,
         variant: "success",
         message: ""
-      }
+      },
+      browser: [],
     };
+  },
+  created() {
+    const browser = Bowser.getParser(window.navigator.userAgent);
+    this.browser.name = browser.getBrowserName();
+    this.browser.version = parseInt(browser.getBrowserVersion());
+
+    if(!this.validVersion()){
+      this.$router.push("/browser-error");
+    }
   },
   computed: {
     inputValidation() {
@@ -113,6 +125,13 @@ export default {
     }
   },
   methods: {
+    validVersion(){
+      return (
+        (this.browser.name === "Chrome" && this.browser.version > 5 ) ||
+        (this.browser.name === "Firefox" && this.browser.version > 56 ) ||
+        (this.browser.name === "Chromium" && this.browser.version > 5)
+      );
+    },
     focusPassword() {
       this.$refs["password"].focus();
     },

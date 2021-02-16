@@ -629,7 +629,7 @@
           :disabled="showLoading === true"
         >
           <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner> -->
+          <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner> -->
           Create
         </b-button>
         <b-button
@@ -844,7 +844,7 @@
           @click="updateDR(U_TRX_ID)"
           :disabled="showLoading === true"
         >
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
+          <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
           Save
         </b-button>
         <b-button
