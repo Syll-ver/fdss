@@ -158,7 +158,7 @@
           <div class="text-center text-danger my-2">
             <b-spinner small class="align-middle" variant="dark">
             </b-spinner>
-            <strong class="loading_spinner">Loading...</strong>
+            <span class="loading_spinner">Loading...</span>
           </div>
         </template>
 
@@ -551,7 +551,7 @@
             <template #table-busy>
               <div class="text-center text-danger my-2">
                 <b-spinner small class="align-middle"  variant="dark">
-                  <strong>Loading...</strong>
+                  <strong><span class="loading_spinner">Loading...</span></strong>
                 </b-spinner>
               </div>
             </template>

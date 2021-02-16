@@ -195,7 +195,7 @@
       <div class="text-center text-danger my-2">
         <b-spinner small class="align-middle"  variant="dark">
         </b-spinner>
-        <strong class="loading_spinner">Loading...</strong>
+        <span class="loading_spinner">Loading...</span>
       </div>
     </template>
 
@@ -2287,6 +2287,7 @@ export default {
     // },
     async updateUOM() {
       //  console.log(this.U_CMMDTY.value)
+      this.showLoading = true;
       this.unit = [];
       const res = await axios({
         method: "POST",
@@ -2306,9 +2307,11 @@ export default {
           value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
         });
       }
+      this.showLoading = false;
+
     },
     async getUOM() {
-      //  console.log(this.U_CMMDTY.value.value)
+      this.showLoading = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.unit = [];
       const res = await axios({
@@ -2329,6 +2332,8 @@ export default {
           value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
         });
       }
+      this.showLoading = false;
+
     },
     //  async getPriceList() {
     //   const res = await axios({
@@ -2393,6 +2398,7 @@ export default {
       const userDetails = JSON.parse(localStorage.user_details);
 
       this.farmer = [];
+      
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
@@ -2404,15 +2410,30 @@ export default {
         }
       });
       const v = res.data.view;
-      // filter supplier id starting with V only
-      const startsWithV = v.filter((code) => code.SUPPLIER_ID.startsWith("V"));
 
-      for (let i = 0; i < startsWithV.length; i++) {
-        this.farmer.push({
-          text: startsWithV[i].SUPPLIER_NAME,
-          value: { id: startsWithV[i].SUPPLIER_ID, address: startsWithV[i].SUPPLIER_ADDRESS }
-        });
+      // filter supplier with CardType S if RCI 4360 (BP MASTER DATA)
+      if(this.companyCode == '4360') {
+        console.log("RCI");
+        for (let i = 0; i < v.length; i++) {
+          if(v[i].CardType == "S"){
+            this.farmer.push({
+              text: v[i].SUPPLIER_NAME,
+              value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+            });
+          }
+        }
+        // else if BFI 4354 (APP_FARMERS)
+      } else if(this.companyCode == '4354') {
+        console.log("BFI");
+        for (let i = 0; i < v.length; i++) {
+            this.farmer.push({
+              text: v[i].Name,
+              value: { id: v[i].Code, address: v[i].Address }
+            });
+        }
+        console.log(this.farmer);
       }
+      
 
     },
     titleCase(str){

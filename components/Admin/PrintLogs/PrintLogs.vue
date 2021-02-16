@@ -88,7 +88,7 @@
       sticky-header
       no-border-collapse
       :items="filterItems"
-      :fields="fields"
+      :fields="itemsFields"
       :current-page="currentPage"
       :per-page="perPage"
       :filter="filter"
@@ -104,7 +104,7 @@
         <div class="text-center text-danger my-2">
           <b-spinner small class="align-middle"  variant="dark">
           </b-spinner>
-          <strong class="loading_spinner">Loading...</strong>
+          <span class="loading_spinner">Loading...</span>
         </div>
       </template>
 
@@ -154,7 +154,7 @@
           :per-page="perPage"
           align="right"
           size="sm"
-          aria-controls="modules-table"
+          aria-controls="print-table"
           limit="3"
           class="mt-1"
         ></b-pagination>
@@ -278,7 +278,7 @@ export default {
         separator: " - "
       },
 
-      fields: [
+      itemsFields: [
         {
           key: "U_EMPLOYEE_CODE",
           label: "Employee ID",
@@ -318,7 +318,7 @@ export default {
       filterOn: []
     };
   },
-  computed: {
+  computed: {    
     filterItems(){
       return this.listPrintLogs.filter(logs => { 
         return (
@@ -364,21 +364,24 @@ export default {
   methods: {
     async resetDate() {
       this.isBusy = true;
-      this.datePicker.startDate = moment().format("MMM DD, YYYY");
-      this.datePicker.endDate = moment().format("MMM DD, YYYY");
+      let date = new Date();
       await this.$store
-        .dispatch("Admin/Printy_Logs/fetchPrintLogs", {
-          user_actions: JSON.parse(localStorage.user_actions),
-          date_range: {
-            company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
-            },
-          // date_range: null,
-          // company: (JSON.parse(localStorage.user_details).U_COMPANY_CODE),
-          SessionId: localStorage.SessionId,
-        })
-        .then(res => {
-          this.isBusy = false;
-        });
+      .dispatch("Admin/Print_Logs/fetchPrintLogs", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        date_range: {
+          date_from: moment(date).format("YYYY-MM-DD"),
+          date_to: moment(date).format("YYYY-MM-DD"),
+          company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
+        },
+        SessionId: localStorage.SessionId,
+      })
+      .then(res => {
+        this.isBusy = false;
+      });
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
     },
     async updateValues() {
       this.isBusy = true;
@@ -391,9 +394,9 @@ export default {
       (this.dateRange.date_from = moment(this.datePicker.startDate).format(
         "YYYY-MM-DD"
       )),
-        (this.dateRange.date_to = moment(this.datePicker.endDate).format(
-          "YYYY-MM-DD"
-        ));
+      (this.dateRange.date_to = moment(this.datePicker.endDate).format(
+        "YYYY-MM-DD"
+      ));
        
     
       await this.$store
@@ -410,6 +413,7 @@ export default {
         .then(res => {
           this.isBusy = false;
         });
+        this.totalRows = this.listPrintLogs.length;
     },
     formatDate(date) {
       return moment(date).format("DD MMMM, YYYY");
@@ -429,10 +433,6 @@ export default {
     }
   },
   async beforeCreate() {
-    if(!this.filter) {
-      this.totalRows = this.filterItems ? this.filterItems.length : 0
-    }
-
     this.isBusy = true;
 
     let date = new Date();
@@ -442,8 +442,8 @@ export default {
       .dispatch("Admin/Print_Logs/fetchPrintLogs", {
         user_actions: JSON.parse(localStorage.user_actions),
         date_range: {
-          date_from: moment(date).format("MMM DD, YYYY"),
-          date_to: moment(date).format("MMM DD, YYYY"),
+          date_from: moment(date).format("YYYY-MM-DD"),
+          date_to: moment(date).format("YYYY-MM-DD"),
           company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
         },
         SessionId: localStorage.SessionId,
@@ -454,6 +454,10 @@ export default {
       .then(res => {
         this.isBusy = false;
       });
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
   }
 };
 </script>
