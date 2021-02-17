@@ -1969,7 +1969,7 @@ export default {
       this.networkPrinter.send();
     },
     async networkPrintInit() {
-      // this.showLoading = true;
+        
       let ePosDev = new epson.ePOSDevice();
 
       let ipAddress = process.env.networkPrinterIp,
@@ -2026,7 +2026,7 @@ export default {
         }
       };
 
-      // this.showLoading = false;
+       
     },
     // async printReceipt(data) {
     //   console.log(data);
@@ -2413,7 +2413,6 @@ export default {
 
       // filter supplier with CardType S if RCI 4360 (BP MASTER DATA)
       if(this.companyCode == '4360') {
-        console.log("RCI");
         for (let i = 0; i < v.length; i++) {
           if(v[i].CardType == "S"){
             this.farmer.push({
@@ -2424,11 +2423,11 @@ export default {
         }
         // else if BFI 4354 (APP_FARMERS)
       } else if(this.companyCode == '4354') {
-        console.log("BFI");
         for (let i = 0; i < v.length; i++) {
+          console.log(v[i]);
             this.farmer.push({
               text: v[i].Name,
-              value: { id: v[i].Code, address: v[i].Address }
+              value: { id: v[i].Code, address: v[i].U_APP_FarmerAddress }
             });
         }
         console.log(this.farmer);
@@ -2539,9 +2538,6 @@ export default {
           plate_number: this.U_PLATE_NUMBER,
           signature: this.signaturePath
         };
-
-        // console.log("@here", json)
-        // this.U_APP_ProjCode = this.U_APP_ProjCode
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
@@ -2759,7 +2755,7 @@ export default {
         const employee_id = userDetails.Code;
         const employee_role = roleDetails.Name;
 
-        // this.showLoading = true;
+          
         this.isBusy = true;
         this.items = [];
         const res = await axios({
@@ -2819,11 +2815,11 @@ export default {
           });
         }
 
-        // this.showLoading = false;
+         
         this.isBusy = false;
       } catch (e) {
         console.log(e);
-        // this.showLoading = false;
+         
         this.isBusy = false;
       }
     },

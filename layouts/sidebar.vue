@@ -55,7 +55,7 @@
             :style="
               route.active ? 'background: #00803e; border-radius:3px' : ''
             "
-            @click="setActive(i), (visible = false)"
+            @click="setActive(i)"
             class="mt-2"
           >
             <router-link :to="route.link" :id="route.id">

@@ -33,11 +33,6 @@
 
       <b-col class="mt-3">
         <b-input-group prepend="Date" style="height:10px" size="sm">
-          <!-- <b-input-group-prepend>
-              <div style="background-color: green">
-                <v-icon color="#ffffff" small>fa-calendar-week</v-icon>
-              </div>
-          </b-input-group-prepend>-->
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -827,7 +822,6 @@ export default {
           sortDirection: "asc"
         },
 
-        // { key: "actions", label: "Actions", class: "text-center" }
       ],
       totalRows: 1,
       currentPage: 1,
@@ -842,9 +836,7 @@ export default {
   },
    computed: {
     filterItems() {
-      console.log("items",this.items);
       return this.items.filter(request => {
-        console.log("see status",request);
         if (this.filterStatus.includes(request.U_STATUS) && this.filterTransaction.includes(request.U_TRANSACTION_TYPE) ) {
           
           return request;
@@ -969,11 +961,7 @@ export default {
       doc.save(
         `Farmers' Delivery Slip (${this.dateRange.date_from} - ${this.dateRange.date_to}).pdf`
       );
-
       return doc;
-
-
-
       
     },
      exportReports() {
@@ -1062,7 +1050,6 @@ export default {
         this.farmer.push({
           text : v[i].SUPPLIER_NAME,
           value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS}
-          
         });
         
       }
@@ -1155,7 +1142,7 @@ show(data) {
         const employee_id = userDetails.Code
         const employee_role = roleDetails.Name
 
-        // this.showLoading = true;
+          
         this.isBusy = true;
         this.items = [];
         const res = await axios({
@@ -1173,39 +1160,11 @@ show(data) {
         });
        
         const v = res.data.view;
-         console.log(v);
         for (let i = 0; i < v.length; i++) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           const t = this.intToTime(v[i].CREATED_TIME);
           const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
-          
-          // this.items.push({
-          //     U_TRX_NO: v[i].U_TRX_NO,
-          //     TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-          //     // U_TME_CRTD : t,
-          //     U_UOM: v[i].UOM_NAME,
-          //     U_TRX_ID: v[i].TRANSACTION_ID,
-          //     U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
-          //     U_ITEM: v[i].ITEM_ID,
-          //     U_SUPP: v[i].SUPPLIER_ID,
-          //     U_TRX_NO: v[i].TRANSACTION_NUMBER,
-          //     U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
-          //     U_CMMDTY: v[i].ITEM_NAME ,
-          //     U_FRMR_NAME : v[i].FARMER_NAME ,  
-          //     U_FRMR_ADD : v[i].FARMER_ADDRESS ,  
-          //     U_DTE_CRTD: date,
-          //     U_CRTD_BY: v[i].CREATED_BY,
-          //     U_STATUS: v[i].STATUS,
-          //     U_RMRKS: v[i].REMARKS,
-          //     U_PLATE_NUMBER: v[i].PLATE_NUMBER,
-          //     U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
-          //     U_HLPR_NAME: v[i].HELPER_NAME,
-          //     U_DRVR_NAME: v[i].DRIVER_NAME,
-          //     U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-          //     U_SACKS: v[i].NUMBER_OF_BAGS
-          // });
 
-          console.log(v[i].U_PLOT_CODE);
           if(v[i].U_PLOT_CODE === null){
             this.items.push({
               U_TRX_NO: v[i].U_TRX_NO,
@@ -1263,11 +1222,9 @@ show(data) {
           }
         }
 
-        // this.showLoading = false;
         this.isBusy = false;
       } catch (e) {
         console.log(e);
-        // this.showLoading = false;
         this.isBusy = false;
       }
     }
