@@ -2457,29 +2457,44 @@ export default {
 
     },
     test() {
-      console.log(this.U_FRMR_NAME);
       this.plotCode = [];
+      this.U_APP_ProjCode = "";
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
-      let frmr = this.titleCase(this.U_FRMR_NAME.text);
 
       // if company is rci
       //(since plotcode stuff is only available to rci transactions)
       if(this.companyCode == '4360'){
         // if farmer exists in plotcodes
         // and if farmer plotcode is not empty
-        if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0){
-          // store farmer's plotcodes to variable pc
-          var pc = this.plotCodes.posted[frmr].plotCodes;
-          // push plotcodes in plotcode array
-          for(let i = 0; i < pc.length; i++){
-            this.plotCode.push({
-              text: pc[i],
-              value: pc[i]
-            });
+        if(this.plotCodes.posted[this.U_FRMR_NAME.text]){
+          var name = this.U_FRMR_NAME.text
+          if(this.plotCodes.posted[name].plotCodes.length > 0){
+            var pc = this.plotCodes.posted[name].plotCodes;
+            // push plotcodes in plotcode array
+            for(let i = 0; i < pc.length; i++){
+              this.plotCode.push({
+                text: pc[i],
+                value: pc[i]
+              });
+            }
+          } else {
+             this.showAlert1('Farmer does not have plot code', 'warning')
           }
         } else {
-          // if farmer does not have plotcode
-          this.showAlert1('Farmer does not have plot code', 'warning')
+          let frmr = this.titleCase(this.U_FRMR_NAME.text);
+           if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0) {
+            // store farmer's plotcodes to variable pc
+            var pc = this.plotCodes.posted[frmr].plotCodes;
+            // push plotcodes in plotcode array
+            for(let i = 0; i < pc.length; i++){
+              this.plotCode.push({
+                text: pc[i],
+                value: pc[i]
+              });
+            }
+          } else {
+             this.showAlert1('Farmer does not have plot code', 'warning')
+          }
         }
       }
     },
