@@ -2297,7 +2297,7 @@ export default {
         },
         data: {
           company: this.TRANSACTION_COMPANY_ID
-        }
+        } 
       });
       const v = res.data.view;
 
