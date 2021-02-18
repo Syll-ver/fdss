@@ -2412,7 +2412,7 @@ export default {
       const v = res.data.view;
 
       // filter supplier with CardType S if RCI 4360 (BP MASTER DATA)
-      if(this.companyCode == '4360') {
+      // if(this.companyCode == '4360') {
         for (let i = 0; i < v.length; i++) {
           if(v[i].CardType == "S"){
             this.farmer.push({
@@ -2422,16 +2422,16 @@ export default {
           }
         }
         // else if BFI 4354 (APP_FARMERS)
-      } else if(this.companyCode == '4354') {
-        for (let i = 0; i < v.length; i++) {
-          console.log(v[i]);
-            this.farmer.push({
-              text: v[i].Name,
-              value: { id: v[i].Code, address: v[i].U_APP_FarmerAddress }
-            });
-        }
-        console.log(this.farmer);
-      }
+      // } else if(this.companyCode == '4354') {
+      //   for (let i = 0; i < v.length; i++) {
+      //     console.log(v[i]);
+      //       this.farmer.push({
+      //         text: v[i].Name,
+      //         value: { id: v[i].Code, address: v[i].U_APP_FarmerAddress }
+      //       });
+      //   }
+      //   console.log(this.farmer);
+      // }
       
 
     },
