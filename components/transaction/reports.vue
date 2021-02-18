@@ -1115,6 +1115,7 @@ show(data) {
       this.datePicker.endDate = moment().format("MMM DD, YYYY");
       await this.getTransactions();
       this.totalRows = this.items.length;
+      this.isBusy = false;
     },
     async updateValues() {
       this.isBusy = true;
@@ -1132,6 +1133,7 @@ show(data) {
         ));
       await this.getTransactions();
       this.totalRows = this.items.length;
+      this.isBusy = false;
     },
   async getTransactions() {
       console.log(JSON.parse(localStorage.user_details))
@@ -1160,73 +1162,79 @@ show(data) {
         });
        
         const v = res.data.view;
-        for (let i = 0; i < v.length; i++) {
-          const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
-          const t = this.intToTime(v[i].CREATED_TIME);
-          const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
 
-          if(v[i].U_PLOT_CODE === null){
-            this.items.push({
-              U_TRX_NO: v[i].U_TRX_NO,
-              TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-              // U_TME_CRTD : t,
-              U_UOM: v[i].UOM_NAME,
-              U_TRX_ID: v[i].TRANSACTION_ID,
-              U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
-              U_ITEM: v[i].ITEM_ID,
-              U_SUPP: v[i].SUPPLIER_ID,
-              U_TRX_NO: v[i].TRANSACTION_NUMBER,
-              U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
-              U_CMMDTY: v[i].ITEM_NAME ,
-              U_FRMR_NAME : v[i].FARMER_NAME ,  
-              U_FRMR_ADD : v[i].FARMER_ADDRESS ,  
-              // U_APP_ProjCode: v[i].U_PLOT_CODE,
-              U_DTE_CRTD: date,
-              U_CRTD_BY: v[i].CREATED_BY,
-              U_STATUS: v[i].STATUS,
-              U_RMRKS: v[i].REMARKS,
-              U_PLATE_NUMBER: v[i].PLATE_NUMBER,
-              U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
-              U_HLPR_NAME: v[i].HELPER_NAME,
-              U_DRVR_NAME: v[i].DRIVER_NAME,
-              U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-              U_SACKS: v[i].NUMBER_OF_BAGS
-            });
-          } else {
-            this.items.push({
-              U_TRX_NO: v[i].U_TRX_NO,
-              TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-              // U_TME_CRTD : t,
-              U_UOM: v[i].UOM_NAME,
-              U_TRX_ID: v[i].TRANSACTION_ID,
-              U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
-              U_ITEM: v[i].ITEM_ID,
-              U_SUPP: v[i].SUPPLIER_ID,
-              U_TRX_NO: v[i].TRANSACTION_NUMBER,
-              U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
-              U_CMMDTY: v[i].ITEM_NAME ,
-              U_FRMR_NAME : v[i].FARMER_NAME ,  
-              U_FRMR_ADD : v[i].FARMER_ADDRESS , 
-              U_APP_ProjCode: v[i].U_PLOT_CODE,
-              U_DTE_CRTD: date,
-              U_CRTD_BY: v[i].CREATED_BY,
-              U_STATUS: v[i].STATUS,
-              U_RMRKS: v[i].REMARKS,
-              U_PLATE_NUMBER: v[i].PLATE_NUMBER,
-              U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
-              U_HLPR_NAME: v[i].HELPER_NAME,
-              U_DRVR_NAME: v[i].DRIVER_NAME,
-              U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-              U_SACKS: v[i].NUMBER_OF_BAGS
-            });
+        if(v.length > 0){
+          for (let i = 0; i < v.length; i++) {
+            const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
+            const t = this.intToTime(v[i].CREATED_TIME);
+            const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
+
+            if(v[i].U_PLOT_CODE === null){
+              this.items.push({
+                U_TRX_NO: v[i].U_TRX_NO,
+                TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+                // U_TME_CRTD : t,
+                U_UOM: v[i].UOM_NAME,
+                U_TRX_ID: v[i].TRANSACTION_ID,
+                U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+                U_ITEM: v[i].ITEM_ID,
+                U_SUPP: v[i].SUPPLIER_ID,
+                U_TRX_NO: v[i].TRANSACTION_NUMBER,
+                U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+                U_CMMDTY: v[i].ITEM_NAME ,
+                U_FRMR_NAME : v[i].FARMER_NAME ,  
+                U_FRMR_ADD : v[i].FARMER_ADDRESS ,  
+                // U_APP_ProjCode: v[i].U_PLOT_CODE,
+                U_DTE_CRTD: date,
+                U_CRTD_BY: v[i].CREATED_BY,
+                U_STATUS: v[i].STATUS,
+                U_RMRKS: v[i].REMARKS,
+                U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+                U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+                U_HLPR_NAME: v[i].HELPER_NAME,
+                U_DRVR_NAME: v[i].DRIVER_NAME,
+                U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+                U_SACKS: v[i].NUMBER_OF_BAGS
+              });
+            } else {
+              this.items.push({
+                U_TRX_NO: v[i].U_TRX_NO,
+                TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+                // U_TME_CRTD : t,
+                U_UOM: v[i].UOM_NAME,
+                U_TRX_ID: v[i].TRANSACTION_ID,
+                U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+                U_ITEM: v[i].ITEM_ID,
+                U_SUPP: v[i].SUPPLIER_ID,
+                U_TRX_NO: v[i].TRANSACTION_NUMBER,
+                U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+                U_CMMDTY: v[i].ITEM_NAME ,
+                U_FRMR_NAME : v[i].FARMER_NAME ,  
+                U_FRMR_ADD : v[i].FARMER_ADDRESS , 
+                U_APP_ProjCode: v[i].U_PLOT_CODE,
+                U_DTE_CRTD: date,
+                U_CRTD_BY: v[i].CREATED_BY,
+                U_STATUS: v[i].STATUS,
+                U_RMRKS: v[i].REMARKS,
+                U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+                U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+                U_HLPR_NAME: v[i].HELPER_NAME,
+                U_DRVR_NAME: v[i].DRIVER_NAME,
+                U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+                U_SACKS: v[i].NUMBER_OF_BAGS
+              });
+            }
           }
+          this.isBusy = false;
+        } else {
+          this.isBusy = false;
         }
 
-        this.isBusy = false;
       } catch (e) {
         console.log(e);
         this.isBusy = false;
       }
+      this.isBusy = false;
     }
   },
   reloadFunction() {
