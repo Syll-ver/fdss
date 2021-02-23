@@ -32,32 +32,7 @@
           </b-form-group>
         </b-col>
 
-        <b-col cols="4" class="mt-3">
-        <!-- <b-input-group prepend="Date" size="sm">
-          <date-range-picker
-            id="date_pending"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
-            v-model="datePicker"
-            @update="updateValues"
-          >
-            <div slot="input" id="date_pending" >
-              {{ datePicker.startDate }} - {{ datePicker.endDate }}
-            </div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button
-              @click="resetDate"
-              id="date_reset_pending"
-              style="font-size:12px"
-              >Reset</b-button
-            >
-          </b-input-group-append>
-        </b-input-group> -->
+        <b-col cols="2" class="mt-3">
           <b-dropdown
               right
               id="filter_roles"
@@ -110,9 +85,9 @@
 
             </b-dropdown>
         </b-col>
-        <b-col></b-col>
+        <!-- <b-col></b-col> -->
  
-        <b-col cols="2"  class="mt-3" align="right">
+        <b-col cols="7"  class="mt-3" align="right">
           <!-- <b-form-group class="mb-0">
             <b-form-select
               id="perPageSelect_action"
@@ -521,7 +496,7 @@
           <b-table
             class="mt-4"
             ref="selectableTable"
-            id="tablefind"
+            id="user-accounts-table"
             v-model="selectableTable"
             selectable
             show-empty
@@ -584,14 +559,14 @@
 
             <b-col>
               <b-pagination
-                id="modules-pagination"
+                id="user-accounts-pagination"
                 pills
                 v-model="currentPageUser"
                 :total-rows="rowsUsers"
                 :per-page="perPages"
                 align="right"
                 size="sm"
-                aria-controls="modules-table"
+                aria-controls="user-table"
                 limit="3"
               ></b-pagination>
             </b-col>
@@ -1057,7 +1032,10 @@ export default {
 
     filterItems() {
       return this.Users.filter(Users => {
-        return this.filterStatus.includes(Users.U_IS_ACTIVE) && (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
+        if(this.filterStatus.includes(Users.U_IS_ACTIVE)){
+          return (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
+        }
+        // return this.filterStatus.includes(Users.U_IS_ACTIVE) && (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
       });
     },
 
@@ -1411,9 +1389,7 @@ export default {
     //  this.showLoading = true;
      this.isBusy = true;
     
-    if(!this.filter) {
-      this.totalRows = this.filterItems ? this.filterItems.length : 0
-    }
+    
     await this.$store
       .dispatch("Admin/Company/fetchListCompany", {
         user_actions: JSON.parse(localStorage.user_actions),
@@ -1462,6 +1438,9 @@ export default {
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        if(!this.filter) {
+          this.totalRows = this.filterItems ? this.filterItems.length : 0
+        }
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {

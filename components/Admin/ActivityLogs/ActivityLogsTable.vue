@@ -145,14 +145,14 @@
       </b-col>
       <b-col>
         <b-pagination
-          id="modules-pagination"
+          id="activity-pagination"
           pills
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
           align="right"
           size="sm"
-          aria-controls="modules-table"
+          aria-controls="activity-table"
           limit="3"
           class="mt-1"
         ></b-pagination>
@@ -345,8 +345,8 @@ export default {
         return;
       }
 
-      if (end > this.listActivityLogs.length) {
-        end = this.listActivityLogs.length;
+      if (end > this.filterItems.length) {
+        end = this.filterItems.length;
       }
 
       if (this.filterItems.length === 0) {
@@ -570,9 +570,7 @@ export default {
     }
   },
   async created() {
-    if(!this.filter) {
-      this.totalRows = this.filterItems ? this.filterItems.length : 0
-    }
+    
     this.isBusy = true;
 
     let dateRange = {
@@ -619,6 +617,10 @@ export default {
           }
         }
       });
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
   }
 };
 </script>

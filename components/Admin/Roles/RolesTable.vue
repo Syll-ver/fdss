@@ -118,7 +118,7 @@
 
       <!-- Main table element -->
       <b-table
-        id="role-table"
+        id="roles-table"
         class="table-style"
         show-empty
         scrollable
@@ -583,7 +583,7 @@ export default {
   data() {
     return {
       showLoading: false,
-      filterStatus: [1],
+      filterStatus: [1,0],
       actions: { addRoleAndAccess: false, editRoleAndAccess: false },
       alert: {
         showAlert: 0,
@@ -868,10 +868,6 @@ export default {
   },
   async beforeCreate() {
 
-    if(!this.filter) {
-      this.totalRows = this.filterItems ? this.filterItems.length : 0
-    }
-
     this.isBusy = true;
 
     await this.$store
@@ -895,6 +891,11 @@ export default {
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        if(!this.filter) {
+          this.totalRows = this.filterItems ? this.filterItems.length : 0
+        }
+        this.isBusy = false;
+
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -904,7 +905,7 @@ export default {
         }
       });
 
-    this.isBusy = false;
+    
 
   },
   created() {
