@@ -1,6 +1,4 @@
 <template>
-  
-   
     <div>
        <div>
       <b-alert
@@ -20,7 +18,6 @@
       </b-alert>
       <Loading v-if="showLoading" />
     </div>
-      <!-- Main table -->
 
       <b-row>
         <b-col cols="3" class="mt-3">
@@ -36,7 +33,7 @@
           </b-form-group>
         </b-col>
 
-        <b-col class="mt-3">
+        <b-col cols="2" class="mt-3">
           <b-dropdown
             right
             id="filter_actions"
@@ -61,16 +58,8 @@
             </b-form-checkbox-group>
           </b-dropdown>
         </b-col>
-        <b-col ></b-col>
-        <b-col  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
 
+        <b-col cols="7"  class="mt-3" align="right">
           <b-col>
             <b-button
               id="add_action"
@@ -89,11 +78,12 @@
 
       <!-- Main table element -->
       <b-table
-        id="table-action"
+        id="action-table"
         class="table-style"
         show-empty
         scrollable
         sticky-header
+        responsive
         no-border-collapse
         :busy="isBusy"
         :items="filterItems"
@@ -114,7 +104,6 @@
               <span class="loading_spinner">Loading...</span>
           </div>
         </template>
-        <!-- <template v-slot:table-caption>{{ bottomLabel }}</template> -->
 
         <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
 
@@ -184,17 +173,15 @@
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="actions-table"
+            aria-controls="action-table"
             limit="3"
             class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
 
-      <!-- Main table -->
 
       <!-- Add Action -->
-
       <b-modal
         size="sm"
         header-bg-variant="biotech"
@@ -258,10 +245,9 @@
         </template>
       </b-modal>
 
-      <!-- Add Action -->
+      <!-- End Add Action -->
 
       <!-- Edit Action -->
-
       <b-modal
         size="sm"
         header-bg-variant="biotech"
@@ -333,7 +319,7 @@
       </b-modal>
     </div>
 
-    <!-- Edit Action -->
+    <!-- End Edit Action -->
 
 </template>
 
@@ -350,7 +336,7 @@ export default {
   data() {
     return {
       showLoading: false,
-      filterStatus: [1],
+      filterStatus: [1,0],
 
       actions: {
         add_action: false,
@@ -369,13 +355,6 @@ export default {
       },
 
       fields: [
-        // {
-        //   key: "index",
-        //   label: "#",
-        //   sortable: true,
-        //   sortDirection: "desc"
-        // },
-
         {
           key: "U_ACTION_NAME",
           label: "Action Name",
@@ -413,9 +392,12 @@ export default {
   },
   computed: {
     filterItems() {
-      return this.listActions.filter(listActions => {
+      console.log(this.filterStatus.includes(1));
+        return this.listActions.filter(listActions => {
+          
         return this.filterStatus.includes(listActions.U_IS_ACTIVE) && (listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase())))
       });
+      
     },
 
     filterFields() {
@@ -574,10 +556,6 @@ export default {
   },
 
   async beforeCreate() {    
-    if(!this.filter) {
-      this.totalRows = this.filterItems ? this.filterItems.length : 0
-    }
-
     this.isBusy = true;
 
     this.$store
@@ -586,6 +564,9 @@ export default {
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        if(!this.filter) {
+          this.totalRows = this.filterItems ? this.filterItems.length : 0
+        }
         this.isBusy = false;
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
@@ -609,6 +590,8 @@ export default {
           }
         }
       });
+
+    
 
   },
 

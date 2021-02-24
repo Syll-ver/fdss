@@ -31,7 +31,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col class="mt-3">
+      <b-col cols="2" class="mt-3">
         <b-dropdown
             right
             id="filter_actions"
@@ -83,7 +83,7 @@
         </b-input-group> -->
       </b-col>
  
-      <b-col cols="2"  class="mt-3" align="right">
+      <b-col cols="7"  class="mt-3" align="right">
         <!-- <b-form-group class="mb-0">
           <b-form-select
             id="perPageSelect_action"
@@ -127,6 +127,7 @@
         :sort-desc.sync="sortDesc"
         :sort-direction="sortDirection"
         @filtered="onFiltered"
+        responsive
       >
       <template #table-busy>
         <div class="text-center text-danger my-2">
@@ -189,7 +190,7 @@
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="module-table"
             limit="3"
             class="mt-1"
           ></b-pagination>
@@ -337,7 +338,7 @@ export default {
   data() {
     return {
       showLoading: false,
-      filterStatus: [1],
+      filterStatus: [1,0],
       actions: {
         add_module: false,
         edit_module: false
@@ -387,7 +388,16 @@ export default {
   computed: {
     filterItems() {
       return this.listModules.filter(listModules => {
-        return this.filterStatus.includes(listModules.U_IS_ACTIVE) && (listModules.Name.toLowerCase().match(this.filter.toLowerCase()));
+        if(this.filterStatus.includes(listModules.U_IS_ACTIVE)){
+          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+        }
+        if(this.filterStatus.includes(!listModules.U_IS_ACTIVE)){
+          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+        }
+        // return this.filterStatus.includes(listModules.U_IS_ACTIVE);
+        // return (
+        //   this.filterStatus.includes(listModules.U_IS_ACTIVE) && (listModules.Name. toLowerCase().match(this.filter.toLowerCase()))
+        // );
       });
     },
 
@@ -528,28 +538,6 @@ export default {
       this.$bvModal.show("save-modal");
     },
 
-    // fetchPendingTransactions() {
-    //   this.items = this.$store.state.transactions.pendingTransactions;
-    //   return;
-    // },
-    // addDocument() {
-    //   this.transactionForm.documentListValues.push({
-    //     documentType: null,
-    //     number: null
-    //   });
-    // },
-    // removeDocument(id) {
-    //   if (this.transactionForm.documentListValues.length === 1) {
-    //     //Create an error message. Document must contain 1 or more
-    //   } else {
-    //     this.transactionForm.documentListValues.splice(id, 1);
-    //   }
-    // },
-    // info(data) {
-    //   this.transactionForm = data;
-    //   this.$bvModal.show("process-modal");
-    // },
-
     resetInfoModal() {
       this.infoModal.title = "";
       this.infoModal.content = "";
@@ -562,18 +550,15 @@ export default {
   },
 
   async beforeCreate() {
-    if(!this.filter) {
-      this.totalRows = this.filterItems ? this.filterItems.length : 0
-    }
-
     this.isBusy = true;
 
-    this.$store
+    await this.$store
       .dispatch("Admin/Modules/fetchListModules", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
+
         this.isBusy = false;
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
@@ -583,9 +568,14 @@ export default {
           }
         }
       });
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
+
   },
 
-  created() {
+  created() {    
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add module")) {
