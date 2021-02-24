@@ -48,7 +48,7 @@ export default {
 
 @media (max-width: 768px){
     .mainPages {
-      margin-left: 20px;
+      margin-left: 10px;
       /* width: 40rem; */
     }
   }

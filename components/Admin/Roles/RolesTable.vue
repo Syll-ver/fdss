@@ -18,10 +18,8 @@
       </b-alert>
       <Loading v-if="showLoading" />
     </div>
-    
-      <!-- Main table -->
 
-<b-row>
+    <b-row>
       <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
@@ -35,7 +33,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col class="mt-3">
+      <b-col cols="2" class="mt-3">
         <b-dropdown
             right
             id="filter_roles"
@@ -86,39 +84,24 @@
           </b-input-group-append>
         </b-input-group> -->
       </b-col>
-  <b-col ></b-col>
  
-      <b-col class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-        
-          <b-row>
-            <b-col>
-              <b-button
-                id="add_role"
-                size="sm"
-                class="button-style"
-                variant="biotech"
-                @click="addRole()"
-                v-if="actions.addRoleAndAccess"
-              >
-                <font-awesome-icon icon="plus" class="mr-1" />Add Role
-              </b-button>
-            </b-col>
-          </b-row>
-     
+      <b-col cols="7" class="mt-3" align="right">
+        <b-button
+          id="add_role"
+          size="sm"
+          class="button-style"
+          variant="biotech"
+          @click="addRole()"
+          v-if="actions.addRoleAndAccess"
+        >
+          <font-awesome-icon icon="plus" class="mr-1" />Add Role
+        </b-button>
       </b-col>
     </b-row>
 
       <!-- Main table element -->
       <b-table
-        id="role-table"
+        id="roles-table"
         class="table-style"
         show-empty
         scrollable
@@ -183,33 +166,33 @@
             ></b-form-select>
           </b-form-group>
         </b-col> 
-      <b-col
-        label-cols-sm
-        class="mb-0 mt-2 text-left"
-        cols="3"
-        align-h="center"
-      >
-        <div size="sm" class="bottomlabel">
-          {{ bottomLabel }}
-        </div>
-      </b-col>
-      <b-col>
-        <b-pagination
-          id="roles-pagination"
-          pills
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          align="right"
-          size="sm"
-          aria-controls="roles-table"
-          limit="3"
-          class="mt-1"
-        ></b-pagination>
-      </b-col>
+        <b-col
+          label-cols-sm
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center"
+        >
+          <div size="sm" class="bottomlabel">
+            {{ bottomLabel }}
+          </div>
+        </b-col>
+        <b-col>
+          <b-pagination
+            id="roles-pagination"
+            pills
+            v-model="currentPage"
+            :total-rows="totalRows"
+            :per-page="perPage"
+            align="right"
+            size="sm"
+            aria-controls="roles-table"
+            limit="3"
+            class="mt-1"
+          ></b-pagination>
+        </b-col>
       </b-row>
 
-      <!-- Main table -->
+      <!-- end Main table -->
 
       <!-- Add Role -->
 
@@ -227,43 +210,15 @@
         </template>
 
         <b-card class="cardShadow">
-          <!-- <small class="ml-1"> Role</small>
-          <b-form-input type="text" style="font-size:10px"></b-form-input>-->
-<!-- 
-          <b-row>
-            <b-col cols="2">
-              <b-form-checkbox
-                id="user_approver"
-                :value="true"
-                :unchecked-value="false"
-                v-model="checkApprover"
-                >Approver</b-form-checkbox
-              >
-            </b-col>
-
-            <b-col cols="2" v-if="checkApprover">
-              <b-form-select
-                type="text"
-                style="font-size:10px"
-                v-model="approverLevel"
-              >
-                <option :value="null" disabled>Select Level</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </b-form-select>
-            </b-col> -->
-
-            <b-col cols="3">
-              <b-form-input
-                id="role_name_add_modal"
-                type="text"
-                class="form-text"
-                placeholder="Type Role Name"
-                v-model="roleName"
-              ></b-form-input>
-            </b-col>
-     
+          <b-col cols="3">
+            <b-form-input
+              id="role_name_add_modal"
+              type="text"
+              class="form-text"
+              placeholder="Type Role Name"
+              v-model="roleName"
+            ></b-form-input>
+          </b-col>
         </b-card>
         <b-card class="cardShadow mt-4 mb-1">
           <b-row class="mt-4 mb-1 ml-3">
@@ -327,87 +282,6 @@
               </b-form-checkbox-group>
             </b-col>
           </b-row>
-          <!-- <b-row class="mt-4 mb-1 ml-3">
-            <b-col cols="4">
-              <span><b>Delivery Receipt Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_delivery_module_add_modal"
-                name="Delivery Receipt module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Delivery Receipt Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col>
-
-            <b-col cols="4">
-              <span><b>Reports Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_reports_module_add_modal"
-                name="reports module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Reports Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col> -->
-<!-- 
-            <b-col cols="4">
-              <span><b>Approval Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_approval_module_add_modal"
-                name="approval module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in listActions.filter(
-                    action => action.U_MODULE_NAME === 'Approval Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col>
-
-            <b-col cols="4">
-              <span><b>Report Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_report_module_add_modal"
-                name="report module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in listActions.filter(
-                    action => action.U_MODULE_NAME === 'Report Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col> -->
-         
         </b-card>
 
         <template v-slot:modal-footer="{ cancel }">
@@ -433,10 +307,9 @@
         </template>
       </b-modal>
 
-      <!-- Add Role -->
+      <!-- end Add Role -->
 
       <!-- Edit Role -->
-
       <b-modal
         size="xl"
         header-bg-variant="biotech"
@@ -540,11 +413,6 @@
             </b-col>
           </b-row>
         </b-card>
-        <!-- <b-row class="mt-3 mb-3">
-        <b-col cols="3">Admin Module</b-col>
-        <b-col cols="3">Transaction Module</b-col>
-        <b-col cols="3">Report Module</b-col>
-        </b-row>-->
 
         <template v-slot:modal-footer="{ cancel }">
           <b-button
@@ -567,7 +435,7 @@
         </template>
       </b-modal>
 
-      <!-- Edit User -->
+      <!-- end Edit User -->
     </div>
 
 </template>
@@ -583,7 +451,7 @@ export default {
   data() {
     return {
       showLoading: false,
-      filterStatus: [1],
+      filterStatus: [1,0],
       actions: { addRoleAndAccess: false, editRoleAndAccess: false },
       alert: {
         showAlert: 0,
@@ -868,10 +736,6 @@ export default {
   },
   async beforeCreate() {
 
-    if(!this.filter) {
-      this.totalRows = this.filterItems ? this.filterItems.length : 0
-    }
-
     this.isBusy = true;
 
     await this.$store
@@ -895,6 +759,11 @@ export default {
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        if(!this.filter) {
+          this.totalRows = this.filterItems ? this.filterItems.length : 0
+        }
+        this.isBusy = false;
+
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -904,7 +773,7 @@ export default {
         }
       });
 
-    this.isBusy = false;
+    
 
   },
   created() {

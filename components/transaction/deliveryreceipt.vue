@@ -1574,7 +1574,7 @@ export default {
       sortDesc: true,
       sortDirection: "asc",
       filter: "",
-      filterOn: []
+      filterOn: [],
     };
   },
   computed: {
@@ -2395,24 +2395,49 @@ export default {
 
     },
     async getFarmer() {
+
       const userDetails = JSON.parse(localStorage.user_details);
 
       this.farmer = [];
-      
-      const res = await axios({
-        method: "POST",
-        url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-        headers: {
-          Authorization: localStorage.SessionId
-        },
-        data: {
-          company: userDetails.U_COMPANY_CODE
-        }
-      });
-      const v = res.data.view;
+      let v; 
 
-      // filter supplier with CardType S if RCI 4360 (BP MASTER DATA)
-      // if(this.companyCode == '4360') {
+      // console.log("user details", userDetails);
+      // if(userDetails.U_COMPANY_CODE == '4360') {
+      //   const res = await axios({
+      //     method: "GET",
+      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+      //     headers: {
+      //       Authorization: localStorage.SessionId
+      //     },
+          
+      //   });
+      //   v = res.data.view;
+      //   console.log("farmers rci", v);
+
+      //   for (let i = 0; i < v.length; i++) {
+      //     if(v[i].CardType == "S"){
+      //       this.farmer.push({
+      //         text: v[i].PrjName,
+      //         value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+      //       });
+      //     }
+      //   }
+        
+        
+      // } else if(userDetails.U_COMPANY_CODE == '4354') {
+        const res = await axios({
+        method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: userDetails.U_COMPANY_CODE
+          }
+        });
+        v = res.data.view;
+        console.log("farmers", v);
+
         for (let i = 0; i < v.length; i++) {
           if(v[i].CardType == "S"){
             this.farmer.push({
@@ -2421,17 +2446,11 @@ export default {
             });
           }
         }
-        // else if BFI 4354 (APP_FARMERS)
-      // } else if(this.companyCode == '4354') {
-      //   for (let i = 0; i < v.length; i++) {
-      //     console.log(v[i]);
-      //       this.farmer.push({
-      //         text: v[i].Name,
-      //         value: { id: v[i].Code, address: v[i].U_APP_FarmerAddress }
-      //       });
-      //   }
-      //   console.log(this.farmer);
+
       // }
+
+      
+
       
 
     },
@@ -2453,15 +2472,34 @@ export default {
           this.plotCodes = res.data.posted
         }
       })
-
     },
-    test() {
+    async test() {
       this.plotCode = [];
       this.U_APP_ProjCode = "";
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
+      // console.log(this.frmr.value.text);
+      const v = "";
+
+      // if(this.companyCode == '4360') {
+      //   const res = await axios({
+      //     method: "POST",
+      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+      //     headers: {
+      //       Authorization: localStorage.SessionId
+      //     },
+      //     data: {
+      //       "PrjName": this.U_FRMR_NAME.value.text
+      //     }
+          
+      //   });
+      //    v = res.data.view;
+      // }
+      // console.log("farmer with plotcodes", v);
+
+
 
       // if company is rci
-      //(since plotcode stuff is only available to rci transactions)
+      // (since plotcode stuff is only available to rci transactions)
       if(this.companyCode == '4360'){
         // if farmer exists in plotcodes
         // and if farmer plotcode is not empty
@@ -2522,6 +2560,7 @@ export default {
         const userDetails = JSON.parse(localStorage.user_details);
         // console.log(this.U_FRMR_NAME.value.id)
         // console.log(this.U_CMMDTY.value)
+        console.log("farmer_name: ",this.U_FRMR_NAME.text);
         const json = {
           company: userDetails.U_COMPANY_CODE,
           uom_id: this.U_UOM.UomEntry,
@@ -2529,6 +2568,7 @@ export default {
           transaction_type_id: this.U_TRANSACTION_TYPE,
           item_id: this.U_CMMDTY.value.value,
           farmer_id: this.U_FRMR_NAME.value.id,
+          farmer_name: this.U_FRMR_NAME.text,
           driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
           helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
           no_of_requested_bags: this.U_REQUESTED_SACKS,
@@ -2546,6 +2586,7 @@ export default {
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
         fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+        fd.append("farmer_name", this.U_FRMR_NAME.text);
         if(this.U_APP_ProjCode){
           fd.append("plot_code", this.U_APP_ProjCode.value);
         }
