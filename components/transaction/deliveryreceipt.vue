@@ -2557,9 +2557,7 @@ export default {
 
         let items = [];
 
-        const userDetails = JSON.parse(localStorage.user_details);
-        // console.log(this.U_FRMR_NAME.value.id)
-        // console.log(this.U_CMMDTY.value)
+        const userDetails = JSON.parse(localStorage.user_details); 
         console.log("farmer_name: ",this.U_FRMR_NAME.text);
         const json = {
           company: userDetails.U_COMPANY_CODE,
