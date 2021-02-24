@@ -388,7 +388,13 @@ export default {
   computed: {
     filterItems() {
       return this.listModules.filter(listModules => {
-        return this.filterStatus.includes(listModules.U_IS_ACTIVE);
+        if(this.filterStatus.includes(listModules.U_IS_ACTIVE)){
+          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+        }
+        if(this.filterStatus.includes(!listModules.U_IS_ACTIVE)){
+          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+        }
+        // return this.filterStatus.includes(listModules.U_IS_ACTIVE);
         // return (
         //   this.filterStatus.includes(listModules.U_IS_ACTIVE) && (listModules.Name. toLowerCase().match(this.filter.toLowerCase()))
         // );
@@ -532,28 +538,6 @@ export default {
       this.$bvModal.show("save-modal");
     },
 
-    // fetchPendingTransactions() {
-    //   this.items = this.$store.state.transactions.pendingTransactions;
-    //   return;
-    // },
-    // addDocument() {
-    //   this.transactionForm.documentListValues.push({
-    //     documentType: null,
-    //     number: null
-    //   });
-    // },
-    // removeDocument(id) {
-    //   if (this.transactionForm.documentListValues.length === 1) {
-    //     //Create an error message. Document must contain 1 or more
-    //   } else {
-    //     this.transactionForm.documentListValues.splice(id, 1);
-    //   }
-    // },
-    // info(data) {
-    //   this.transactionForm = data;
-    //   this.$bvModal.show("process-modal");
-    // },
-
     resetInfoModal() {
       this.infoModal.title = "";
       this.infoModal.content = "";
@@ -574,9 +558,6 @@ export default {
         SessionId: localStorage.SessionId
       })
       .then(res => {
-        if(!this.filter) {
-          this.totalRows = this.filterItems ? this.filterItems.length : 0
-        }
 
         this.isBusy = false;
         if (res && res.name == "Error") {
@@ -588,7 +569,9 @@ export default {
         }
       });
 
-      
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
 
   },
 

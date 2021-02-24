@@ -2401,30 +2401,30 @@ export default {
       this.farmer = [];
       let v; 
 
-      console.log("user details", userDetails);
-      if(userDetails.U_COMPANY_CODE == '4360') {
-        const res = await axios({
-          method: "GET",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
+      // console.log("user details", userDetails);
+      // if(userDetails.U_COMPANY_CODE == '4360') {
+      //   const res = await axios({
+      //     method: "GET",
+      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+      //     headers: {
+      //       Authorization: localStorage.SessionId
+      //     },
           
-        });
-        v = res.data.view;
-        console.log("farmers rci", v);
+      //   });
+      //   v = res.data.view;
+      //   console.log("farmers rci", v);
 
-        for (let i = 0; i < v.length; i++) {
-          if(v[i].CardType == "S"){
-            this.farmer.push({
-              text: v[i].PrjName,
-              value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-            });
-          }
-        }
+      //   for (let i = 0; i < v.length; i++) {
+      //     if(v[i].CardType == "S"){
+      //       this.farmer.push({
+      //         text: v[i].PrjName,
+      //         value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+      //       });
+      //     }
+      //   }
         
         
-      } else if(userDetails.U_COMPANY_CODE == '4354') {
+      // } else if(userDetails.U_COMPANY_CODE == '4354') {
         const res = await axios({
         method: "POST",
           url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
@@ -2436,7 +2436,7 @@ export default {
           }
         });
         v = res.data.view;
-        console.log("farmers bfi", v);
+        console.log("farmers", v);
 
         for (let i = 0; i < v.length; i++) {
           if(v[i].CardType == "S"){
@@ -2447,7 +2447,7 @@ export default {
           }
         }
 
-      }
+      // }
 
       
 
@@ -2477,63 +2477,63 @@ export default {
       this.plotCode = [];
       this.U_APP_ProjCode = "";
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
-      console.log(this.frmr.value.text);
+      // console.log(this.frmr.value.text);
       const v = "";
 
-      if(this.companyCode == '4360') {
-        const res = await axios({
-          method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-          data: {
-            "PrjName": this.U_FRMR_NAME.value.text
-          }
+      // if(this.companyCode == '4360') {
+      //   const res = await axios({
+      //     method: "POST",
+      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+      //     headers: {
+      //       Authorization: localStorage.SessionId
+      //     },
+      //     data: {
+      //       "PrjName": this.U_FRMR_NAME.value.text
+      //     }
           
-        });
-         v = res.data.view;
-      }
-      console.log("farmer with plotcodes", v);
+      //   });
+      //    v = res.data.view;
+      // }
+      // console.log("farmer with plotcodes", v);
 
 
 
       // if company is rci
-      //(since plotcode stuff is only available to rci transactions)
-      // if(this.companyCode == '4360'){
-      //   // if farmer exists in plotcodes
-      //   // and if farmer plotcode is not empty
-      //   if(this.plotCodes.posted[this.U_FRMR_NAME.text]){
-      //     var name = this.U_FRMR_NAME.text
-      //     if(this.plotCodes.posted[name].plotCodes.length > 0){
-      //       var pc = this.plotCodes.posted[name].plotCodes;
-      //       // push plotcodes in plotcode array
-      //       for(let i = 0; i < pc.length; i++){
-      //         this.plotCode.push({
-      //           text: pc[i],
-      //           value: pc[i]
-      //         });
-      //       }
-      //     } else {
-      //        this.showAlert1('Farmer does not have plot code', 'warning')
-      //     }
-      //   } else {
-      //     let frmr = this.titleCase(this.U_FRMR_NAME.text);
-      //      if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0) {
-      //       // store farmer's plotcodes to variable pc
-      //       var pc = this.plotCodes.posted[frmr].plotCodes;
-      //       // push plotcodes in plotcode array
-      //       for(let i = 0; i < pc.length; i++){
-      //         this.plotCode.push({
-      //           text: pc[i],
-      //           value: pc[i]
-      //         });
-      //       }
-      //     } else {
-      //        this.showAlert1('Farmer does not have plot code', 'warning')
-      //     }
-      //   }
-      // }
+      // (since plotcode stuff is only available to rci transactions)
+      if(this.companyCode == '4360'){
+        // if farmer exists in plotcodes
+        // and if farmer plotcode is not empty
+        if(this.plotCodes.posted[this.U_FRMR_NAME.text]){
+          var name = this.U_FRMR_NAME.text
+          if(this.plotCodes.posted[name].plotCodes.length > 0){
+            var pc = this.plotCodes.posted[name].plotCodes;
+            // push plotcodes in plotcode array
+            for(let i = 0; i < pc.length; i++){
+              this.plotCode.push({
+                text: pc[i],
+                value: pc[i]
+              });
+            }
+          } else {
+             this.showAlert1('Farmer does not have plot code', 'warning')
+          }
+        } else {
+          let frmr = this.titleCase(this.U_FRMR_NAME.text);
+           if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0) {
+            // store farmer's plotcodes to variable pc
+            var pc = this.plotCodes.posted[frmr].plotCodes;
+            // push plotcodes in plotcode array
+            for(let i = 0; i < pc.length; i++){
+              this.plotCode.push({
+                text: pc[i],
+                value: pc[i]
+              });
+            }
+          } else {
+             this.showAlert1('Farmer does not have plot code', 'warning')
+          }
+        }
+      }
     },
     async newDR(signature) {
       try {
@@ -2560,6 +2560,7 @@ export default {
         const userDetails = JSON.parse(localStorage.user_details);
         // console.log(this.U_FRMR_NAME.value.id)
         // console.log(this.U_CMMDTY.value)
+        console.log("farmer_name: ",this.U_FRMR_NAME.text);
         const json = {
           company: userDetails.U_COMPANY_CODE,
           uom_id: this.U_UOM.UomEntry,
@@ -2567,6 +2568,7 @@ export default {
           transaction_type_id: this.U_TRANSACTION_TYPE,
           item_id: this.U_CMMDTY.value.value,
           farmer_id: this.U_FRMR_NAME.value.id,
+          farmer_name: this.U_FRMR_NAME.text,
           driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
           helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
           no_of_requested_bags: this.U_REQUESTED_SACKS,
@@ -2584,6 +2586,7 @@ export default {
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
         fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+        fd.append("farmer_name", this.U_FRMR_NAME.text);
         if(this.U_APP_ProjCode){
           fd.append("plot_code", this.U_APP_ProjCode.value);
         }
