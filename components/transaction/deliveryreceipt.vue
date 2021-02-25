@@ -189,6 +189,7 @@
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection"
+      :tbody-tr-class="rowClassMain"
       @filtered="onFiltered"
     >
     <template #table-busy>
@@ -530,23 +531,7 @@
           required
         ></b-form-select> -->
 
-        <small class="text-left">Address</small>
-        <b-form-input
-          disabled
-          id="farmer_add"
-          class="form-text"
-          v-model="U_FRMR_ADD"
-        />
-
         <small class="text-left" v-show="companyCode == '4360' " >Plot Code</small>
-        <!-- <b-form-input
-          v-show="companyCode == '4360' "
-          disabled
-          id="farmer_plot_code"
-          class="form-text"
-          v-model="U_APP_ProjCode"
-        /> -->
-
         <multiselect
           v-show="companyCode == '4360' "
           id="plot_code"
@@ -556,8 +541,17 @@
           v-model="U_APP_ProjCode"
           label="text"
           track-by="text"
+          @input="getPlotAddress"
           required
         ></multiselect>
+
+        <small class="text-left">Address</small>
+        <b-form-input
+          disabled
+          id="farmer_add"
+          class="form-text"
+          v-model="U_FRMR_ADD"
+        />
 
         <b-row>
           <b-col cols="6">
@@ -1479,6 +1473,8 @@ export default {
       transaction_types: [],
       companyList: null,
       farmer: [],
+      bfi_farmer: [],
+      farmer_plotcode: [],
       farmerAdd: [],
       commodity: [],
       plotCode: [],
@@ -1623,26 +1619,14 @@ export default {
   },
 
   methods: { 
-    // transferred to new repo 1-28-2021
+    rowClassMain(items) {
+      if(items){
+        if(items.IFPASSRMRS != null){
+          return items.IFPASSRMRS ? "" : "table-danger";
+        }
+      }
+    },
 
-    //  async beforeCreate() {
-    //  this.showLoading = true;
-    // await this.$store
-    //   .dispatch("Company/fetchCompany", {
-    //     SessionId: localStorage.SessionId
-    //   })
-
-    //   .then(res => {
-    //     if (res && res.name == "Error") {
-    //       if (res.response && res.response.data.errorMsg) {
-    //         if (res.response.data.errorMsg === "Invalid session.") {
-    //           this.$bvModal.show("session_modal");
-    //         }
-    //       }
-    //     }
-    //   });
-    //   this.showLoading = false;
-    //  },
     clearSignature() {
       this.$refs.signaturePad.undoSignature();
     },
@@ -2395,36 +2379,50 @@ export default {
 
     },
     async getFarmer() {
-
       const userDetails = JSON.parse(localStorage.user_details);
-
       this.farmer = [];
       let v; 
 
-      // console.log("user details", userDetails);
-      // if(userDetails.U_COMPANY_CODE == '4360') {
-      //   const res = await axios({
-      //     method: "GET",
-      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-          
-      //   });
-      //   v = res.data.view;
-      //   console.log("farmers rci", v);
+      console.log("user details", userDetails);
+      if(userDetails.U_COMPANY_CODE == '4360') {
+        // RCI
+        const res = await axios({
+          method: "GET",
+          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+        });
+        v = res.data.view;
+        for (let i = 0; i < v.length; i++) {
+            this.farmer.push({
+              text: v[i].PrjName,
+              value: v[i].PrjName
+            });
+        }
 
-      //   for (let i = 0; i < v.length; i++) {
-      //     if(v[i].CardType == "S"){
-      //       this.farmer.push({
-      //         text: v[i].PrjName,
-      //         value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-      //       });
-      //     }
-      //   }
-        
-        
-      // } else if(userDetails.U_COMPANY_CODE == '4354') {
+        const res1 = await axios({
+        method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: userDetails.U_COMPANY_CODE
+          }
+        });
+        const v1 = res1.data.view;
+        for (let i = 0; i < v1.length; i++) {
+          if(v1[i].CardType == "S"){
+            this.bfi_farmer.push({
+              text: v1[i].SUPPLIER_NAME,
+              value: { id: v1[i].SUPPLIER_ID }
+            });
+          }
+        }
+
+      } else if(userDetails.U_COMPANY_CODE == '4354') {
+        // BFI
         const res = await axios({
         method: "POST",
           url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
@@ -2436,7 +2434,6 @@ export default {
           }
         });
         v = res.data.view;
-        console.log("farmers", v);
 
         for (let i = 0; i < v.length; i++) {
           if(v[i].CardType == "S"){
@@ -2446,13 +2443,7 @@ export default {
             });
           }
         }
-
-      // }
-
-      
-
-      
-
+      }
     },
     titleCase(str){
       // since getFarmer returns all UPPERCASE and getPlotCodes return Uppercase And Lowercase
@@ -2475,65 +2466,92 @@ export default {
     },
     async test() {
       this.plotCode = [];
-      this.U_APP_ProjCode = "";
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
-      // console.log(this.frmr.value.text);
-      const v = "";
+      let v = "";
 
-      // if(this.companyCode == '4360') {
-      //   const res = await axios({
-      //     method: "POST",
-      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-      //     data: {
-      //       "PrjName": this.U_FRMR_NAME.value.text
-      //     }
-          
-      //   });
-      //    v = res.data.view;
-      // }
-      // console.log("farmer with plotcodes", v);
+      if(this.companyCode == '4354') {
 
-
-
-      // if company is rci
-      // (since plotcode stuff is only available to rci transactions)
-      if(this.companyCode == '4360'){
-        // if farmer exists in plotcodes
-        // and if farmer plotcode is not empty
-        if(this.plotCodes.posted[this.U_FRMR_NAME.text]){
-          var name = this.U_FRMR_NAME.text
-          if(this.plotCodes.posted[name].plotCodes.length > 0){
-            var pc = this.plotCodes.posted[name].plotCodes;
-            // push plotcodes in plotcode array
-            for(let i = 0; i < pc.length; i++){
-              this.plotCode.push({
-                text: pc[i],
-                value: pc[i]
-              });
-            }
-          } else {
-             this.showAlert1('Farmer does not have plot code', 'warning')
-          }
-        } else {
-          let frmr = this.titleCase(this.U_FRMR_NAME.text);
-           if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0) {
-            // store farmer's plotcodes to variable pc
-            var pc = this.plotCodes.posted[frmr].plotCodes;
-            // push plotcodes in plotcode array
-            for(let i = 0; i < pc.length; i++){
-              this.plotCode.push({
-                text: pc[i],
-                value: pc[i]
-              });
-            }
-          } else {
-             this.showAlert1('Farmer does not have plot code', 'warning')
+      } else if(this.companyCode == '4360') {
+        this.U_APP_ProjCode = "";
+        this.U_FRMR_ADD = "";
+        let fname = this.U_FRMR_NAME.value.split(", ");
+        let frmr_id = "";
+        for(var i = 0; i < this.bfi_farmer.length; i++) {
+          let frmr_name = (this.bfi_farmer[i].text).toLowerCase();
+          if(frmr_name.includes(fname[0].toLowerCase()) && frmr_name.includes(fname[1].toLowerCase())){
+            frmr_id = this.bfi_farmer[i].value.id;
           }
         }
+
+        const res = await axios({
+          method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            "PrjName": this.U_FRMR_NAME.value
+          }
+        });
+         v = res.data.posted;
+         console.log(res.data.posted);
+         if(v) {
+           for(let i = 0; i < v.length; i++){
+            this.plotCode.push({
+              text: v[i].plotCodes,
+              value: { id: frmr_id , address: v[i].address }
+            });
+            }
+         }
+         // I STOPPED HERE
+      
       }
+      console.log("farmer with plotcodes", v);
+
+
+      // // if company is rci
+      // // (since plotcode stuff is only available to rci transactions)
+      // if(this.companyCode == '4360'){
+      //   // if farmer exists in plotcodes
+      //   // and if farmer plotcode is not empty
+      //   if(this.plotCodes.posted[this.U_FRMR_NAME.text]){
+      //     var name = this.U_FRMR_NAME.text
+      //     if(this.plotCodes.posted[name].plotCodes.length > 0){
+      //       var pc = this.plotCodes.posted[name].plotCodes;
+      //       // push plotcodes in plotcode array
+      //       for(let i = 0; i < pc.length; i++){
+      //         this.plotCode.push({
+      //           text: pc[i],
+      //           value: pc[i]
+      //         });
+      //       }
+      //     } else {
+      //        this.showAlert1('Farmer does not have plot code', 'warning')
+      //     }
+      //   } else {
+      //     let frmr = this.titleCase(this.U_FRMR_NAME.text);
+      //      if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0) {
+      //       // store farmer's plotcodes to variable pc
+      //       var pc = this.plotCodes.posted[frmr].plotCodes;
+      //       // push plotcodes in plotcode array
+      //       for(let i = 0; i < pc.length; i++){
+      //         this.plotCode.push({
+      //           text: pc[i],
+      //           value: pc[i]
+      //         });
+      //       }
+      //     } else {
+      //        this.showAlert1('Farmer does not have plot code', 'warning')
+      //     }
+      //   }
+      // }}
+    },
+    getPlotAddress(){
+      this.U_FRMR_ADD = "";
+      console.log(this.U_APP_ProjCode);
+      this.U_FRMR_ADD = this.U_APP_ProjCode.value.address;
+      // this.U_APP_ProjCode = this.U_APP_ProjCode.text;
+      console.log(this.U_FRMR_ADD);
     },
     async newDR(signature) {
       try {
@@ -2559,23 +2577,44 @@ export default {
 
         const userDetails = JSON.parse(localStorage.user_details); 
         console.log("farmer_name: ",this.U_FRMR_NAME.text);
-        const json = {
-          company: userDetails.U_COMPANY_CODE,
-          uom_id: this.U_UOM.UomEntry,
-          // priceList: this.U_PRICELIST,
-          transaction_type_id: this.U_TRANSACTION_TYPE,
-          item_id: this.U_CMMDTY.value.value,
-          farmer_id: this.U_FRMR_NAME.value.id,
-          farmer_name: this.U_FRMR_NAME.text,
-          driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
-          helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
-          no_of_requested_bags: this.U_REQUESTED_SACKS,
-          no_of_bags: this.U_SACKS,
-          no_of_empty_bags: this.U_EMPTY_SACKS,
-          employee_id: userDetails.Code,
-          plate_number: this.U_PLATE_NUMBER,
-          signature: this.signaturePath
-        };
+
+        let json = {};
+        if(userDetails.U_COMPANY_CODE == '4354') {
+          json = {
+            company: userDetails.U_COMPANY_CODE,
+            uom_id: this.U_UOM.UomEntry,
+            // priceList: this.U_PRICELIST,
+            transaction_type_id: this.U_TRANSACTION_TYPE,
+            item_id: this.U_CMMDTY.value.value,
+            farmer_id: this.U_FRMR_NAME.value.id,
+            driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
+            helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
+            no_of_requested_bags: this.U_REQUESTED_SACKS,
+            no_of_bags: this.U_SACKS,
+            no_of_empty_bags: this.U_EMPTY_SACKS,
+            employee_id: userDetails.Code,
+            plate_number: this.U_PLATE_NUMBER,
+            signature: this.signaturePath
+          };
+        } else if(userDetails.U_COMPANY_CODE == '4360') {
+          json = {
+            company: userDetails.U_COMPANY_CODE,
+            uom_id: this.U_UOM.UomEntry,
+            // priceList: this.U_PRICELIST,
+            transaction_type_id: this.U_TRANSACTION_TYPE,
+            item_id: this.U_CMMDTY.value.value,
+            farmer_id: this.U_APP_ProjCode.value.id,
+            farmer_name: this.U_FRMR_NAME.text,
+            driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
+            helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
+            no_of_requested_bags: this.U_REQUESTED_SACKS,
+            no_of_bags: this.U_SACKS,
+            no_of_empty_bags: this.U_EMPTY_SACKS,
+            employee_id: userDetails.Code,
+            plate_number: this.U_PLATE_NUMBER,
+            signature: this.signaturePath
+          };
+        }
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
@@ -2583,10 +2622,15 @@ export default {
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
-        fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+        if(userDetails.U_COMPANY_CODE == '4354') {
+          fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+        } else if(userDetails.U_COMPANY_CODE == '4360') {
+          fd.append("farmer_id", this.U_APP_ProjCode.value.id);
+        }
+        
         fd.append("farmer_name", this.U_FRMR_NAME.text);
         if(this.U_APP_ProjCode){
-          fd.append("plot_code", this.U_APP_ProjCode.value);
+          fd.append("plot_code", this.U_APP_ProjCode.text);
         }
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
@@ -2850,7 +2894,8 @@ export default {
             U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
             // selectedcompany: v[i].USER_COMPANY,
             TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
-            TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY
+            TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+            IFPASSRMRS: v[i].ifpassRMRS
           });
         }
 
@@ -2862,8 +2907,9 @@ export default {
         this.isBusy = false;
       }
     },
-    
   },
+
+    
   reloadFunction() {
     this.values = [{ label: "2" }, { label: "3" }];
   },
