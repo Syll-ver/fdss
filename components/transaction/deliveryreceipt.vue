@@ -1384,9 +1384,9 @@ export default {
     await this.getTransactions();
     await this.getTransactionType();
     await this.getFarmer();
-    if(this.companyCode == '4360'){
-      await this.getPlotCodes(); 
-    }
+    // if(this.companyCode == '4360'){
+    //   await this.getPlotCodes(); 
+    // }
     await this.networkPrintInit();
     this.isBusy = false;
 
@@ -2549,7 +2549,11 @@ export default {
     getPlotAddress(){
       this.U_FRMR_ADD = "";
       console.log(this.U_APP_ProjCode);
-      this.U_FRMR_ADD = this.U_APP_ProjCode.value.address;
+      if(this.U_APP_ProjCode.value.address) {
+        this.U_FRMR_ADD = this.U_APP_ProjCode.value.address;
+      } else {
+        this.showAlert1('Plot Code does not have an address', 'warning')
+      }
       // this.U_APP_ProjCode = this.U_APP_ProjCode.text;
       console.log(this.U_FRMR_ADD);
     },
@@ -2632,6 +2636,7 @@ export default {
         if(this.U_APP_ProjCode){
           fd.append("plot_code", this.U_APP_ProjCode.text);
         }
+        fd.append("farmer_add", this.U_FRMR_ADD);
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
         fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
@@ -2652,6 +2657,7 @@ export default {
         // await json.each(data, function(key, value) {
         //   fd.append(key, value);
         // });
+        
         const res = await axios.post(
           `${this.$axios.defaults.baseURL}/api/transaction/add`,
           fd,
@@ -2659,15 +2665,6 @@ export default {
             headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
           }
         );
-
-        // const res = await axios({
-        //   method: "POST",
-        //   url: `${this.$axios.defaults.baseURL}/api/transaction/add`,
-        //   fd,
-        //   headers: {
-        //     Authorization: `B1SESSION=${localStorage.SessionId}`
-        //   }
-        // });
 
         this.$bvModal.hide("signature");
         this.showLoading = false;
