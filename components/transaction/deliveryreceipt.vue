@@ -1377,7 +1377,7 @@ export default {
     VueQrcode
   },
   async created() {
-    this.isBusy = true;
+    this.showLoading = true;
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
     // await this.getPriceList();
     await this.getCommodity();
@@ -1388,7 +1388,7 @@ export default {
     //   await this.getPlotCodes(); 
     // }
     await this.networkPrintInit();
-    this.isBusy = false;
+    this.showLoading = false;
 
     // await this.getCompanyList();
     // await this.updateUOM();
@@ -2338,6 +2338,7 @@ export default {
     //   }
     // },
     async getCommodity() {
+      this.isBusy = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.commodity = [];
       const res = await axios({
@@ -2358,6 +2359,7 @@ export default {
           value: v[i].ItemCode
         })
       }
+      this.isBusy = false;
 
       // filter only agri-ops items
       // const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
@@ -2465,6 +2467,7 @@ export default {
       })
     },
     async test() {
+      this.showLoading = true;
       this.plotCode = [];
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
       let v = "";
@@ -2507,6 +2510,7 @@ export default {
       
       }
       console.log("farmer with plotcodes", v);
+      this.showLoading = false;
 
 
       // // if company is rci
