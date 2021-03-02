@@ -338,7 +338,8 @@
               class="cardShadow mt-4"
               style="position:relative; bottom:14px"
             >
-              <small class="ml-1">Username</small>
+              
+                <small class="ml-1">Username</small>
 
               <b-form-input
                 id="act_grp_add_modal"
@@ -347,6 +348,32 @@
                 style="font-size:10px"
                 disabled
               ></b-form-input>
+              
+              <!-- <small class="ml-1">Role</small>
+                <b-form-select
+                  id="role_add_modal"
+                  type="number"
+                  v-model="userDetails.U_ROLE_CODE"
+                  style="font-size:10px"
+                >
+                  <option :value="null">Select Role</option>
+
+                  <option
+                    :value="role.Code"
+                    v-for="(role, i) in filterListRoles"
+                    :key="i"
+                    >{{ role.Name }}</option
+                  >
+                </b-form-select>
+
+                <small class="ml-1">Location</small>
+                <b-form-select v-model="userDetails.location"
+                  :options="locations"
+                  size="sm"
+                  style="font-size:10px"
+                  >
+                  </b-form-select> -->
+             
             </b-card>
 
             <b-card
@@ -906,6 +933,21 @@ export default {
         U_IS_SAP_USER: 0,
         U_USERNAME: null
       },
+      locations: [ 
+        { text: 'Select Location', value: null, disabled: true },
+        {
+          text: "Agro",
+          value: "agro"
+        },
+        {
+          text: "Farm",
+          value: "farm"
+        },
+        {
+          text: "Maasim",
+          value: "maasim"
+        },
+      ],
 
       fields: [
           {

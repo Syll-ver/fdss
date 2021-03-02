@@ -344,7 +344,17 @@ export default {
           icon: "clipboard-list",
           class: "ml-2",
           active: false
-        }
+        },
+
+        // {
+        //   link: "/admin/printer",
+        //   name: "Printer",
+        //   style: "position:relative;left:12px",
+        //   id: "sb-printer",
+        //   icon: "print",
+        //   class: "ml-2",
+        //   active: false
+        // }
       ],
 
       routes: [
@@ -414,4 +424,5 @@ a {
   text-decoration: none;
   background-color: transparent;
 }
+
 </style>

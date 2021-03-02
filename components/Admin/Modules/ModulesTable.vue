@@ -394,6 +394,10 @@ export default {
         if(this.filterStatus.includes(!listModules.U_IS_ACTIVE)){
           return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
         }
+        if(!this.filter) {
+          this.totalRows = this.filterItems ? this.filterItems.length : 0
+        }
+
         // return this.filterStatus.includes(listModules.U_IS_ACTIVE);
         // return (
         //   this.filterStatus.includes(listModules.U_IS_ACTIVE) && (listModules.Name. toLowerCase().match(this.filter.toLowerCase()))

@@ -64,22 +64,12 @@
               id="search_delivery_receipt"
               placeholder="Search Delivery Slip"
             ></b-form-input>
-            <!-- <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''"
-                >Clear</b-button
-              >
-            </b-input-group-append> -->
           </b-input-group>
         </b-form-group>
       </b-col>
 
       <b-col class="mt-3">
-        <b-input-group prepend="Date" size="sm">
-          <!-- <b-input-group-prepend>
-              <div style="background-color: green">
-                <v-icon color="#ffffff" small>fa-calendar-week</v-icon>
-              </div>
-          </b-input-group-prepend>-->
+        <b-input-group size="sm">
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -1377,21 +1367,12 @@ export default {
     VueQrcode
   },
   async created() {
-    this.showLoading = true;
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
-    // await this.getPriceList();
-    await this.getCommodity();
     await this.getTransactions();
+    await this.getCommodity();
     await this.getTransactionType();
-    await this.getFarmer();
-    // if(this.companyCode == '4360'){
-    //   await this.getPlotCodes(); 
-    // }
+    // await this.getFarmer();
     await this.networkPrintInit();
-    this.showLoading = false;
-
-    // await this.getCompanyList();
-    // await this.updateUOM();
     this.totalRows = this.items.length;
   },
   data() {
@@ -1957,7 +1938,9 @@ export default {
       let ePosDev = new epson.ePOSDevice();
 
       let ipAddress = process.env.networkPrinterIp,
+      // let ipAddress = localStorage.printer_ip,
         port = process.env.networkPrinterPort;
+        // port = localStorage.printer_port;
 
       let deviceId = "bfi_printer";
       let options = { crypto: false, buffer: false };
@@ -2380,73 +2363,73 @@ export default {
       // }
 
     },
-    async getFarmer() {
-      const userDetails = JSON.parse(localStorage.user_details);
-      this.farmer = [];
-      let v; 
+    // async getFarmer() {
+    //   const userDetails = JSON.parse(localStorage.user_details);
+    //   this.farmer = [];
+    //   let v; 
 
-      console.log("user details", userDetails);
-      if(userDetails.U_COMPANY_CODE == '4360') {
-        // RCI
-        const res = await axios({
-          method: "GET",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-        });
-        v = res.data.view;
-        for (let i = 0; i < v.length; i++) {
-            this.farmer.push({
-              text: v[i].PrjName,
-              value: v[i].PrjName
-            });
-        }
+    //   console.log("user details", userDetails);
+    //   if(userDetails.U_COMPANY_CODE == '4360') {
+    //     // RCI
+    //     const res = await axios({
+    //       method: "GET",
+    //       url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+    //       headers: {
+    //         Authorization: localStorage.SessionId
+    //       },
+    //     });
+    //     v = res.data.view;
+    //     for (let i = 0; i < v.length; i++) {
+    //         this.farmer.push({
+    //           text: v[i].PrjName,
+    //           value: v[i].PrjName
+    //         });
+    //     }
 
-        const res1 = await axios({
-        method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-          data: {
-            company: userDetails.U_COMPANY_CODE
-          }
-        });
-        const v1 = res1.data.view;
-        for (let i = 0; i < v1.length; i++) {
-          if(v1[i].CardType == "S"){
-            this.bfi_farmer.push({
-              text: v1[i].SUPPLIER_NAME,
-              value: { id: v1[i].SUPPLIER_ID }
-            });
-          }
-        }
+    //     const res1 = await axios({
+    //     method: "POST",
+    //       url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+    //       headers: {
+    //         Authorization: localStorage.SessionId
+    //       },
+    //       data: {
+    //         company: userDetails.U_COMPANY_CODE
+    //       }
+    //     });
+    //     const v1 = res1.data.view;
+    //     for (let i = 0; i < v1.length; i++) {
+    //       if(v1[i].CardType == "S"){
+    //         this.bfi_farmer.push({
+    //           text: v1[i].SUPPLIER_NAME,
+    //           value: { id: v1[i].SUPPLIER_ID }
+    //         });
+    //       }
+    //     }
 
-      } else if(userDetails.U_COMPANY_CODE == '4354') {
-        // BFI
-        const res = await axios({
-        method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-          data: {
-            company: userDetails.U_COMPANY_CODE
-          }
-        });
-        v = res.data.view;
+    //   } else if(userDetails.U_COMPANY_CODE == '4354') {
+    //     // BFI
+    //     const res = await axios({
+    //     method: "POST",
+    //       url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+    //       headers: {
+    //         Authorization: localStorage.SessionId
+    //       },
+    //       data: {
+    //         company: userDetails.U_COMPANY_CODE
+    //       }
+    //     });
+    //     v = res.data.view;
 
-        for (let i = 0; i < v.length; i++) {
-          if(v[i].CardType == "S"){
-            this.farmer.push({
-              text: v[i].SUPPLIER_NAME,
-              value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-            });
-          }
-        }
-      }
-    },
+    //     for (let i = 0; i < v.length; i++) {
+    //       if(v[i].CardType == "S"){
+    //         this.farmer.push({
+    //           text: v[i].SUPPLIER_NAME,
+    //           value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+    //         });
+    //       }
+    //     }
+    //   }
+    // },
     titleCase(str){
       // since getFarmer returns all UPPERCASE and getPlotCodes return Uppercase And Lowercase
       // can't directly compare; would return undefined
@@ -2477,35 +2460,41 @@ export default {
       } else if(this.companyCode == '4360') {
         this.U_APP_ProjCode = "";
         this.U_FRMR_ADD = "";
-        let fname = this.U_FRMR_NAME.value.split(", ");
-        let frmr_id = "";
-        for(var i = 0; i < this.bfi_farmer.length; i++) {
-          let frmr_name = (this.bfi_farmer[i].text).toLowerCase();
-          if(frmr_name.includes(fname[0].toLowerCase()) && frmr_name.includes(fname[1].toLowerCase())){
-            frmr_id = this.bfi_farmer[i].value.id;
+        // let fname = this.U_FRMR_NAME.value.split(", ");
+        // let frmr_id = "";
+        // for(var i = 0; i < this.bfi_farmer.length; i++) {
+        //   let frmr_name = (this.bfi_farmer[i].text).toLowerCase();
+        //   if(frmr_name.includes(fname[0].toLowerCase()) && frmr_name.includes(fname[1].toLowerCase())){
+        //     frmr_id = this.bfi_farmer[i].value.id;
+        //   } else {
+        //     this.U_FRMR_NAME = null;
+        //     this.showLoading = false;
+        //     this.showAlert("Farmer does not exist in Biotech Farms", "danger");
+        //   }
+        // }
+
+        if(this.U_FRMR_NAME) {
+          const res = await axios({
+            method: "POST",
+            url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+            headers: {
+              Authorization: localStorage.SessionId
+            },
+            data: {
+              "PrjName": this.U_FRMR_NAME.text
+            }
+          });
+          v = res.data.posted;
+          console.log(res.data.posted);
+          if(v) {
+            for(let i = 0; i < v.length; i++){
+              this.plotCode.push({
+                text: v[i].plotCodes,
+                value: { address: v[i].address }
+              });
+              }
           }
         }
-
-        const res = await axios({
-          method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-          data: {
-            "PrjName": this.U_FRMR_NAME.value
-          }
-        });
-         v = res.data.posted;
-         console.log(res.data.posted);
-         if(v) {
-           for(let i = 0; i < v.length; i++){
-            this.plotCode.push({
-              text: v[i].plotCodes,
-              value: { id: frmr_id , address: v[i].address }
-            });
-            }
-         }
          // I STOPPED HERE
       
       }
@@ -2611,7 +2600,7 @@ export default {
             // priceList: this.U_PRICELIST,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
-            farmer_id: this.U_APP_ProjCode.value.id,
+            farmer_id: this.U_FRMR_NAME.value.id,
             farmer_name: this.U_FRMR_NAME.text,
             driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
             helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
@@ -2630,11 +2619,11 @@ export default {
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
-        if(userDetails.U_COMPANY_CODE == '4354') {
+        // if(userDetails.U_COMPANY_CODE == '4354') {
           fd.append("farmer_id", this.U_FRMR_NAME.value.id);
-        } else if(userDetails.U_COMPANY_CODE == '4360') {
-          fd.append("farmer_id", this.U_APP_ProjCode.value.id);
-        }
+        // } else if(userDetails.U_COMPANY_CODE == '4360') {
+        //   fd.append("farmer_id", this.U_APP_ProjCode.value.id);
+        // }
         
         fd.append("farmer_name", this.U_FRMR_NAME.text);
         if(this.U_APP_ProjCode){
@@ -2908,6 +2897,99 @@ export default {
         this.isBusy = false;
       }
     },
+  },
+
+  async beforeCreate() {
+    // await this.getFarmer();
+    
+      const userDetails = JSON.parse(localStorage.user_details);
+      this.farmer = [];
+      let v; 
+
+      console.log("user details", userDetails);
+      if(userDetails.U_COMPANY_CODE == '4360') {
+        // RCI
+
+        const res1 = await axios({
+        method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: userDetails.U_COMPANY_CODE
+          }
+        });
+        const v1 = res1.data.view;
+        for (let i = 0; i < v1.length; i++) {
+          if(v1[i].CardType == "S"){
+            this.bfi_farmer.push({
+              text: v1[i].SUPPLIER_NAME,
+              value: { id: v1[i].SUPPLIER_ID }
+            });
+          }
+        }
+
+        const res = await axios({
+          method: "GET",
+          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+        });
+        v = res.data.view;
+        // for (let i = 0; i < v.length; i++) {
+        //     this.farmer.push({
+        //       text: v[i].PrjName,
+        //       value: v[i].PrjName
+        //     });
+        // }
+
+        for(var i = 0; i < v.length; i++){
+          let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
+          for(var j = 0; j < this.bfi_farmer.length; j++) {
+            let frmr_name = (this.bfi_farmer[j].text).toLowerCase();
+            if(frmr.length == 1) {
+              if(frmr_name == frmr[0]) {
+                this.farmer.push({
+                  text: v[i].PrjName,
+                  value: { id: this.bfi_farmer[j].value.id }
+                });
+              }
+            } else {
+              if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
+                  this.farmer.push({
+                    text: v[i].PrjName,
+                    value: { id: this.bfi_farmer[j].value.id }
+                  });
+                }
+              }
+            }
+          }
+
+      } else if(userDetails.U_COMPANY_CODE == '4354') {
+        // BFI
+        const res = await axios({
+        method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: userDetails.U_COMPANY_CODE
+          }
+        });
+        v = res.data.view;
+
+        for (let i = 0; i < v.length; i++) {
+          if(v[i].CardType == "S"){
+            this.farmer.push({
+              text: v[i].SUPPLIER_NAME,
+              value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+            });
+          }
+        }
+      }
   },
 
     
