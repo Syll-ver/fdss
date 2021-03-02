@@ -146,8 +146,6 @@ export default {
   },
   methods: {
     checkKey(e) {
-      console.log(e);
-      console.log("object", this.hasCapsLock);
       if (e.key == "CapsLock") {
         if (e.getModifierState("CapsLock")) {
           this.hasCapsLock = true;
