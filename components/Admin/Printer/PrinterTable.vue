@@ -246,7 +246,8 @@ export default {
       sortDesc: false,
       sortDirection: "asc",
       filter: "",
-      filterOn: []
+      filterOn: [],
+      location: [],
     };
   },
   computed: {    
@@ -293,6 +294,30 @@ export default {
   },
 
   methods: {
+    async getLocation() {
+      this.isBusy = true;
+      this.location = [];
+
+      const res = await axios({
+        method: "GET",
+        url: `${this.$axios.defaults.baseURL}/api/location/select`,
+        headers: {
+          Authorization: localStorage.SessionId
+        },
+      });
+      const v = res.data.view;
+
+      for(var i = 0; i < v.length; i++){
+        this.location.push({
+          text: v[i].U_ADDRESS,
+          value: v[i].Code
+        })
+      }
+      this.isBusy = false;
+      console.log(location);
+    },
+
+
     addPrinter(){
         if(this.printer_ip == null){
             this.showAlert("Please input IP Address", "danger");
