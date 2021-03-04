@@ -345,7 +345,6 @@ export default {
           class: "ml-2",
           active: false
         },
-
         // {
         //   link: "/admin/printer",
         //   name: "Printer",
