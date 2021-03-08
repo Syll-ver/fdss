@@ -69,10 +69,12 @@ module.exports = {
 
   },
   env:{
-    serverPrintUrl: "http://localhost:3001",
-    // networkPrinterIp: `172.16.4.173`,
-    networkPrinterIp: `172.17.128.23`,
+    serverPrintUrl: "http://localhost:3002",
+    // networkPrinterIp: `172.16.4.173`, // gensan network printer ip
+    // networkPrinterIp: `172.17.128.23`, // agro1
+    networkPrinterIp: `172.18.30.7`, // agro2
     networkPrinterPort: `8008`,
+    // networkPrinterPort: `9100`,
   },
 
   server: { port: 9000 }

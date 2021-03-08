@@ -223,7 +223,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="printed(row.item)"
+            @click="printed(row)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -1824,6 +1824,7 @@ export default {
       };
     },
     async networkPrint(data) {
+      console.log("data", data);
       let QRCode = require("qrcode");
 
       this.qrString = JSON.stringify(data.U_TRX_NO);
@@ -1931,13 +1932,13 @@ export default {
       this.networkPrinter.addCut(); // for auto cutting
       
 
-      this.networkPrinter.send();
+      // this.networkPrinter.send();
     },
     async networkPrintInit() {
         
       let ePosDev = new epson.ePOSDevice();
 
-      let ipAddress = process.env.networkPrinterIp,
+      let ipAddress = 'tcp://'+process.env.networkPrinterIp,
       // let ipAddress = localStorage.printer_ip,
         port = process.env.networkPrinterPort;
         // port = localStorage.printer_port;
@@ -2026,45 +2027,69 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
-    async printed(U_TRX_ID) {
+    async printed(data) {
+      console.log("data to print", data);
+      this.showLoading = true;
 
-      console.log(U_TRX_ID);
-
-      try {
-        // console.log(this.isPrinterAvailable)
-        // if (!this.isPrinterAvailable) {
-        //   this.showAlert("Print error: Printer not connected", "danger");
-        //   return;
-        // }
-
-        this.showLoading = true;
-        const userDetails = JSON.parse(localStorage.user_details);
-
-        const employee_id = userDetails.Code;
-
-        const res = await axios({
-          method: "PUT",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/print/${U_TRX_ID.U_TRX_ID}`,
-          headers: {
-            Authorization: `B1SESSION=${localStorage.SessionId}`
-          },
-          data: {
-            employee_id,
-            U_TRX_ID: U_TRX_ID.U_TRX_NO
+      await axios({
+        method: "POST",
+        url: `${process.env.serverPrintUrl}/test_print`,
+        data: {
+          ip: "172.16.4.173",
+          body: { 
+            U_TRANSACTION_TYPE: "Delivery",
+            U_TRX_NO: "100"
           }
-        });
+        },
+      })
+      .then((res) => {
+        console.log(res);
         this.showLoading = false;
-        this.networkPrint(U_TRX_ID);
         this.showAlert("Printed Successfully", "success");
-        // this.$refs.Receipt.print(U_TRX_ID);
-        // this.$bvModal.hide("bv-modal-confirmPrint");
-        this.getTransactions();
-      } catch (e) {
-        console.log(e);
-        this.showAlert("Print error: Printer not connected", "danger");
+      })
+      .catch((err => {
+        console.log("error: ", err);
         this.showLoading = false;
-        this.showAlert(res.message, "danger");
-      }
+      }))
+
+
+      // console.log(U_TRX_ID);
+
+      // try {
+      //   // console.log(this.isPrinterAvailable)
+      //   // if (!this.isPrinterAvailable) {
+      //   //   this.showAlert("Print error: Printer not connected", "danger");
+      //   //   return;
+      //   // }
+
+      //   this.showLoading = true;
+      //   const userDetails = JSON.parse(localStorage.user_details);
+
+      //   const employee_id = userDetails.Code;
+
+      //   const res = await axios({
+      //     method: "PUT",
+      //     url: `${this.$axios.defaults.baseURL}/api/transaction/print/${U_TRX_ID.U_TRX_ID}`,
+      //     headers: {
+      //       Authorization: `B1SESSION=${localStorage.SessionId}`
+      //     },
+      //     data: {
+      //       employee_id,
+      //       U_TRX_ID: U_TRX_ID.U_TRX_NO
+      //     }
+      //   });
+      //   this.showLoading = false;
+      //   this.networkPrint(U_TRX_ID);
+      //   this.showAlert("Printed Successfully", "success");
+      //   // this.$refs.Receipt.print(U_TRX_ID);
+      //   // this.$bvModal.hide("bv-modal-confirmPrint");
+      //   this.getTransactions();
+      // } catch (e) {
+      //   console.log(e);
+      //   this.showAlert("Print error: Printer not connected", "danger");
+      //   this.showLoading = false;
+      //   this.showAlert(res.message, "danger");
+      // }
     },
     async confirmCancel(U_TRX_ID) {
       //  console.log(this.U_TRX_ID);
