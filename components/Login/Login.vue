@@ -180,6 +180,7 @@ export default {
         data: { username: this.user.name, password: this.user.password }
       })
         .then(result => {
+          console.log(result);
           localStorage.username = this.user.name;
           localStorage.user_details = JSON.stringify(result.data.user_details);
           localStorage.user_role = JSON.stringify(result.data.user_role);
