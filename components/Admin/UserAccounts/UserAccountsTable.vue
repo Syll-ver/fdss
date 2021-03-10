@@ -88,13 +88,6 @@
         <!-- <b-col></b-col> -->
  
         <b-col cols="7"  class="mt-3" align="right">
-          <!-- <b-form-group class="mb-0">
-            <b-form-select
-              id="perPageSelect_action"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-select>
-          </b-form-group> -->
           <b-button
             id="add_user"
             size="sm"
@@ -349,7 +342,7 @@
                 disabled
               ></b-form-input>
               
-              <!-- <small class="ml-1">Role</small>
+              <small class="ml-1">Role</small>
                 <b-form-select
                   id="role_add_modal"
                   type="number"
@@ -367,16 +360,16 @@
                 </b-form-select>
 
                 <small class="ml-1">Location</small>
-                <b-form-select v-model="userDetails.location"
+                <b-form-select v-model="userDetails.U_LOCATION_ID"
                   :options="locations"
                   size="sm"
                   style="font-size:10px"
                   >
-                  </b-form-select> -->
+                  </b-form-select>
              
             </b-card>
 
-            <b-card
+            <!-- <b-card
               class="cardShadow mt-4"
               style="position:relative; bottom:14px"
             >
@@ -397,7 +390,7 @@
                 >
               </b-form-select>
 
-            </b-card>
+            </b-card> -->
 
             <!-- <b-card
               class="cardShadow mt-4"
@@ -736,6 +729,14 @@
                   >{{ role.Name }}</option
                 >
               </b-form-select>
+
+               <small class="ml-1">Location</small>
+                <b-form-select v-model="userDetails.U_LOCATION_ID"
+                  :options="locations"
+                  size="sm"
+                  style="font-size:10px"
+                >
+                </b-form-select>
             </b-card>
           </b-col>
         </b-row>
@@ -896,6 +897,7 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
 import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 import Loading from "~/components/Loading/Loading.vue";
@@ -933,22 +935,7 @@ export default {
         U_IS_SAP_USER: 0,
         U_USERNAME: null
       },
-      locations: [ 
-        { text: 'Select Location', value: null, disabled: true },
-        {
-          text: "Agro",
-          value: "agro"
-        },
-        {
-          text: "Farm",
-          value: "farm"
-        },
-        {
-          text: "Maasim",
-          value: "maasim"
-        },
-      ],
-
+      locations: [],
       fields: [
           {
           key: "COMPANY_NAME",
@@ -1154,6 +1141,30 @@ export default {
   },
 
   methods: {
+    async getLocations() {
+      this.isBusy = true;
+
+        await axios({
+          method: "GET",
+          url: `${this.$axios.defaults.baseURL}/api/location/select`
+        }).then( res => {
+          const v = res.data.view;
+          this.locations.push({
+              text: "Select Location",
+              value: null,
+              disabled: true
+            })
+          
+          for(let i = 0; i < v.length; i++) {
+            this.locations.push({
+              text: v[i].U_ADDRESS,
+              value: v[i].Code
+            })
+          }
+        })
+      this.isBusy = false;
+    },
+
     confirmUpdate() {
       this.showLoading = true;
       this.$store
@@ -1320,6 +1331,7 @@ export default {
     addUserTable() {
       this.isBusy = true;
       this.userDetails.U_USERNAME = this.selectedUserDetails.ExternalEmployeeNumber;
+      console.log(this.userDetails);
      
       this.$store
         .dispatch("Admin/Users/addUser", {
@@ -1354,8 +1366,7 @@ export default {
         });
     },
 
-    edit(data) {
-      
+    edit(data) { 
       this.userDetails = {
         Code: data.Code,
         U_EMPLOYEE_CODE: data.U_EMPLOYEE_CODE,
@@ -1364,7 +1375,8 @@ export default {
         U_ROLE_CODE: data.U_ROLE_CODE,
         U_USERNAME: data.U_USERNAME,
         U_COMPANY_CODE: data.U_COMPANY_CODE,
-        U_COMPANY_ACCESS: data.U_COMPANY_ACCESS
+        U_COMPANY_ACCESS: data.U_COMPANY_ACCESS,
+        U_LOCATION_ID: data.U_LOCATION_ID
       };
       this.selectedUserDetails = {
         FirstName: data.FirstName,
@@ -1513,9 +1525,11 @@ export default {
     //   token: localStorage.token
     // });
   },
-  created() {
+  async created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
     const user_details = JSON.parse(localStorage.user_details);
+
+    await this.getLocations();
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add user")) {
       this.actions.addUser = true;

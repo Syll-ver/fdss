@@ -346,6 +346,15 @@ export default {
           active: false
         },
         {
+          link: "/admin/location",
+          name: "Location",
+          style: "position:relative;left:12px",
+          id: "sb-printer",
+          icon: "location-arrow",
+          class: "ml-2",
+          active: false
+        },
+        {
           link: "/admin/printer",
           name: "Printer",
           style: "position:relative;left:12px",
@@ -354,15 +363,6 @@ export default {
           class: "ml-2",
           active: false
         },
-        {
-          link: "/admin/location",
-          name: "Location",
-          style: "position:relative;left:12px",
-          id: "sb-printer",
-          icon: "location-arrow",
-          class: "ml-2",
-          active: false
-        }
       ],
 
       routes: [

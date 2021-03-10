@@ -14,6 +14,7 @@
       />
       {{ alert.message }}
     </b-alert>
+    <Loading v-if="showLoading" />
 
     <b-row>
       <b-col cols="3" class="mt-3">
@@ -75,14 +76,14 @@
 
       <template v-slot:cell(U_CREATED_DATE)="row">{{ formatDate(row.item.U_CREATED_DATE) }}</template>
 
-      <template v-slot:cell(actions)>
+      <template v-slot:cell(actions)="row">
         <div>
           <b-button
             variant="edit"
             id="edit"
             class="table-button"
             size="sm"
-            @click="edit()"
+            @click="edit(row.item)"
             v-b-tooltip.hover
             title="Edit Transaction"
           >
@@ -143,41 +144,19 @@
         <h6>Add Printer</h6>
       </template>
         
-        <b-row>
-          <b-col >
-            <small class="text-left">Location</small>
-            <b-form-select v-model="printer_location"
-            :options="locations"
-            size="sm"
-            ></b-form-select>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col class="mt-2">
-            <small class="text-left">Printer IP Address</small>
-            <b-form-input
-              id="printer_ip"
-              placeholder="Printer IP Address"
-              class="form-text"
-              v-model="printer_ip"
-              required
-              style="font-size: 13.5px"
-            />
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col class="mt-2">
-            <small class="text-left">Port</small>
-            <b-form-input
-              id="printer_port"
-              placeholder="Port"
-              class="form-text"
-              v-model="printer_port"
-              required
-              style="font-size: 13.5px"
-            />
-          </b-col>
-        </b-row>
+      <b-row>
+        <b-col class="mt-2">
+          <small class="text-left">Location</small>
+          <b-form-input
+            id="location"
+            placeholder="Location"
+            class="form-text"
+            v-model="new_location"
+            required
+            style="font-size: 13.5px"
+          />
+        </b-col>
+      </b-row>
 
       <template v-slot:modal-footer="{}">
         <b-button
@@ -185,7 +164,7 @@
           size="sm"
           class="button-style"
           variant="biotech"
-          @click="addPrinter()"
+          @click="addLocation()"
           :disabled="showLoading === true"
         >
           Create
@@ -199,6 +178,74 @@
         >
       </template>
     </b-modal>
+
+     <!-- edit location modal -->
+
+      <b-modal
+      size="large"
+      header-bg-variant="biotech"
+      header-text-variant="light"
+      body-bg-variant="gray"
+      id="edit-location-modal"
+      hide-header-close
+      no-close-on-backdrop
+      no-scrollable
+    >
+      <template v-slot:modal-title>
+        <h6>Edit Location</h6>
+      </template>
+
+      <b-row>
+          <b-col class="mt-2">
+            <small class="text-left">Code</small>
+            <b-form-input
+              id="location"
+              placeholder="Location"
+              class="form-text"
+              v-model="location.Code"
+              required
+              style="font-size: 13.5px"
+              disabled
+            />
+          </b-col>
+        </b-row>
+        
+        <b-row>
+          <b-col class="mt-2">
+            <small class="text-left">Location</small>
+            <b-form-input
+              id="location"
+              placeholder="Location"
+              class="form-text"
+              v-model="location.U_ADDRESS"
+              required
+              style="font-size: 13.5px"
+            />
+          </b-col>
+        </b-row>
+
+      <template v-slot:modal-footer="{}">
+        <b-button
+          id="add_action_modal"
+          size="sm"
+          class="button-style"
+          variant="biotech"
+          @click="updateLocation()"
+          :disabled="showLoading === true"
+        >
+          Create
+        </b-button>
+        <b-button
+          id="cancel_add_action_modal"
+          size="sm"
+          class="button-style"
+          @click="close()"
+          >Cancel</b-button
+        >
+      </template>
+    </b-modal>
+
+    <!-- end edit location modal -->
 
 </div>
 </template>
@@ -218,21 +265,6 @@ export default {
       printer_ip: null,
       printer_location: null,
       printer_port: null,
-      locations: [ 
-        { text: 'Select Location', value: null, disabled: true },
-        {
-          text: "Agro",
-          value: "agro"
-        },
-        {
-          text: "Farm",
-          value: "farm"
-        },
-        {
-          text: "Maasim",
-          value: "maasim"
-        },
-      ],
       itemsFields: [
         {
           key: "Code",
@@ -264,7 +296,9 @@ export default {
       sortDirection: "asc",
       filter: "",
       filterOn: [],
+      locations: [],
       location: [],
+      new_location: null,
     };
   },
   computed: {    
@@ -273,9 +307,11 @@ export default {
     }),
 
     filterItems(){
-      return this.listLocations.filter(logs => { 
+      return this.locations.filter(logs => { 
+        console.log(logs);
         return (logs.U_ADDRESS.toLowerCase().match(this.filter.toLowerCase()));
       })
+      this.totalRows = locations.length;
     },
 
     bottomLabel() {
@@ -307,49 +343,102 @@ export default {
     }
   },
 
+  async created(){
+    await this.getLocations();
+  },
+
   methods: {
-    // async getLocation() {
-    //   this.isBusy = true;
-    //   this.location = [];
+    async getLocations(){
+      this.isBusy = true;
 
-    //   const res = await axios({
-    //     method: "GET",
-    //     url: `${this.$axios.defaults.baseURL}/api/location/select`,
-    //     headers: {
-    //       Authorization: localStorage.SessionId
-    //     },
-    //   });
-    //   const v = res.data.view;
+        await axios({
+          method: "GET",
+          url: `${this.$axios.defaults.baseURL}/api/location/select`
+        }).then( res => {
+          this.locations = res.data.view
+          console.log(res.data.view);
+        })
+      this.isBusy = false;
+    },
 
-    //   for(var i = 0; i < v.length; i++){
-    //     this.itemsFields.push({
-    //       code: v[i].Code,
-    //       address: v[i].U_ADDRESS
-    //     })
-    //   }
-    //   this.isBusy = false;
-    //   console.log(this.location);
-    // },
+    edit(data) {
+      this.location = [];
+      console.log(data);
+      this.location = { ...data }
+      this.$bvModal.show('edit-location-modal')
+    },
 
-    edit() {
+    async updateLocation(){
+      if(this.location.U_ADDRESS == null ){
+        this.showAlert("Please input Location", "danger");
+      } else {
+          this.showLoading = true;
+          const SessionId = localStorage.SessionId;
+          await axios({
+            method: "PUT",
+            url: `${this.$axios.defaults.baseURL}/api/location/update/${this.location.Code}`,
+            headers: {
+              Authorization : `B1SESSION=${SessionId}`
+            },
+            data: {
+              U_ADDRESS: this.location.U_ADDRESS
+            }
+          }).then( res => {
+            if (res && res.name == "Error") {
+              if (res.response && res.response.data.errorMsg) {
+                if (res.response.data.errorMsg === "Invalid session.") {
+                  this.$bvModal.show("session_modal");
+                }
+              }
+              this.showLoading = false;
+            } else {
+              this.showLoading = false;
+              this.$bvModal.hide("edit-location-modal");
+              this.new_location = null;
+              this.showAlert("Successfully Added", "success");
+              this.getLocations()
+            }
+          })
+        }
+    },
 
+    close(){
+      this.$bvModal.hide('add-location-modal')
+      this.$bvModal.hide('edit-location-modal')
+      this.new_location = null
+      this.location = [];
     },
 
 
-    addPrinter(){
-        if(this.printer_ip == null){
-            this.showAlert("Please input IP Address", "danger");
-        } else if(this.printer_location == null) {
+    async addLocation(){
+        if(this.new_location == null ){
             this.showAlert("Please input Location", "danger");
-        } else if(this.printer_port == null) {
-            this.showAlert("Please input Port", "danger");
         } else {
-            console.log(this.printer_location);
-            console.log(this.printer_ip);
-            console.log(this.printer_port);
-            localStorage.printer_ip = this.printer_ip;
-            localStorage.printer_port = this.printer_port;
-            this.$bvModal.hide("add-location-modal");
+          console.log(this.new_location);
+          const SessionId = localStorage.SessionId;
+          await axios({
+            method: "POST",
+            url: `${this.$axios.defaults.baseURL}/api/location/add`,
+            headers: {
+              Authorization : `B1SESSION=${SessionId}`
+            },
+            data: {
+              U_ADDRESS: this.new_location
+            }
+          }).then( res => {
+            if (res && res.name == "Error") {
+              if (res.response && res.response.data.errorMsg) {
+                if (res.response.data.errorMsg === "Invalid session.") {
+                  this.$bvModal.show("session_modal");
+                }
+              }
+            } else {
+              this.new_location = null;
+              this.$bvModal.hide("add-location-modal");
+              this.showAlert("Successfully Added", "success");
+              this.getLocations()
+            }
+          })
         }
     },
     showAlert(message, variant) {
@@ -358,11 +447,6 @@ export default {
         variant,
         message
       };
-    },
-    close() {
-        (this.printer_ip = null),
-        (this.printer_location = null)
-      this.$bvModal.hide("add-location-modal");
     },
     onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -373,15 +457,15 @@ export default {
   async beforeCreate() {
     this.isBusy = true;
 
-    await this.$store.dispatch("Admin/Location/fetchListLocations").then( res => {
-      if (res && res.name == "Error") {
-          if (res.response && res.response.data.errorMsg) {
-            if (res.response.data.errorMsg === "Invalid session.") {
-              this.$bvModal.show("session_modal");
-            }
-          }
-        }
-      });
+    // await this.$store.dispatch("Admin/Location/fetchListLocations").then( res => {
+    //   if (res && res.name == "Error") {
+    //       if (res.response && res.response.data.errorMsg) {
+    //         if (res.response.data.errorMsg === "Invalid session.") {
+    //           this.$bvModal.show("session_modal");
+    //         }
+    //       }
+    //     }
+    //   });
 
       if(!this.filter) {
         this.totalRows = this.filterItems ? this.filterItems.length : 0

@@ -1372,7 +1372,8 @@ export default {
     await this.getCommodity();
     await this.getTransactionType();
     // await this.getFarmer();
-    await this.networkPrintInit();
+    await this.getLocations();
+    // await this.networkPrintInit();
     this.totalRows = this.items.length;
   },
   data() {
@@ -1552,6 +1553,7 @@ export default {
       sortDirection: "asc",
       filter: "",
       filterOn: [],
+      printerLocation: null,
     };
   },
   computed: {
@@ -2027,19 +2029,24 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
-    async printed(data) {
-      console.log("data to print", data);
+    async printed(transaction) {
       this.showLoading = true;
-
+      let data 
+      if(transaction.item) {
+        data = transaction.item
+      } else {
+        data = transaction
+      }
+      console.log(data);
+      
       await axios({
         method: "POST",
-        url: `${process.env.serverPrintUrl}/test_print`,
+        url: `${process.env.serverPrintUrl}/fdss/print`,
         data: {
-          ip: "172.16.4.173",
-          body: { 
-            U_TRANSACTION_TYPE: "Delivery",
-            U_TRX_NO: "100"
-          }
+          header: data,
+          qrcode: data.U_TRX_NO,
+          uuids: process.env.uuid,
+          location: this.printerLocation
         },
       })
       .then((res) => {
@@ -2052,44 +2059,35 @@ export default {
         this.showLoading = false;
       }))
 
+      try {
+        this.showLoading = true;
+        const userDetails = JSON.parse(localStorage.user_details);
 
-      // console.log(U_TRX_ID);
+        const employee_id = userDetails.Code;
 
-      // try {
-      //   // console.log(this.isPrinterAvailable)
-      //   // if (!this.isPrinterAvailable) {
-      //   //   this.showAlert("Print error: Printer not connected", "danger");
-      //   //   return;
-      //   // }
+        const res = await axios({
+          method: "PUT",
+          url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data.U_TRX_ID}`,
+          headers: {
+            Authorization: `B1SESSION=${localStorage.SessionId}`
+          },
+          data: {
+            employee_id,
+            U_TRX_ID: data.U_TRX_NO
+          }
+        });
 
-      //   this.showLoading = true;
-      //   const userDetails = JSON.parse(localStorage.user_details);
-
-      //   const employee_id = userDetails.Code;
-
-      //   const res = await axios({
-      //     method: "PUT",
-      //     url: `${this.$axios.defaults.baseURL}/api/transaction/print/${U_TRX_ID.U_TRX_ID}`,
-      //     headers: {
-      //       Authorization: `B1SESSION=${localStorage.SessionId}`
-      //     },
-      //     data: {
-      //       employee_id,
-      //       U_TRX_ID: U_TRX_ID.U_TRX_NO
-      //     }
-      //   });
-      //   this.showLoading = false;
-      //   this.networkPrint(U_TRX_ID);
-      //   this.showAlert("Printed Successfully", "success");
-      //   // this.$refs.Receipt.print(U_TRX_ID);
-      //   // this.$bvModal.hide("bv-modal-confirmPrint");
-      //   this.getTransactions();
-      // } catch (e) {
-      //   console.log(e);
-      //   this.showAlert("Print error: Printer not connected", "danger");
-      //   this.showLoading = false;
-      //   this.showAlert(res.message, "danger");
-      // }
+        console.log(res);
+        this.showLoading = false;
+        // this.networkPrint(U_TRX_ID);
+        this.showAlert("Printed Successfully", "success");
+        this.getTransactions();
+      } catch (e) {
+        console.log(e);
+        this.showAlert("Print error: Printer not connected", "danger");
+        this.showLoading = false;
+        this.showAlert(res.message, "danger");
+      }
     },
     async confirmCancel(U_TRX_ID) {
       //  console.log(this.U_TRX_ID);
@@ -2252,33 +2250,7 @@ export default {
         });
       }
     },
-    //     filterListCompanies() {
-    // return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
-    // },
-    // async getCompanyList() {
-    //    console.log(this.U_CMMDTY.value.value)
-    //   this.companyList = [];
-    //   const res = await axios({
-    //     method: "POST",
-    //     url: `${this.$axios.defaults.baseURL}/admin/companies`,
-    //     headers: {
-    //       Authorization: localStorage.SessionId
-    //     }
-    //   });
-    //   const v = res.data.companies;
-
-    //   for (let i = 0; i < v.length; i++) {
-    //     if (v[i].U_IS_ACTIVE == 1) {
-    //       this.companyList.push({
-    //         text: v[i].COMPANYDBNAME,
-    //         value: v[i].U_COMPANYCODE
-    //       });
-    //     }
-    //   }
-
-    // },
     async updateUOM() {
-      //  console.log(this.U_CMMDTY.value)
       this.showLoading = true;
       this.unit = [];
       const res = await axios({
@@ -2345,6 +2317,29 @@ export default {
 
     //   }
     // },
+    async getLocations(){
+      this.isBusy = true;
+      const locationId = JSON.parse(localStorage.user_details).U_LOCATION_ID;
+      console.log(locationId);
+
+        await axios({
+          method: "GET",
+          url: `${this.$axios.defaults.baseURL}/api/location/select`
+        }).then( res => {
+          // this.locations = res.data.view
+          const v = res.data.view;
+          console.log(v);
+
+          for(var i = 0; i < v.length; i++) {
+            if(v[i].Code == locationId){
+              this.printerLocation = v[i].U_ADDRESS;
+            }
+          }
+        })
+        console.log(this.printerLocation);
+      this.isBusy = false;
+    },
+
     async getCommodity() {
       this.isBusy = true;
       const userDetails = JSON.parse(localStorage.user_details);
@@ -2388,73 +2383,6 @@ export default {
       // }
 
     },
-    // async getFarmer() {
-    //   const userDetails = JSON.parse(localStorage.user_details);
-    //   this.farmer = [];
-    //   let v; 
-
-    //   console.log("user details", userDetails);
-    //   if(userDetails.U_COMPANY_CODE == '4360') {
-    //     // RCI
-    //     const res = await axios({
-    //       method: "GET",
-    //       url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-    //       headers: {
-    //         Authorization: localStorage.SessionId
-    //       },
-    //     });
-    //     v = res.data.view;
-    //     for (let i = 0; i < v.length; i++) {
-    //         this.farmer.push({
-    //           text: v[i].PrjName,
-    //           value: v[i].PrjName
-    //         });
-    //     }
-
-    //     const res1 = await axios({
-    //     method: "POST",
-    //       url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-    //       headers: {
-    //         Authorization: localStorage.SessionId
-    //       },
-    //       data: {
-    //         company: userDetails.U_COMPANY_CODE
-    //       }
-    //     });
-    //     const v1 = res1.data.view;
-    //     for (let i = 0; i < v1.length; i++) {
-    //       if(v1[i].CardType == "S"){
-    //         this.bfi_farmer.push({
-    //           text: v1[i].SUPPLIER_NAME,
-    //           value: { id: v1[i].SUPPLIER_ID }
-    //         });
-    //       }
-    //     }
-
-    //   } else if(userDetails.U_COMPANY_CODE == '4354') {
-    //     // BFI
-    //     const res = await axios({
-    //     method: "POST",
-    //       url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-    //       headers: {
-    //         Authorization: localStorage.SessionId
-    //       },
-    //       data: {
-    //         company: userDetails.U_COMPANY_CODE
-    //       }
-    //     });
-    //     v = res.data.view;
-
-    //     for (let i = 0; i < v.length; i++) {
-    //       if(v[i].CardType == "S"){
-    //         this.farmer.push({
-    //           text: v[i].SUPPLIER_NAME,
-    //           value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-    //         });
-    //       }
-    //     }
-    //   }
-    // },
     titleCase(str){
       // since getFarmer returns all UPPERCASE and getPlotCodes return Uppercase And Lowercase
       // can't directly compare; would return undefined

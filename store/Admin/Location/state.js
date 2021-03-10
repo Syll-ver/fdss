@@ -1,4 +1,5 @@
 export default () => ({
-    listLocations: []
+    listLocations: [],
+    listPrinterLocations: [],
   });
   
