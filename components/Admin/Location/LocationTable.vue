@@ -14,6 +14,7 @@
       />
       {{ alert.message }}
     </b-alert>
+    <Loading v-if="showLoading" />
 
     <b-row>
       <b-col cols="3" class="mt-3">
@@ -23,7 +24,7 @@
               v-model="filter"
               type="search"
               id="search_location_receipt"
-              placeholder="Search Printer"
+              placeholder="Search Location"
             ></b-form-input>
           </b-input-group>
         </b-form-group>
@@ -36,9 +37,9 @@
           variant="biotech"
           class="button-style mt-3"
           size="sm"
-          @click="$bvModal.show('add-printerlocation-modal')"
+          @click="$bvModal.show('add-location-modal')"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Add Printer
+          <font-awesome-icon icon="plus" class="mr-1" />Add Location
         </b-button>
       </b-col>
     <!-- </b-row> -->
@@ -134,7 +135,7 @@
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
-      id="add-printerlocation-modal"
+      id="add-location-modal"
       hide-header-close
       no-close-on-backdrop
       no-scrollable
@@ -143,28 +144,19 @@
         <h6>Add Printer</h6>
       </template>
         
-        <b-row>
-          <b-col >
-            <small class="text-left">Location</small>
-            <b-form-select v-model="printer.location"
-            :options="locations"
-            size="sm"
-            ></b-form-select>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col class="mt-2">
-            <small class="text-left">Printer IP Address</small>
-            <b-form-input
-              id="printer_ip"
-              placeholder="Printer IP Address"
-              class="form-text"
-              v-model="printer.ip"
-              required
-              style="font-size: 13.5px"
-            />
-          </b-col>
-        </b-row>
+      <b-row>
+        <b-col class="mt-2">
+          <small class="text-left">Location</small>
+          <b-form-input
+            id="location"
+            placeholder="Location"
+            class="form-text"
+            v-model="new_location"
+            required
+            style="font-size: 13.5px"
+          />
+        </b-col>
+      </b-row>
 
       <template v-slot:modal-footer="{}">
         <b-button
@@ -172,7 +164,7 @@
           size="sm"
           class="button-style"
           variant="biotech"
-          @click="addPrinter()"
+          @click="addLocation()"
           :disabled="showLoading === true"
         >
           Create
@@ -181,47 +173,51 @@
           id="cancel_add_action_modal"
           size="sm"
           class="button-style"
-          @click="cancel()"
+          @click="close()"
           >Cancel</b-button
         >
       </template>
     </b-modal>
 
-    <!-- edit printer modal -->
+     <!-- edit location modal -->
 
       <b-modal
       size="large"
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
-      id="edit-printerlocation-modal"
+      id="edit-location-modal"
       hide-header-close
       no-close-on-backdrop
       no-scrollable
     >
       <template v-slot:modal-title>
-        <h6>Edit Printer</h6>
+        <h6>Edit Location</h6>
       </template>
-        
-        <b-row>
-          <b-col >
-            <small class="text-left">Location</small>
-            <b-form-select v-model="printer.location"
-            :options="locations"
-            placeholder="Select Location"
-            size="sm"
-            disabled
-            ></b-form-select>
+
+      <b-row>
+          <b-col class="mt-2">
+            <small class="text-left">Code</small>
+            <b-form-input
+              id="location"
+              placeholder="Location"
+              class="form-text"
+              v-model="location.Code"
+              required
+              style="font-size: 13.5px"
+              disabled
+            />
           </b-col>
         </b-row>
+        
         <b-row>
           <b-col class="mt-2">
-            <small class="text-left">Printer IP Address</small>
+            <small class="text-left">Location</small>
             <b-form-input
-              id="printer_ip"
-              placeholder="Printer IP Address"
+              id="location"
+              placeholder="Location"
               class="form-text"
-              v-model="printer.ip"
+              v-model="location.U_ADDRESS"
               required
               style="font-size: 13.5px"
             />
@@ -234,7 +230,7 @@
           size="sm"
           class="button-style"
           variant="biotech"
-          @click="updatePrinter()"
+          @click="updateLocation()"
           :disabled="showLoading === true"
         >
           Create
@@ -243,13 +239,13 @@
           id="cancel_add_action_modal"
           size="sm"
           class="button-style"
-          @click="cancel()"
+          @click="close()"
           >Cancel</b-button
         >
       </template>
     </b-modal>
 
-    <!-- end edit printer modal -->
+    <!-- end edit location modal -->
 
 </div>
 </template>
@@ -268,15 +264,16 @@ export default {
       showLoading: false,
       printer_ip: null,
       printer_location: null,
+      printer_port: null,
       itemsFields: [
         {
-          key: "ip",
-          label: "IP Address",
+          key: "Code",
+          label: "Code",
           sortable: true,
           sortDirection: "desc"
         },
         {
-          key: "location",
+          key: "U_ADDRESS",
           label: "Location",
           sortable: true,
           sortDirection: "desc"
@@ -284,6 +281,7 @@ export default {
         { key: "actions", label: "Action", class: "text-center" }
 
       ],
+
       alert: {
         showAlert: 0,
         variant: "biotech",
@@ -299,16 +297,21 @@ export default {
       filter: "",
       filterOn: [],
       locations: [],
-      printers: [],
-      printer: [],
+      location: [],
+      new_location: null,
     };
   },
   computed: {    
+    ...mapGetters({
+      listLocations: "Admin/Location/getListLocations"
+    }),
+
     filterItems(){
-      return this.printers.filter(logs => {
-        return (logs.location.toLowerCase().match(this.filter.toLowerCase()) ||
-        logs.ip.match(this.filter))
-        })
+      return this.locations.filter(logs => { 
+        console.log(logs);
+        return (logs.U_ADDRESS.toLowerCase().match(this.filter.toLowerCase()));
+      })
+      this.totalRows = locations.length;
     },
 
     bottomLabel() {
@@ -339,137 +342,111 @@ export default {
         });
     }
   },
+
   async created(){
-    await this.getPrinter();
     await this.getLocations();
   },
 
   methods: {
-    async getPrinter(){
+    async getLocations(){
       this.isBusy = true;
-      const sessionId = localStorage.sessionId
+
         await axios({
           method: "GET",
-          url: `${process.env.serverPrintUrl}/fdss/get`,
-          headers: {
-            authorization: `B1SESSION=${sessionId}`
-          }
+          url: `${this.$axios.defaults.baseURL}/api/location/select`
         }).then( res => {
-          this.printers = res.data.view
+          this.locations = res.data.view
           console.log(res.data.view);
         })
       this.isBusy = false;
     },
 
-    async getLocations(){
-      this.isBusy = true;
-        await axios({
-          method: "GET",
-          url: `${this.$axios.defaults.baseURL}/api/location/select`
-        }).then( res => {
-          const v = res.data.view;
-          this.locations.push({
-            text: 'Please select a location',
-            value: null,
-            disabled: true
-          })
-          for(let i = 0; i < v.length; i++) {
-            this.locations.push({
-              text: v[i].U_ADDRESS,
-              value: v[i].U_ADDRESS
-            })
-          }
-        })
-      this.isBusy = false;
-    },
-
     edit(data) {
-      this.printer = [];
+      this.location = [];
       console.log(data);
-      this.printer = { ...data }
-      this.$bvModal.show('edit-printerlocation-modal');
+      this.location = { ...data }
+      this.$bvModal.show('edit-location-modal')
     },
 
-    cancel() {
-      this.$bvModal.hide('edit-printerlocation-modal');
-      this.$bvModal.hide('add-printerlocation-modal');
-      this.printer = [];
-    },
-
-    async addPrinter(){
-        if(this.printer.ip == null){
-            this.showAlert("Please input IP Address", "danger");
-        } else if(this.printer.location == null) {
-            this.showAlert("Please input Location", "danger");
-        } else {
-          var printLoc = null;
-          this.printers.filter(loc => {
-             printLoc = loc.location.toLowerCase().match((this.printer.location).toLowerCase())
-          })
-          if(printLoc == null) {
-            await axios({
-              method: "POST",
-              url: `${process.env.serverPrintUrl}/fdss/add`,
-              data: {
-                uuids: process.env.uuid,
-                ip: this.printer.ip,
-                location: this.printer.location
+    async updateLocation(){
+      if(this.location.U_ADDRESS == null ){
+        this.showAlert("Please input Location", "danger");
+      } else {
+          this.showLoading = true;
+          const SessionId = localStorage.SessionId;
+          await axios({
+            method: "PUT",
+            url: `${this.$axios.defaults.baseURL}/api/location/update/${this.location.Code}`,
+            headers: {
+              Authorization : `B1SESSION=${SessionId}`
+            },
+            data: {
+              U_ADDRESS: this.location.U_ADDRESS
+            }
+          }).then( res => {
+            if (res && res.name == "Error") {
+              if (res.response && res.response.data.errorMsg) {
+                if (res.response.data.errorMsg === "Invalid session.") {
+                  this.$bvModal.show("session_modal");
+                }
               }
-            }).then( res => {
-              this.$bvModal.hide("add-printerlocation-modal");
-              this.getPrinter();
+              this.showLoading = false;
+            } else {
+              this.showLoading = false;
+              this.$bvModal.hide("edit-location-modal");
+              this.new_location = null;
               this.showAlert("Successfully Added", "success");
-            })
-            .catch(e => {
-              this.showAlert("Location already exists", "danger");
-            })
-          }
+              this.getLocations()
+            }
+          })
         }
     },
 
-    async updatePrinter() {
-      console.log(this.printer);
-      if(this.printer.ip == null){
-            this.showAlert("Please input IP Address", "danger");
-        } else if(this.printer.location == null) {
-            this.showAlert("Please input Location", "danger");
-        } else {
-          var printLoc = null;
-          this.printers.filter(loc => {
-             printLoc = loc.location.toLowerCase().match((this.printer.location).toLowerCase())
-          })
-          if(printLoc == null) {
-            await axios({
-              method: "PATCH",
-              url: `${process.env.serverPrintUrl}/fdss/update`,
-              data: {
-                uuids: process.env.uuid,
-                ip: this.printer.ip,
-                location: this.printer.location
-              }
-            }).then( res => {
-              this.$bvModal.hide("edit-printerlocation-modal");
-              this.getPrinter();
-              this.showAlert("Successfully Added", "success");
-            })
-            .catch(e => {
-              this.showAlert("Location already exists", "danger");
-            })
-          }
-        }
+    close(){
+      this.$bvModal.hide('add-location-modal')
+      this.$bvModal.hide('edit-location-modal')
+      this.new_location = null
+      this.location = [];
     },
 
+
+    async addLocation(){
+        if(this.new_location == null ){
+            this.showAlert("Please input Location", "danger");
+        } else {
+          console.log(this.new_location);
+          const SessionId = localStorage.SessionId;
+          await axios({
+            method: "POST",
+            url: `${this.$axios.defaults.baseURL}/api/location/add`,
+            headers: {
+              Authorization : `B1SESSION=${SessionId}`
+            },
+            data: {
+              U_ADDRESS: this.new_location
+            }
+          }).then( res => {
+            if (res && res.name == "Error") {
+              if (res.response && res.response.data.errorMsg) {
+                if (res.response.data.errorMsg === "Invalid session.") {
+                  this.$bvModal.show("session_modal");
+                }
+              }
+            } else {
+              this.new_location = null;
+              this.$bvModal.hide("add-location-modal");
+              this.showAlert("Successfully Added", "success");
+              this.getLocations()
+            }
+          })
+        }
+    },
     showAlert(message, variant) {
       this.alert = {
         showAlert: 3,
         variant,
         message
       };
-    },
-    close() {
-        (this.printer_ip = null),
-        (this.printer_location = null)
-      this.$bvModal.hide("add-location-modal");
     },
     onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -479,6 +456,16 @@ export default {
   },
   async beforeCreate() {
     this.isBusy = true;
+
+    // await this.$store.dispatch("Admin/Location/fetchListLocations").then( res => {
+    //   if (res && res.name == "Error") {
+    //       if (res.response && res.response.data.errorMsg) {
+    //         if (res.response.data.errorMsg === "Invalid session.") {
+    //           this.$bvModal.show("session_modal");
+    //         }
+    //       }
+    //     }
+    //   });
 
       if(!this.filter) {
         this.totalRows = this.filterItems ? this.filterItems.length : 0

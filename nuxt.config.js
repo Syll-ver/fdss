@@ -65,14 +65,13 @@ module.exports = {
     baseURL: "https://fdss-eut.biotechfarms.net/fdss-api" 
     // baseURL: "http://172.16.4.201:8000/fdss-api" //butch
     // baseURL: "hhtp://94.237.66.240:8200" (UAT)
-    // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api"
+    // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api" 
 
   },
   env:{
-    serverPrintUrl: "http://localhost:3001",
-    networkPrinterIp: `172.16.4.173`,
-    // networkPrinterIp: `172.17.128.23`, 
-    networkPrinterPort: `8008`,
+    serverPrintUrl: "http://localhost:3002",
+    // networkPrinterIp: `172.16.4.173`, // gensan network printer ip
+    uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
   },
 
   server: { port: 9000 }
