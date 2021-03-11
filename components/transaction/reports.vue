@@ -181,6 +181,7 @@
       :sort-by.sync="sortBy"
       :busy="isBusy"
       @row-clicked="show"
+      @filtered="onFiltered"
       
     >
       <template #table-busy>
@@ -314,10 +315,10 @@
         </b-col>
         <b-col>
           <b-pagination
-            id="modules-pagination"
+            id="reports-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
@@ -823,7 +824,7 @@ export default {
         },
 
       ],
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
@@ -848,36 +849,15 @@ export default {
           return request;
         }
       });
-      //  const pageSize = () => {
-      //   return this.items.filter((request) => {
-
-      //     return (
-      //       this.filterStatus.includes(
-      //         request.U_TRANSACTION_TYPE
-      //       ) &&
-      //       this.filterStatus.includes(request.U_STATUS) 
-            
-      //     );
-      //   });
-      // };
-
-      // const pages = pageSize();
-      // this.totalRows = pages.length;
-
-      // return this.items.filter((request) => {
-      //   return (
-      //     this.filterStatus.includes(request.U_TRANSACTION_TYPE) &&
-      //     this.filterStatus.includes(request.U_STATUS)
-      //  );
-      // });
-
-
-
     },
 
      bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -1085,9 +1065,9 @@ show(data) {
     },
   
 
-      onFiltered(filteredItems) {
+      onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     },
      intToTime(i) {
