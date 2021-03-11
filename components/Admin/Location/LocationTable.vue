@@ -308,7 +308,6 @@ export default {
 
     filterItems(){
       return this.locations.filter(logs => { 
-        console.log(logs);
         return (logs.U_ADDRESS.toLowerCase().match(this.filter.toLowerCase()));
       })
       this.totalRows = locations.length;
@@ -356,14 +355,12 @@ export default {
           url: `${this.$axios.defaults.baseURL}/api/location/select`
         }).then( res => {
           this.locations = res.data.view
-          console.log(res.data.view);
         })
       this.isBusy = false;
     },
 
     edit(data) {
       this.location = [];
-      console.log(data);
       this.location = { ...data }
       this.$bvModal.show('edit-location-modal')
     },
@@ -372,6 +369,8 @@ export default {
       if(this.location.U_ADDRESS == null ){
         this.showAlert("Please input Location", "danger");
       } else {
+        const existing = this.locations.find(ip => ip.ip === this.printer.ip)
+
           this.showLoading = true;
           const SessionId = localStorage.SessionId;
           await axios({
@@ -414,7 +413,6 @@ export default {
         if(this.new_location == null ){
             this.showAlert("Please input Location", "danger");
         } else {
-          console.log(this.new_location);
           const SessionId = localStorage.SessionId;
           await axios({
             method: "POST",
