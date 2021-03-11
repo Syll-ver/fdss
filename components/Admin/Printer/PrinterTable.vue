@@ -356,7 +356,9 @@ export default {
           }
         }).then( res => {
           this.printers = res.data.view
-          console.log(res.data.view);
+        })
+        .catch(e => {
+          console.log(e);
         })
       this.isBusy = false;
     },
@@ -385,7 +387,6 @@ export default {
 
     edit(data) {
       this.printer = [];
-      console.log(data);
       this.printer = { ...data }
       this.$bvModal.show('edit-printerlocation-modal');
     },
@@ -397,66 +398,70 @@ export default {
     },
 
     async addPrinter(){
-        if(this.printer.ip == null){
-            this.showAlert("Please input IP Address", "danger");
-        } else if(this.printer.location == null) {
-            this.showAlert("Please input Location", "danger");
+      if(this.printer.ip == null){
+          this.showAlert("Please input IP Address", "danger");
+      } else if(this.printer.location == null) {
+          this.showAlert("Please input Location", "danger");
+      } else {
+        // check if either ip or location already exists
+        // if not, add
+        const existingIP = this.printers.find(ip => ip.ip === this.printer.ip)
+        const existingLoc = this.printers.find(loc => loc.location === this.printer.location)
+        if(existingIP != null){
+          this.showAlert("IP Address already exists", "danger");
+        } else if(existingLoc != null) {
+          this.showAlert("Location already exists", "danger");
         } else {
-          var printLoc = null;
-          this.printers.filter(loc => {
-             printLoc = loc.location.toLowerCase().match((this.printer.location).toLowerCase())
+          await axios({
+            method: "POST",
+            url: `${process.env.serverPrintUrl}/fdss/add`,
+            data: {
+              uuids: process.env.uuid,
+              ip: this.printer.ip,
+              location: this.printer.location
+            }
+          }).then( res => {
+            this.$bvModal.hide("add-printerlocation-modal");
+            this.getPrinter();
+            this.showAlert("Successfully Added", "success");
           })
-          if(printLoc == null) {
-            await axios({
-              method: "POST",
-              url: `${process.env.serverPrintUrl}/fdss/add`,
-              data: {
-                uuids: process.env.uuid,
-                ip: this.printer.ip,
-                location: this.printer.location
-              }
-            }).then( res => {
-              this.$bvModal.hide("add-printerlocation-modal");
-              this.getPrinter();
-              this.showAlert("Successfully Added", "success");
-            })
-            .catch(e => {
-              this.showAlert("Location already exists", "danger");
-            })
-          }
+          .catch(e => {
+            console.log(e);
+          })
         }
+      }
     },
 
     async updatePrinter() {
-      console.log(this.printer);
       if(this.printer.ip == null){
-            this.showAlert("Please input IP Address", "danger");
-        } else if(this.printer.location == null) {
-            this.showAlert("Please input Location", "danger");
+        this.showAlert("Please input IP Address", "danger");
+      } else if(this.printer.location == null) {
+        this.showAlert("Please input Location", "danger");
+      } else {
+        // check if ip exists
+        // if not, update
+        const existingIP = this.printers.find(ip => ip.ip === this.printer.ip)
+        if(existingIP != null){
+          this.showAlert("IP Address already exists", "danger");
         } else {
-          var printLoc = null;
-          this.printers.filter(loc => {
-             printLoc = loc.location.toLowerCase().match((this.printer.location).toLowerCase())
+          await axios({
+            method: "PATCH",
+            url: `${process.env.serverPrintUrl}/fdss/update`,
+            data: {
+              uuids: process.env.uuid,
+              ip: this.printer.ip,
+              location: this.printer.location
+            }
+          }).then( res => {
+            this.$bvModal.hide("edit-printerlocation-modal");
+            this.getPrinter();
+            this.showAlert("Successfully Added", "success");
           })
-          if(printLoc == null) {
-            await axios({
-              method: "PATCH",
-              url: `${process.env.serverPrintUrl}/fdss/update`,
-              data: {
-                uuids: process.env.uuid,
-                ip: this.printer.ip,
-                location: this.printer.location
-              }
-            }).then( res => {
-              this.$bvModal.hide("edit-printerlocation-modal");
-              this.getPrinter();
-              this.showAlert("Successfully Added", "success");
-            })
-            .catch(e => {
-              this.showAlert("Location already exists", "danger");
-            })
-          }
-        }
+          .catch(e => {
+            console.log(e);
+          })
+        }   
+      }
     },
 
     showAlert(message, variant) {

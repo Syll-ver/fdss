@@ -2326,17 +2326,13 @@ export default {
           method: "GET",
           url: `${this.$axios.defaults.baseURL}/api/location/select`
         }).then( res => {
-          // this.locations = res.data.view
           const v = res.data.view;
-          console.log(v);
-
           for(var i = 0; i < v.length; i++) {
             if(v[i].Code == locationId){
               this.printerLocation = v[i].U_ADDRESS;
             }
           }
         })
-        console.log(this.printerLocation);
       this.isBusy = false;
     },
 
@@ -2891,34 +2887,24 @@ export default {
           },
         });
         v = res.data.view;
-        // for (let i = 0; i < v.length; i++) {
-        //     this.farmer.push({
-        //       text: v[i].PrjName,
-        //       value: v[i].PrjName
-        //     });
-        // }
 
         for(var i = 0; i < v.length; i++){
           let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
           for(var j = 0; j < this.bfi_farmer.length; j++) {
             let frmr_name = (this.bfi_farmer[j].text).toLowerCase();
-            if(frmr.length == 1) {
-              if(frmr_name == frmr[0]) {
-                this.farmer.push({
-                  text: v[i].PrjName,
-                  value: { id: this.bfi_farmer[j].value.id }
-                });
-              }
-            } else {
-              if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
-                  this.farmer.push({
-                    text: v[i].PrjName,
-                    value: { id: this.bfi_farmer[j].value.id }
-                  });
-                }
-              }
+            if((frmr.length == 1) && (frmr_name == frmr[0])) {
+              this.farmer.push({
+                text: v[i].PrjName,
+                value: { id: this.bfi_farmer[j].value.id }
+              });
+            } else if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
+              this.farmer.push({
+                text: v[i].PrjName,
+                value: { id: this.bfi_farmer[j].value.id }
+              });
             }
           }
+        }
 
       } else if(userDetails.U_COMPANY_CODE == '4354') {
         // BFI
