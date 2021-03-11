@@ -1557,17 +1557,10 @@ export default {
     };
   },
   computed: {
-    // ...mapGetters({
-
-    //   companyList: "Company/getCompanyList",
-    // }),
     filterItems() {
       return this.items.filter(request => {
-        if (this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
-          return request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase())
-        }
-        if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
-          return request;
+        if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
+          return (request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase(), this.totalRows = request.length))
         }
       })
     },
@@ -2320,7 +2313,6 @@ export default {
     async getLocations(){
       this.isBusy = true;
       const locationId = JSON.parse(localStorage.user_details).U_LOCATION_ID;
-      console.log(locationId);
 
         await axios({
           method: "GET",
