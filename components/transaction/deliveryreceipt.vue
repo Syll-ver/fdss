@@ -1624,8 +1624,6 @@ export default {
       console.log(data);
     },
     async saveDR() {
-      // console.log(this.U_UOM)
-      // console.log(this.U_FRMR_NAME.value.id)
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
       } else if (this.U_TRANSACTION_TYPE == null) {
@@ -1819,7 +1817,6 @@ export default {
       };
     },
     async networkPrint(data) {
-      console.log("data", data);
       let QRCode = require("qrcode");
 
       this.qrString = JSON.stringify(data.U_TRX_NO);
@@ -1941,8 +1938,6 @@ export default {
       let deviceId = "bfi_printer";
       let options = { crypto: false, buffer: false };
 
-      console.log(ipAddress, port);
-
       const connectionResult = await new Promise(resolve => {
         ePosDev.connect(ipAddress, port, resultConnect => {
           resolve(resultConnect);
@@ -2030,7 +2025,6 @@ export default {
       } else {
         data = transaction
       }
-      console.log(data);
       
       await axios({
         method: "POST",
@@ -2043,7 +2037,6 @@ export default {
         },
       })
       .then((res) => {
-        console.log(res);
         this.showLoading = false;
         this.showAlert("Printed Successfully", "success");
       })
@@ -2069,8 +2062,6 @@ export default {
             U_TRX_ID: data.U_TRX_NO
           }
         });
-
-        console.log(res);
         this.showLoading = false;
         // this.networkPrint(U_TRX_ID);
         this.showAlert("Printed Successfully", "success");
@@ -2083,7 +2074,6 @@ export default {
       }
     },
     async confirmCancel(U_TRX_ID) {
-      //  console.log(this.U_TRX_ID);
       try {
         this.showLoading = true;
         const userDetails = JSON.parse(localStorage.user_details);
@@ -2115,7 +2105,6 @@ export default {
 
     cancel(data) {
       this.U_APP_ProjCode = null;
-      console.log(data);
       this.remarks = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
@@ -2140,7 +2129,6 @@ export default {
       this.$bvModal.show("bv-modal-confirmCancel");
     },
     print(data) {
-      console.log(data);
       // this.U_CRTD_BY = data.U_CRTD_BY;
       // this.U_TRX_ID = data.U_TRX_ID;
       // this.U_TRX_NO = data.U_TRX_NO;
@@ -2205,7 +2193,6 @@ export default {
       this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID };
     },
     show(data) {
-      console.log(data);
       // this.U_UOM = data.U_UOM.UomName;
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
@@ -2401,18 +2388,6 @@ export default {
       } else if(this.companyCode == '4360') {
         this.U_APP_ProjCode = "";
         this.U_FRMR_ADD = "";
-        // let fname = this.U_FRMR_NAME.value.split(", ");
-        // let frmr_id = "";
-        // for(var i = 0; i < this.bfi_farmer.length; i++) {
-        //   let frmr_name = (this.bfi_farmer[i].text).toLowerCase();
-        //   if(frmr_name.includes(fname[0].toLowerCase()) && frmr_name.includes(fname[1].toLowerCase())){
-        //     frmr_id = this.bfi_farmer[i].value.id;
-        //   } else {
-        //     this.U_FRMR_NAME = null;
-        //     this.showLoading = false;
-        //     this.showAlert("Farmer does not exist in Biotech Farms", "danger");
-        //   }
-        // }
 
         if(this.U_FRMR_NAME) {
           const res = await axios({
@@ -2426,7 +2401,6 @@ export default {
             }
           });
           v = res.data.posted;
-          console.log(res.data.posted);
           if(v) {
             for(let i = 0; i < v.length; i++){
               this.plotCode.push({
@@ -2436,60 +2410,17 @@ export default {
               }
           }
         }
-         // I STOPPED HERE
       
       }
-      console.log("farmer with plotcodes", v);
       this.showLoading = false;
-
-
-      // // if company is rci
-      // // (since plotcode stuff is only available to rci transactions)
-      // if(this.companyCode == '4360'){
-      //   // if farmer exists in plotcodes
-      //   // and if farmer plotcode is not empty
-      //   if(this.plotCodes.posted[this.U_FRMR_NAME.text]){
-      //     var name = this.U_FRMR_NAME.text
-      //     if(this.plotCodes.posted[name].plotCodes.length > 0){
-      //       var pc = this.plotCodes.posted[name].plotCodes;
-      //       // push plotcodes in plotcode array
-      //       for(let i = 0; i < pc.length; i++){
-      //         this.plotCode.push({
-      //           text: pc[i],
-      //           value: pc[i]
-      //         });
-      //       }
-      //     } else {
-      //        this.showAlert1('Farmer does not have plot code', 'warning')
-      //     }
-      //   } else {
-      //     let frmr = this.titleCase(this.U_FRMR_NAME.text);
-      //      if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0) {
-      //       // store farmer's plotcodes to variable pc
-      //       var pc = this.plotCodes.posted[frmr].plotCodes;
-      //       // push plotcodes in plotcode array
-      //       for(let i = 0; i < pc.length; i++){
-      //         this.plotCode.push({
-      //           text: pc[i],
-      //           value: pc[i]
-      //         });
-      //       }
-      //     } else {
-      //        this.showAlert1('Farmer does not have plot code', 'warning')
-      //     }
-      //   }
-      // }}
     },
     getPlotAddress(){
       this.U_FRMR_ADD = "";
-      console.log(this.U_APP_ProjCode);
       if(this.U_APP_ProjCode.value.address) {
         this.U_FRMR_ADD = this.U_APP_ProjCode.value.address;
       } else {
         this.showAlert1('Plot Code does not have an address', 'warning')
       }
-      // this.U_APP_ProjCode = this.U_APP_ProjCode.text;
-      console.log(this.U_FRMR_ADD);
     },
     async newDR(signature) {
       try {
@@ -2512,9 +2443,7 @@ export default {
         // this.U_HLPR_NAME=null;
 
         let items = [];
-
         const userDetails = JSON.parse(localStorage.user_details); 
-        console.log("farmer_name: ",this.U_FRMR_NAME.text);
 
         let json = {};
         if(userDetails.U_COMPANY_CODE == '4354') {
@@ -2604,7 +2533,7 @@ export default {
         this.showLoading = false;
         this.getTransactions();
         this.$bvModal.hide("add-transaction-modal");
-        console.log(res);
+
         this.showAlert(res.data.posted.msg, "success");
         this.close();
         // this.$refs.Receipt.print(data);
@@ -2619,8 +2548,6 @@ export default {
       }
     },
     async updateDR(U_TRX_ID) {
-
-      console.log("updated",U_TRX_ID);
       try {
         this.showLoading = true;
         let items = [];
@@ -2787,7 +2714,6 @@ export default {
         });
 
         const v = res.data.view;
-        console.log(v);
         for (let i = 0; i < v.length; i++) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           // const t = this.intToTime(v[i].CREATED_TIME);
@@ -2841,13 +2767,9 @@ export default {
   },
 
   async beforeCreate() {
-    // await this.getFarmer();
-    
       const userDetails = JSON.parse(localStorage.user_details);
       this.farmer = [];
       let v; 
-
-      console.log("user details", userDetails);
       if(userDetails.U_COMPANY_CODE == '4360') {
         // RCI
 
