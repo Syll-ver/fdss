@@ -27,4 +27,47 @@ export default {
       })
       .catch(err => err);
   },
+
+  async addLocation({commit}, data) {
+    console.log(data);
+    return await axios({
+      method: "POST",
+      url: `${this.$axios.defaults.baseURL}/api/location/add`,
+      headers: {
+        Authorization : `B1SESSION=${data.sessionId}`
+      },
+      data: {
+        U_ADDRESS: data.data
+      }
+    }).then( res => {
+      console.log(res);
+      if(Array.isArray(res.data.view)){
+        commit("addLocation", res.data.view);
+      } else {
+        commit("addLocation", []);
+      }
+    }).catch(err => err);
+  },
+
+  async updateLocationn({commit}, data) {
+    return await axios({
+      method: "PUT",
+      url: `${this.$axios.defaults.baseURL}/api/location/update/${data.data.Code}`,
+      headers: {
+        Authorization : `B1SESSION=${data.sessionId}`
+      },
+      data: {
+        U_ADDRESS: data.data.U_ADDRESS
+      },
+      validateStatus: () => true
+    }).then( res => {
+      if(Array.isArray(res.data.view)) {
+        commit("updateLocation", res.data.view);
+      } else {
+        commit("updateLocation", []);
+      }
+      return res.data
+    }).catch(err => console.log(err));
+
+  }
 }
