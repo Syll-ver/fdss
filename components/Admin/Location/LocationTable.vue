@@ -164,7 +164,7 @@
           size="sm"
           class="button-style"
           variant="biotech"
-          @click="addLocation()"
+          @click="add()"
           :disabled="showLoading === true"
         >
           Create
@@ -251,16 +251,18 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
 import DateRangePicker from "vue2-daterange-picker";
+import Loading from "~/components/Loading/Loading.vue";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 
 export default {
-  components: { DateRangePicker },
+  components: { DateRangePicker,
+  Loading },
   data() {
     return {
-      isBusy: false,
+      isBusy: true,
       showLoading: false,
       printer_ip: null,
       printer_location: null,
@@ -303,11 +305,12 @@ export default {
   },
   computed: {    
     ...mapGetters({
-      listLocations: "Admin/Location/getListLocations"
+      listLocations: "Admin/Location/getListLocations",
+      listPrinters: "Admin/Printer/getListPrinters",
     }),
 
     filterItems(){
-      return this.locations.filter(logs => { 
+      return this.listLocations.filter(logs => { 
         return (logs.U_ADDRESS.toLowerCase().match(this.filter.toLowerCase()));
       })
       this.totalRows = locations.length;
@@ -343,62 +346,70 @@ export default {
   },
 
   async created(){
-    await this.getLocations();
+    // await this.getLocations();
   },
 
   methods: {
-    async getLocations(){
-      this.isBusy = true;
-
-        await axios({
-          method: "GET",
-          url: `${this.$axios.defaults.baseURL}/api/location/select`
-        }).then( res => {
-          this.locations = res.data.view
-        })
-      this.isBusy = false;
-    },
-
     edit(data) {
       this.location = [];
       this.location = { ...data }
+      this.location.old_value = data.U_ADDRESS
       this.$bvModal.show('edit-location-modal')
     },
 
     async updateLocation(){
+      console.log(this.listPrinters);
+      console.log(this.location);
+
+      const printer = this.listPrinters.find(print => print.U_ADDRESS === this.location.old_value);
+
       if(this.location.U_ADDRESS == null ){
         this.showAlert("Please input Location", "danger");
       } else {
-        const existing = this.locations.find(ip => ip.ip === this.printer.ip)
+        const existing = this.listLocations.find(loc => loc.U_ADDRESS === this.location.U_ADDRESS)
 
+        if(existing != null) {
+          this.showAlert(`${this.location.U_ADDRESS} already exists`, 'danger')
+        } else {
           this.showLoading = true;
           const SessionId = localStorage.SessionId;
-          await axios({
-            method: "PUT",
-            url: `${this.$axios.defaults.baseURL}/api/location/update/${this.location.Code}`,
-            headers: {
-              Authorization : `B1SESSION=${SessionId}`
-            },
-            data: {
-              U_ADDRESS: this.location.U_ADDRESS
-            }
+          this.$store.dispatch("Admin/Location/updateLocationn", {
+            sessionId: SessionId,
+            data: this.location,
           }).then( res => {
             if (res && res.name == "Error") {
-              if (res.response && res.response.data.errorMsg) {
-                if (res.response.data.errorMsg === "Invalid session.") {
+              if (res.response && res.response.data.error) {
+                if (res.response.data.error === "Session expired") {
                   this.$bvModal.show("session_modal");
                 }
               }
               this.showLoading = false;
             } else {
+
+              if(printer) {
+                axios({
+                  method: "PATCH",
+                  url: `${process.env.serverPrintUrl}/fdss/update`,
+                  data: {
+                    uuids: process.env.uuid,
+                    ip: printer.ip,
+                    location: this.location.U_ADDRESS
+                  }
+                })
+              }
+
               this.showLoading = false;
               this.$bvModal.hide("edit-location-modal");
               this.new_location = null;
               this.showAlert("Successfully Added", "success");
-              this.getLocations()
+              
+              this.$store.dispatch("Admin/Location/fetchListLocations")
             }
+          }).catch( e => {
+            console.log(e);
           })
         }
+      }
     },
 
     close(){
@@ -408,34 +419,32 @@ export default {
       this.location = [];
     },
 
-
-    async addLocation(){
+    async add(){
+      this.showLoading = true;
         if(this.new_location == null ){
             this.showAlert("Please input Location", "danger");
         } else {
-          const SessionId = localStorage.SessionId;
-          await axios({
-            method: "POST",
-            url: `${this.$axios.defaults.baseURL}/api/location/add`,
-            headers: {
-              Authorization : `B1SESSION=${SessionId}`
-            },
-            data: {
-              U_ADDRESS: this.new_location
-            }
+          this.$store.dispatch("Admin/Location/addLocation", {
+            sessionId: localStorage.SessionId,
+            data: this.new_location,
           }).then( res => {
             if (res && res.name == "Error") {
-              if (res.response && res.response.data.errorMsg) {
-                if (res.response.data.errorMsg === "Invalid session.") {
+              if (res.response && res.response.data.error) {
+                if (res.response.data.error === "Session expired") {
                   this.$bvModal.show("session_modal");
                 }
               }
+              this.showLoading = false;
             } else {
-              this.new_location = null;
+              this.showLoading = false;
               this.$bvModal.hide("add-location-modal");
+              this.new_location = null;
               this.showAlert("Successfully Added", "success");
-              this.getLocations()
+              
+              this.$store.dispatch("Admin/Location/fetchListLocations")
             }
+          }).catch( e => {
+            console.log(e);
           })
         }
     },
@@ -455,15 +464,28 @@ export default {
   async beforeCreate() {
     this.isBusy = true;
 
-    // await this.$store.dispatch("Admin/Location/fetchListLocations").then( res => {
-    //   if (res && res.name == "Error") {
-    //       if (res.response && res.response.data.errorMsg) {
-    //         if (res.response.data.errorMsg === "Invalid session.") {
-    //           this.$bvModal.show("session_modal");
-    //         }
-    //       }
-    //     }
-    //   });
+    await this.$store.dispatch("Admin/Location/fetchListLocations").then( res => {
+      if (res && res.name == "Error") {
+        if (res.response && res.response.data.error) {
+          if (res.response.data.error === "Session expired") {
+            this.$bvModal.show("session_modal");
+          }
+        }
+      }
+    });
+
+    await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
+      SessionId: localStorage.SessionId
+    })
+    .then( res => {
+      if (res && res.name == "Error") {
+        if (res.response && res.response.data.error) {
+          if (res.response.data.error === "Session expired") {
+            this.$bvModal.show("session_modal");
+          }
+        }
+      }
+    });
 
       if(!this.filter) {
         this.totalRows = this.filterItems ? this.filterItems.length : 0

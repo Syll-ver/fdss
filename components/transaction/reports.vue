@@ -979,7 +979,6 @@ export default {
     },
       // },
     async getCompanyList() {
-      //  console.log(this.U_CMMDTY.value.value)
       this.companyList = [];
       const res = await axios({
         method: "POST",
@@ -1116,7 +1115,6 @@ show(data) {
       this.isBusy = false;
     },
   async getTransactions() {
-      console.log(JSON.parse(localStorage.user_details))
       try {
         const userDetails = JSON.parse(localStorage.user_details)
         const roleDetails = JSON.parse(localStorage.user_role)
