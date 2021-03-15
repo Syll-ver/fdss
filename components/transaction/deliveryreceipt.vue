@@ -1558,7 +1558,22 @@ export default {
   },
   computed: {
     filterItems() {
+      // console.log(this.filterStatus);
+      // this.totalRows = null;
+      // let length = null;
       return this.items.filter(request => {
+      //   if(this.filterStatus.includes(item.U_TRANSACTION_TYPE)) {
+      //     // length++;
+      //     return item//, this.totalRows = length;
+      //   }
+      // })
+
+      // const req =  this.items.filter(request => {
+      //   if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
+      //   // this.totalRows = this.items.length;
+      //     return request
+      //   }
+      //   console.log(req.length);
         if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
           return (request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase(), this.totalRows = request.length))
         }
@@ -1624,8 +1639,6 @@ export default {
       console.log(data);
     },
     async saveDR() {
-      // console.log(this.U_UOM)
-      // console.log(this.U_FRMR_NAME.value.id)
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
       } else if (this.U_TRANSACTION_TYPE == null) {
@@ -1636,9 +1649,9 @@ export default {
         this.showAlert("Please select Unit of Measure", "danger");
       } else if (this.U_FRMR_NAME == null) {
         this.showAlert("Please select Farmer Name", "danger");
-      } else if (this.U_HLPR_FNAME == null || this.U_HLPR_LNAME == null) {
+      } else if (this.U_HLPR_FNAME.trim() == null || this.U_HLPR_LNAME.trim() == null) {
         this.showAlert("Please input Helper Name", "danger");
-      } else if (this.U_DRVR_FNAME == null || this.U_DRVR_LNAME == null) {
+      } else if (this.U_DRVR_FNAME.trim() == null || this.U_DRVR_LNAME.trim() == null || this.U_DRVR_FNAME.trim() == "" || this.U_DRVR_LNAME.trim() == "") {
         this.showAlert("Please input Driver Name", "danger");
       } else if (this.U_PLATE_NUMBER == null) {
         this.showAlert("Please input Plate Number", "danger");
@@ -1819,7 +1832,6 @@ export default {
       };
     },
     async networkPrint(data) {
-      console.log("data", data);
       let QRCode = require("qrcode");
 
       this.qrString = JSON.stringify(data.U_TRX_NO);
@@ -1941,8 +1953,6 @@ export default {
       let deviceId = "bfi_printer";
       let options = { crypto: false, buffer: false };
 
-      console.log(ipAddress, port);
-
       const connectionResult = await new Promise(resolve => {
         ePosDev.connect(ipAddress, port, resultConnect => {
           resolve(resultConnect);
@@ -2030,7 +2040,6 @@ export default {
       } else {
         data = transaction
       }
-      console.log(data);
       
       await axios({
         method: "POST",
@@ -2043,7 +2052,6 @@ export default {
         },
       })
       .then((res) => {
-        console.log(res);
         this.showLoading = false;
         this.showAlert("Printed Successfully", "success");
       })
@@ -2069,8 +2077,6 @@ export default {
             U_TRX_ID: data.U_TRX_NO
           }
         });
-
-        console.log(res);
         this.showLoading = false;
         // this.networkPrint(U_TRX_ID);
         this.showAlert("Printed Successfully", "success");
@@ -2083,7 +2089,6 @@ export default {
       }
     },
     async confirmCancel(U_TRX_ID) {
-      //  console.log(this.U_TRX_ID);
       try {
         this.showLoading = true;
         const userDetails = JSON.parse(localStorage.user_details);
@@ -2115,7 +2120,6 @@ export default {
 
     cancel(data) {
       this.U_APP_ProjCode = null;
-      console.log(data);
       this.remarks = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
@@ -2140,7 +2144,6 @@ export default {
       this.$bvModal.show("bv-modal-confirmCancel");
     },
     print(data) {
-      console.log(data);
       // this.U_CRTD_BY = data.U_CRTD_BY;
       // this.U_TRX_ID = data.U_TRX_ID;
       // this.U_TRX_NO = data.U_TRX_NO;
@@ -2205,7 +2208,6 @@ export default {
       this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID };
     },
     show(data) {
-      console.log(data);
       // this.U_UOM = data.U_UOM.UomName;
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
@@ -2344,31 +2346,33 @@ export default {
       });
       const v = res.data.view;
 
-      for(var i = 0; i < v.length; i++){
-        this.commodity.push({
-          text: v[i].ItemCode + ' : ' + v[i].ItemName,
-          value: v[i].ItemCode
-        })
-      }
-      this.isBusy = false;
-
-      // filter only agri-ops items
-      // const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
-
-      // for (let i = 0; i < startsWithFG.length; i++) {
+      // for(var i = 0; i < v.length; i++){
       //   this.commodity.push({
-      //     text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
-      //     value: startsWithFG[i].ItemCode
-      //   });
-      // }
-
-      // if(this.companyCode == '4354') {
-      //   const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
-      //   this.commodity.push({
-      //     text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
-      //     value: riceBran[0].ItemCode
+      //     text: v[i].ItemCode + ' : ' + v[i].ItemName,
+      //     value: v[i].ItemCode
       //   })
       // }
+
+      // filter only agri-ops items
+      const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
+
+      for (let i = 0; i < startsWithFG.length; i++) {
+        this.commodity.push({
+          text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
+          value: startsWithFG[i].ItemCode
+        });
+      }
+
+      if(this.companyCode == '4354') {
+        const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
+        this.commodity.push({
+          text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
+          value: riceBran[0].ItemCode
+        })
+      }
+
+      this.isBusy = false;
+
 
     },
     titleCase(str){
@@ -2401,18 +2405,6 @@ export default {
       } else if(this.companyCode == '4360') {
         this.U_APP_ProjCode = "";
         this.U_FRMR_ADD = "";
-        // let fname = this.U_FRMR_NAME.value.split(", ");
-        // let frmr_id = "";
-        // for(var i = 0; i < this.bfi_farmer.length; i++) {
-        //   let frmr_name = (this.bfi_farmer[i].text).toLowerCase();
-        //   if(frmr_name.includes(fname[0].toLowerCase()) && frmr_name.includes(fname[1].toLowerCase())){
-        //     frmr_id = this.bfi_farmer[i].value.id;
-        //   } else {
-        //     this.U_FRMR_NAME = null;
-        //     this.showLoading = false;
-        //     this.showAlert("Farmer does not exist in Biotech Farms", "danger");
-        //   }
-        // }
 
         if(this.U_FRMR_NAME) {
           const res = await axios({
@@ -2426,7 +2418,6 @@ export default {
             }
           });
           v = res.data.posted;
-          console.log(res.data.posted);
           if(v) {
             for(let i = 0; i < v.length; i++){
               this.plotCode.push({
@@ -2436,92 +2427,29 @@ export default {
               }
           }
         }
-         // I STOPPED HERE
       
       }
-      console.log("farmer with plotcodes", v);
       this.showLoading = false;
-
-
-      // // if company is rci
-      // // (since plotcode stuff is only available to rci transactions)
-      // if(this.companyCode == '4360'){
-      //   // if farmer exists in plotcodes
-      //   // and if farmer plotcode is not empty
-      //   if(this.plotCodes.posted[this.U_FRMR_NAME.text]){
-      //     var name = this.U_FRMR_NAME.text
-      //     if(this.plotCodes.posted[name].plotCodes.length > 0){
-      //       var pc = this.plotCodes.posted[name].plotCodes;
-      //       // push plotcodes in plotcode array
-      //       for(let i = 0; i < pc.length; i++){
-      //         this.plotCode.push({
-      //           text: pc[i],
-      //           value: pc[i]
-      //         });
-      //       }
-      //     } else {
-      //        this.showAlert1('Farmer does not have plot code', 'warning')
-      //     }
-      //   } else {
-      //     let frmr = this.titleCase(this.U_FRMR_NAME.text);
-      //      if(this.plotCodes.posted[frmr] && this.plotCodes.posted[frmr].plotCodes.length > 0) {
-      //       // store farmer's plotcodes to variable pc
-      //       var pc = this.plotCodes.posted[frmr].plotCodes;
-      //       // push plotcodes in plotcode array
-      //       for(let i = 0; i < pc.length; i++){
-      //         this.plotCode.push({
-      //           text: pc[i],
-      //           value: pc[i]
-      //         });
-      //       }
-      //     } else {
-      //        this.showAlert1('Farmer does not have plot code', 'warning')
-      //     }
-      //   }
-      // }}
     },
     getPlotAddress(){
       this.U_FRMR_ADD = "";
-      console.log(this.U_APP_ProjCode);
       if(this.U_APP_ProjCode.value.address) {
         this.U_FRMR_ADD = this.U_APP_ProjCode.value.address;
       } else {
         this.showAlert1('Plot Code does not have an address', 'warning')
       }
-      // this.U_APP_ProjCode = this.U_APP_ProjCode.text;
-      console.log(this.U_FRMR_ADD);
     },
     async newDR(signature) {
       try {
         this.showLoading = true;
-        //   this.U_TRANSACTION_TYPE= null;
-        // this.U_FRMR_NAME=null;
-        // this.U_FRMR_ADD=null;
-        // this.U_CMMDTY=null;
-        // this.U_DRVR_LNAME=null;
-        // this.U_DRVR_FNAME=null;
-        // this.U_HLPR_FNAME=null;
-        // this.U_HLPR_LNAME=null;
-        // this.U_PLATE_NUMBER=null;
-        // this.U_DTE_CRTD=null;
-        // this.U_CRTD_BY=null;
-        // this.U_TRX_NO=null;
-        // this.U_DRVR_NAME=null;
-        // this.U_SACKS=null;
-        // this.U_EMPTY_SACKS=null;
-        // this.U_HLPR_NAME=null;
-
         let items = [];
-
         const userDetails = JSON.parse(localStorage.user_details); 
-        console.log("farmer_name: ",this.U_FRMR_NAME.text);
 
         let json = {};
         if(userDetails.U_COMPANY_CODE == '4354') {
           json = {
             company: userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
-            // priceList: this.U_PRICELIST,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
             farmer_id: this.U_FRMR_NAME.value.id,
@@ -2538,7 +2466,6 @@ export default {
           json = {
             company: userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
-            // priceList: this.U_PRICELIST,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
             farmer_id: this.U_FRMR_NAME.value.id,
@@ -2560,11 +2487,8 @@ export default {
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
-        // if(userDetails.U_COMPANY_CODE == '4354') {
           fd.append("farmer_id", this.U_FRMR_NAME.value.id);
-        // } else if(userDetails.U_COMPANY_CODE == '4360') {
-        //   fd.append("farmer_id", this.U_APP_ProjCode.value.id);
-        // }
+
         
         fd.append("farmer_name", this.U_FRMR_NAME.text);
         if(this.U_APP_ProjCode){
@@ -2574,23 +2498,12 @@ export default {
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
         fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
-
-        // if (this.U_SACKS && this.U_EMPTY_SACKS) {
         fd.append("no_of_bags", this.U_SACKS);
         fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
-        // }
-        // else{
-        //    fd.append("no_of_bags", 0);
-        //   fd.append("no_of_empty_bags", 0);
-        // }
         fd.append("employee_id", userDetails.Code);
         fd.append("plate_number", this.U_PLATE_NUMBER);
         fd.append("scheduled_date", this.U_SCHEDULED_DATE);
         fd.append("scheduled_time", this.U_SCHEDULED_TIME);
-
-        // await json.each(data, function(key, value) {
-        //   fd.append(key, value);
-        // });
         
         const res = await axios.post(
           `${this.$axios.defaults.baseURL}/api/transaction/add`,
@@ -2599,15 +2512,12 @@ export default {
             headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
           }
         );
-
         this.$bvModal.hide("signature");
         this.showLoading = false;
         this.getTransactions();
         this.$bvModal.hide("add-transaction-modal");
-        console.log(res);
         this.showAlert(res.data.posted.msg, "success");
         this.close();
-        // this.$refs.Receipt.print(data);
       } catch (e) {
         console.log(e);
         this.showLoading = false;
@@ -2619,8 +2529,6 @@ export default {
       }
     },
     async updateDR(U_TRX_ID) {
-
-      console.log("updated",U_TRX_ID);
       try {
         this.showLoading = true;
         let items = [];
@@ -2668,7 +2576,7 @@ export default {
           scheduled_time: intToTime(this.U_SCHEDULED_TIME)
         };
 
-        const res = await axios({
+        await axios({
           method: "PUT",
           url: `${this.$axios.defaults.baseURL}/api/transaction/update/${U_TRX_ID}`,
           headers: {
@@ -2677,11 +2585,22 @@ export default {
           data: {
             ...json
           }
-        });
-        this.showLoading = false;
-        this.getTransactions();
-        this.$bvModal.hide("edit-transaction-modal");
-        this.showAlert("Successfully Updated", "success");
+        }).then((res) => {
+          if (res && res.name == "Error") {
+              if (res.response && res.response.data.errorMsg) {
+                if (res.response.data.errorMsg === "Invalid session.") {
+                  this.$bvModal.show("session_modal");
+                }
+              }
+              this.showLoading = false;
+            } else {
+              this.showLoading = false;
+              this.getTransactions();
+              this.$bvModal.hide("edit-transaction-modal");
+              this.showAlert("Successfully Updated", "success");
+            }
+        })
+        
       } catch (e) {
         console.log(e);
         this.showLoading = false;
@@ -2787,7 +2706,6 @@ export default {
         });
 
         const v = res.data.view;
-        console.log(v);
         for (let i = 0; i < v.length; i++) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           // const t = this.intToTime(v[i].CREATED_TIME);
@@ -2841,13 +2759,9 @@ export default {
   },
 
   async beforeCreate() {
-    // await this.getFarmer();
-    
       const userDetails = JSON.parse(localStorage.user_details);
       this.farmer = [];
       let v; 
-
-      console.log("user details", userDetails);
       if(userDetails.U_COMPANY_CODE == '4360') {
         // RCI
 
