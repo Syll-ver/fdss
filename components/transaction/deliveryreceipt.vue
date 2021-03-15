@@ -2346,21 +2346,24 @@ export default {
       });
       const v = res.data.view;
 
-      // for(var i = 0; i < v.length; i++){
-      //   this.commodity.push({
-      //     text: v[i].ItemCode + ' : ' + v[i].ItemName,
-      //     value: v[i].ItemCode
-      //   })
-      // }
-
-      // filter only agri-ops items
-      const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
-
-      for (let i = 0; i < startsWithFG.length; i++) {
+      for(var i = 0; i < v.length; i++){
         this.commodity.push({
-          text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
-          value: startsWithFG[i].ItemCode
-        });
+          text: v[i].ItemCode + ' : ' + v[i].ItemName,
+          value: v[i].ItemCode
+        })
+      }
+
+      if(this.companyCode == '4360') { 
+        this.commodity = [];
+        // filter only agri-ops items
+        const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
+
+        for (let i = 0; i < startsWithFG.length; i++) {
+          this.commodity.push({
+            text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
+            value: startsWithFG[i].ItemCode
+          });
+        }
       }
 
       if(this.companyCode == '4354') {
