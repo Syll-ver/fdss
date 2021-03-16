@@ -353,15 +353,15 @@ export default {
     edit(data) {
       this.location = [];
       this.location = { ...data }
-      this.location.old_value = data.U_ADDRESS
+      // this.location.old_value = data.U_ADDRESS
       this.$bvModal.show('edit-location-modal')
     },
 
     async updateLocation(){
-      console.log(this.listPrinters);
-      console.log(this.location);
+      // console.log(this.listPrinters);
+      // console.log(this.location);
 
-      const printer = this.listPrinters.find(print => print.U_ADDRESS === this.location.old_value);
+      // const printer = this.listPrinters.find(print => print.U_ADDRESS === this.location.old_value);
 
       if(this.location.U_ADDRESS == null ){
         this.showAlert("Please input Location", "danger");
@@ -386,17 +386,17 @@ export default {
               this.showLoading = false;
             } else {
 
-              if(printer) {
-                axios({
-                  method: "PATCH",
-                  url: `${process.env.serverPrintUrl}/fdss/update`,
-                  data: {
-                    uuids: process.env.uuid,
-                    ip: printer.ip,
-                    location: this.location.U_ADDRESS
-                  }
-                })
-              }
+              // if(printer) {
+              //   axios({
+              //     method: "PATCH",
+              //     url: `${process.env.serverPrintUrl}/fdss/update`,
+              //     data: {
+              //       uuids: process.env.uuid,
+              //       ip: printer.ip,
+              //       location: this.location.U_ADDRESS
+              //     }
+              //   })
+              // }
 
               this.showLoading = false;
               this.$bvModal.hide("edit-location-modal");

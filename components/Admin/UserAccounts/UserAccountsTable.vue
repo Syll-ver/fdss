@@ -1503,9 +1503,7 @@ export default {
           }
         }
       });
-    await this.$store
-    
-      .dispatch("Admin/Roles/fetchRoles", {
+    await this.$store.dispatch("Admin/Roles/fetchRoles", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
@@ -1519,11 +1517,11 @@ export default {
         }
       });
 
-    this.isBusy = false;
-
     // this.$store.dispatch("Accounting_Group/fetchAccountingGroup", {
     //   token: localStorage.token
     // });
+      this.isBusy = false;
+
   },
   async created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
