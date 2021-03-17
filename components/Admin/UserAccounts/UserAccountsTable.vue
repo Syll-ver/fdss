@@ -361,11 +361,17 @@
 
                 <small class="ml-1">Location</small>
                 <b-form-select v-model="userDetails.U_LOCATION_ID"
-                  :options="locations"
                   size="sm"
                   style="font-size:10px"
                   >
-                  </b-form-select>
+                  <option :value="null">Select Role</option>
+
+                  <option
+                    :value="loc.Code"
+                    v-for="(loc, i) in listLocations"
+                    :key="i"
+                    >{{ loc.U_ADDRESS }}</option>
+                </b-form-select>
              
             </b-card>
 
@@ -1049,6 +1055,7 @@ export default {
       listRoles: "Admin/Roles/getListRoles",
       listCompanies: "Admin/Company/getListCompanies",
      listSAPcompanies: "SAP/Companies/getCompanyList",
+     listLocations: "Admin/Location/getListLocations",
       companyList: "Company/getCompanyList",
       SearchedUsers: "Admin/Users/getSearchedUsers"
     }),
@@ -1141,29 +1148,29 @@ export default {
   },
 
   methods: {
-    async getLocations() {
-      this.isBusy = true;
+    // async getLocations() {
+    //   this.isBusy = true;
 
-        await axios({
-          method: "GET",
-          url: `${this.$axios.defaults.baseURL}/api/location/select`
-        }).then( res => {
-          const v = res.data.view;
-          this.locations.push({
-              text: "Select Location",
-              value: null,
-              disabled: true
-            })
+    //     await axios({
+    //       method: "GET",
+    //       url: `${this.$axios.defaults.baseURL}/api/location/select`
+    //     }).then( res => {
+    //       const v = res.data.view;
+    //       this.locations.push({
+    //           text: "Select Location",
+    //           value: null,
+    //           disabled: true
+    //         })
           
-          for(let i = 0; i < v.length; i++) {
-            this.locations.push({
-              text: v[i].U_ADDRESS,
-              value: v[i].Code
-            })
-          }
-        })
-      this.isBusy = false;
-    },
+    //       for(let i = 0; i < v.length; i++) {
+    //         this.locations.push({
+    //           text: v[i].U_ADDRESS,
+    //           value: v[i].Code
+    //         })
+    //       }
+    //     })
+    //   this.isBusy = false;
+    // },
 
     confirmUpdate() {
       this.showLoading = true;
@@ -1440,9 +1447,8 @@ export default {
   },
 
   async beforeCreate() {
-    //  this.showLoading = true;
-     this.isBusy = true;
-    
+
+    this.isBusy = true;
     
     await this.$store
       .dispatch("Admin/Company/fetchListCompany", {
@@ -1483,9 +1489,6 @@ export default {
         this.filterCompany.push(company.U_COMPANYCODE)
       })
 
-    // this.isBusyTable = false;
-
-    // this.showLoading = true;
     await this.$store
       .dispatch("Admin/Users/fetchUsers", {
         user_actions: JSON.parse(localStorage.user_actions),
@@ -1517,6 +1520,16 @@ export default {
         }
       });
 
+      await this.$store.dispatch("Admin/Location/fetchListLocations").then( res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.error) {
+            if (res.response.data.error === "Session expired") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+
     // this.$store.dispatch("Accounting_Group/fetchAccountingGroup", {
     //   token: localStorage.token
     // });
@@ -1526,8 +1539,7 @@ export default {
   async created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
     const user_details = JSON.parse(localStorage.user_details);
-
-    await this.getLocations();
+    
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add user")) {
       this.actions.addUser = true;
@@ -1545,6 +1557,7 @@ export default {
     ) {
       this.actions.updateUser = true;
     }
+    // await this.getLocations();
   }
 };
 </script>
