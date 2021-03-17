@@ -837,15 +837,16 @@ export default {
   },
    computed: {
     filterItems() {
+      let count = 0;
       return this.items.filter(request => {
         if (this.filterStatus.includes(request.U_STATUS) && this.filterTransaction.includes(request.U_TRANSACTION_TYPE) ) {
-          
+          count++
+          this.totalRows = count;
           return request;
         }
         if (this.filterTransaction.includes(request.U_TRANSACTION_TYPE) && this.filterStatus.includes(request.U_STATUS) ) {
-          return request;
-        }
-        if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
+          count++
+          this.totalRows = count;
           return request;
         }
       });

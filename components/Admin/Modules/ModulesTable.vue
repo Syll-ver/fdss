@@ -328,9 +328,7 @@
 </template>
 
 <script>
-import moment from "moment";
 import Loading from "~/components/Loading/Loading.vue";
-import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
@@ -387,21 +385,18 @@ export default {
   },
   computed: {
     filterItems() {
+      let count = 0;
       return this.listModules.filter(listModules => {
         if(this.filterStatus.includes(listModules.U_IS_ACTIVE)){
+          count++;
+          this.totalRows = count;
           return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
         }
         if(this.filterStatus.includes(!listModules.U_IS_ACTIVE)){
+          count++;
+          this.totalRows = count;
           return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
         }
-        if(!this.filter) {
-          this.totalRows = this.filterItems ? this.filterItems.length : 0
-        }
-
-        // return this.filterStatus.includes(listModules.U_IS_ACTIVE);
-        // return (
-        //   this.filterStatus.includes(listModules.U_IS_ACTIVE) && (listModules.Name. toLowerCase().match(this.filter.toLowerCase()))
-        // );
       });
     },
 

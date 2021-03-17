@@ -483,8 +483,18 @@ export default {
   },
   computed: {
     filterItems() {
+      let count = 0;
       return this.listCompanies.filter(listCompanies => {
-        return this.filterStatus.includes(listCompanies.U_IS_ACTIVE) && (listCompanies.COMPANYNAME.toLowerCase().match(this.filter.toLowerCase()) || listCompanies.U_COMPANYCODE.toLowerCase().match(this.filter.toLowerCase()));
+        if(this.filterStatus.includes(listCompanies.U_IS_ACTIVE)) {
+          count++;
+          this.totalRows = count;
+          return listCompanies.COMPANYNAME.toLowerCase().match(this.filter.toLowerCase()) || listCompanies.U_COMPANYCODE.toLowerCase().match(this.filter.toLowerCase());
+        }
+        if(this.filterStatus.includes(!listCompanies.U_IS_ACTIVE)) {
+          count++;
+          this.totalRows = count;
+          return listCompanies.COMPANYNAME.toLowerCase().match(this.filter.toLowerCase()) || listCompanies.U_COMPANYCODE.toLowerCase().match(this.filter.toLowerCase());
+        }
       });
     },
 

@@ -392,12 +392,20 @@ export default {
   },
   computed: {
     filterItems() {
-      console.log(this.filterStatus.includes(1));
+      let count = 0;
         return this.listActions.filter(listActions => {
-          
-        return this.filterStatus.includes(listActions.U_IS_ACTIVE) && (listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase())))
-      });
-      
+          if(this.filterStatus.includes(listActions.U_IS_ACTIVE)) {
+            count++;
+            this.totalRows = count;
+
+            return listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_MODULE_NAME.toLowerCase().match(this.filter.toLowerCase()))
+          }
+          if(this.filterStatus.includes(!listActions.U_IS_ACTIVE)) {
+            count++;
+            this.totalRows = count;
+            return listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_MODULE_NAME.toLowerCase().match(this.filter.toLowerCase()))
+          }
+      });      
     },
 
     filterFields() {

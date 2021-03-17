@@ -57,7 +57,7 @@
                   <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
                 </b-form-checkbox-group>
 
-              <b-form-checkbox-group
+              <!-- <b-form-checkbox-group
                 id="status_group1"
                 name="flavour-2"
                 class="pl-2"
@@ -75,13 +75,13 @@
                   :key="i"
                   :value="company.U_COMPANYCODE"
                 >{{company.COMPANYDBNAME  }}
-                </b-form-checkbox>
+                </b-form-checkbox> -->
                       <!-- <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
                   >Biotech</b-form-checkbox
                 >
                 <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
                   >REvive</b-form-checkbox> -->
-              </b-form-checkbox-group>
+              <!-- </b-form-checkbox-group> -->
 
             </b-dropdown>
         </b-col>
@@ -1067,11 +1067,18 @@ export default {
     },
 
     filterItems() {
+      let count = 0;
       return this.Users.filter(Users => {
         if(this.filterStatus.includes(Users.U_IS_ACTIVE)){
+          count++;
+          this.totalRows = count;
           return (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
         }
-        // return this.filterStatus.includes(Users.U_IS_ACTIVE) && (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
+        if(this.filterStatus.includes(!Users.U_IS_ACTIVE)){
+          count++;
+          this.totalRows = count;
+          return (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
+        }
       });
     },
 
