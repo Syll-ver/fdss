@@ -2706,8 +2706,6 @@ export default {
             employee_id,
             employee_role
           }
-        }).then(res => {
-          console.log(res);
         });
 
         const v = res.data.view;
