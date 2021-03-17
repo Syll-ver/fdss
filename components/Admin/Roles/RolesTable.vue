@@ -507,8 +507,18 @@ export default {
   },
   computed: {
     filterItems() {
+      let count = 0;
       return this.listRoles.filter(listRoles => {
-        return this.filterStatus.includes(listRoles.U_IS_ACTIVE) && (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+        if(this.filterStatus.includes(listRoles.U_IS_ACTIVE)) {
+          count++;
+          this.totalRows = count;
+          return (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+        }
+        if(this.filterStatus.includes(!listRoles.U_IS_ACTIVE)) {
+          count++;
+          this.totalRows = count;
+          return (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+        }
       });
     },
 

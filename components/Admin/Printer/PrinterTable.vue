@@ -282,6 +282,7 @@ export default {
       showLoading: false,
       printer_ip: null,
       printer_location: null,
+      action: [],
       itemsFields: [
         {
           key: "ip",
@@ -357,10 +358,6 @@ export default {
           return { text: f.label, value: f.key };
         });
     }
-  },
-  async created(){
-    // await this.getPrinter();
-    // await this.getLocations();
   },
 
   methods: {
@@ -549,6 +546,22 @@ export default {
     });
 
       this.isBusy = false;
+  },
+
+  created() {
+    const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
+
+    if(userActions.find(action => action.U_ACTION_NAME === 'View printer')) {
+      this.actions.view_printer = true;
+    }
+
+    if(userActions.find(action => action.U_ACTION_NAME === 'Add printer')) {
+      this.actions.add_printer = true;
+    }
+    
+    if(userActions.find(action => action.U_ACTION_NAME === 'Edit printer')) {
+      this.actions.edit_printer = true;
+    }
   }
 };
 </script>
