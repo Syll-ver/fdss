@@ -208,46 +208,39 @@ export default {
       //   );
       //   this.adminroutes.splice(index, 1);
       // }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View actions")
-      ) {
+      if (!module_actions.find(action => action.U_ACTION_NAME == "View actions")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Actions")
-        );
+          route => (route.name = "Actions"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View users")
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View users")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "User Accounts")
-        );
+          route => (route.name = "User Accounts"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View roles and access rights")
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View roles and access rights")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Roles and Access")
-        );
+          route => (route.name = "Roles and Access"));
         this.adminroutes.splice(index, 1);
       }
-       if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View print logs")
-      ) {
+       if(!module_actions.find(action => action.U_ACTION_NAME == "View print logs")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Print Logs")
-        );
+          route => (route.name = "Print Logs"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(
-          action => action.U_ACTION_NAME == "View activity logs"
-        )
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View activity logs")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Activity Logs")
-        );
+          route => (route.name = "Activity Logs"));
+        this.adminroutes.splice(index, 1);
+      }
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View location")) {
+        const index = this.adminroutes.findIndex(
+          route => (route.name = "Location"));
+        this.adminroutes.splice(index, 1);
+      }
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View printer")) {
+        const index = this.adminroutes.findIndex(
+          route => (route.name = "Printer"));
         this.adminroutes.splice(index, 1);
       }
     }
@@ -269,7 +262,6 @@ export default {
       user: "",
       activelinks: [],
       isAdmin: false,
-      //PAaccess: false,
       visible: false,
       visiblePrice: false,
 

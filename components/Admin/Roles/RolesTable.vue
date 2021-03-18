@@ -571,6 +571,10 @@ export default {
     // Set the initial number of items
   },
   methods: {
+    updateRoleAccess(){
+      const access = JSON.parse(localStorage.user_actions)['Admin Module'];
+    },
+
     test() {
       console.log(this.checkApprover);
     },
@@ -639,6 +643,66 @@ export default {
           }
         });
     },
+    updateLocalStorageActions() {
+      console.log("selectedAction",this.selectedAction);
+      console.log(this.roleForm);
+
+      let activeActions  = this.listActions.filter(actions => actions.U_IS_ACTIVE === 1)
+      console.log(activeActions);
+      const userActions_admin = JSON.parse(localStorage.user_actions)['Admin Module']
+      const userActions_reports = JSON.parse(localStorage.user_actions)['Reports Module']
+      const userActions_transactions = JSON.parse(localStorage.user_actions)['Transactions Module']
+      let userRolesAccess = {};
+      let existing = {};
+      let admin = [];
+      let reports = [];
+      let transactions = [];
+
+      if(userActions_admin) {
+        this.selectedAction.forEach(actions => {
+          existing = userActions_admin.find(access => 
+            access.U_ACTION_CODE === actions)
+          if(existing) {
+            admin.push(existing)
+          }
+        })
+
+        if(admin){
+          userRolesAccess['Admin Module'] = admin
+        }
+      }
+
+      if(userActions_reports){
+        this.selectedAction.forEach(actions => {
+          let existing = userActions_reports.find(access => 
+            access.U_ACTION_CODE === actions)
+          if(existing) {
+            reports.push(existing)
+          }
+        })
+
+        if(reports){
+          userRolesAccess['Reports Module'] = reports
+        }
+      }
+
+      if(userActions_transactions) {
+        this.selectedAction.forEach(actions => {
+          let existing = userActions_transactions.find(access => 
+            access.U_ACTION_CODE === actions)
+          if(existing) {
+            transactions.push(existing)
+          }
+        })
+
+        if(transactions){
+          userRolesAccess['Transactions Module'] = transactions
+        }
+      }
+
+      console.log(userRolesAccess);
+    },
+
     editRoleTable() {
       this.showLoading = true;
       if (this.approverLevel) {
@@ -648,8 +712,6 @@ export default {
         this.roleForm.Name = this.roleName;
       }
       const finalActions = [];
-      // console.log(this.roleForm.actions);
-      // console.log(this.selectedAction);
 
       this.listActions.forEach(action => {
         const existingAction = this.roleForm.actions.find(

@@ -45,53 +45,55 @@
     </b-row>
 
     <!-- Main table element -->
-    <b-table
-      id="location-table"
-      class="table-style"
-      show-empty
-      scrollable="true"
-      sticky-header
-      no-border-collapse
-      :items="filterItems"
-      :fields="itemsFields"
-      :current-page="currentPage"
-      :per-page="perPage"
-      :filter="filter"
-      :filterIncludedFields="filterOn"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      :sort-direction="sortDirection"
-      @filtered="onFiltered"
-      :busy="isBusy"
-      responsive
-    >
-      <template #table-busy>
-        <div class="text-center text-danger my-2">
-          <b-spinner small class="align-middle"  variant="dark">
-          </b-spinner>
-          <span class="loading_spinner">Loading...</span>
-        </div>
-      </template>
+    <span v-if="action.view_printer">
+      <b-table
+        id="location-table"
+        class="table-style"
+        show-empty
+        scrollable="true"
+        sticky-header
+        no-border-collapse
+        :items="filterItems"
+        :fields="itemsFields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :filter="filter"
+        :filterIncludedFields="filterOn"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        :sort-direction="sortDirection"
+        @filtered="onFiltered"
+        :busy="isBusy"
+        responsive
+      >
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner small class="align-middle"  variant="dark">
+            </b-spinner>
+            <span class="loading_spinner">Loading...</span>
+          </div>
+        </template>
 
-      <template v-slot:cell(U_CREATED_DATE)="row">{{ formatDate(row.item.U_CREATED_DATE) }}</template>
+        <template v-slot:cell(U_CREATED_DATE)="row">{{ formatDate(row.item.U_CREATED_DATE) }}</template>
 
-      <template v-slot:cell(actions)="row">
-        <div>
-          <b-button
-            variant="edit"
-            id="edit"
-            class="table-button"
-            size="sm"
-            @click="edit(row.item)"
-            v-b-tooltip.hover
-            title="Edit Transaction"
-          >
-            <font-awesome-icon icon="edit" />
-          </b-button>          
-        </div>
-      </template>
+        <template v-slot:cell(actions)="row">
+          <div>
+            <b-button
+              variant="edit"
+              id="edit"
+              class="table-button"
+              size="sm"
+              @click="edit(row.item)"
+              v-b-tooltip.hover
+              title="Edit Transaction"
+            >
+              <font-awesome-icon icon="edit" />
+            </b-button>          
+          </div>
+        </template>
 
-    </b-table>
+      </b-table>
+    </span>
     <hr />
 
     <b-row>
@@ -324,7 +326,6 @@ export default {
     }),
 
     filterItems(){
-      console.log(this.listLocations);
       return this.listPrinters.filter(logs => {
         return (logs.location.toLowerCase().match(this.filter.toLowerCase()) ||
         logs.ip.match(this.filter))
@@ -552,15 +553,15 @@ export default {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View printer')) {
-      this.actions.view_printer = true;
+      this.action.view_printer = true;
     }
 
     if(userActions.find(action => action.U_ACTION_NAME === 'Add printer')) {
-      this.actions.add_printer = true;
+      this.action.add_printer = true;
     }
     
     if(userActions.find(action => action.U_ACTION_NAME === 'Edit printer')) {
-      this.actions.edit_printer = true;
+      this.action.edit_printer = true;
     }
   }
 };

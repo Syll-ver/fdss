@@ -495,15 +495,15 @@ export default {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View location')) {
-      this.actions.view_location = true;
+      this.action.view_location = true;
     }
 
     if(userActions.find(action => action.U_ACTION_NAME === 'Add location')) {
-      this.actions.add_location = true;
+      this.action.add_location = true;
     }
     
     if(userActions.find(action => action.U_ACTION_NAME === 'Edit location')) {
-      this.actions.edit_location = true;
+      this.action.edit_location = true;
     }
   },
 };
