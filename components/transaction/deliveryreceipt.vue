@@ -1507,23 +1507,12 @@ export default {
   },
   computed: {
     filterItems() {
-      // console.log(this.filterStatus);
-      // this.totalRows = null;
-      // let length = null;
+      let count = 0;
+      this.totalRows = count;
       return this.items.filter(request => {
-      //   if(this.filterStatus.includes(item.U_TRANSACTION_TYPE)) {
-      //     // length++;
-      //     return item//, this.totalRows = length;
-      //   }
-      // })
-
-      // const req =  this.items.filter(request => {
-      //   if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
-      //   // this.totalRows = this.items.length;
-      //     return request
-      //   }
-      //   console.log(req.length);
         if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
+          count++;
+          this.totalRows = count;
           return (request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase(), this.totalRows = request.length))
         }
       })
