@@ -451,7 +451,7 @@ export default {
   data() {
     return {
       showLoading: false,
-      filterStatus: [1,0],
+      filterStatus: [1],
       actions: { addRoleAndAccess: false, editRoleAndAccess: false },
       alert: {
         showAlert: 0,

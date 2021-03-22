@@ -32,28 +32,6 @@
     <Loading v-if="showLoading" />
 
     <Receipt ref="Receipt" v-show="false" />
-    <!-- Main table -->
-    <!-- 
-      <VueQrcode
-                id="QRcode"
-                type="String"
-                value="asd"
-                :options="{ width: 300 }"
-    ></VueQrcode>-->
-    <!-- <b-row>
-      <b-col>
-        <b-button
-          id="create"
-          variant="biotech"
-          class="button-style"
-          size="sm"
-          @click="$bvModal.show('add-transaction-modal')"
-        >
-          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
-        </b-button>
-      </b-col>
-    </b-row> -->
-
     <b-row>
       <b-col cols="3" class="mt-3">
         <b-form-group>
@@ -438,35 +416,6 @@
       </template>
 
       <b-card class="card-shadow">
-        <!-- <b-form-input
-          disabled
-          id="farmer_add"
-          class="form-text"
-          v-model="companyList"
-          @change="getCommodity(), getFarmer()"
-        /> -->
-        <!-- <b-form-select
-          id="company"
-          v-model="selectedcompany"
-          class="form-text"
-          :options="companyList"
-          @change="getCommodity(), getFarmer()"
-          required
-
-        ></b-form-select> -->
-        <!-- <b-form-select
-          id="company"
-          v-model="selectedcompany"
-          class="form-text"
-
-          required
-        > <option :value="null">Select Company</option>
-                <option
-                  v-for="(company, i) in companyList"
-                  :key="i"
-                  :value="company.ID"
-                  >{{ company.COMPANYNAME }}</option
-                ></b-form-select> -->
         <small>Schedule Date</small>
         <br />
         <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
