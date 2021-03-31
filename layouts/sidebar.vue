@@ -5,7 +5,7 @@
         <div>
           <b-img src="/rlogo.png" class="sidebar-image" center>
           </b-img><center>
-          <p class="h9" >FARMER'S SLIP SYSTEM</p>
+          <p class="h9" >FARMER'S DELIVERY SLIP SYSTEM</p>
           </center>
         </div>
         <hr class="hr-style" />
@@ -15,9 +15,15 @@
               @click="visible = !visible"
               data-toggle="collapse"
               aria-expanded="false"
-              class="dropdown-toggle mb-2"
+              class="mb-2"
             >
               <font-awesome-icon icon="user-cog" class="ml-2 mr-2" />Admin
+              <font-awesome-icon
+                :icon="visible == false ? 'caret-right' : 'caret-down'"
+                class="mr-2 mt-1"
+                style="float:right; 
+                "
+              />
             </a>
 
             <b-collapse id="collapse" class="mt-1" v-model="visible">
@@ -202,46 +208,39 @@ export default {
       //   );
       //   this.adminroutes.splice(index, 1);
       // }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View actions")
-      ) {
+      if (!module_actions.find(action => action.U_ACTION_NAME == "View actions")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Actions")
-        );
+          route => (route.name = "Actions"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View users")
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View users")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "User Accounts")
-        );
+          route => (route.name = "User Accounts"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View roles and access rights")
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View roles and access rights")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Roles and Access")
-        );
+          route => (route.name = "Roles and Access"));
         this.adminroutes.splice(index, 1);
       }
-       if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View print logs")
-      ) {
+       if(!module_actions.find(action => action.U_ACTION_NAME == "View print logs")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Print Logs")
-        );
+          route => (route.name = "Print Logs"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(
-          action => action.U_ACTION_NAME == "View activity logs"
-        )
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View activity logs")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Activity Logs")
-        );
+          route => (route.name = "Activity Logs"));
+        this.adminroutes.splice(index, 1);
+      }
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View location")) {
+        const index = this.adminroutes.findIndex(
+          route => (route.name = "Location"));
+        this.adminroutes.splice(index, 1);
+      }
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View printer")) {
+        const index = this.adminroutes.findIndex(
+          route => (route.name = "Printer"));
         this.adminroutes.splice(index, 1);
       }
     }
@@ -263,7 +262,6 @@ export default {
       user: "",
       activelinks: [],
       isAdmin: false,
-      //PAaccess: false,
       visible: false,
       visiblePrice: false,
 
@@ -338,7 +336,25 @@ export default {
           icon: "clipboard-list",
           class: "ml-2",
           active: false
-        }
+        },
+        {
+          link: "/admin/location",
+          name: "Location",
+          style: "position:relative;left:12px",
+          id: "sb-printer",
+          icon: "location-arrow",
+          class: "ml-2",
+          active: false
+        },
+        {
+          link: "/admin/printer",
+          name: "Printer",
+          style: "position:relative;left:12px",
+          id: "sb-printer",
+          icon: "print",
+          class: "ml-2",
+          active: false
+        },
       ],
 
       routes: [
@@ -379,6 +395,7 @@ export default {
     },
 
     async setAdminActive(i) {
+      // this.visible = true;
       this.routes.map(route => (route.active = false));
       this.adminroutes.map((adminroute, index) => {
         if (index === i) {
@@ -407,4 +424,5 @@ a {
   text-decoration: none;
   background-color: transparent;
 }
+
 </style>

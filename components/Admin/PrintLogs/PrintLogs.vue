@@ -3,7 +3,7 @@
     <!-- Main table -->
 
     <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -12,9 +12,6 @@
               id="search_activity"
               placeholder="Search PrintLogs"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
@@ -28,7 +25,6 @@
           <date-range-picker
             id="actvty_date"
             ref="picker"
-            :opens="opens"
             :locale-data="localeData"
             :autoApply="true"
             :singleDatePicker="false"
@@ -39,7 +35,7 @@
             <div
               id="actvty_date"
               slot="input"
-              style="min-width: 150px;"
+              style="height:2rem; font-size:14px;"
             >{{ datePicker.startDate }} - {{ datePicker.endDate }}</div>
           </date-range-picker>
           <b-input-group-append style="height:2rem; font-size:12px">
@@ -48,7 +44,6 @@
         </b-input-group>
       </b-col>
   <b-col ></b-col>
-
       <b-col cols="2"  class="mt-3" align="right">
         <!-- <b-form-group class="mb-0">
           <b-form-select
@@ -91,8 +86,8 @@
       scrollable="true"
       sticky-header
       no-border-collapse
-      :items="listPrintLogs"
-      :fields="fields"
+      :items="filterItems"
+      :fields="itemsFields"
       :current-page="currentPage"
       :per-page="perPage"
       :filter="filter"
@@ -104,10 +99,11 @@
       :busy="isBusy"
       responsive
     >
-      <template v-slot:table-busy>
-        <div class="text-center text-secondary my-2">
-          <b-spinner small class="align-middle"></b-spinner>
-          <strong>&nbsp;Loading...</strong>
+      <template #table-busy>
+        <div class="text-center text-danger my-2">
+          <b-spinner small class="align-middle"  variant="dark">
+          </b-spinner>
+          <span class="loading_spinner">Loading...</span>
         </div>
       </template>
 
@@ -130,20 +126,36 @@
     <hr />
 
     <b-row>
-      <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="center">
+      <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_printLogs-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+      <b-col
+        label-cols-sm
+        class="mb-0 mt-2 text-left"
+        cols="3"
+        align-h="center"
+      >
         <div size="sm" style="color: gray; font-size: 11px;">{{ bottomLabel }}</div>
       </b-col>
-      <b-col cols="4" offset="5">
+      <b-col>
         <b-pagination
-          id="modules-pagination"
+          id="printLogs-pagination"
           pills
           v-model="currentPage"
-          :total-rows="rows"
+          :total-rows="totalRows"
           :per-page="perPage"
           align="right"
           size="sm"
-          aria-controls="modules-table"
+          aria-controls="print-table"
           limit="3"
+          class="mt-1"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -230,7 +242,7 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
-      isBusy: false,
+      isBusy: true,
     //   old_values: [],
     //   new_values: [],
     //   activityLogsForm: {
@@ -265,7 +277,7 @@ export default {
         separator: " - "
       },
 
-      fields: [
+      itemsFields: [
         {
           key: "U_EMPLOYEE_CODE",
           label: "Employee ID",
@@ -294,35 +306,47 @@ export default {
         // { key: "actions", label: "Actions" }
       ],
 
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
-  computed: {
+  computed: {    
+    filterItems(){
+      let count = 0;
+      return this.listPrintLogs.filter(logs => { 
+        console.log(logs);
+        count++;
+        this.totalRows = count;
+        return (logs.U_TRANSACTION_ID.toLowerCase().match(this.filter.toLowerCase()) ||
+        logs.CREATED_BY.toLowerCase().match(this.filter.toLowerCase()) 
+        )
+      })
+    },
+
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
 
-      if (end > this.listPrintLogs.length) {
-        end = this.listPrintLogs.length;
+      if(!this.filterItems) {
+        return;
       }
 
-      if (this.listPrintLogs.length === 0) {
+      if (end > this.filterItems.length) {
+        end = this.filterItems.length;
+      }
+
+      if (this.filterItems.length === 0) {
         start = 0;
       }
 
-      return `Showing ${start} to ${end} of ${this.listPrintLogs.length} entries`;
-    },
-
-    rows() {
-      return this.listPrintLogs.length;
+      return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
     },
 
     ...mapGetters({
@@ -342,20 +366,24 @@ export default {
   methods: {
     async resetDate() {
       this.isBusy = true;
-      this.datePicker.startDate = moment().format("MMM DD, YYYY");
-      this.datePicker.endDate = moment().format("MMM DD, YYYY");
-
+      let date = new Date();
       await this.$store
-        .dispatch("Admin/Printy_Logs/fetchPrintLogs", {
-          user_actions: JSON.parse(localStorage.user_actions),
-          
+      .dispatch("Admin/Print_Logs/fetchPrintLogs", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        date_range: {
+          date_from: moment(date).format("YYYY-MM-DD"),
+          date_to: moment(date).format("YYYY-MM-DD"),
+          company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
+        },
+        SessionId: localStorage.SessionId,
+      })
+      .then(res => {
+        this.isBusy = false;
+      });
 
-          date_range: null,
-          SessionId: localStorage.SessionId
-        })
-        .then(res => {
-          this.isBusy = false;
-        });
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
     },
     async updateValues() {
       this.isBusy = true;
@@ -368,26 +396,30 @@ export default {
       (this.dateRange.date_from = moment(this.datePicker.startDate).format(
         "YYYY-MM-DD"
       )),
-        (this.dateRange.date_to = moment(this.datePicker.endDate).format(
-          "YYYY-MM-DD"
-        ));
-
+      (this.dateRange.date_to = moment(this.datePicker.endDate).format(
+        "YYYY-MM-DD"
+      ));
+       
+    
       await this.$store
         .dispatch("Admin/Print_Logs/fetchPrintLogs", {
           user_actions: JSON.parse(localStorage.user_actions),
           date_range: {
             date_from: moment(this.datePicker.startDate).format("YYYY-MM-DD"),
-            date_to: moment(this.datePicker.endDate).format("YYYY-MM-DD")
+            date_to: moment(this.datePicker.endDate).format("YYYY-MM-DD"),
+            company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
           },
-          SessionId: localStorage.SessionId
+          SessionId: localStorage.SessionId,
+          
         })
         .then(res => {
           this.isBusy = false;
         });
+        this.totalRows = this.listPrintLogs.length;
     },
     formatDate(date) {
-return moment(date).format("DD MMMM, YYYY");
-},
+      return moment(date).format("DD MMMM, YYYY");
+    },
 
     // viewActivity(data) {
     //   this.old_values = { ...data.U_OLD_VALUES };
@@ -396,23 +428,38 @@ return moment(date).format("DD MMMM, YYYY");
     //   this.$bvModal.show("view-activity-modal");
     // },
 
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
   async beforeCreate() {
     this.isBusy = true;
+
+    let date = new Date();
+
+        
     await this.$store
       .dispatch("Admin/Print_Logs/fetchPrintLogs", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        date_range: {
+          date_from: moment(date).format("YYYY-MM-DD"),
+          date_to: moment(date).format("YYYY-MM-DD"),
+          company:(JSON.parse(localStorage.user_details).U_COMPANY_CODE)
+        },
+        SessionId: localStorage.SessionId,
         // user_actions: JSON.parse(localStorage.user_actions),
         // date_range: null,
-        // SessionId: localStorage.SessionId
+        // SessionId: localStorage.SessionId,
       })
       .then(res => {
         this.isBusy = false;
       });
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
   }
 };
 </script>

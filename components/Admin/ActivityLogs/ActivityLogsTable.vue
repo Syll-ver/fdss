@@ -3,7 +3,7 @@
     <!-- Main table -->
 
     <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -12,9 +12,6 @@
               id="search_activity"
               placeholder="Search Activity"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
@@ -39,7 +36,7 @@
             <div
               id="actvty_date"
               slot="input"
-              style="min-width: 150px;"
+              style="height:2rem; font-size:14px;"
             >{{ datePicker.startDate }} - {{ datePicker.endDate }}</div>
           </date-range-picker>
           <b-input-group-append style="height:2rem; font-size:12px">
@@ -86,12 +83,14 @@
     <!-- Main table element -->
     <b-table
       id="activity-table"
-      class="table-style"
       show-empty
-      scrollable="true"
+      class="table-style"
+      scrollable
       sticky-header
       no-border-collapse
-      :items="listActivityLogs"
+      responsive
+      :busy="isBusy"
+      :items="filterItems"
       :fields="fields"
       :current-page="currentPage"
       :per-page="perPage"
@@ -101,13 +100,12 @@
       :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection"
       @filtered="onFiltered"
-      :busy="isBusy"
-      responsive
     >
-      <template v-slot:table-busy>
-        <div class="text-center text-secondary my-2">
-          <b-spinner small class="align-middle"></b-spinner>
-          <strong>&nbsp;Loading...</strong>
+      <template #table-busy>
+        <div class="text-center text-danger my-2">
+          <b-spinner small class="align-middle" variant="dark">
+          </b-spinner>
+          <span class="loading_spinner">Loading...</span>
         </div>
       </template>
 
@@ -128,20 +126,35 @@
     <hr />
 
     <b-row>
-      <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="center">
+      <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+
+        <b-col  label-cols-sm
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center">
         <div size="sm" style="color: gray; font-size: 11px;">{{ bottomLabel }}</div>
       </b-col>
-      <b-col cols="4" offset="5">
+      <b-col>
         <b-pagination
-          id="modules-pagination"
+          id="activity-pagination"
           pills
           v-model="currentPage"
-          :total-rows="rows"
+          :total-rows="totalRows"
           :per-page="perPage"
           align="right"
           size="sm"
-          aria-controls="modules-table"
+          aria-controls="activity-table"
           limit="3"
+          class="mt-1"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -172,10 +185,16 @@
                 :key="i"
                 v-for="(oldKey, i) in Object.keys(old_values)"
               >
-                <div class="mb-2">
+                <div
+                  class="mb-2"
+                  :style="isNotEqual(old_values[oldKey], new_values[oldKey])"
+                >
                   <font-awesome-icon style="font-size:11px; color: biotech" icon="circle" />&nbsp;
                   <strong style="color:#00401F;">{{ oldKey }}:</strong>&nbsp;
-                  <span style="color:#00401F;">{{ old_values[oldKey] }}</span>
+                  <!-- <span style="color:#00401F;">{{ old_values[oldKey] }}</span> -->
+                  <span style="color:#00401F;">{{
+                    alterKeyValue(oldKey, old_values[oldKey])
+                  }}</span>
                 </div>
               </li>
             </ul>
@@ -193,10 +212,15 @@
                 :key="i"
                 v-for="(newKey, i) in Object.keys(new_values)"
               >
-                <div class="mb-2">
+                <div class="mb-2"
+                  :style="isNotEqual(old_values[newKey], new_values[newKey])"
+                >
                   <font-awesome-icon style="font-size:11px; color: #A5CD39" icon="circle" />&nbsp;
                   <strong style="color:#344012;">{{ newKey }}:</strong>&nbsp;
-                  <span style="color:#344012;">{{ new_values[newKey] }}</span>
+                  <!-- <span style="color:#344012;">{{ new_values[newKey] }}</span> -->
+                  <span style="color:#00401F;">{{
+                    alterKeyValue(newKey, new_values[newKey])
+                  }}</span>
                 </div>
               </li>
             </ul>
@@ -204,7 +228,7 @@
         </b-col>
       </b-row>
 
-      <template v-slot:modal-footer="{ ok, cancel }">
+      <template v-slot:modal-footer="{ cancel }">
         <b-button
           id="close_view_md"
           size="sm"
@@ -220,6 +244,7 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 import DateRangePicker from "vue2-daterange-picker";
@@ -229,7 +254,7 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
-      isBusy: false,
+      isBusy: true,
       old_values: [],
       new_values: [],
       activityLogsForm: {
@@ -242,6 +267,7 @@ export default {
         date: null,
         userFullName: null
       },
+      transaction_types: [],
 
       items: [
         {
@@ -293,39 +319,47 @@ export default {
         { key: "actions", label: "Actions" }
       ],
 
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
   computed: {
+    filterItems() {
+      return this.listActivityLogs.filter(listActivityLogs => {
+        return (listActivityLogs.U_TABLE.toLowerCase().match(this.filter.toLowerCase()) || listActivityLogs.U_OPERATION.toLowerCase().match(this.filter.toLowerCase()) || listActivityLogs.Employee.toLowerCase().match(this.filter.toLowerCase()));
+      });
+    },
+
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
 
-      if (end > this.listActivityLogs.length) {
-        end = this.listActivityLogs.length;
+      if(!this.filterItems) {
+        return;
       }
 
-      if (this.listActivityLogs.length === 0) {
+      if (end > this.filterItems.length) {
+        end = this.filterItems.length;
+      }
+
+      if (this.filterItems.length === 0) {
         start = 0;
       }
 
-      return `Showing ${start} to ${end} of ${this.listActivityLogs.length} entries`;
-    },
-
-    rows() {
-      return this.listActivityLogs.length;
+      return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
     },
 
     ...mapGetters({
-      listActivityLogs: "Admin/Activity_Logs/getActivityLogs"
+      listActivityLogs: "Admin/Activity_Logs/getActivityLogs",
+      listRoles: "Admin/Roles/getListRoles",
+      listUsers: "Admin/Users/getUsers"
     }),
 
     sortOptions() {
@@ -364,40 +398,119 @@ export default {
     //   return result;
     // },
 
-    // alterKeyValue(key, value) {
-    //   if (key.search("U_CREATED_BY") == 0 || key.search("U_UPDATED_BY") == 0) {
-    //     return this.getUserName(value);
-    //   } else if (
-    //     key.search("U_IS_SAP_USER") == 0 ||
-    //     key.search("U_IS_ACTIVE") == 0
-    //   ) {
-    //     return value ? "Yes" : "No";
-    //   } else if (key.search("U_ROLE_CODE") == 0) {
-    //     return this.getRoleName(value);
-    //   } else if (
-    //     key.search("U_UPDATED_AT") == 0 ||
-    //     key.search("U_CREATED_AT") == 0
-    //   ) {
-    //     return this.formatDate(value);
-    //   } else if (
-    //     key.search("U_UPDATED_TIME") == 0 ||
-    //     key.search("U_CREATED_TIME") == 0
-    //   ) {
-    //     return this.formatTime(value);
-    //   } else if (key.search("U_COMPANY_CODE") == 0) {
-    //     return this.getCompanyName(value);
-    //   } else if (key.search("U_PASSWORD") == 0) {
-    //     return this.formatPassword(value);
-    //   } else if (key.search("U_CARD_TYPE") == 0) {
-    //     return this.getCardType(value);
-    //   } else if (key.search("U_ACTION_CODE") == 0) {
-    //     return this.getActionName(value);
-    //   } else if (key.search("U_ACTIVE") == 0) {
-    //     return value ? "Yes" : "No";
-    //   } else {
-    //     return value;
-    //   }
-    // },
+    alterKeyValue(key, value) {
+      if (key.search("U_CREATED_BY") == 0 || key.search("U_UPDATED_BY") == 0) {
+        return this.getUserName(value);
+      } else if (
+        key.search("U_IS_SAP_USER") == 0 ||
+        key.search("U_IS_ACTIVE") == 0
+      ) {
+        return value ? "Yes" : "No";
+      } else if (key.search("U_ROLE_CODE") == 0) {
+        return this.getRoleName(value);
+      } else if (
+        key.search("U_UPDATED_AT") == 0 ||
+        key.search("U_CREATED_AT") == 0
+      ) {
+        return this.formatDate(value);
+      } else if (
+        key.search("U_UPDATED_DATE") == 0 ||
+        key.search("U_CREATED_DATE") == 0 ||
+        key.search("U_SCHEDULED_DATE") == 0 
+      ) {
+        return this.formatDate(value);
+      } else if (
+        key.search("U_UPDATED_TIME") == 0 ||
+        key.search("U_CREATED_TIME") == 0 ||
+        key.search("U_SCHEDULED_TIME") == 0 
+      ) {
+        return this.formatTime(value);
+      // } else if (key.search("U_COMPANY_CODE") == 0) {
+      //   return this.getCompanyName(value);
+      // } else if (key.search("U_PASSWORD") == 0) {
+      //   return this.formatPassword(value);
+      // } else if (key.search("U_CARD_TYPE") == 0) {
+      //   return this.getCardType(value);
+      // } else if (key.search("U_ACTION_CODE") == 0) {
+      //   return this.getActionName(value);
+      } else if (key.search("U_ACTIVE") == 0) {
+        return value ? "Yes" : "No";
+      } else {
+        return value;
+      }
+    },
+
+    getUserName(Code){
+      let User = null;
+      let Name = null;
+      if(this.listUsers.find(user => user.Code == Code)) {
+        User = this.listUsers.find(user => user.Code == Code);
+
+        Name = `${User.FirstName} ${User.LastName}`;
+        return Name;
+      }
+    },
+
+    getRoleName(Code) {
+      let Role = null;
+
+      if (this.listRoles.find(role => role.Code == Code)) {
+        Role = this.listRoles.find(role => role.Code == Code).Name;
+      }
+
+      return Role;
+    },
+
+    getActionName(Code) {
+      let Action = null;
+
+      if (this.listActions.find(action => action.Code == Code)) {
+        Action = this.listActions.find(action => action.Code == Code)
+          .U_ACTION_NAME;
+      }
+
+      return Action;
+    },
+
+    formatDate(Code) {
+      return moment(Code).format("MMM DD, YYYY");
+    },
+
+    formatTime(value) {
+      let data = value.toString();
+      if (data.length < 4) {
+        data = "0" + data;
+      }
+      data = data.slice(0, 2) + ":" + data.slice(2);
+      const now = moment().format("YYYY-MM-DD");
+      const concat = now + " " + data;
+      return moment(concat).format("hh:mm A");
+    },
+
+    isNotEqual(old, newVal) {
+      if (old != newVal) {
+        return "background-color:#DDFBBD; border-radius:2px";
+      }
+      return "";
+    },
+
+    async getTransactionType() {
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/api/transaction/types/select`,
+        headers: {
+          Authorization: localStorage.SessionId
+        }
+      });
+      const v = res.data.view;
+
+      for (let i = 0; i < v.length; i++) {
+        this.transaction_types.push({
+          text: v[i].U_DESCRIPTION,
+          value: v[i].Code
+        });
+      }
+    },
 
     async resetDate() {
       this.isBusy = true;
@@ -450,14 +563,21 @@ export default {
       this.$bvModal.show("view-activity-modal");
     },
 
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
   async created() {
+    
     this.isBusy = true;
+
+    let dateRange = {
+      startDate: moment().format("YYYY-MM-DD"),
+      endDate: moment().format("YYYY-MM-DD")
+    };
+
     await this.$store
       .dispatch("Admin/Activity_Logs/fetchActivtyLogs", {
         user_actions: JSON.parse(localStorage.user_actions),
@@ -467,6 +587,40 @@ export default {
       .then(res => {
         this.isBusy = false;
       });
+
+    await this.$store
+      .dispatch("Admin/Users/fetchUsers", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+
+    await this.$store
+      .dispatch("Admin/Roles/fetchRoles", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
   }
 };
 </script>

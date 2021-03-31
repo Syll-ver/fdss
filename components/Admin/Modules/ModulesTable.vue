@@ -1,9 +1,49 @@
 <template>
  <div >
 <Loading v-if="showLoading" />
-      <!-- Main table -->
-      <b-row>
-        <b-col>
+    <b-row>
+      <b-col cols="3" class="mt-3">
+        <b-form-group>
+          <b-input-group size="sm">
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Search Module"
+            ></b-form-input>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+
+      <b-col cols="2" class="mt-3">
+        <b-dropdown
+            right
+            id="filter_actions"
+            class="button-sq"
+            size="sm"
+            variant="dark"
+          >
+          <template v-slot:button-content>
+            <font-awesome-icon icon="filter" class="mr-1" />   
+          </template>
+
+          <b-form-checkbox-group
+            id="status_group"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterStatus"
+            v-b-tooltip.hover
+            title="Filter Status"
+          >
+            <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+            <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
+          </b-form-checkbox-group>
+          </b-dropdown>
+      </b-col>
+ 
+      <b-col cols="7"  class="mt-3" align="right">
+          <b-col>
           <b-button
             id="add_module"
             size="sm"
@@ -15,86 +55,6 @@
             <font-awesome-icon icon="plus" class="mr-1" />Add Module
           </b-button>
         </b-col>
-      </b-row>
-
-       <b-row>
-      <b-col cols="4" class="mt-3">
-        <b-form-group>
-          <b-input-group size="sm">
-            <b-form-input
-              v-model="filter"
-              type="search"
-              id="filterInput"
-              placeholder="Search Module"
-            ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-
-      <b-col cols="4" class="mt-3">
-        <!-- <b-input-group prepend="Date" size="sm">
-          <date-range-picker
-            id="date_pending"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
-            v-model="datePicker"
-            @update="updateValues"
-          >
-            <div slot="input" id="date_pending" >
-              {{ datePicker.startDate }} - {{ datePicker.endDate }}
-            </div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button
-              @click="resetDate"
-              id="date_reset_pending"
-              style="font-size:12px"
-              >Reset</b-button
-            >
-          </b-input-group-append>
-        </b-input-group> -->
-      </b-col>
-  <b-col ></b-col>
- 
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-          <b-dropdown
-            right
-            id="filter_actions"
-            class="button-sq"
-            size="sm"
-            variant="dark"
-          >
-          <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
-            <b-form-checkbox-group
-              id="status_group"
-              name="flavour-2"
-              class="pl-2"
-              style="font-size:12px"
-              v-model="filterStatus"
-              v-b-tooltip.hover
-              title="Filter Status"
-            >
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
-              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-dropdown>
      
       </b-col>
     </b-row>
@@ -107,6 +67,7 @@
         scrollable
         sticky-header
         no-border-collapse
+        :busy="isBusy"
         :items="filterItems"
         :fields="filterFields"
         :current-page="currentPage"
@@ -117,7 +78,16 @@
         :sort-desc.sync="sortDesc"
         :sort-direction="sortDirection"
         @filtered="onFiltered"
+        responsive
       >
+      <template #table-busy>
+        <div class="text-center text-danger my-2">
+          <b-spinner small class="align-middle"  variant="dark">
+          </b-spinner>
+          <span class="loading_spinner">Loading...</span>
+        </div>
+      </template>
+
         <template v-slot:cell(actions)="row">
           <b-button
             id="edit_module"
@@ -145,23 +115,35 @@
       <hr />
 
       <b-row>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+
         <b-col  label-cols-sm
-        class="mb-0 mt-1 text-left"
-        cols="3"
-        align-h="receipt">
-          <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center">
+          <div size="sm" style="color: gray; font-size: 11.5px;">{{ bottomLabel }}</div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
             id="modules-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="module-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
@@ -297,9 +279,7 @@
 </template>
 
 <script>
-import moment from "moment";
 import Loading from "~/components/Loading/Loading.vue";
-import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
@@ -342,27 +322,42 @@ export default {
         { key: "actions", label: "Actions" }
       ],
 
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
-      filterOn: []
+      filter: "",
+      filterOn: [],
+      isBusy: true,
     };
   },
   computed: {
     filterItems() {
+      let count = 0;
       return this.listModules.filter(listModules => {
-        return this.filterStatus.includes(listModules.U_IS_ACTIVE);
+        if(this.filterStatus.includes(listModules.U_IS_ACTIVE)){
+          count++;
+          this.totalRows = count;
+          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+        }
+        if(this.filterStatus.includes(!listModules.U_IS_ACTIVE)){
+          count++;
+          this.totalRows = count;
+          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+        }
       });
     },
 
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -373,10 +368,6 @@ export default {
       }
 
       return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
-    },
-
-    rows() {
-      return this.filterItems.length;
     },
 
     ...mapGetters({
@@ -497,46 +488,28 @@ export default {
       this.$bvModal.show("save-modal");
     },
 
-    // fetchPendingTransactions() {
-    //   this.items = this.$store.state.transactions.pendingTransactions;
-    //   return;
-    // },
-    // addDocument() {
-    //   this.transactionForm.documentListValues.push({
-    //     documentType: null,
-    //     number: null
-    //   });
-    // },
-    // removeDocument(id) {
-    //   if (this.transactionForm.documentListValues.length === 1) {
-    //     //Create an error message. Document must contain 1 or more
-    //   } else {
-    //     this.transactionForm.documentListValues.splice(id, 1);
-    //   }
-    // },
-    // info(data) {
-    //   this.transactionForm = data;
-    //   this.$bvModal.show("process-modal");
-    // },
-
     resetInfoModal() {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
 
-  beforeCreate() {
-    this.$store
+  async beforeCreate() {
+    this.isBusy = true;
+
+    await this.$store
       .dispatch("Admin/Modules/fetchListModules", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
+
+        this.isBusy = false;
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -545,9 +518,14 @@ export default {
           }
         }
       });
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
+
   },
 
-  created() {
+  created() {    
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add module")) {

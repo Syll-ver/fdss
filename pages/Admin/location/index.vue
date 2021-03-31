@@ -1,19 +1,19 @@
 <template>
-  <div class="row m-0 p-0" style="height: 100%">
-    <div class="m-0 p-0">
+  <div class="row m-0 p-0">
+    <div class="container-fluid m-0 p-0">
       <sidebar />
     </div>
     <div class="mainPages">
-      <b-card no-body class="mt-5 card-content">
+      <b-card no-body class="mt-5">
         <b-tabs
           card
           small
           active-nav-item-class="font-weight-bold text-uppercase text-biotech"
         >
-          <b-tab title="Delivery Slip">
-            <div>
-              <deliveryreceipt />
-            </div>
+          <b-tab title="Location">
+          <div>
+              <LocationTable/>
+          </div>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -23,17 +23,20 @@
 
 <script>
 import sidebar from "~/layouts/sidebar";
-import deliveryreceipt from "~/components/transaction/deliveryreceipt.vue";
+import LocationTable from "~/components/Admin/Location/LocationTable.vue";
 
 export default {
   // layout: "sidebar",
   components: {
-    deliveryreceipt,
+    LocationTable,
     sidebar
   },
   data() {
-    return {};
-  }
+    return {
+      tabIndex: 0
+    };
+  },
+  methods: {},
 };
 </script>
 
@@ -43,5 +46,4 @@ export default {
       margin-left: 10px;
     }
   }  
-
 </style>

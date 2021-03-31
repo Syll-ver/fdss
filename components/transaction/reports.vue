@@ -18,7 +18,7 @@
     </b-row> -->
 
     <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -27,20 +27,12 @@
               id="search_delivery_receipt"
               placeholder="Search Delivery Slip"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
 
-          <b-col cols="4" class="mt-3">
+      <b-col class="mt-3">
         <b-input-group prepend="Date" style="height:10px" size="sm">
-          <!-- <b-input-group-prepend>
-              <div style="background-color: green">
-                <v-icon color="#ffffff" small>fa-calendar-week</v-icon>
-              </div>
-          </b-input-group-prepend>-->
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -55,7 +47,7 @@
             <div
               id="actvty_date"
               slot="input"
-              style="min-width: 150px;"
+              style="height:2rem; font-size:14px;"
             >{{ datePicker.startDate }} - {{ datePicker.endDate }}</div>
           </date-range-picker>
           <b-input-group-append style="height:2rem; font-size:12px">
@@ -63,27 +55,17 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-  <b-col ></b-col>
- 
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-          <b-dropdown
-            right
-            id="filter_actions"
-            class="button-sq"
-            size="sm"
-            variant="dark"
-          >
+      <b-col class="mt-3" align="left">
+        <b-dropdown
+          right
+          id="filter_actions"
+          class="button-sq"
+          size="sm"
+          variant="dark"
+        >
           <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
+            <font-awesome-icon icon="filter" class="mr-1" />   
+          </template> 
             <b-form-checkbox-group
               
               id="status_group0"
@@ -118,7 +100,7 @@
             <b-form-checkbox id="delivery" value="Delivery"
               >Delivery</b-form-checkbox
             >
-          </b-form-checkbox-group>
+            </b-form-checkbox-group>
              <!-- <b-form-checkbox-group
             id="status_group1"
             name="flavour-2"
@@ -165,6 +147,18 @@
           >
             <font-awesome-icon icon="file-excel" />
           </b-button>
+      </b-col>
+ 
+      <b-col cols="2"  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
+          <b-form-select
+            id="perPageSelect_action"
+            size="sm"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group> -->
+      
+        
      
       </b-col>
     </b-row>
@@ -185,10 +179,18 @@
       :current-page="currentPage"
       :per-page="perPage"
       :sort-by.sync="sortBy"
-  
+      :busy="isBusy"
       @row-clicked="show"
+      @filtered="onFiltered"
       
     >
+      <template #table-busy>
+        <div class="text-center text-danger my-2">
+          <b-spinner small class="align-middle" variant="dark">
+          </b-spinner>
+          <span class="loading_spinner">Loading...</span>
+        </div>
+      </template>
         <!-- :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection" -->
       <template v-slot:cell(U_STATUS)="row">
@@ -292,24 +294,37 @@
     </div>
 
 
- <b-row>
-        <b-col  label-cols-sm
-        class="mb-0 mt-1 text-left"
-        cols="3"
-        align-h="receipt">
+      <b-row>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+        <b-col
+          label-cols-sm
+          class="mb-0 mt-2 text-left"
+          cols="3"
+          align-h="center"
+        >
           <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
-            id="modules-pagination"
+            id="reports-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="reports-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
@@ -386,6 +401,17 @@ Transaction Number : {{ U_TRX_NO }}
               <span class="mt-1">
                 : {{ U_FRMR_ADD }}
               </span>
+            </div>
+          </b-col>
+        </b-row>
+        
+        <b-row v-show="U_APP_ProjCode">
+          <b-col cols="4">
+            <span>Plot Code</span>
+          </b-col>
+          <b-col cols="8">
+            <div class="dotted-border">
+              <span> : {{ U_APP_ProjCode }} </span>
             </div>
           </b-col>
         </b-row>
@@ -655,6 +681,7 @@ export default {
     Loading
   },
   async created() {
+    this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
     await this.getTransactions();
     await this.getTransactionType();
     await this.getCompanyList();
@@ -671,12 +698,14 @@ export default {
         variant: "biotech",
         message: ""
       },
+      companyCode: null,
       showReceipt: false,
       TRANSACTION_COMPANY:null,
       U_TRANSACTION_TYPE: null,
      U_UOM: { UomName: "", UomEntry: "" },
       U_FRMR_NAME:null,
       U_FRMR_ADD:null,
+      U_APP_ProjCode: null,
       U_CMMDTY:null,
       U_DRVR_LNAME:null,
       U_DRVR_FNAME:null,
@@ -794,9 +823,8 @@ export default {
           sortDirection: "asc"
         },
 
-        // { key: "actions", label: "Actions", class: "text-center" }
       ],
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
@@ -809,47 +837,28 @@ export default {
   },
    computed: {
     filterItems() {
+      let count = 0;
       return this.items.filter(request => {
         if (this.filterStatus.includes(request.U_STATUS) && this.filterTransaction.includes(request.U_TRANSACTION_TYPE) ) {
+          count++
+          this.totalRows = count;
           return request;
         }
         if (this.filterTransaction.includes(request.U_TRANSACTION_TYPE) && this.filterStatus.includes(request.U_STATUS) ) {
-          return request;
-        }
-        if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
+          count++
+          this.totalRows = count;
           return request;
         }
       });
-      //  const pageSize = () => {
-      //   return this.items.filter((request) => {
-
-      //     return (
-      //       this.filterStatus.includes(
-      //         request.U_TRANSACTION_TYPE
-      //       ) &&
-      //       this.filterStatus.includes(request.U_STATUS) 
-            
-      //     );
-      //   });
-      // };
-
-      // const pages = pageSize();
-      // this.totalRows = pages.length;
-
-      // return this.items.filter((request) => {
-      //   return (
-      //     this.filterStatus.includes(request.U_TRANSACTION_TYPE) &&
-      //     this.filterStatus.includes(request.U_STATUS)
-      //  );
-      // });
-
-
-
     },
 
      bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -933,11 +942,7 @@ export default {
       doc.save(
         `Farmers' Delivery Slip (${this.dateRange.date_from} - ${this.dateRange.date_to}).pdf`
       );
-
       return doc;
-
-
-
       
     },
      exportReports() {
@@ -975,7 +980,6 @@ export default {
     },
       // },
     async getCompanyList() {
-      //  console.log(this.U_CMMDTY.value.value)
       this.companyList = [];
       const res = await axios({
         method: "POST",
@@ -1026,7 +1030,6 @@ export default {
         this.farmer.push({
           text : v[i].SUPPLIER_NAME,
           value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS}
-          
         });
         
       }
@@ -1036,6 +1039,7 @@ export default {
       this.U_FRMR_ADD= this.U_FRMR_NAME.address
     },
 show(data) {
+  this.U_APP_ProjCode = "";
        console.log(data)
        this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       (this.U_UOM = data.U_UOM);
@@ -1048,6 +1052,9 @@ show(data) {
       this.U_CMMDTY = data.U_CMMDTY;
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
+      if(data.U_APP_ProjCode){
+        this.U_APP_ProjCode = data.U_APP_ProjCode;
+      }
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
       this.U_REQUESTED_SACKS = data.U_REQUESTED_SACKS;
@@ -1058,9 +1065,9 @@ show(data) {
     },
   
 
-      onFiltered(filteredItems) {
+      onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     },
      intToTime(i) {
@@ -1088,6 +1095,7 @@ show(data) {
       this.datePicker.endDate = moment().format("MMM DD, YYYY");
       await this.getTransactions();
       this.totalRows = this.items.length;
+      this.isBusy = false;
     },
     async updateValues() {
       this.isBusy = true;
@@ -1105,9 +1113,9 @@ show(data) {
         ));
       await this.getTransactions();
       this.totalRows = this.items.length;
+      this.isBusy = false;
     },
   async getTransactions() {
-      console.log(JSON.parse(localStorage.user_details))
       try {
         const userDetails = JSON.parse(localStorage.user_details)
         const roleDetails = JSON.parse(localStorage.user_role)
@@ -1115,7 +1123,8 @@ show(data) {
         const employee_id = userDetails.Code
         const employee_role = roleDetails.Name
 
-        this.showLoading = true;
+          
+        this.isBusy = true;
         this.items = [];
         const res = await axios({
           method: "POST",
@@ -1132,44 +1141,79 @@ show(data) {
         });
        
         const v = res.data.view;
-         console.log(v);
-        for (let i = 0; i < v.length; i++) {
-          const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
-          const t = this.intToTime(v[i].CREATED_TIME);
-          const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
-          this.items.push({
-              U_TRX_NO: v[i].U_TRX_NO,
-              TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-              // U_TME_CRTD : t,
-              U_UOM: v[i].UOM_NAME,
-              U_TRX_ID: v[i].TRANSACTION_ID,
-              U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
-              U_ITEM: v[i].ITEM_ID,
-              U_SUPP: v[i].SUPPLIER_ID,
-              U_TRX_NO: v[i].TRANSACTION_NUMBER,
-              U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
-              U_CMMDTY: v[i].ITEM_NAME ,
-              U_FRMR_NAME : v[i].FARMER_NAME ,  
-              U_FRMR_ADD : v[i].FARMER_ADDRESS ,  
-              U_DTE_CRTD: date,
-              U_CRTD_BY: v[i].CREATED_BY,
-              U_STATUS: v[i].STATUS,
-              U_RMRKS: v[i].REMARKS,
-              U_PLATE_NUMBER: v[i].PLATE_NUMBER,
-              U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
-              U_HLPR_NAME: v[i].HELPER_NAME,
-              U_DRVR_NAME: v[i].DRIVER_NAME,
-              U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-              U_SACKS: v[i].NUMBER_OF_BAGS
-          });
+
+        if(v.length > 0){
+          for (let i = 0; i < v.length; i++) {
+            const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
+            const t = this.intToTime(v[i].CREATED_TIME);
+            const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
+
+            if(v[i].U_PLOT_CODE === null){
+              this.items.push({
+                U_TRX_NO: v[i].U_TRX_NO,
+                TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+                // U_TME_CRTD : t,
+                U_UOM: v[i].UOM_NAME,
+                U_TRX_ID: v[i].TRANSACTION_ID,
+                U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+                U_ITEM: v[i].ITEM_ID,
+                U_SUPP: v[i].SUPPLIER_ID,
+                U_TRX_NO: v[i].TRANSACTION_NUMBER,
+                U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+                U_CMMDTY: v[i].ITEM_NAME ,
+                U_FRMR_NAME : v[i].FARMER_NAME ,  
+                U_FRMR_ADD : v[i].FARMER_ADDRESS ,  
+                // U_APP_ProjCode: v[i].U_PLOT_CODE,
+                U_DTE_CRTD: date,
+                U_CRTD_BY: v[i].CREATED_BY,
+                U_STATUS: v[i].STATUS,
+                U_RMRKS: v[i].REMARKS,
+                U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+                U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+                U_HLPR_NAME: v[i].HELPER_NAME,
+                U_DRVR_NAME: v[i].DRIVER_NAME,
+                U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+                U_SACKS: v[i].NUMBER_OF_BAGS
+              });
+            } else {
+              this.items.push({
+                U_TRX_NO: v[i].U_TRX_NO,
+                TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+                // U_TME_CRTD : t,
+                U_UOM: v[i].UOM_NAME,
+                U_TRX_ID: v[i].TRANSACTION_ID,
+                U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+                U_ITEM: v[i].ITEM_ID,
+                U_SUPP: v[i].SUPPLIER_ID,
+                U_TRX_NO: v[i].TRANSACTION_NUMBER,
+                U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+                U_CMMDTY: v[i].ITEM_NAME ,
+                U_FRMR_NAME : v[i].FARMER_NAME ,  
+                U_FRMR_ADD : v[i].FARMER_ADDRESS , 
+                U_APP_ProjCode: v[i].U_PLOT_CODE,
+                U_DTE_CRTD: date,
+                U_CRTD_BY: v[i].CREATED_BY,
+                U_STATUS: v[i].STATUS,
+                U_RMRKS: v[i].REMARKS,
+                U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+                U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+                U_HLPR_NAME: v[i].HELPER_NAME,
+                U_DRVR_NAME: v[i].DRIVER_NAME,
+                U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+                U_SACKS: v[i].NUMBER_OF_BAGS
+              });
+            }
+          }
+          this.isBusy = false;
+        } else {
+          this.isBusy = false;
         }
 
-        this.showLoading = false;
       } catch (e) {
         console.log(e);
-        this.showLoading = false;
-      
+        this.isBusy = false;
       }
+      this.isBusy = false;
     }
   },
   reloadFunction() {

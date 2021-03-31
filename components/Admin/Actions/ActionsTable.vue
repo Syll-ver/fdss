@@ -1,6 +1,4 @@
 <template>
-  
-   
     <div>
        <div>
       <b-alert
@@ -20,24 +18,9 @@
       </b-alert>
       <Loading v-if="showLoading" />
     </div>
-      <!-- Main table -->
-      <b-row>
-        <b-col>
-          <b-button
-            id="add_action"
-            size="sm"
-            class="button-style"
-            variant="biotech"
-            @click="addAction()"
-            v-if="actions.add_action"
-          >
-            <font-awesome-icon icon="plus" class="mr-1" />Add Action
-          </b-button>
-        </b-col>
-      </b-row>
 
       <b-row>
-        <b-col cols="4" class="mt-3">
+        <b-col cols="3" class="mt-3">
           <b-form-group>
             <b-input-group size="sm">
               <b-form-input
@@ -46,25 +29,11 @@
                 id="search_action"
                 placeholder="Search Action"
               ></b-form-input>
-               <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
             </b-input-group>
           </b-form-group>
         </b-col>
 
-       <b-col cols="4" class="mt-3">
-           </b-col>
-  <b-col ></b-col>
-<b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
+        <b-col cols="2" class="mt-3">
           <b-dropdown
             right
             id="filter_actions"
@@ -72,9 +41,9 @@
             size="sm"
             variant="dark"
           >
-          <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
+            <template v-slot:button-content>
+              <font-awesome-icon icon="filter" class="mr-1" />   
+            </template> 
             <b-form-checkbox-group
               id="status_group"
               name="flavour-2"
@@ -88,18 +57,35 @@
               <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
             </b-form-checkbox-group>
           </b-dropdown>
+        </b-col>
+
+        <b-col cols="7"  class="mt-3" align="right">
+          <b-col>
+            <b-button
+              id="add_action"
+              size="sm"
+              class="button-style"
+              variant="biotech"
+              @click="addAction()"
+              v-if="actions.add_action"
+            >
+              <font-awesome-icon icon="plus" class="mr-1" />Add Action
+            </b-button>
+          </b-col>
      
-      </b-col>
-    </b-row>
+        </b-col>
+      </b-row>
 
       <!-- Main table element -->
       <b-table
-        id="table-action"
+        id="action-table"
         class="table-style"
         show-empty
         scrollable
         sticky-header
+        responsive
         no-border-collapse
+        :busy="isBusy"
         :items="filterItems"
         :fields="filterFields"
         :current-page="currentPage"
@@ -111,7 +97,13 @@
         :sort-direction="sortDirection"
         @filtered="onFiltered"
       >
-        <!-- <template v-slot:table-caption>{{ bottomLabel }}</template> -->
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner small class="align-middle"  variant="dark">
+            </b-spinner>
+              <span class="loading_spinner">Loading...</span>
+          </div>
+        </template>
 
         <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
 
@@ -154,28 +146,42 @@
       <hr />
 
       <b-row>
-        <b-col label-cols-sm class="mb-0 mt-1 text-left" cols="3" align-h="receipt">
-          <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_actions-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
+      <b-col
+        label-cols-sm
+        class="mb-0 mt-2 text-left"
+        cols="3"
+        align-h="center"
+      >
+          <div size="sm" style="color: gray; font-size: 11.5px;"> {{ bottomLabel }}</div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
             id="actions-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="actions-table"
+            aria-controls="action-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
 
-      <!-- Main table -->
 
       <!-- Add Action -->
-
       <b-modal
         size="sm"
         header-bg-variant="biotech"
@@ -239,10 +245,9 @@
         </template>
       </b-modal>
 
-      <!-- Add Action -->
+      <!-- End Add Action -->
 
       <!-- Edit Action -->
-
       <b-modal
         size="sm"
         header-bg-variant="biotech"
@@ -314,7 +319,7 @@
       </b-modal>
     </div>
 
-    <!-- Edit Action -->
+    <!-- End Edit Action -->
 
 </template>
 
@@ -350,13 +355,6 @@ export default {
       },
 
       fields: [
-        // {
-        //   key: "index",
-        //   label: "#",
-        //   sortable: true,
-        //   sortDirection: "desc"
-        // },
-
         {
           key: "U_ACTION_NAME",
           label: "Action Name",
@@ -380,27 +378,34 @@ export default {
 
         { key: "actions", label: "Actions" }
       ],
-
-      totalRows: 1,
+      isBusy: true,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
-      pageOptions: [5, 10, 50],
+      pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
   computed: {
     filterItems() {
-      return this.listActions.filter(listActions => {
-        return this.filterStatus.includes(listActions.U_IS_ACTIVE);
-      });
-    },
+      let count = 0;
+        return this.listActions.filter(listActions => {
+          if(this.filterStatus.includes(listActions.U_IS_ACTIVE)) {
+            count++;
+            this.totalRows = count;
 
-    rows() {
-      return this.filterItems.length;
+            return listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_MODULE_NAME.toLowerCase().match(this.filter.toLowerCase()))
+          }
+          if(this.filterStatus.includes(!listActions.U_IS_ACTIVE)) {
+            count++;
+            this.totalRows = count;
+            return listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_MODULE_NAME.toLowerCase().match(this.filter.toLowerCase()))
+          }
+      });      
     },
 
     filterFields() {
@@ -430,6 +435,10 @@ export default {
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -539,9 +548,9 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     },
 
@@ -554,13 +563,19 @@ export default {
     }
   },
 
-  beforeCreate() {
+  async beforeCreate() {    
+    this.isBusy = true;
+
     this.$store
       .dispatch("Admin/Actions/fetchListActions", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        if(!this.filter) {
+          this.totalRows = this.filterItems ? this.filterItems.length : 0
+        }
+        this.isBusy = false;
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -583,6 +598,9 @@ export default {
           }
         }
       });
+
+    
+
   },
 
   created() {

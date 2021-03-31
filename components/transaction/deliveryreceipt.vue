@@ -14,33 +14,26 @@
       />
       {{ alert.message }}
     </b-alert>
+
+    <b-alert
+      id="alert_action"
+      class="alerticon"
+      :show="alert1.showAlert1"
+      dismissible
+      :variant="alert1.variant1"
+      @dismissed="alert1.showAlert1 = null"
+    >
+      <font-awesome-icon
+        :icon="alert1.variant1 == 'warning' ? 'exclamation' : 'check-circle'"
+        class="mr-1 alerticon"
+      />
+      {{ alert1.message1 }}
+    </b-alert>
     <Loading v-if="showLoading" />
 
     <Receipt ref="Receipt" v-show="false" />
-    <!-- Main table -->
-    <!-- 
-      <VueQrcode
-                id="QRcode"
-                type="String"
-                value="asd"
-                :options="{ width: 300 }"
-    ></VueQrcode>-->
     <b-row>
-      <b-col>
-        <b-button
-          id="create"
-          variant="biotech"
-          class="button-style"
-          size="sm"
-          @click="$bvModal.show('add-transaction-modal')"
-        >
-          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
-        </b-button>
-      </b-col>
-    </b-row>
-
-    <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -49,22 +42,12 @@
               id="search_delivery_receipt"
               placeholder="Search Delivery Slip"
             ></b-form-input>
-            <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''"
-                >Clear</b-button
-              >
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col cols="4" class="mt-3">
-        <b-input-group prepend="Date" style="height:10px" size="sm">
-          <!-- <b-input-group-prepend>
-              <div style="background-color: green">
-                <v-icon color="#ffffff" small>fa-calendar-week</v-icon>
-              </div>
-          </b-input-group-prepend>-->
+      <b-col class="mt-3">
+        <b-input-group size="sm">
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -75,8 +58,10 @@
             :showWeekNumbers="true"
             v-model="datePicker"
             @update="updateValues"
+            size="sm"
+            style="height:2rem; font-size:12px"
           >
-            <div id="actvty_date" slot="input" style="min-width: 150px;">
+            <div id="actvty_date" slot="input" style="height:2rem; font-size:14px;">
               {{ datePicker.startDate }} - {{ datePicker.endDate }}
             </div>
           </date-range-picker>
@@ -86,18 +71,10 @@
             >
           </b-input-group-append>
         </b-input-group>
+        
       </b-col>
-      <b-col></b-col>
 
-      <b-col cols="2" class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group>-->
-
+      <b-col class="mt-3">
         <b-dropdown
           right
           id="filter_actions"
@@ -145,6 +122,20 @@
           </b-form-checkbox-group> -->
         </b-dropdown>
       </b-col>
+
+      <!-- <b-row> -->
+      <b-col align="right">
+        <b-button
+          id="create"
+          variant="biotech"
+          class="button-style mt-3"
+          size="sm"
+          @click="$bvModal.show('add-transaction-modal')"
+        >
+          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
+        </b-button>
+      </b-col>
+    <!-- </b-row> -->
     </b-row>
 
     <!-- Main table element -->
@@ -155,6 +146,8 @@
       scrollable
       sticky-header
       no-border-collapse
+      responsive
+      :busy="isBusy"
       :items="filterItems"
       :filter="filter"
       :filterIncludedFields="filterOn"
@@ -164,7 +157,17 @@
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection"
+      :tbody-tr-class="rowClassMain"
+      @filtered="onFiltered"
     >
+    <template #table-busy>
+      <div class="text-center text-danger my-2">
+        <b-spinner small class="align-middle"  variant="dark">
+        </b-spinner>
+        <span class="loading_spinner">Loading...</span>
+      </div>
+    </template>
+
       <template v-slot:cell(U_STATUS)="row">
         <b-badge
           v-show="row.item.U_STATUS === 'Pending'"
@@ -198,7 +201,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="printed(row.item)"
+            @click="printed(row)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -283,25 +286,36 @@
     </b-table>
 
     <b-row>
+      <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
       <b-col
         label-cols-sm
-        class="mb-0 mt-1 text-left"
+        class="mb-0 mt-2 text-left"
         cols="3"
-        align-h="receipt"
+        align-h="center"
       >
-        <div size="sm" class="bottomlabel">{{ bottomLabel }}</div>
+        <div size="sm" style="color: gray; font-size: 11.5px;">{{ bottomLabel }}</div>
       </b-col>
-      <b-col cols="4" offset="5">
+      <b-col>
         <b-pagination
-          id="modules-pagination"
+          id="delivery-pagination"
           pills
           v-model="currentPage"
-          :total-rows="rows"
+          :total-rows="totalRows"
           :per-page="perPage"
           align="right"
           size="sm"
           aria-controls="modules-table"
           limit="3"
+          class="mt-1"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -402,35 +416,6 @@
       </template>
 
       <b-card class="card-shadow">
-        <!-- <b-form-input
-          disabled
-          id="farmer_add"
-          class="form-text"
-          v-model="companyList"
-          @change="getCommodity(), getFarmer()"
-        /> -->
-        <!-- <b-form-select
-          id="company"
-          v-model="selectedcompany"
-          class="form-text"
-          :options="companyList"
-          @change="getCommodity(), getFarmer()"
-          required
-
-        ></b-form-select> -->
-        <!-- <b-form-select
-          id="company"
-          v-model="selectedcompany"
-          class="form-text"
-
-          required
-        > <option :value="null">Select Company</option>
-                <option
-                  v-for="(company, i) in companyList"
-                  :key="i"
-                  :value="company.ID"
-                  >{{ company.COMPANYNAME }}</option
-                ></b-form-select> -->
         <small>Schedule Date</small>
         <br />
         <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
@@ -485,6 +470,20 @@
           required
         ></b-form-select> -->
 
+        <small class="text-left" v-show="companyCode == '4360' " >Plot Code</small>
+        <multiselect
+          v-show="companyCode == '4360' "
+          id="plot_code"
+          :options="plotCode"
+          placeholder="Select Plot Code"
+          class="form-text"
+          v-model="U_APP_ProjCode"
+          label="text"
+          track-by="text"
+          @input="getPlotAddress"
+          required
+        ></multiselect>
+
         <small class="text-left">Address</small>
         <b-form-input
           disabled
@@ -492,6 +491,7 @@
           class="form-text"
           v-model="U_FRMR_ADD"
         />
+
         <b-row>
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
@@ -580,7 +580,7 @@
               class="form-text"
               required
             ></b-form-input>
-            <small class="text-left"># of Bags</small>
+            <small class="text-left"># of Filled Bags</small>
             <b-form-input
               type="number"
               id="Bags"
@@ -616,7 +616,7 @@
           :disabled="showLoading === true"
         >
           <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner> -->
+          <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner> -->
           Create
         </b-button>
         <b-button
@@ -719,6 +719,16 @@
           v-model="U_FRMR_ADD"
           disabled
         />
+
+        <small v-show="U_APP_ProjCode" class="text-left">Plot Code</small>
+        <b-form-input
+          v-show="U_APP_ProjCode"
+          disabled
+          id="farmer_plot_code"
+          class="form-text"
+          v-model="U_APP_ProjCode"
+        />
+
         <b-row>
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
@@ -804,7 +814,7 @@
             ></b-form-input>
           </b-col>
           <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
-            <small class="text-left"># of Bags</small>
+            <small class="text-left"># of Filled Bags</small>
             <b-form-input
               type="number"
               id="Bags"
@@ -839,7 +849,7 @@
           @click="updateDR(U_TRX_ID)"
           :disabled="showLoading === true"
         >
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
+          <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
           Save
         </b-button>
         <b-button
@@ -910,6 +920,17 @@
                     </div>
                     <div class="dotted-border">
                       <span class="mt-1">: {{ U_FRMR_ADD }}</span>
+                    </div>
+                  </b-col>
+                </b-row>
+
+                <b-row v-show="U_APP_ProjCode">
+                  <b-col cols="4">
+                    <span>Plot Code</span>
+                  </b-col>
+                  <b-col cols="8">
+                    <div class="dotted-border">
+                      <span> : {{ U_APP_ProjCode }} </span>
                     </div>
                   </b-col>
                 </b-row>
@@ -1295,19 +1316,18 @@ export default {
     VueQrcode
   },
   async created() {
-    // await this.getPriceList();
-    await this.getCommodity();
+    this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
     await this.getTransactions();
+    await this.getCommodity();
     await this.getTransactionType();
-    await this.getFarmer();
-    await this.networkPrintInit();
-
-    // await this.getCompanyList();
-    // await this.updateUOM();
+    // await this.getFarmer();
+    await this.getLocationIP();
+    // await this.networkPrintInit();
     this.totalRows = this.items.length;
   },
   data() {
     return {
+      isBusy: true,
       isPrinterAvailable: true,
       receiptData: {},
       receiptData1: {},
@@ -1334,7 +1354,7 @@ export default {
         label: "Select Date",
         required: true
       },
-
+      plotCodes: [],
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
       filterStatus: ["Pick-up", "Delivery"],
@@ -1351,6 +1371,11 @@ export default {
         variant: "biotech",
         message: ""
       },
+      alert1: {
+        showAlert1: 0,
+        variant1: "biotech",
+        message1: ""
+      },
       // U_PRICELIST:null,
       // pricelist:[],
       unit: [],
@@ -1359,6 +1384,8 @@ export default {
       U_TRANSACTION_TYPE: null,
       U_FRMR_NAME: null,
       U_FRMR_ADD: null,
+      U_APP_ProjCode: null,
+      U_FRMR_PLOTCODE: [],
       U_CMMDTY: { value: "", text: "" },
       U_DRVR_LNAME: null,
       U_DRVR_FNAME: null,
@@ -1377,8 +1404,11 @@ export default {
       transaction_types: [],
       companyList: null,
       farmer: [],
+      bfi_farmer: [],
+      farmer_plotcode: [],
       farmerAdd: [],
       commodity: [],
+      plotCode: [],
       status: "",
       // Datepicker
       opens1: "",
@@ -1463,36 +1493,38 @@ export default {
       signaturePath: null,
       pincode: null,
       pinError: null,
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "U_SCHEDULED_DATE_AND_TIME",
       sortDesc: true,
       sortDirection: "asc",
-      filter: null,
-      filterOn: []
+      filter: "",
+      filterOn: [],
+      printerIP: null,
     };
   },
   computed: {
-    // ...mapGetters({
-
-    //   companyList: "Company/getCompanyList",
-    // }),
     filterItems() {
+      let count = 0;
+      this.totalRows = count;
       return this.items.filter(request => {
-        if (this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
-          return request;
+        if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
+          count++;
+          this.totalRows = count;
+          return (request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase(), this.totalRows = request.length))
         }
-        if (this.filterCompany.includes(request.TRANSACTION_COMPANY)) {
-          return request;
-        }
-      });
+      })
     },
 
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -1505,9 +1537,6 @@ export default {
       return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
     },
 
-    rows() {
-      return this.filterItems.length;
-    },
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -1518,25 +1547,15 @@ export default {
     }
   },
 
-  methods: {
-    //  async beforeCreate() {
-    //  this.showLoading = true;
-    // await this.$store
-    //   .dispatch("Company/fetchCompany", {
-    //     SessionId: localStorage.SessionId
-    //   })
+  methods: { 
+    rowClassMain(items) {
+      if(items){
+        if(items.IFPASSRMRS != null){
+          return items.IFPASSRMRS ? "" : "table-danger";
+        }
+      }
+    },
 
-    //   .then(res => {
-    //     if (res && res.name == "Error") {
-    //       if (res.response && res.response.data.errorMsg) {
-    //         if (res.response.data.errorMsg === "Invalid session.") {
-    //           this.$bvModal.show("session_modal");
-    //         }
-    //       }
-    //     }
-    //   });
-    //   this.showLoading = false;
-    //  },
     clearSignature() {
       this.$refs.signaturePad.undoSignature();
     },
@@ -1558,8 +1577,6 @@ export default {
       console.log(data);
     },
     async saveDR() {
-      // console.log(this.U_UOM)
-      // console.log(this.U_FRMR_NAME.value.id)
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
       } else if (this.U_TRANSACTION_TYPE == null) {
@@ -1570,18 +1587,18 @@ export default {
         this.showAlert("Please select Unit of Measure", "danger");
       } else if (this.U_FRMR_NAME == null) {
         this.showAlert("Please select Farmer Name", "danger");
-      } else if (this.U_HLPR_FNAME == null || this.U_HLPR_LNAME == null) {
+      } else if (this.U_HLPR_FNAME.trim() == null || this.U_HLPR_LNAME.trim() == null) {
         this.showAlert("Please input Helper Name", "danger");
-      } else if (this.U_DRVR_FNAME == null || this.U_DRVR_LNAME == null) {
+      } else if (this.U_DRVR_FNAME.trim() == null || this.U_DRVR_LNAME.trim() == null || this.U_DRVR_FNAME.trim() == "" || this.U_DRVR_LNAME.trim() == "") {
         this.showAlert("Please input Driver Name", "danger");
       } else if (this.U_PLATE_NUMBER == null) {
         this.showAlert("Please input Plate Number", "danger");
       } else if (this.U_UOM.UomName == "TRUCK LOAD" && this.U_SACKS < 1) {
         this.showAlert("Please input quantity not less than zero", "danger");
       } else if (this.U_TRANSACTION_TYPE == 2 && this.U_SACKS < 1) {
-        this.showAlert("Please input # of bags not less than zero", "danger");
+        this.showAlert("Please input # of Filled Bags not less than zero", "danger");
         // } else if (this.U_SACKS < "1" ) {
-        //   this.showAlert("Please input quantity/# of bags  not less than zero", "danger");
+        //   this.showAlert("Please input quantity/# of Filled Bags  not less than zero", "danger");
       } else {
         console.log(this.U_CMMDTY.value);
         this.$bvModal.show("pin");
@@ -1673,7 +1690,7 @@ export default {
         //     return path;
         //   }
         // );
-
+// test
         // this.signaturePath = path;
         this.showLoading = false;
 
@@ -1692,6 +1709,7 @@ export default {
       (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
+        (this.U_APP_ProjCode = null),
         (this.U_UOM = { value: "", text: "" }),
         (this.U_CMMDTY = { value: "", text: "" }),
         (this.U_DRVR_LNAME = null),
@@ -1716,6 +1734,7 @@ export default {
       (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
+        (this.U_APP_ProjCode = null),
         (this.U_UOM = { value: "", text: "" }),
         (this.U_CMMDTY = { value: "", text: "" }),
         (this.U_DRVR_LNAME = null),
@@ -1741,6 +1760,13 @@ export default {
         showAlert: 3,
         variant,
         message
+      };
+    },
+    showAlert1(message1, variant1) {
+      this.alert1 = {
+        showAlert1: 3,
+        variant1,
+        message1
       };
     },
     async networkPrint(data) {
@@ -1799,6 +1825,9 @@ export default {
       );
       this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
       this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
+      if(data.U_APP_ProjCode){
+        this.networkPrinter.addText(`Plot Code: ${data.U_APP_ProjCode}\n`)
+      }
       this.networkPrinter.addText(`\n`);
       this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
       this.networkPrinter.addText(
@@ -1837,7 +1866,6 @@ export default {
       this.networkPrinter.addText(`\n`);
       this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
       this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
-
       // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
       // this.networkPrinter.addText(
       //   `Supplier Code: ${data.header.supplier_code}\n`
@@ -1845,21 +1873,23 @@ export default {
       // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
       // this.networkPrinter.addText(`${data.header.date}\n`);
 
-      // this.networkPrinter.addText("\n");
+      this.networkPrinter.addText("\n");
+      this.networkPrinter.addCut(); // for auto cutting
+      
 
-      this.networkPrinter.send();
+      // this.networkPrinter.send();
     },
     async networkPrintInit() {
-      this.showLoading = true;
+        
       let ePosDev = new epson.ePOSDevice();
 
-      let ipAddress = process.env.networkPrinterIp,
+      let ipAddress = 'tcp://'+process.env.networkPrinterIp,
+      // let ipAddress = localStorage.printer_ip,
         port = process.env.networkPrinterPort;
+        // port = localStorage.printer_port;
 
       let deviceId = "bfi_printer";
       let options = { crypto: false, buffer: false };
-
-      console.log(ipAddress, port);
 
       const connectionResult = await new Promise(resolve => {
         ePosDev.connect(ipAddress, port, resultConnect => {
@@ -1907,7 +1937,7 @@ export default {
         }
       };
 
-      this.showLoading = false;
+       
     },
     // async printReceipt(data) {
     //   console.log(data);
@@ -1940,16 +1970,39 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
-    async printed(U_TRX_ID) {
-      console.log(U_TRX_ID);
+    async printed(transaction) {
+      this.showLoading = true;
+      let data 
+      if(transaction.item) {
+        data = transaction.item
+      } else {
+        data = transaction
+      }
+
+      if(!this.printerIP) {
+        this.showAlert("Please provide IP Address", "danger")
+      }
+      
+      await axios({
+        method: "POST",
+        url: `${process.env.serverPrintUrl}/fdss/print`,
+        data: {
+          header: data,
+          qrcode: data.U_TRX_NO,
+          uuids: process.env.uuid,
+          ip: this.printerIP
+        },
+      })
+      .then((res) => {
+        this.showLoading = false;
+        this.showAlert("Printed Successfully", "success");
+      })
+      .catch((err => {
+        console.log("error: ", err);
+        this.showLoading = false;
+      }))
 
       try {
-        // console.log(this.isPrinterAvailable)
-        // if (!this.isPrinterAvailable) {
-        //   this.showAlert("Print error: Printer not connected", "danger");
-        //   return;
-        // }
-
         this.showLoading = true;
         const userDetails = JSON.parse(localStorage.user_details);
 
@@ -1957,20 +2010,18 @@ export default {
 
         const res = await axios({
           method: "PUT",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/print/${U_TRX_ID.U_TRX_ID}`,
+          url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data.U_TRX_ID}`,
           headers: {
             Authorization: `B1SESSION=${localStorage.SessionId}`
           },
           data: {
             employee_id,
-            U_TRX_ID: U_TRX_ID.U_TRX_NO
+            U_TRX_ID: data.U_TRX_NO
           }
         });
         this.showLoading = false;
-        this.networkPrint(U_TRX_ID);
+        // this.networkPrint(U_TRX_ID);
         this.showAlert("Printed Successfully", "success");
-        // this.$refs.Receipt.print(U_TRX_ID);
-        // this.$bvModal.hide("bv-modal-confirmPrint");
         this.getTransactions();
       } catch (e) {
         console.log(e);
@@ -1980,7 +2031,6 @@ export default {
       }
     },
     async confirmCancel(U_TRX_ID) {
-      //  console.log(this.U_TRX_ID);
       try {
         this.showLoading = true;
         const userDetails = JSON.parse(localStorage.user_details);
@@ -2011,7 +2061,7 @@ export default {
     },
 
     cancel(data) {
-      console.log(data);
+      this.U_APP_ProjCode = null;
       this.remarks = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
@@ -2020,6 +2070,9 @@ export default {
       this.U_CMMDTY = data.U_ITEM;
       (this.U_UOM = data.U_UOM), (this.U_FRMR_NAME = data.U_FRMR_NAME);
       this.U_FRMR_ADD = data.U_FRMR_ADD;
+      if(data.U_APP_ProjCode){
+        this.U_APP_ProjCode = data.U_APP_ProjCode;
+      }
       const driver_name = data.U_DRVR_NAME.split(", ");
       const helper_name = data.U_HLPR_NAME.split(", ");
       this.U_HLPR_FNAME = helper_name[1];
@@ -2033,7 +2086,6 @@ export default {
       this.$bvModal.show("bv-modal-confirmCancel");
     },
     print(data) {
-      console.log(data);
       // this.U_CRTD_BY = data.U_CRTD_BY;
       // this.U_TRX_ID = data.U_TRX_ID;
       // this.U_TRX_NO = data.U_TRX_NO;
@@ -2065,6 +2117,7 @@ export default {
         // (this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID });
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
+      this.U_APP_ProjCode = data.U_APP_ProjCode;
       const driver_name = data.U_DRVR_NAME.split(", ");
       const helper_name = data.U_HLPR_NAME.split(", ");
       this.U_HLPR_FNAME = helper_name[1];
@@ -2097,7 +2150,6 @@ export default {
       this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID };
     },
     show(data) {
-      console.log(data);
       // this.U_UOM = data.U_UOM.UomName;
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
@@ -2108,6 +2160,7 @@ export default {
       this.U_CMMDTY = data.U_CMMDTY;
       (this.U_UOM.UomEntry = data.U_UOM), (this.U_FRMR_NAME = data.U_FRMR_NAME);
       this.U_FRMR_ADD = data.U_FRMR_ADD;
+      this.U_APP_ProjCode = data.U_APP_ProjCode;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
       this.U_REQUESTED_SACKS = data.U_REQUESTED_SACKS;
@@ -2134,33 +2187,8 @@ export default {
         });
       }
     },
-    //     filterListCompanies() {
-    // return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
-    // },
-    // async getCompanyList() {
-    //    console.log(this.U_CMMDTY.value.value)
-    //   this.companyList = [];
-    //   const res = await axios({
-    //     method: "POST",
-    //     url: `${this.$axios.defaults.baseURL}/admin/companies`,
-    //     headers: {
-    //       Authorization: localStorage.SessionId
-    //     }
-    //   });
-    //   const v = res.data.companies;
-
-    //   for (let i = 0; i < v.length; i++) {
-    //     if (v[i].U_IS_ACTIVE == 1) {
-    //       this.companyList.push({
-    //         text: v[i].COMPANYDBNAME,
-    //         value: v[i].U_COMPANYCODE
-    //       });
-    //     }
-    //   }
-
-    // },
     async updateUOM() {
-      //  console.log(this.U_CMMDTY.value)
+      this.showLoading = true;
       this.unit = [];
       const res = await axios({
         method: "POST",
@@ -2170,7 +2198,7 @@ export default {
         },
         data: {
           company: this.TRANSACTION_COMPANY_ID
-        }
+        } 
       });
       const v = res.data.view;
 
@@ -2180,9 +2208,11 @@ export default {
           value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
         });
       }
+      this.showLoading = false;
+
     },
     async getUOM() {
-      //  console.log(this.U_CMMDTY.value.value)
+      this.showLoading = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.unit = [];
       const res = await axios({
@@ -2203,6 +2233,8 @@ export default {
           value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
         });
       }
+      this.showLoading = false;
+
     },
     //  async getPriceList() {
     //   const res = await axios({
@@ -2222,7 +2254,26 @@ export default {
 
     //   }
     // },
+    async getLocationIP(){
+      this.isBusy = true;
+      const locationId = JSON.parse(localStorage.user_details).U_LOCATION_ID;
+
+        await axios({
+          method: "GET",
+          url: `${this.$axios.defaults.baseURL}/api/printer/select`
+        }).then( res => {
+          const v = res.data.view;
+          for(var i = 0; i < v.length; i++) {
+            if(v[i].U_LOCATION_ID == locationId){
+              this.printerIP = v[i].U_IP_ADD;
+            }
+          }
+        })
+      this.isBusy = false;
+    },
+
     async getCommodity() {
+      this.isBusy = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.commodity = [];
       const res = await axios({
@@ -2237,84 +2288,143 @@ export default {
       });
       const v = res.data.view;
 
-      for (let i = 0; i < v.length; i++) {
+      for(var i = 0; i < v.length; i++){
         this.commodity.push({
-          text: v[i].ItemName,
+          text: v[i].ItemCode + ' : ' + v[i].ItemName,
           value: v[i].ItemCode
-        });
+        })
       }
-    },
-    async getFarmer() {
-      const userDetails = JSON.parse(localStorage.user_details);
 
-      this.farmer = [];
-      const res = await axios({
-        method: "POST",
-        url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-        headers: {
-          Authorization: localStorage.SessionId
-        },
-        data: {
-          company: userDetails.U_COMPANY_CODE
+      if(this.companyCode == '4360') { 
+        this.commodity = [];
+        // filter only agri-ops items
+        const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
+
+        for (let i = 0; i < startsWithFG.length; i++) {
+          this.commodity.push({
+            text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
+            value: startsWithFG[i].ItemCode
+          });
         }
-      });
-      const v = res.data.view;
-
-      for (let i = 0; i < v.length; i++) {
-        this.farmer.push({
-          text: v[i].SUPPLIER_NAME,
-          value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-        });
       }
-    },
-    test() {
-      console.log(this.U_FRMR_NAME);
 
+      if(this.companyCode == '4354') {
+        const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
+        this.commodity.push({
+          text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
+          value: riceBran[0].ItemCode
+        })
+      }
+
+      this.isBusy = false;
+
+
+    },
+    titleCase(str){
+      // since getFarmer returns all UPPERCASE and getPlotCodes return Uppercase And Lowercase
+      // can't directly compare; would return undefined
+      // therefore, farmer name has to be Title Case
+      return str.toLowerCase().split(' ').map(function(word) {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      }).join(' ');
+    },
+    async getPlotCodes(){ // from booking service
+      this.plotCodes = [];
+      await axios({
+        method: "POST",
+        url: "https://sqa.revive-agritech.com/booking-microsvc/booking-microsvc/plot_codes",
+      }).then(res => {
+        if(res.data.posted.message == "Successful"){
+          this.plotCodes = res.data.posted
+        }
+      })
+    },
+    async test() {
+      this.showLoading = true;
+      this.plotCode = [];
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
+      let v = "";
+
+      if(this.companyCode == '4354') {
+
+      } else if(this.companyCode == '4360') {
+        this.U_APP_ProjCode = "";
+        this.U_FRMR_ADD = "";
+
+        if(this.U_FRMR_NAME) {
+          const res = await axios({
+            method: "POST",
+            url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+            headers: {
+              Authorization: localStorage.SessionId
+            },
+            data: {
+              "PrjName": this.U_FRMR_NAME.text
+            }
+          });
+          v = res.data.posted;
+          if(v) {
+            for(let i = 0; i < v.length; i++){
+              this.plotCode.push({
+                text: v[i].plotCodes,
+                value: { address: v[i].address }
+              });
+              }
+          }
+        }
+      
+      }
+      this.showLoading = false;
+    },
+    getPlotAddress(){
+      this.U_FRMR_ADD = "";
+      if(this.U_APP_ProjCode.value.address) {
+        this.U_FRMR_ADD = this.U_APP_ProjCode.value.address;
+      } else {
+        this.showAlert1('Plot Code does not have an address', 'warning')
+      }
     },
     async newDR(signature) {
       try {
         this.showLoading = true;
-        //   this.U_TRANSACTION_TYPE= null;
-        // this.U_FRMR_NAME=null;
-        // this.U_FRMR_ADD=null;
-        // this.U_CMMDTY=null;
-        // this.U_DRVR_LNAME=null;
-        // this.U_DRVR_FNAME=null;
-        // this.U_HLPR_FNAME=null;
-        // this.U_HLPR_LNAME=null;
-        // this.U_PLATE_NUMBER=null;
-        // this.U_DTE_CRTD=null;
-        // this.U_CRTD_BY=null;
-        // this.U_TRX_NO=null;
-        // this.U_DRVR_NAME=null;
-        // this.U_SACKS=null;
-        // this.U_EMPTY_SACKS=null;
-        // this.U_HLPR_NAME=null;
-
         let items = [];
+        const userDetails = JSON.parse(localStorage.user_details); 
 
-        const userDetails = JSON.parse(localStorage.user_details);
-        // console.log(this.U_FRMR_NAME.value.id)
-        // console.log(this.U_CMMDTY.value)
-        const json = {
-          company: userDetails.U_COMPANY_CODE,
-          uom_id: this.U_UOM.UomEntry,
-          // priceList: this.U_PRICELIST,
-          transaction_type_id: this.U_TRANSACTION_TYPE,
-          item_id: this.U_CMMDTY.value.value,
-          farmer_id: this.U_FRMR_NAME.value.id,
-          driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
-          helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
-          no_of_requested_bags: this.U_REQUESTED_SACKS,
-          no_of_bags: this.U_SACKS,
-          no_of_empty_bags: this.U_EMPTY_SACKS,
-          employee_id: userDetails.Code,
-          plate_number: this.U_PLATE_NUMBER,
-          signature: this.signaturePath
-        };
-
-        // console.log("@here", json)
+        let json = {};
+        if(userDetails.U_COMPANY_CODE == '4354') {
+          json = {
+            company: userDetails.U_COMPANY_CODE,
+            uom_id: this.U_UOM.UomEntry,
+            transaction_type_id: this.U_TRANSACTION_TYPE,
+            item_id: this.U_CMMDTY.value.value,
+            farmer_id: this.U_FRMR_NAME.value.id,
+            driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
+            helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
+            no_of_requested_bags: this.U_REQUESTED_SACKS,
+            no_of_bags: this.U_SACKS,
+            no_of_empty_bags: this.U_EMPTY_SACKS,
+            employee_id: userDetails.Code,
+            plate_number: this.U_PLATE_NUMBER,
+            signature: this.signaturePath
+          };
+        } else if(userDetails.U_COMPANY_CODE == '4360') {
+          json = {
+            company: userDetails.U_COMPANY_CODE,
+            uom_id: this.U_UOM.UomEntry,
+            transaction_type_id: this.U_TRANSACTION_TYPE,
+            item_id: this.U_CMMDTY.value.value,
+            farmer_id: this.U_FRMR_NAME.value.id,
+            farmer_name: this.U_FRMR_NAME.text,
+            driver_name: this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME,
+            helper_name: this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME,
+            no_of_requested_bags: this.U_REQUESTED_SACKS,
+            no_of_bags: this.U_SACKS,
+            no_of_empty_bags: this.U_EMPTY_SACKS,
+            employee_id: userDetails.Code,
+            plate_number: this.U_PLATE_NUMBER,
+            signature: this.signaturePath
+          };
+        }
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
@@ -2322,28 +2432,24 @@ export default {
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
-        fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+          fd.append("farmer_id", this.U_FRMR_NAME.value.id);
+
+        
+        fd.append("farmer_name", this.U_FRMR_NAME.text);
+        if(this.U_APP_ProjCode){
+          fd.append("plot_code", this.U_APP_ProjCode.text);
+        }
+        fd.append("farmer_add", this.U_FRMR_ADD);
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
         fd.append("helper_name", this.U_HLPR_LNAME + ", " + this.U_HLPR_FNAME);
         fd.append("no_of_requested_bags", this.U_REQUESTED_SACKS);
-
-        // if (this.U_SACKS && this.U_EMPTY_SACKS) {
         fd.append("no_of_bags", this.U_SACKS);
         fd.append("no_of_empty_bags", this.U_EMPTY_SACKS);
-        // }
-        // else{
-        //    fd.append("no_of_bags", 0);
-        //   fd.append("no_of_empty_bags", 0);
-        // }
         fd.append("employee_id", userDetails.Code);
         fd.append("plate_number", this.U_PLATE_NUMBER);
         fd.append("scheduled_date", this.U_SCHEDULED_DATE);
         fd.append("scheduled_time", this.U_SCHEDULED_TIME);
-
-        // await json.each(data, function(key, value) {
-        //   fd.append(key, value);
-        // });
-
+        
         const res = await axios.post(
           `${this.$axios.defaults.baseURL}/api/transaction/add`,
           fd,
@@ -2351,24 +2457,12 @@ export default {
             headers: { Authorization: `B1SESSION=${localStorage.SessionId}` }
           }
         );
-
-        // const res = await axios({
-        //   method: "POST",
-        //   url: `${this.$axios.defaults.baseURL}/api/transaction/add`,
-        //   fd,
-        //   headers: {
-        //     Authorization: `B1SESSION=${localStorage.SessionId}`
-        //   }
-        // });
-
         this.$bvModal.hide("signature");
         this.showLoading = false;
         this.getTransactions();
         this.$bvModal.hide("add-transaction-modal");
-        console.log(res);
         this.showAlert(res.data.posted.msg, "success");
         this.close();
-        // this.$refs.Receipt.print(data);
       } catch (e) {
         console.log(e);
         this.showLoading = false;
@@ -2427,7 +2521,7 @@ export default {
           scheduled_time: intToTime(this.U_SCHEDULED_TIME)
         };
 
-        const res = await axios({
+        await axios({
           method: "PUT",
           url: `${this.$axios.defaults.baseURL}/api/transaction/update/${U_TRX_ID}`,
           headers: {
@@ -2436,11 +2530,22 @@ export default {
           data: {
             ...json
           }
-        });
-        this.showLoading = false;
-        this.getTransactions();
-        this.$bvModal.hide("edit-transaction-modal");
-        this.showAlert("Successfully Updated", "success");
+        }).then((res) => {
+          if (res && res.name == "Error") {
+              if (res.response && res.response.data.errorMsg) {
+                if (res.response.data.errorMsg === "Invalid session.") {
+                  this.$bvModal.show("session_modal");
+                }
+              }
+              this.showLoading = false;
+            } else {
+              this.showLoading = false;
+              this.getTransactions();
+              this.$bvModal.hide("edit-transaction-modal");
+              this.showAlert("Successfully Updated", "success");
+            }
+        })
+        
       } catch (e) {
         console.log(e);
         this.showLoading = false;
@@ -2452,9 +2557,9 @@ export default {
       }
     },
 
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     },
     intToTime(i) {
@@ -2516,6 +2621,11 @@ export default {
       this.totalRows = this.items.length;
     },
     async getTransactions() {
+
+      if(!this.filter) {
+        this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
+
       try {
         const userDetails = JSON.parse(localStorage.user_details);
         const roleDetails = JSON.parse(localStorage.user_role);
@@ -2523,7 +2633,8 @@ export default {
         const employee_id = userDetails.Code;
         const employee_role = roleDetails.Name;
 
-        this.showLoading = true;
+          
+        this.isBusy = true;
         this.items = [];
         const res = await axios({
           method: "POST",
@@ -2540,7 +2651,6 @@ export default {
         });
 
         const v = res.data.view;
-        console.log(v);
         for (let i = 0; i < v.length; i++) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           // const t = this.intToTime(v[i].CREATED_TIME);
@@ -2563,6 +2673,7 @@ export default {
             U_UOM_ID: v[i].UOM_ID,
             U_FRMR_NAME: v[i].FARMER_NAME,
             U_FRMR_ADD: v[i].FARMER_ADDRESS,
+            U_APP_ProjCode: v[i].U_PLOT_CODE,
             U_DTE_CRTD: d,
             U_CRTD_BY: v[i].CREATED_BY,
             U_STATUS: v[i].STATUS,
@@ -2577,20 +2688,105 @@ export default {
             U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
             // selectedcompany: v[i].USER_COMPANY,
             TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
-            TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY
+            TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+            IFPASSRMRS: v[i].ifpassRMRS
           });
         }
 
-        this.showLoading = false;
+         
+        this.isBusy = false;
       } catch (e) {
         console.log(e);
-        this.showLoading = false;
+         
+        this.isBusy = false;
       }
-    }
+    },
   },
+
+  async beforeCreate() {
+      const userDetails = JSON.parse(localStorage.user_details);
+      this.farmer = [];
+      let v; 
+      if(userDetails.U_COMPANY_CODE == '4360') {
+        // RCI
+
+        const res1 = await axios({
+        method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: userDetails.U_COMPANY_CODE
+          }
+        });
+        const v1 = res1.data.view;
+        for (let i = 0; i < v1.length; i++) {
+          if(v1[i].CardType == "S"){
+            this.bfi_farmer.push({
+              text: v1[i].SUPPLIER_NAME,
+              value: { id: v1[i].SUPPLIER_ID }
+            });
+          }
+        }
+
+        const res = await axios({
+          method: "GET",
+          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+        });
+        v = res.data.view;
+
+        for(var i = 0; i < v.length; i++){
+          let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
+          for(var j = 0; j < this.bfi_farmer.length; j++) {
+            let frmr_name = (this.bfi_farmer[j].text).toLowerCase();
+            if((frmr.length == 1) && (frmr_name == frmr[0])) {
+              this.farmer.push({
+                text: v[i].PrjName,
+                value: { id: this.bfi_farmer[j].value.id }
+              });
+            } else if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
+              this.farmer.push({
+                text: v[i].PrjName,
+                value: { id: this.bfi_farmer[j].value.id }
+              });
+            }
+          }
+        }
+
+      } else if(userDetails.U_COMPANY_CODE == '4354') {
+        // BFI
+        const res = await axios({
+        method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: userDetails.U_COMPANY_CODE
+          }
+        });
+        v = res.data.view;
+
+        for (let i = 0; i < v.length; i++) {
+          if(v[i].CardType == "S"){
+            this.farmer.push({
+              text: v[i].SUPPLIER_NAME,
+              value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+            });
+          }
+        }
+      }
+  },
+
+    
   reloadFunction() {
     this.values = [{ label: "2" }, { label: "3" }];
-  }
+  },
+  
 };
 // End
 </script>
@@ -2658,6 +2854,7 @@ export default {
   z-index: 1;
   cursor: pointer;
 }
+
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 

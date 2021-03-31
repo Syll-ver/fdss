@@ -35,8 +35,11 @@ $theme-colors: (
   cursor: pointer;
 }
 body {
-  font: 100%;
+  font-size: 100%;
+  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background-color: $background-color;
+  overflow: hidden;
 }
 
 .body_loading {
@@ -241,7 +244,7 @@ select {
 
 .hr-style {
   background-color: #e5e5e5;
-  width: 14.3rem;
+  width: 16.5rem;
   height: 1cc;
   position: relative;
   right: 15px;
@@ -251,11 +254,10 @@ select {
 /* Sidebar Biotech */
 @media (max-width: 768px) {
   #sidebarBFI {
-    margin-left: -250px;
+    margin-left: -260px;
   }
-  #sidebarBFI.active {
-    margin-left: 0;
-  }
+
+
 }
 
 #sidebarBFI {
@@ -267,11 +269,38 @@ select {
   color: #fff;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.65), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   transition: all 0.3s;
-  min-width: 224px;
-  margin-right: 20rem;
-  max-width: 204px;
-  font-size: 12.5px;
+  // min-width: 224px;
+  // margin-right: 20rem;
+  // max-width: 260px;
+  width: 260px;
+  font-size: 13px;
   z-index: 100;
+}
+
+// SCROLLBAR
+#sidebarBFI {
+  overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: white;
+}
+::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #808080;
+}
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
 }
 
 #sidebarBFI.active {
@@ -445,7 +474,7 @@ a:hover {
 
 .button-style {
   font-size: 12px;
-  box-shadow: 0px 10px 20px -10px #000000;
+  // box-shadow: 0px 10px 20px -10px #000000;
 }
 
 input::-webkit-outer-spin-button,
@@ -538,8 +567,11 @@ font-size:1rem; color: #743013
 }
 .h9{
   color:white;
-  font-family:Futura Md BT;
-  font-size:12px
+  // font-family:Futura Md BT;
+  font-family: 'Lucida Sans';
+  font-size:12px;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
 
@@ -549,8 +581,8 @@ font-size:1rem; color: #743013
 }
 .right {
   position: absolute;
-  right: 20px;
-  top: 1px;
+  right: 30px;
+  // top: 1px;
 }
 #receipt {
   height: 50%;
@@ -578,14 +610,14 @@ font-weight: 500;
 
 /* Date Range */
 
-.reportrange-text[data-v-fffebcea] {
+.reportrange-text[data-v-0fe7292a] {
   /* background: #fff; */
   /* cursor: pointer; */
   /* padding: 5px 10px; */
   border: 1px solid #ccc;
   height: 2rem;
   width: 14rem;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .daterangepicker.show-ranges .drp-calendar.left {
@@ -617,3 +649,28 @@ font-weight: 500;
   font-size:14px;
   z-index:10000
 }
+
+
+// main pages
+.mainPages {
+  // margin-top: 10px;
+  margin-left: 270px; /* Same as the width of the sidenav */
+  margin-right: 10px;
+  margin-bottom: -50px;
+  padding: 5px 5px;
+  width: 110rem;
+  height: 1000px;
+  overflow: hidden;
+}
+
+.table-style {
+  max-height: 580px;
+  overflow-y: auto;
+}
+
+.loading_spinner {
+  color: black;
+  font-size: 12px;
+  font-weight: normal;
+}
+
