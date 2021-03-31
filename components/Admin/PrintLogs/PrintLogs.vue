@@ -25,7 +25,6 @@
           <date-range-picker
             id="actvty_date"
             ref="picker"
-            :opens="opens"
             :locale-data="localeData"
             :autoApply="true"
             :singleDatePicker="false"
@@ -320,9 +319,12 @@ export default {
   },
   computed: {    
     filterItems(){
+      let count = 0;
       return this.listPrintLogs.filter(logs => { 
-        return (
-          logs.U_TRANSACTION_ID.toLowerCase().match(this.filter.toLowerCase()) ||
+        console.log(logs);
+        count++;
+        this.totalRows = count;
+        return (logs.U_TRANSACTION_ID.toLowerCase().match(this.filter.toLowerCase()) ||
         logs.CREATED_BY.toLowerCase().match(this.filter.toLowerCase()) 
         )
       })

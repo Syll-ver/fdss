@@ -3,9 +3,10 @@ export default {
   async fetchListPrinters({ commit }, data) {
     return await axios({
       method: "GET",
-      url: `${process.env.serverPrintUrl}/fdss/get`,
+      url: `${this.$axios.defaults.baseURL}/api/printer/select`,
     })
       .then(res => {
+        console.log(res.data.view);
         if (Array.isArray(res.data.view))
           commit("setListPrinters", res.data.view);
         else commit("setListPrinters", []);
@@ -18,19 +19,18 @@ export default {
     console.log(data);
     return await axios({
       method: "POST",
-      url: `${process.env.serverPrintUrl}/fdss/add`,
+      url: `${this.$axios.defaults.baseURL}/api/printer/add`,
       headers: {
-        Authorization : `B1SESSION=${data.SessionId}`
+        Authorization : `B1SESSION=${data.sessionID}`
       },
       data: {
-        uuids: data.uuids,
-        ip: data.ip,
-        location: data.location
+        U_IP_ADD: data.data.ip,
+        U_LOCATION_ID: data.data.location
       }
     }).then( res => {
       console.log(res);
-      if(Array.isArray(res.data.view)){
-        commit("addPrinter", res.data.view);
+      if(res.data.patched){
+        commit("addPrinter", data.data);
       } else {
         commit("addPrinter", []);
       }
@@ -38,19 +38,23 @@ export default {
   },
 
   async updatePrinter({commit}, data) {
+    console.log(data);
     return await axios({
       method: "PUT",
-      url: `${process.env.serverPrintUrl}/fdss/update/${data.data.Code}`,
+      url: `${this.$axios.defaults.baseURL}/api/printer/update/${data.data.U_LOCATION_ID}`,
       headers: {
         Authorization : `B1SESSION=${data.sessionId}`
       },
       data: {
-        U_ADDRESS: data.data.U_ADDRESS
+        U_LOCATION_ID: data.data.U_LOCATION_ID,
+        U_IP_ADD: data.data.U_IP_ADD
       },
       validateStatus: () => true
     }).then( res => {
-      if(Array.isArray(res.data.view)) {
-        commit("updatePrinter", res.data.view);
+      console.log(res);
+      console.log(data.data);
+      if(res.data.patched) {
+        commit("updatePrinter", data.data);
       } else {
         commit("updatePrinter", []);
       }

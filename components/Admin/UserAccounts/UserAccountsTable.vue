@@ -919,7 +919,7 @@ export default {
      
       showLoading: false,
       findUser: null,
-      filterStatus: [1,0],
+      filterStatus: [1],
       actions: {
         addUser: false,
         editUser: false,

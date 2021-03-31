@@ -15,6 +15,8 @@
       {{ alert.message }}
     </b-alert>
 
+    <Loading v-if="showLoading" />
+
     <b-row>
       <b-col cols="3" class="mt-3">
         <b-form-group>
@@ -45,53 +47,55 @@
     </b-row>
 
     <!-- Main table element -->
-    <b-table
-      id="location-table"
-      class="table-style"
-      show-empty
-      scrollable="true"
-      sticky-header
-      no-border-collapse
-      :items="filterItems"
-      :fields="itemsFields"
-      :current-page="currentPage"
-      :per-page="perPage"
-      :filter="filter"
-      :filterIncludedFields="filterOn"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      :sort-direction="sortDirection"
-      @filtered="onFiltered"
-      :busy="isBusy"
-      responsive
-    >
-      <template #table-busy>
-        <div class="text-center text-danger my-2">
-          <b-spinner small class="align-middle"  variant="dark">
-          </b-spinner>
-          <span class="loading_spinner">Loading...</span>
-        </div>
-      </template>
+    <span v-if="action.view_printer">
+      <b-table
+        id="location-table"
+        class="table-style"
+        show-empty
+        scrollable="true"
+        sticky-header
+        no-border-collapse
+        :items="filterItems"
+        :fields="itemsFields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :filter="filter"
+        :filterIncludedFields="filterOn"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        :sort-direction="sortDirection"
+        @filtered="onFiltered"
+        :busy="isBusy"
+        responsive
+      >
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner small class="align-middle"  variant="dark">
+            </b-spinner>
+            <span class="loading_spinner">Loading...</span>
+          </div>
+        </template>
 
-      <template v-slot:cell(U_CREATED_DATE)="row">{{ formatDate(row.item.U_CREATED_DATE) }}</template>
+        <template v-slot:cell(U_CREATED_DATE)="row">{{ formatDate(row.item.U_CREATED_DATE) }}</template>
 
-      <template v-slot:cell(actions)="row">
-        <div>
-          <b-button
-            variant="edit"
-            id="edit"
-            class="table-button"
-            size="sm"
-            @click="edit(row.item)"
-            v-b-tooltip.hover
-            title="Edit Transaction"
-          >
-            <font-awesome-icon icon="edit" />
-          </b-button>          
-        </div>
-      </template>
+        <template v-slot:cell(actions)="row">
+          <div>
+            <b-button
+              variant="edit"
+              id="edit"
+              class="table-button"
+              size="sm"
+              @click="edit(row.item)"
+              v-b-tooltip.hover
+              title="Edit Printer"
+            >
+              <font-awesome-icon icon="edit" />
+            </b-button>          
+          </div>
+        </template>
 
-    </b-table>
+      </b-table>
+    </span>
     <hr />
 
     <b-row>
@@ -152,7 +156,7 @@
             <option :value="null">Select Locations</option>
 
             <option
-              :value="loc.U_ADDRESS"
+              :value="loc.Code"
               v-for="(loc, i) in listLocations"
               :key="i"
               >{{ loc.U_ADDRESS }}</option
@@ -214,12 +218,13 @@
         <b-row>
           <b-col >
             <small class="text-left">Location</small>
-            <b-form-select v-model="printer.location"
+            <b-form-select v-model="printer.U_LOCATION_ID"
             placeholder="Select Location"
             size="sm"
+            disabled
             >
             <option
-              :value="loc.U_ADDRESS"
+              :value="loc.Code"
               v-for="(loc, i) in listLocations"
               :key="i"
               >{{ loc.U_ADDRESS }}</option
@@ -234,7 +239,7 @@
               id="printer_ip"
               placeholder="Printer IP Address"
               class="form-text"
-              v-model="printer.ip"
+              v-model="printer.U_IP_ADD"
               required
               style="font-size: 13.5px"
             />
@@ -269,7 +274,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import axios from "axios";
 import DateRangePicker from "vue2-daterange-picker";
 import Loading from "~/components/Loading/Loading.vue";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
@@ -278,20 +282,20 @@ export default {
   components: { DateRangePicker, Loading },
   data() {
     return {
-      isBusy: false,
+      isBusy: true,
       showLoading: false,
       printer_ip: null,
       printer_location: null,
       action: [],
       itemsFields: [
         {
-          key: "ip",
+          key: "U_IP_ADD",
           label: "IP Address",
           sortable: true,
           sortDirection: "desc"
         },
         {
-          key: "location",
+          key: "U_ADDRESS",
           label: "Location",
           sortable: true,
           sortDirection: "desc"
@@ -324,10 +328,9 @@ export default {
     }),
 
     filterItems(){
-      console.log(this.listLocations);
       return this.listPrinters.filter(logs => {
-        return (logs.location.toLowerCase().match(this.filter.toLowerCase()) ||
-        logs.ip.match(this.filter))
+        return logs
+        // return logs
         })
     },
 
@@ -361,47 +364,8 @@ export default {
   },
 
   methods: {
-    // async getPrinter(){
-    //   this.isBusy = true;
-    //   const sessionId = localStorage.sessionId
-    //     await axios({
-    //       method: "GET",
-    //       url: `${process.env.serverPrintUrl}/fdss/get`,
-    //       headers: {
-    //         authorization: `B1SESSION=${sessionId}`
-    //       }
-    //     }).then( res => {
-    //       this.printers = res.data.view
-    //     })
-    //     .catch(e => {
-    //       console.log(e);
-    //     })
-    //   this.isBusy = false;
-    // },
-
-    // async getLocations(){
-    //   this.isBusy = true;
-    //     await axios({
-    //       method: "GET",
-    //       url: `${this.$axios.defaults.baseURL}/api/location/select`
-    //     }).then( res => {
-    //       const v = res.data.view;
-    //       this.listLocations.push({
-    //         text: 'Please select a location',
-    //         value: null,
-    //         disabled: true
-    //       })
-    //       for(let i = 0; i < v.length; i++) {
-    //         this.listLocations.push({
-    //           text: v[i].U_ADDRESS,
-    //           value: v[i].U_ADDRESS
-    //         })
-    //       }
-    //     })
-    //   this.isBusy = false;
-    // },
-
     edit(data) {
+      console.log(data);
       this.printer = [];
       this.printer = { ...data }
       this.$bvModal.show('edit-printerlocation-modal');
@@ -421,19 +385,17 @@ export default {
       } else if(this.printer.location == null) {
           this.showAlert("Please input Location", "danger");
       } else {
-        // check if either ip or location already exists
-        // if not, add
-        const existingIP = this.listPrinters.find(ip => ip.ip === this.printer.ip)
-        const existingLoc = this.listLocations.find(loc => loc.location === this.printer.location)
+        const existingIP = this.listPrinters.find(ip => ip.U_IP_ADD === this.printer.ip)
         if(existingIP != null){
           this.showAlert("IP Address already exists", "danger");
-        } else if(existingLoc != null) {
-          this.showAlert("Location already exists", "danger");
         } else {
+          this.showLoading = true;
+          const SessionId = localStorage.SessionId;
           this.$store.dispatch("Admin/Printer/addPrinter", {
-            uuids: process.env.uuid,
-            ip: this.printer.ip,
-            location: this.printer.location
+            data: this.printer,
+            // U_IP_ADD: this.printer.ip,
+            // U_LOCATION_ID: this.printer.location,
+            sessionID: SessionId
           }).then( res => {
             if (res && res.name == "Error") {
               if (res.response && res.response.data.error) {
@@ -442,10 +404,9 @@ export default {
                 }
               }
             } else {
+              this.$store.dispatch("Admin/Printer/fetchListPrinters")
+              this.showLoading = false;
               this.$bvModal.hide("add-printerlocation-modal");
-              this.$store.dispatch("Admin/Printer/fetchListPrinters", {
-                SessionId: localStorage.SessionId
-              })
               this.showAlert("Successfully Added", "success");
             }
           }).catch( err => console.log(err));
@@ -454,48 +415,44 @@ export default {
     },
 
     async updatePrinter() {
-      if(this.printer.ip == null){
+      if(this.printer.U_IP_ADD == null){
         this.showAlert("Please input IP Address", "danger");
-      } else if(this.printer.location == null) {
+      } else if(this.printer.U_LOCATION_ID == null) {
         this.showAlert("Please input Location", "danger");
       } else {
-        // check if ip exists
-        // if not, update
-        // const existingIP = this.listPrinters.find(ip => ip.ip === this.printer.ip)
-        // if(existingIP != null){
-        //   this.showAlert("IP Address already exists", "danger");
-        // } else {
-          await axios({
-            method: "PATCH",
-            url: `${process.env.serverPrintUrl}/fdss/update`,
-            data: {
-              uuids: process.env.uuid,
-              ip: this.printer.ip,
-              location: this.printer.location
-            }
+          this.showLoading = true;
+          const SessionId = localStorage.SessionId;
+
+          await this.$store.dispatch("Admin/Printer/updatePrinter", {
+            sessionId: SessionId,
+            data: this.printer
           }).then( res => {
-            this.$bvModal.hide("edit-printerlocation-modal");
-            
-            this.$store.dispatch("Admin/Printer/fetchListPrinters", {
-              SessionId: localStorage.SessionId
-            })
-            .then( res => {
-              if (res && res.name == "Error") {
-                if (res.response && res.response.data.error) {
-                  if (res.response.data.error === "Session expired") {
-                    this.$bvModal.show("session_modal");
-                  }
+            if (res && res.name == "Error") {
+              if (res.response && res.response.data.error) {
+                if (res.response.data.error === "Session expired") {
+                  this.$bvModal.show("session_modal");
                 }
               }
-            });
-            
-            this.showAlert("Successfully Added", "success");
+              this.showLoading = false;
+            } else {
+              this.$bvModal.hide("edit-printerlocation-modal");
+              this.showLoading = false;
+              this.printer = [];
+              this.showAlert("Successfully Added", "success");
+            }
+            this.getPrinter()
           })
           .catch(e => {
             console.log(e);
           })
         // }   
       }
+    },
+
+    async getPrinter() {
+      this.isBusy = true;
+      await this.$store.dispatch("Admin/Location/fetchListPrinters");
+      this.isBusy = false
     },
 
     showAlert(message, variant) {
@@ -552,15 +509,15 @@ export default {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View printer')) {
-      this.actions.view_printer = true;
+      this.action.view_printer = true;
     }
 
     if(userActions.find(action => action.U_ACTION_NAME === 'Add printer')) {
-      this.actions.add_printer = true;
+      this.action.add_printer = true;
     }
     
     if(userActions.find(action => action.U_ACTION_NAME === 'Edit printer')) {
-      this.actions.edit_printer = true;
+      this.action.edit_printer = true;
     }
   }
 };

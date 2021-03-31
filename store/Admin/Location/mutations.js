@@ -15,6 +15,7 @@ export default {
       console.log(data);
       const location = state.listLocations.findIndex(loc => loc.Code === data.Code)
       state.listLocations.splice(location, 1);
+      state.listLocations.unshift(data);
     }
 
 }

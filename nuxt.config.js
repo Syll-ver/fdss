@@ -35,7 +35,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/fontawesome.js","~/plugins/htmltopaper.js","~/plugins/papa-parse"],
+  plugins: ["~/plugins/fontawesome.js","~/plugins/htmltopaper.js","~/plugins/papa-parse","~/plugins/elastic.js"],
   /*
    ** Nuxt.js dev-modules
    */
@@ -62,14 +62,15 @@ module.exports = {
     // baseURL: "http://94.237.66.240:8100" (SQA)
     // baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
     baseURL: "https://fdss-eut.biotechfarms.net/fdss-api" 
+    // baseURL: "http://172.16.4.216:8000/fdss-api" 
     // baseURL: "http://172.16.4.201:8000/fdss-api" //butch
     // baseURL: "hhtp://94.237.66.240:8200" (UAT)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api" 
 
   },
   env:{
-    serverPrintUrl: "http://172.16.4.182:887", 
-    // serverPrintUrl: "http://localhost:3002",
+    // serverPrintUrl: "http://172.16.4.182:887", 
+    serverPrintUrl: "http://localhost:3002",
     // networkPrinterIp: `172.16.4.173`, // gensan network printer ip
     uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
   },
