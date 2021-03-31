@@ -336,7 +336,7 @@ export default {
   data() {
     return {
       showLoading: false,
-      filterStatus: [1,0],
+      filterStatus: [1],
 
       actions: {
         add_action: false,

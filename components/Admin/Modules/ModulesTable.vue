@@ -1,22 +1,6 @@
 <template>
  <div >
 <Loading v-if="showLoading" />
-      <!-- Main table -->
-      <!-- <b-row>
-        <b-col>
-          <b-button
-            id="add_module"
-            size="sm"
-            class="button-style"
-            variant="biotech"
-            @click="addModule()"
-            v-if="actions.add_module"
-          >
-            <font-awesome-icon icon="plus" class="mr-1" />Add Module
-          </b-button>
-        </b-col>
-      </b-row> -->
-
     <b-row>
       <b-col cols="3" class="mt-3">
         <b-form-group>
@@ -56,42 +40,9 @@
             <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
           </b-form-checkbox-group>
           </b-dropdown>
-        <!-- <b-input-group prepend="Date" size="sm">
-          <date-range-picker
-            id="date_pending"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
-            v-model="datePicker"
-            @update="updateValues"
-          >
-            <div slot="input" id="date_pending" >
-              {{ datePicker.startDate }} - {{ datePicker.endDate }}
-            </div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button
-              @click="resetDate"
-              id="date_reset_pending"
-              style="font-size:12px"
-              >Reset</b-button
-            >
-          </b-input-group-append>
-        </b-input-group> -->
       </b-col>
  
       <b-col cols="7"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
           <b-col>
           <b-button
             id="add_module"
@@ -336,7 +287,7 @@ export default {
   data() {
     return {
       showLoading: false,
-      filterStatus: [1,0],
+      filterStatus: [1],
       actions: {
         add_module: false,
         edit_module: false

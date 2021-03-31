@@ -85,7 +85,7 @@
             size="sm"
             @click="edit(row.item)"
             v-b-tooltip.hover
-            title="Edit Transaction"
+            title="Edit Location"
           >
             <font-awesome-icon icon="edit" />
           </b-button>          
@@ -312,7 +312,8 @@ export default {
 
     filterItems(){
       return this.listLocations.filter(logs => { 
-        return (logs.U_ADDRESS.toLowerCase().match(this.filter.toLowerCase()));
+        return logs
+        // return (logs.U_ADDRESS.toLowerCase().match(this.filter.toLowerCase()));
       })
       this.totalRows = locations.length;
     },
@@ -350,16 +351,10 @@ export default {
     edit(data) {
       this.location = [];
       this.location = { ...data }
-      // this.location.old_value = data.U_ADDRESS
       this.$bvModal.show('edit-location-modal')
     },
 
     async updateLocation(){
-      // console.log(this.listPrinters);
-      // console.log(this.location);
-
-      // const printer = this.listPrinters.find(print => print.U_ADDRESS === this.location.old_value);
-
       if(this.location.U_ADDRESS == null ){
         this.showAlert("Please input Location", "danger");
       } else {
@@ -382,18 +377,6 @@ export default {
               }
               this.showLoading = false;
             } else {
-
-              // if(printer) {
-              //   axios({
-              //     method: "PATCH",
-              //     url: `${process.env.serverPrintUrl}/fdss/update`,
-              //     data: {
-              //       uuids: process.env.uuid,
-              //       ip: printer.ip,
-              //       location: this.location.U_ADDRESS
-              //     }
-              //   })
-              // }
 
               this.showLoading = false;
               this.$bvModal.hide("edit-location-modal");
@@ -495,15 +478,15 @@ export default {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View location')) {
-      this.actions.view_location = true;
+      this.action.view_location = true;
     }
 
     if(userActions.find(action => action.U_ACTION_NAME === 'Add location')) {
-      this.actions.add_location = true;
+      this.action.add_location = true;
     }
     
     if(userActions.find(action => action.U_ACTION_NAME === 'Edit location')) {
-      this.actions.edit_location = true;
+      this.action.edit_location = true;
     }
   },
 };

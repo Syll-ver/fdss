@@ -25,14 +25,6 @@
               placeholder="Employee ID"
               required
             />
-            <!-- <b-popover
-              v-show="hasCapsLock"
-              target="emp_id"
-              placement="right"
-              variant="warning"
-              content="Capslock is on"
-            >
-            </b-popover> -->
             <input
               id="password"
               class="password"
@@ -44,9 +36,8 @@
               style="margin-top: 20px"
               v-on:keyup.enter="login()"
               required
-              @keyup="checkKey"
             />
-            <span v-show="hasCapsLock">
+            <!-- <span v-show="hasCapsLock">
               <b-popover
               :show.sync="hasCapsLock"
                 target="password"
@@ -55,7 +46,7 @@
                 content="Capslock is on"
               >
               </b-popover>
-            </span>
+            </span> -->
              </b-form>
             <b-btn
               pill
@@ -146,12 +137,16 @@ export default {
   },
   methods: {
     checkKey(e) {
-      if (e.key == "CapsLock") {
+      this.hasCapsLock = false;
+      console.log(e);
+      if (e.Key && (e.key == "CapsLock")) {
         if (e.getModifierState("CapsLock")) {
           this.hasCapsLock = true;
         } else {
           this.hasCapsLock = false;
         }
+      } else {
+        this.hasCapsLock = false;
       }
     },
     validVersion(){

@@ -32,28 +32,6 @@
     <Loading v-if="showLoading" />
 
     <Receipt ref="Receipt" v-show="false" />
-    <!-- Main table -->
-    <!-- 
-      <VueQrcode
-                id="QRcode"
-                type="String"
-                value="asd"
-                :options="{ width: 300 }"
-    ></VueQrcode>-->
-    <!-- <b-row>
-      <b-col>
-        <b-button
-          id="create"
-          variant="biotech"
-          class="button-style"
-          size="sm"
-          @click="$bvModal.show('add-transaction-modal')"
-        >
-          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
-        </b-button>
-      </b-col>
-    </b-row> -->
-
     <b-row>
       <b-col cols="3" class="mt-3">
         <b-form-group>
@@ -438,35 +416,6 @@
       </template>
 
       <b-card class="card-shadow">
-        <!-- <b-form-input
-          disabled
-          id="farmer_add"
-          class="form-text"
-          v-model="companyList"
-          @change="getCommodity(), getFarmer()"
-        /> -->
-        <!-- <b-form-select
-          id="company"
-          v-model="selectedcompany"
-          class="form-text"
-          :options="companyList"
-          @change="getCommodity(), getFarmer()"
-          required
-
-        ></b-form-select> -->
-        <!-- <b-form-select
-          id="company"
-          v-model="selectedcompany"
-          class="form-text"
-
-          required
-        > <option :value="null">Select Company</option>
-                <option
-                  v-for="(company, i) in companyList"
-                  :key="i"
-                  :value="company.ID"
-                  >{{ company.COMPANYNAME }}</option
-                ></b-form-select> -->
         <small>Schedule Date</small>
         <br />
         <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
@@ -1372,7 +1321,7 @@ export default {
     await this.getCommodity();
     await this.getTransactionType();
     // await this.getFarmer();
-    await this.getLocations();
+    await this.getLocationIP();
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
   },
@@ -1553,28 +1502,17 @@ export default {
       sortDirection: "asc",
       filter: "",
       filterOn: [],
-      printerLocation: null,
+      printerIP: null,
     };
   },
   computed: {
     filterItems() {
-      // console.log(this.filterStatus);
-      // this.totalRows = null;
-      // let length = null;
+      let count = 0;
+      this.totalRows = count;
       return this.items.filter(request => {
-      //   if(this.filterStatus.includes(item.U_TRANSACTION_TYPE)) {
-      //     // length++;
-      //     return item//, this.totalRows = length;
-      //   }
-      // })
-
-      // const req =  this.items.filter(request => {
-      //   if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
-      //   // this.totalRows = this.items.length;
-      //     return request
-      //   }
-      //   console.log(req.length);
         if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
+          count++;
+          this.totalRows = count;
           return (request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase(), this.totalRows = request.length))
         }
       })
@@ -2040,6 +1978,10 @@ export default {
       } else {
         data = transaction
       }
+
+      if(!this.printerIP) {
+        this.showAlert("Please provide IP Address", "danger")
+      }
       
       await axios({
         method: "POST",
@@ -2048,7 +1990,7 @@ export default {
           header: data,
           qrcode: data.U_TRX_NO,
           uuids: process.env.uuid,
-          location: this.printerLocation
+          ip: this.printerIP
         },
       })
       .then((res) => {
@@ -2312,18 +2254,18 @@ export default {
 
     //   }
     // },
-    async getLocations(){
+    async getLocationIP(){
       this.isBusy = true;
       const locationId = JSON.parse(localStorage.user_details).U_LOCATION_ID;
 
         await axios({
           method: "GET",
-          url: `${this.$axios.defaults.baseURL}/api/location/select`
+          url: `${this.$axios.defaults.baseURL}/api/printer/select`
         }).then( res => {
           const v = res.data.view;
           for(var i = 0; i < v.length; i++) {
-            if(v[i].Code == locationId){
-              this.printerLocation = v[i].U_ADDRESS;
+            if(v[i].U_LOCATION_ID == locationId){
+              this.printerIP = v[i].U_IP_ADD;
             }
           }
         })
