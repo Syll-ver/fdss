@@ -2391,7 +2391,7 @@ export default {
         const userDetails = JSON.parse(localStorage.user_details); 
 
         let json = {};
-        if(userDetails.U_COMPANY_CODE == '4354') {
+        if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
           json = {
             company: userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
@@ -2407,7 +2407,7 @@ export default {
             plate_number: this.U_PLATE_NUMBER,
             signature: this.signaturePath
           };
-        } else if(userDetails.U_COMPANY_CODE == '4360') {
+        } else if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
           json = {
             company: userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
@@ -2707,7 +2707,7 @@ export default {
       const userDetails = JSON.parse(localStorage.user_details);
       this.farmer = [];
       let v; 
-      if(userDetails.U_COMPANY_CODE == '4360') {
+      if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
         // RCI
 
         const res1 = await axios({
@@ -2757,7 +2757,7 @@ export default {
           }
         }
 
-      } else if(userDetails.U_COMPANY_CODE == '4354') {
+      } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
         // BFI
         const res = await axios({
         method: "POST",
