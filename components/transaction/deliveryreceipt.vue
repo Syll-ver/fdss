@@ -2720,7 +2720,7 @@ export default {
             company: userDetails.U_COMPANY_CODE
           }
         });
-        const v1 = res1.data.view;
+        const v1 = res1.data.view; 
         for (let i = 0; i < v1.length; i++) {
           if(v1[i].CardType == "S"){
             this.bfi_farmer.push({
