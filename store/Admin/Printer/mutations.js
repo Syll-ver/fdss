@@ -9,8 +9,9 @@ export default {
 
     updatePrinter(state, data) {
       console.log(data);
-      const printer = state.listPrinters.findIndex(loc => loc.Code === data.Code)
+      const printer = state.listPrinters.findIndex(loc => loc.U_LOCATION_ID === data.U_LOCATION_ID)
       state.listPrinters.splice(printer, 1);
+      state.listPrinters.push(data);
     }
 
 }

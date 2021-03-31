@@ -1321,7 +1321,7 @@ export default {
     await this.getCommodity();
     await this.getTransactionType();
     // await this.getFarmer();
-    await this.getLocations();
+    await this.getLocationIP();
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
   },
@@ -1502,7 +1502,7 @@ export default {
       sortDirection: "asc",
       filter: "",
       filterOn: [],
-      printerLocation: null,
+      printerIP: null,
     };
   },
   computed: {
@@ -1978,6 +1978,10 @@ export default {
       } else {
         data = transaction
       }
+
+      if(!this.printerIP) {
+        this.showAlert("Please provide IP Address", "danger")
+      }
       
       await axios({
         method: "POST",
@@ -1986,7 +1990,7 @@ export default {
           header: data,
           qrcode: data.U_TRX_NO,
           uuids: process.env.uuid,
-          location: this.printerLocation
+          ip: this.printerIP
         },
       })
       .then((res) => {
@@ -2250,18 +2254,18 @@ export default {
 
     //   }
     // },
-    async getLocations(){
+    async getLocationIP(){
       this.isBusy = true;
       const locationId = JSON.parse(localStorage.user_details).U_LOCATION_ID;
 
         await axios({
           method: "GET",
-          url: `${this.$axios.defaults.baseURL}/api/location/select`
+          url: `${this.$axios.defaults.baseURL}/api/printer/select`
         }).then( res => {
           const v = res.data.view;
           for(var i = 0; i < v.length; i++) {
-            if(v[i].Code == locationId){
-              this.printerLocation = v[i].U_ADDRESS;
+            if(v[i].U_LOCATION_ID == locationId){
+              this.printerIP = v[i].U_IP_ADD;
             }
           }
         })
