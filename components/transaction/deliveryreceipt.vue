@@ -469,10 +469,9 @@
           @change="test"    
           required
         ></b-form-select> -->
-
-        <small class="text-left" v-show="companyCode == '4360' " >Plot Code</small>
+        <small class="text-left" v-show="companyCode == rci " >Plot Code</small>
         <multiselect
-          v-show="companyCode == '4360' "
+          v-show="companyCode == rci "
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -1327,6 +1326,8 @@ export default {
   },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
       isBusy: true,
       isPrinterAvailable: true,
       receiptData: {},
@@ -2295,7 +2296,7 @@ export default {
         })
       }
 
-      if(this.companyCode == '4360') { 
+      if(this.companyCode == `${process.env.rci}`) { 
         this.commodity = [];
         // filter only agri-ops items
         const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
@@ -2308,7 +2309,7 @@ export default {
         }
       }
 
-      if(this.companyCode == '4354') {
+      if(this.companyCode == `${process.env.bfi}`) {
         const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
         this.commodity.push({
           text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
@@ -2345,9 +2346,9 @@ export default {
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
       let v = "";
 
-      if(this.companyCode == '4354') {
+      if(this.companyCode == `${process.env.bfi}`) {
 
-      } else if(this.companyCode == '4360') {
+      } else if(this.companyCode == `${process.env.rci}`) {
         this.U_APP_ProjCode = "";
         this.U_FRMR_ADD = "";
 
