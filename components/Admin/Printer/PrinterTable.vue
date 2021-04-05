@@ -31,7 +31,6 @@
         </b-form-group>
       </b-col>
 
-      <!-- <b-row> -->
       <b-col align="right">
         <b-button
           id="create"
@@ -47,7 +46,7 @@
     </b-row>
 
     <!-- Main table element -->
-    <span v-if="action.view_printer">
+    <span>
       <b-table
         id="location-table"
         class="table-style"
@@ -508,15 +507,15 @@ export default {
   created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'View printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'View Printer')) {
       this.action.view_printer = true;
     }
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'Add printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'Add Printer')) {
       this.action.add_printer = true;
     }
     
-    if(userActions.find(action => action.U_ACTION_NAME === 'Edit printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'Edit Printer')) {
       this.action.edit_printer = true;
     }
   }
