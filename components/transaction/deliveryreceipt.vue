@@ -201,7 +201,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="printed(row)"
+            @click="selectPrinter(row)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -469,10 +469,9 @@
           @change="test"    
           required
         ></b-form-select> -->
-
-        <small class="text-left" v-show="companyCode == '4360' " >Plot Code</small>
+        <small class="text-left" v-show="companyCode == rci " >Plot Code</small>
         <multiselect
-          v-show="companyCode == '4360' "
+          v-show="companyCode == rci "
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -1263,6 +1262,69 @@
         >
       </template>
     </b-modal>
+
+    <!-- select printer -->
+    <b-modal
+      size="large"
+      header-bg-variant="biotech"
+      header-text-variant="light"
+      body-bg-variant="gray"
+      id="select-printer-modal"
+      hide-header-close
+      no-close-on-backdrop
+      no-scrollable
+    >
+      <template v-slot:modal-title>
+        <h6>Select Printer Location</h6>
+      </template>
+        
+      <b-row>
+        <b-col class="mt-2">
+          <small class="text-left">Select Location</small>
+          <b-form-select v-model="printer_ip"
+            size="sm"
+            style="font-size:10px"
+          >
+          <option :value="null">Select Location</option>
+
+          <option
+            :value="print.U_IP_ADD"
+            v-for="(loc, i) in listLocations"
+            :key="i"
+            >{{ loc.U_ADDRESS }}</option>
+        </b-form-select>
+          <!-- <b-form-input
+            id="location"
+            placeholder="Location"
+            class="form-text"
+            v-model="printer"
+            required
+            style="font-size: 13.5px"
+          /> -->
+        </b-col>
+      </b-row>
+
+      <template v-slot:modal-footer="{}">
+        <b-button
+          id="add_action_modal"
+          size="sm"
+          class="button-style"
+          variant="biotech"
+          @click="printed()"
+          :disabled="showLoading === true"
+        >
+          Create
+        </b-button>
+        <b-button
+          id="cancel_add_action_modal"
+          size="sm"
+          class="button-style"
+          @click="close()"
+          >Cancel</b-button
+        >
+      </template>
+    </b-modal>
+
     <div>
       <b-alert
         id="alert"
@@ -1327,6 +1389,8 @@ export default {
   },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
       isBusy: true,
       isPrinterAvailable: true,
       receiptData: {},
@@ -1409,6 +1473,7 @@ export default {
       farmerAdd: [],
       commodity: [],
       plotCode: [],
+      printTransaction: [],
       status: "",
       // Datepicker
       opens1: "",
@@ -1506,6 +1571,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      listPrinters: "Admin/Printer/getListPrinters",
+    }),
+
     filterItems() {
       let count = 0;
       this.totalRows = count;
@@ -1970,6 +2039,12 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
+    async selectPrinter(transaction){
+
+      this.printTransaction = transaction;
+
+
+    },
     async printed(transaction) {
       this.showLoading = true;
       let data 
@@ -2295,7 +2370,7 @@ export default {
         })
       }
 
-      if(this.companyCode == '4360') { 
+      if(this.companyCode == `${process.env.rci}`) { 
         this.commodity = [];
         // filter only agri-ops items
         const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
@@ -2308,7 +2383,7 @@ export default {
         }
       }
 
-      if(this.companyCode == '4354') {
+      if(this.companyCode == `${process.env.bfi}`) {
         const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
         this.commodity.push({
           text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
@@ -2345,9 +2420,9 @@ export default {
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
       let v = "";
 
-      if(this.companyCode == '4354') {
+      if(this.companyCode == `${process.env.bfi}`) {
 
-      } else if(this.companyCode == '4360') {
+      } else if(this.companyCode == `${process.env.rci}`) {
         this.U_APP_ProjCode = "";
         this.U_FRMR_ADD = "";
 
@@ -2391,7 +2466,7 @@ export default {
         const userDetails = JSON.parse(localStorage.user_details); 
 
         let json = {};
-        if(userDetails.U_COMPANY_CODE == '4354') {
+        if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
           json = {
             company: userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
@@ -2407,7 +2482,7 @@ export default {
             plate_number: this.U_PLATE_NUMBER,
             signature: this.signaturePath
           };
-        } else if(userDetails.U_COMPANY_CODE == '4360') {
+        } else if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
           json = {
             company: userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
@@ -2707,7 +2782,7 @@ export default {
       const userDetails = JSON.parse(localStorage.user_details);
       this.farmer = [];
       let v; 
-      if(userDetails.U_COMPANY_CODE == '4360') {
+      if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
         // RCI
 
         const res1 = await axios({
@@ -2720,7 +2795,7 @@ export default {
             company: userDetails.U_COMPANY_CODE
           }
         });
-        const v1 = res1.data.view;
+        const v1 = res1.data.view; 
         for (let i = 0; i < v1.length; i++) {
           if(v1[i].CardType == "S"){
             this.bfi_farmer.push({
@@ -2757,7 +2832,7 @@ export default {
           }
         }
 
-      } else if(userDetails.U_COMPANY_CODE == '4354') {
+      } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
         // BFI
         const res = await axios({
         method: "POST",
@@ -2780,6 +2855,20 @@ export default {
           }
         }
       }
+
+    await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
+      SessionId: localStorage.SessionId
+    })
+    .then( res => {
+      if (res && res.name == "Error") {
+        if (res.response && res.response.data.error) {
+          if (res.response.data.error === "Session expired") {
+            this.$bvModal.show("session_modal");
+          }
+        }
+      }
+    });
+
   },
 
     
