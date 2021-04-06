@@ -85,7 +85,7 @@
             size="sm"
             @click="edit(row.item)"
             v-b-tooltip.hover
-            title="Update Location"
+            title="Edit Location"
           >
             <font-awesome-icon icon="edit" />
           </b-button>          
@@ -141,7 +141,7 @@
       no-scrollable
     >
       <template v-slot:modal-title>
-        <h6>Add Location</h6>
+        <h6>Add Printer</h6>
       </template>
         
       <b-row>
@@ -192,7 +192,7 @@
       no-scrollable
     >
       <template v-slot:modal-title>
-        <h6>Update Location</h6>
+        <h6>Edit Location</h6>
       </template>
 
       <b-row>
@@ -401,7 +401,6 @@ export default {
 
     async add(){
       this.showLoading = true;
-      this.isBusy = true
         if(this.new_location == null ){
             this.showAlert("Please input Location", "danger");
         } else {
@@ -416,14 +415,13 @@ export default {
                 }
               }
               this.showLoading = false;
-              this.isBusy = false;
             } else {
               this.showLoading = false;
-              this.$store.dispatch("Admin/Location/fetchListLocations")
               this.$bvModal.hide("add-location-modal");
               this.new_location = null;
               this.showAlert("Successfully Added", "success");
-              this.isBusy = false;
+              
+              this.$store.dispatch("Admin/Location/fetchListLocations")
             }
           }).catch( e => {
             console.log(e);
