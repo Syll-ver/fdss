@@ -388,6 +388,7 @@ export default {
         if(existingIP != null){
           this.showAlert("IP Address already exists", "danger");
         } else {
+          this.isBusy = true;
           this.showLoading = true;
           const SessionId = localStorage.SessionId;
           this.$store.dispatch("Admin/Printer/addPrinter", {
@@ -405,6 +406,7 @@ export default {
             } else {
               this.$store.dispatch("Admin/Printer/fetchListPrinters")
               this.showLoading = false;
+              this.isBusy = false;
               this.$bvModal.hide("add-printerlocation-modal");
               this.showAlert("Successfully Added", "success");
             }
@@ -419,6 +421,7 @@ export default {
       } else if(this.printer.U_LOCATION_ID == null) {
         this.showAlert("Please input Location", "danger");
       } else {
+        this.isBusy = true;
           this.showLoading = true;
           const SessionId = localStorage.SessionId;
 
@@ -436,6 +439,7 @@ export default {
             } else {
               this.$bvModal.hide("edit-printerlocation-modal");
               this.showLoading = false;
+              this.isBusy = false;;
               this.printer = [];
               this.showAlert("Successfully Added", "success");
             }
