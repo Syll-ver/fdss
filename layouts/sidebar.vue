@@ -200,6 +200,7 @@ export default {
       this.isAdmin = true;
 
       const module_actions = user_actions["Admin Module"];
+      console.log(module_actions);
       // if (
       //   !module_actions.find(action => action.U_ACTION_NAME == "View modules")
       // ) {
