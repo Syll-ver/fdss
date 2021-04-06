@@ -43,7 +43,8 @@
     "vue-html2pdf": "^1.6.4",
     "vue-signature-pad": "^2.0.0",
     "vue-stepper-component": "^1.0.0",
-    "vue2-daterange-picker": "^0.4.6"
+    "vue2-daterange-picker": "^0.4.6",
+    "web-pingjs": "^1.0.1"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.27",

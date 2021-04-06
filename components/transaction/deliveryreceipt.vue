@@ -201,7 +201,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="selectPrinter(row)"
+            @click="printed(row)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -1262,69 +1262,6 @@
         >
       </template>
     </b-modal>
-
-    <!-- select printer -->
-    <b-modal
-      size="large"
-      header-bg-variant="biotech"
-      header-text-variant="light"
-      body-bg-variant="gray"
-      id="select-printer-modal"
-      hide-header-close
-      no-close-on-backdrop
-      no-scrollable
-    >
-      <template v-slot:modal-title>
-        <h6>Select Printer Location</h6>
-      </template>
-        
-      <b-row>
-        <b-col class="mt-2">
-          <small class="text-left">Select Location</small>
-          <b-form-select v-model="printer_ip"
-            size="sm"
-            style="font-size:10px"
-          >
-          <option :value="null">Select Location</option>
-
-          <option
-            :value="print.U_IP_ADD"
-            v-for="(loc, i) in listLocations"
-            :key="i"
-            >{{ loc.U_ADDRESS }}</option>
-        </b-form-select>
-          <!-- <b-form-input
-            id="location"
-            placeholder="Location"
-            class="form-text"
-            v-model="printer"
-            required
-            style="font-size: 13.5px"
-          /> -->
-        </b-col>
-      </b-row>
-
-      <template v-slot:modal-footer="{}">
-        <b-button
-          id="add_action_modal"
-          size="sm"
-          class="button-style"
-          variant="biotech"
-          @click="printed()"
-          :disabled="showLoading === true"
-        >
-          Create
-        </b-button>
-        <b-button
-          id="cancel_add_action_modal"
-          size="sm"
-          class="button-style"
-          @click="close()"
-          >Cancel</b-button
-        >
-      </template>
-    </b-modal>
-
     <div>
       <b-alert
         id="alert"
@@ -1366,7 +1303,6 @@ import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 import Multiselect from "vue-multiselect";
 import jsPDF from "jspdf";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
-// import ping from "ping";
 export default {
   components: {
     jsPDF,
@@ -1385,7 +1321,6 @@ export default {
     await this.getTransactionType();
     // await this.getFarmer();
     await this.getLocationIP();
-    // await this.pingIP();
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
   },
@@ -1475,7 +1410,6 @@ export default {
       farmerAdd: [],
       commodity: [],
       plotCode: [],
-      printTransaction: [],
       status: "",
       // Datepicker
       opens1: "",
@@ -1573,10 +1507,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      listPrinters: "Admin/Printer/getListPrinters",
-    }),
-
     filterItems() {
       let count = 0;
       this.totalRows = count;
@@ -2041,19 +1971,6 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
-    async selectPrinter(transaction){
-
-      this.printTransaction = transaction;
-
-
-    },
-    async pingIP(){
-    // var ping = require('ping');
-    let ipOfPrinterAPI = '172.16.4.182';
-    let connection = await ping.promise.probe(ipOfPrinterAPI)
-    console.log(connection);
-      // this.printerIP
-    },
     async printed(transaction) {
       this.showLoading = true;
       let data 
@@ -2864,20 +2781,6 @@ export default {
           }
         }
       }
-
-    await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
-      SessionId: localStorage.SessionId
-    })
-    .then( res => {
-      if (res && res.name == "Error") {
-        if (res.response && res.response.data.error) {
-          if (res.response.data.error === "Session expired") {
-            this.$bvModal.show("session_modal");
-          }
-        }
-      }
-    });
-
   },
 
     
@@ -2955,4 +2858,3 @@ export default {
 
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-
