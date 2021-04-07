@@ -1303,6 +1303,7 @@ import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 import Multiselect from "vue-multiselect";
 import jsPDF from "jspdf";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
+import ping from 'web-pingjs'
 export default {
   components: {
     jsPDF,
@@ -1321,6 +1322,7 @@ export default {
     await this.getTransactionType();
     // await this.getFarmer();
     await this.getLocationIP();
+    // await this.pingIP();
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
   },
@@ -1971,6 +1973,22 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
+  async pingIP(){
+    let pingMe = '172.16.4.182';
+    ping(pingMe).then(function(delta) {
+      console.log("Ping time was", String(delta) + ' ms.');
+    }).catch(err => {
+      console.log(error, err);
+    })
+
+    let pingMe2 = '172.16.4.156';
+    ping(pingMe2).then(function(delta) {
+      console.log("Ping time was", String(delta) + ' ms.');
+    }).catch(err => {
+      console.log(error, err);
+    })
+  },
+
     async printed(transaction) {
       this.showLoading = true;
       let data 

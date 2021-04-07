@@ -1074,6 +1074,8 @@ export default {
 
     filterItems() {
       let count = 0;
+      //this.filterCompany.includes(Users.COMPANY_NAME)
+      // console.log(this.filterCompany);
       return this.Users.filter(Users => {
         if(this.filterStatus.includes(Users.U_IS_ACTIVE)){
           count++;
