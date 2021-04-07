@@ -41,7 +41,7 @@ export default {
     console.log(data);
     return await axios({
       method: "PUT",
-      url: `${this.$axios.defaults.baseURL}/api/printer/update/${data.data.U_LOCATION_ID}`,
+      url: `${this.$axios.defaults.baseURL}/api/printer/update/${data.data.Name}`,
       headers: {
         Authorization : `B1SESSION=${data.sessionId}`
       },
