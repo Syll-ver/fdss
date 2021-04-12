@@ -31,7 +31,6 @@
         </b-form-group>
       </b-col>
 
-      <!-- <b-row> -->
       <b-col align="right">
         <b-button
           id="create"
@@ -47,7 +46,7 @@
     </b-row>
 
     <!-- Main table element -->
-    <span v-if="action.view_printer">
+    <span>
       <b-table
         id="location-table"
         class="table-style"
@@ -389,6 +388,7 @@ export default {
         if(existingIP != null){
           this.showAlert("IP Address already exists", "danger");
         } else {
+          this.isBusy = true;
           this.showLoading = true;
           const SessionId = localStorage.SessionId;
           this.$store.dispatch("Admin/Printer/addPrinter", {
@@ -406,6 +406,7 @@ export default {
             } else {
               this.$store.dispatch("Admin/Printer/fetchListPrinters")
               this.showLoading = false;
+              this.isBusy = false;
               this.$bvModal.hide("add-printerlocation-modal");
               this.showAlert("Successfully Added", "success");
             }
@@ -420,6 +421,7 @@ export default {
       } else if(this.printer.U_LOCATION_ID == null) {
         this.showAlert("Please input Location", "danger");
       } else {
+        this.isBusy = true;
           this.showLoading = true;
           const SessionId = localStorage.SessionId;
 
@@ -437,6 +439,7 @@ export default {
             } else {
               this.$bvModal.hide("edit-printerlocation-modal");
               this.showLoading = false;
+              this.isBusy = false;;
               this.printer = [];
               this.showAlert("Successfully Added", "success");
             }
@@ -508,15 +511,15 @@ export default {
   created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'View printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'View Printer')) {
       this.action.view_printer = true;
     }
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'Add printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'Add Printer')) {
       this.action.add_printer = true;
     }
     
-    if(userActions.find(action => action.U_ACTION_NAME === 'Edit printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'Edit Printer')) {
       this.action.edit_printer = true;
     }
   }

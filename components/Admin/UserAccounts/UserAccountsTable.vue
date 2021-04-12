@@ -738,10 +738,16 @@
 
                <small class="ml-1">Location</small>
                 <b-form-select v-model="userDetails.U_LOCATION_ID"
-                  :options="locations"
                   size="sm"
                   style="font-size:10px"
                 >
+                <option
+                  :value="loc.Code"
+                  v-for="(loc, i) in listLocations"
+                  :key="i"
+                  >{{ loc.U_ADDRESS }}</option
+                >
+                
                 </b-form-select>
             </b-card>
           </b-col>
@@ -1068,6 +1074,8 @@ export default {
 
     filterItems() {
       let count = 0;
+      //this.filterCompany.includes(Users.COMPANY_NAME)
+      // console.log(this.filterCompany);
       return this.Users.filter(Users => {
         if(this.filterStatus.includes(Users.U_IS_ACTIVE)){
           count++;
@@ -1381,6 +1389,7 @@ export default {
     },
 
     edit(data) { 
+      console.log(data);
       this.userDetails = {
         Code: data.Code,
         U_EMPLOYEE_CODE: data.U_EMPLOYEE_CODE,
