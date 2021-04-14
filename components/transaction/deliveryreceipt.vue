@@ -618,7 +618,7 @@
         </b-row>
         <b-row v-else> </b-row>
 
-        <b-form-group v-if="U_TRANSACTION_TYPE === '1'">
+        <!-- <b-form-group v-if="U_TRANSACTION_TYPE === '1'">
           <b-row class="mt-0">
           <b-col cols="6">
             <small class="text-left">Arrival Time</small>
@@ -668,7 +668,7 @@
             ></b-form-input>
           </b-col>
         </b-row>
-        </b-form-group>
+        </b-form-group> -->
       </b-card>
 
       <template v-slot:modal-footer="{}">
@@ -903,7 +903,7 @@
           <b-col cols="6" v-else></b-col>
         </b-row>
         <b-row v-else> </b-row>
-        <b-form-group v-show="(U_ARRIVAL || U_TIME_END || U_TIME_START || U_DEPARTURE)"
+        <!-- <b-form-group v-show="(U_ARRIVAL || U_TIME_END || U_TIME_START || U_DEPARTURE)"
           label-size="sm" label="Remarks" class="mt-2 mb-0">
           <b-row class="mt-0">
           <b-col cols="6">
@@ -954,7 +954,7 @@
             ></b-form-input>
           </b-col>
         </b-row>
-        </b-form-group>
+        </b-form-group> -->
 
       </b-card>
 
@@ -1002,7 +1002,7 @@
         <div id="app" ref="testHtml">
           <div id="receipt">
             <b-row>
-              <div class="mr-4" :style="(U_ARRIVAL || U_DEPARTURE || U_TIME_END || U_TIME_START) ? 'width:31rem; height:50rem' : 'width:31rem; height:40rem'">
+              <div class="mr-4" style="width:31rem; height:40rem">
                 <span>
                   <b-img src="/logo1.png" class="receipt-logo" center />
                 </span>
@@ -1182,7 +1182,7 @@
                   </b-row>
                 </div>
 
-                <div>
+                <!-- <div>
                   <b-form-group v-show="(U_ARRIVAL || U_TIME_START || U_TIME_END || U_DEPARTURE)">
                     <b-row>
                       <b-col cols="4">
@@ -1229,7 +1229,7 @@
                       </b-col>
                     </b-row>
                   </b-form-group>
-                </div>
+                </div> -->
 
                 <!-- <b-row>
           <b-col cols="6">           
@@ -1625,10 +1625,10 @@ export default {
       U_EMPTY_SACKS: 0,
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
-      U_ARRIVAL: null,
-      U_TIME_START: null,
-      U_TIME_END: null,
-      U_DEPARTURE: null,
+      // U_ARRIVAL: null,
+      // U_TIME_START: null,
+      // U_TIME_END: null,
+      // U_DEPARTURE: null,
       transaction_types: [],
       companyList: null,
       farmer: [],
@@ -1813,7 +1813,7 @@ export default {
       console.log(data);
     },
     async saveDR() {
-      console.log(this.U_ARRIVAL, this.U_TIME_START, this.U_TIME_END, this.U_DEPARTURE);
+      // console.log(this.U_ARRIVAL, this.U_TIME_START, this.U_TIME_END, this.U_DEPARTURE);
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
       } else if (this.U_TRANSACTION_TYPE == null) {
@@ -1834,14 +1834,14 @@ export default {
         this.showAlert("Please input quantity not less than zero", "danger");
       } else if (this.U_TRANSACTION_TYPE == 2 && this.U_SACKS < 1) {
         this.showAlert("Please input # of Filled Bags not less than zero", "danger");
-      } else if (this.U_TRANSACTION_TYPE == 1 && this.U_ARRIVAL == null) {
-        this.showAlert("Please input Arrival Time", "danger");
-      } else if (this.U_TRANSACTION_TYPE == 1 && this.U_TIME_END == null){
-        this.showAlert("Please input Time End", "danger");
-      } else if (this.U_TRANSACTION_TYPE == 1 &&  this.U_DEPARTURE == null){
-        this.showAlert("Please input Departure Time", "danger");
-      } else if (this.U_TRANSACTION_TYPE == 1 && this.U_TIME_START == null){
-        this.showAlert("Please input Time Start", "danger");
+      // } else if (this.U_TRANSACTION_TYPE == 1 && this.U_ARRIVAL == null) {
+      //   this.showAlert("Please input Arrival Time", "danger");
+      // } else if (this.U_TRANSACTION_TYPE == 1 && this.U_TIME_END == null){
+      //   this.showAlert("Please input Time End", "danger");
+      // } else if (this.U_TRANSACTION_TYPE == 1 &&  this.U_DEPARTURE == null){
+      //   this.showAlert("Please input Departure Time", "danger");
+      // } else if (this.U_TRANSACTION_TYPE == 1 && this.U_TIME_START == null){
+      //   this.showAlert("Please input Time Start", "danger");
         // } else if (this.U_SACKS < "1" ) {
         //   this.showAlert("Please input quantity/# of Filled Bags  not less than zero", "danger");
       } else {
@@ -1951,10 +1951,10 @@ export default {
         (this.U_SACKS = 0),
         (this.U_EMPTY_SACKS = 0),
         (this.U_HLPR_NAME = null);
-        this.U_ARRIVAL = null;
-        this.U_DEPARTURE = null;
-        this.U_TIME_START = null;
-        this.U_TIME_END = null;
+        // this.U_ARRIVAL = null;
+        // this.U_DEPARTURE = null;
+        // this.U_TIME_START = null;
+        // this.U_TIME_END = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
       this.$bvModal.hide("add-transaction-modal");
@@ -1981,10 +1981,10 @@ export default {
         (this.U_SACKS = 0),
         (this.U_EMPTY_SACKS = 0),
         (this.U_HLPR_NAME = null);
-        this.U_ARRIVAL = null;
-        this.U_DEPARTURE = null;
-        this.U_TIME_START = null;
-        this.U_TIME_END = null;
+        // this.U_ARRIVAL = null;
+        // this.U_DEPARTURE = null;
+        // this.U_TIME_START = null;
+        // this.U_TIME_END = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
       this.$bvModal.hide("bv-modal-confirmCancel");
@@ -2379,10 +2379,10 @@ export default {
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE = data.U_SCHEDULED_DATE;
       this.U_SCHEDULED_TIME = data.U_SCHEDULED_TIME;
-        this.U_ARRIVAL = data.U_ARRIVAL;
-        this.U_DEPARTURE = data.U_DEPARTURE;
-        this.U_TIME_START = data.U_TIME_START;
-        this.U_TIME_END = data.U_TIME_END;
+        // this.U_ARRIVAL = data.U_ARRIVAL;
+        // this.U_DEPARTURE = data.U_DEPARTURE;
+        // this.U_TIME_START = data.U_TIME_START;
+        // this.U_TIME_END = data.U_TIME_END;
 
       this.datetimeScheme2.startDate = new Date(
         moment(
@@ -2421,10 +2421,10 @@ export default {
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE_AND_TIME = data.U_SCHEDULED_DATE_AND_TIME;
-      this.U_ARRIVAL = data.U_ARRIVAL;
-      this.U_DEPARTURE = data.U_DEPARTURE;
-      this.U_TIME_START = data.U_TIME_START;
-      this.U_TIME_END = data.U_TIME_END;
+      // this.U_ARRIVAL = data.U_ARRIVAL;
+      // this.U_DEPARTURE = data.U_DEPARTURE;
+      // this.U_TIME_START = data.U_TIME_START;
+      // this.U_TIME_END = data.U_TIME_END;
       this.$bvModal.show("view-transaction-modal");
     },
     async getTransactionType() {
@@ -2709,12 +2709,12 @@ export default {
         fd.append("scheduled_date", this.U_SCHEDULED_DATE);
         fd.append("scheduled_time", this.U_SCHEDULED_TIME);
 
-        if(this.U_TRANSACTION_TYPE == '1') {
-          fd.append("arrival", this.U_ARRIVAL)
-          fd.append("departure", this.U_DEPARTURE)
-          fd.append("time_start", this.U_TIME_START)
-          fd.append("time_end", this.U_TIME_END)
-        }
+        // if(this.U_TRANSACTION_TYPE == '1') {
+        //   fd.append("arrival", this.U_ARRIVAL)
+        //   fd.append("departure", this.U_DEPARTURE)
+        //   fd.append("time_start", this.U_TIME_START)
+        //   fd.append("time_end", this.U_TIME_END)
+        // }
         
         const res = await axios.post(
           `${this.$axios.defaults.baseURL}/api/transaction/add`,
@@ -2785,10 +2785,10 @@ export default {
           plate_number: this.U_PLATE_NUMBER,
           scheduled_date: this.U_SCHEDULED_DATE,
           scheduled_time: intToTime(this.U_SCHEDULED_TIME),
-          arrival: this.U_ARRIVAL,
-          time_start: this.U_TIME_START,
-          time_end: this.U_TIME_END,
-          departure: this.U_DEPARTURE
+          // arrival: this.U_ARRIVAL,
+          // time_start: this.U_TIME_START,
+          // time_end: this.U_TIME_END,
+          // departure: this.U_DEPARTURE
         };
 
         await axios({
@@ -2930,7 +2930,44 @@ export default {
           const st = this.intToTime(v[i].SCHEDULED_TIME);
           const sdate = moment(`${sd}  ${st}`).format("MMM DD, YYYY hh:mm A");
 
-          if(v[i].U_ARRIVAL || v[i].U_DEPARTURE || v[i].U_TIME_START || v[i].U_TIME_END) {
+          // if(v[i].U_ARRIVAL || v[i].U_DEPARTURE || v[i].U_TIME_START || v[i].U_TIME_END) {
+          //   this.items.push({
+          //     U_TRX_NO: v[i].U_TRX_NO,
+          //     U_TRX_ID: v[i].TRANSACTION_ID,
+          //     U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+          //     U_ITEM: v[i].ITEM_ID,
+          //     U_SUPP: v[i].SUPPLIER_ID,
+          //     U_TRX_NO: v[i].TRANSACTION_NUMBER,
+          //     // U_PRICELIST: v[i].PRICELIST_NAME,
+          //     U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+          //     U_CMMDTY: v[i].ITEM_NAME,
+          //     U_UOM: v[i].UOM_NAME,
+          //     U_UOM_ID: v[i].UOM_ID,
+          //     U_FRMR_NAME: v[i].FARMER_NAME,
+          //     U_FRMR_ADD: v[i].FARMER_ADDRESS,
+          //     U_APP_ProjCode: v[i].U_PLOT_CODE,
+          //     U_DTE_CRTD: d,
+          //     U_CRTD_BY: v[i].CREATED_BY,
+          //     U_STATUS: v[i].STATUS,
+          //     U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+          //     U_HLPR_NAME: v[i].HELPER_NAME,
+          //     U_DRVR_NAME: v[i].DRIVER_NAME,
+          //     U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+          //     U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+          //     U_SACKS: v[i].NUMBER_OF_BAGS,
+          //     U_SCHEDULED_DATE_AND_TIME: sdate,
+          //     U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
+          //     U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
+          //     // selectedcompany: v[i].USER_COMPANY,
+          //     TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
+          //     TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+          //     U_ARRIVAL: moment(v[i].U_ARRIVAL, ["HH.mm"]).format("hh:mm A"),
+          //     U_DEPARTURE: moment(v[i].U_DEPARTURE, ["HH.mm"]).format("hh:mm A"),
+          //     U_TIME_START: moment(v[i].U_TIME_START, ["HH.mm"]).format("hh:mm A"),
+          //     U_TIME_END: moment(v[i].U_TIME_END, ["HH.mm"]).format("hh:mm A"),
+          //     IFPASSRMRS: v[i].ifpassRMRS
+          //   });
+          // } else {
             this.items.push({
               U_TRX_NO: v[i].U_TRX_NO,
               U_TRX_ID: v[i].TRANSACTION_ID,
@@ -2961,46 +2998,9 @@ export default {
               // selectedcompany: v[i].USER_COMPANY,
               TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
               TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-              U_ARRIVAL: moment(v[i].U_ARRIVAL, ["HH.mm"]).format("hh:mm A"),
-              U_DEPARTURE: moment(v[i].U_DEPARTURE, ["HH.mm"]).format("hh:mm A"),
-              U_TIME_START: moment(v[i].U_TIME_START, ["HH.mm"]).format("hh:mm A"),
-              U_TIME_END: moment(v[i].U_TIME_END, ["HH.mm"]).format("hh:mm A"),
               IFPASSRMRS: v[i].ifpassRMRS
             });
-          } else {
-            this.items.push({
-              U_TRX_NO: v[i].U_TRX_NO,
-              U_TRX_ID: v[i].TRANSACTION_ID,
-              U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
-              U_ITEM: v[i].ITEM_ID,
-              U_SUPP: v[i].SUPPLIER_ID,
-              U_TRX_NO: v[i].TRANSACTION_NUMBER,
-              // U_PRICELIST: v[i].PRICELIST_NAME,
-              U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
-              U_CMMDTY: v[i].ITEM_NAME,
-              U_UOM: v[i].UOM_NAME,
-              U_UOM_ID: v[i].UOM_ID,
-              U_FRMR_NAME: v[i].FARMER_NAME,
-              U_FRMR_ADD: v[i].FARMER_ADDRESS,
-              U_APP_ProjCode: v[i].U_PLOT_CODE,
-              U_DTE_CRTD: d,
-              U_CRTD_BY: v[i].CREATED_BY,
-              U_STATUS: v[i].STATUS,
-              U_PLATE_NUMBER: v[i].PLATE_NUMBER,
-              U_HLPR_NAME: v[i].HELPER_NAME,
-              U_DRVR_NAME: v[i].DRIVER_NAME,
-              U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
-              U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-              U_SACKS: v[i].NUMBER_OF_BAGS,
-              U_SCHEDULED_DATE_AND_TIME: sdate,
-              U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
-              U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
-              // selectedcompany: v[i].USER_COMPANY,
-              TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
-              TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-              IFPASSRMRS: v[i].ifpassRMRS
-            });
-          }
+          // }
         }
 
          
