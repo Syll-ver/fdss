@@ -364,7 +364,7 @@
                   size="sm"
                   style="font-size:10px"
                   >
-                  <option :value="null">Select Role</option>
+                  <option :value="null">Select Location</option>
 
                   <option
                     :value="loc.Code"
