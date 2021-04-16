@@ -371,7 +371,7 @@
          <b-card class="card-shadow">
               <div id="receipt">
     <b-row>
-      <div class=" mr-4" :style="(U_TRANSACTION_TYPE == 'Pick-up') ? 'width:31rem; height:50rem' : 'width:31rem; height:40rem'">
+      <div class=" mr-4" :style="(U_TRANSACTION_TYPE == 'Pick-up' && U_ARRIVAL != null && U_DEPARTURE != null && U_TIME_START != null && U_TIME_END != null ) ? 'width:31rem; height:50rem' : 'width:31rem; height:43rem'">
         <span>
           <b-img src="/logo1.png" class="receipt-logo" center/>
         </span>
