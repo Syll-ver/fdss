@@ -1056,16 +1056,6 @@ export default {
   },
 
   methods: {
-    getStyle(arrival, departure, start, end) {
-      if(arrival != null || departure != null && start != null && end != null){
-        console.log("style long", arrival, departure, start, end);
-        return  'width:31rem; height:55rem';
-      } else {
-        console.log("style", arrival, departure, start, end);
-        return 'width:31rem; height:40rem';
-      }
-    },
-
     cancel() {
       // this.U_ARRIVAL = null;
       // this.U_TIME_START = null;
@@ -1144,8 +1134,6 @@ export default {
               time_end: this.U_TIME_END,
               departure: this.U_DEPARTURE
             };
-
-            console.log(json);
 
             await axios({
               method: "PUT",
@@ -1480,14 +1468,8 @@ export default {
         });
        
         const v = res.data.view;
-        console.log(v);
         if(v.length > 0){
-
           for (let i = 0; i < v.length; i++) {
-            if(v[i].U_ARRIVAL || v[i].U_DEPARTURE || v[i].U_TIME_START || v[i].U_TIME_END) {
-              console.log("HAS REMARK", v[i].TRANSACTION_NUMBER);
-            }
-
             const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
             const t = this.intToTime(v[i].CREATED_TIME);
             const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
