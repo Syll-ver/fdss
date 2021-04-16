@@ -76,7 +76,7 @@ module.exports = {
     rci: `4381`
   },
 
-  server: { port: 9000 }
+  server: { port: 7202 }
 
   // host:'172.16.4.114'}
 };
