@@ -268,7 +268,6 @@ export default {
 
       adminroutes: [
     {},
-            
         {
           link: "/admin/modules",
           name: "Modules",
@@ -415,6 +414,16 @@ export default {
       localStorage.clear();
       this.$router.push("/");
     }
+  },
+
+  beforeCreate(){
+    const userDetails = JSON.parse(localStorage.user_details);
+
+    // if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+    //   variant = "revive"
+    // } else if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+    //   variant = "biotech"
+    // }
   }
 };
 </script>

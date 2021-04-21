@@ -419,9 +419,9 @@ export default {
               this.isBusy = false;
             } else {
               this.showLoading = false;
-              this.$store.dispatch("Admin/Location/fetchListLocations")
               this.$bvModal.hide("add-location-modal");
               this.new_location = null;
+              this.$store.dispatch("Admin/Location/fetchListLocations")
               this.showAlert("Successfully Added", "success");
               this.isBusy = false;
             }
