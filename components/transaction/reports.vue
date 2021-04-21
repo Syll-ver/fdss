@@ -933,14 +933,15 @@ export default {
       }
 
       doc.setFontSize(12);
-      doc.text("Farmers Deliver Slip System", 78, 17);
+      var subtitle = doc.splitTextToSize(`Farmers Deliver Slip System as of ${this.datePicker.startDate} to  ${this.datePicker.endDate}`)
+      doc.text(subtitle, 48, 18);
 
-      doc.setFontSize(10);
-      doc.text(
-        `as of ${this.datePicker.startDate} to  ${this.datePicker.endDate}`,
-        76,
-        21
-      );
+      // doc.setFontSize(10);
+      // doc.text(
+      //   `as of ${this.datePicker.startDate} to  ${this.datePicker.endDate}`,
+      //   76,
+      //   21
+      // );
 
       doc.autoTable({
         theme: "striped",
