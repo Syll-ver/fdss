@@ -133,7 +133,7 @@
             <b-form-checkbox id="Pick-up" value="Pick-up"
               >Pick-up</b-form-checkbox
             >
-            <b-form-checkbox id="delivery" value="Direct"
+            <b-form-checkbox id="delivery" value="Delivery"
               >Delivery</b-form-checkbox
             >
           </b-form-checkbox-group>
@@ -1343,7 +1343,7 @@ export default {
 
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
-      filterStatus: ["Pick-up", "Direct"],
+      filterStatus: ["Pick-up", "Delivery"],
       filterCompany: [],
       showLoading: false,
       alert: {

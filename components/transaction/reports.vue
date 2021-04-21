@@ -97,7 +97,7 @@
             <b-form-checkbox id="Pick-up" value="Pick-up"
               >Pick-up</b-form-checkbox
             >
-            <b-form-checkbox id="delivery" value="Direct"
+            <b-form-checkbox id="delivery" value="Delivery"
               >Delivery</b-form-checkbox
             >
             </b-form-checkbox-group>
@@ -726,7 +726,7 @@ export default {
       opens1:"",
     
       filterCompany:[],
-      filterTransaction:["Pick-up","Direct"],
+      filterTransaction:["Pick-up","Delivery"],
       transaction_types:[],
       farmer:[],
       farmerAdd:[],
