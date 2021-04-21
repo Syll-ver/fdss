@@ -131,7 +131,7 @@
             style="font-size:15px;"
             variant="dark"
             v-b-tooltip.hover
-            title="Eport PDF"
+            title="Export to PDF"
             @click="print"
           >
             <font-awesome-icon style icon="file-pdf" />
@@ -691,6 +691,8 @@ export default {
   },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
       filterStatus:["Completed","Cancelled"],
        showLoading: false,
       alert: {
@@ -903,9 +905,11 @@ export default {
           valuesArray.push(acknowledgement.U_TRX_NO);
           valuesArray.push(acknowledgement.U_TRANSACTION_TYPE);
           valuesArray.push(acknowledgement.U_CMMDTY);
+          valuesArray.push(acknowledgement.U_SACKS+" "+acknowledgement.U_UOM);
           valuesArray.push(acknowledgement.U_FRMR_NAME);
           valuesArray.push(acknowledgement.U_CRTD_BY);
-          valuesArray.push(acknowledgement.U_RMRKS);
+          // valuesArray.push(acknowledgement.U_RMRKS);
+          valuesArray.push(acknowledgement.U_STATUS);
         
      
 
@@ -913,14 +917,23 @@ export default {
         });
         resolve();
       });
-    
+
+      const userDetails = JSON.parse(localStorage.user_details);
 
       const doc = new jsPDF();
       doc.setFontSize(18);
-      doc.text("REvive Croptech Incorporated", 65, 12);
+
+      let fillcolor;
+      if(userDetails.U_COMPANY_CODE == this.rci) {
+        doc.text("REvive Croptech Incorporated", 65, 12);
+        fillcolor = [116, 48, 19];
+      } else if(userDetails.U_COMPANY_CODE == this.bfi) {
+        doc.text("BiotechFARMS Incorporated", 65, 12);
+        fillcolor = [40, 167, 69];
+      }
 
       doc.setFontSize(12);
-      doc.text("Farmers' Deliver Slip", 78, 17);
+      doc.text("Farmers Deliver Slip System", 78, 17);
 
       doc.setFontSize(10);
       doc.text(
@@ -931,16 +944,16 @@ export default {
 
       doc.autoTable({
         theme: "striped",
-        headStyles: { fillColor: [40, 167, 69] },
+        headStyles: { fillColor: fillcolor },
         margin: { top: 2, right: 2, bottom: 0, left: 2 },
         styles: { fontSize: 6, cellWidth: "auto" },
-        head: [["Date Completed", "Transaction No.", "Type", "Commodity", "Farmer's Name", "Created By"]],
+        head: [["Date Completed", "Transaction No.", "Type", "Commodity", "Quantity", "Farmer's Name", "Created By", "Status"]],
         body: content,
         margin: { top: 28 }
       });
 
       doc.save(
-        `Farmers' Delivery Slip (${this.dateRange.date_from} - ${this.dateRange.date_to}).pdf`
+        `Farmers Delivery Slip (${this.dateRange.date_from} - ${this.dateRange.date_to}).pdf`
       );
       return doc;
       
