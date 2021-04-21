@@ -100,7 +100,7 @@
               title="Filter Transaction Type"
           >
             <b-form-checkbox id="Pick-up" value="Pick-up">Pick-up</b-form-checkbox>
-            <b-form-checkbox id="delivery" value="Delivery">Delivery</b-form-checkbox>
+            <b-form-checkbox id="delivery" value="Direct">Delivery</b-form-checkbox>
           </b-form-checkbox-group>
         </b-dropdown>
       </b-col>
@@ -1053,7 +1053,7 @@ export default {
 
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
-      filterStatus: ["Pick-up", "Delivery"],
+      filterStatus: ["Pick-up", "Direct"],
       showLoading: false,
       alert: {
         showAlert: 0,

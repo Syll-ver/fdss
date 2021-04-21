@@ -98,7 +98,7 @@
             <b-form-checkbox id="Pick-up" value="Pick-up"
               >Pick-up</b-form-checkbox
             >
-            <b-form-checkbox id="delivery" value="Delivery"
+            <b-form-checkbox id="delivery" value="Direct"
               >Delivery</b-form-checkbox
             >
           </b-form-checkbox-group>
@@ -1360,7 +1360,7 @@ export default {
       plotCodes: [],
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
-      filterStatus: ["Pick-up", "Delivery"],
+      filterStatus: ["Pick-up", "Direct"],
       filterCompany: [],
       showLoading: false,
       alert: {
@@ -1836,7 +1836,7 @@ export default {
       this.networkPrinter.addText(
         `Requested Empty Sacks: ${data.U_REQUESTED_SACKS}\n`
       );
-      if (data.U_TRANSACTION_TYPE == "Delivery") {
+      if (data.U_TRANSACTION_TYPE == "Direct") {
         this.networkPrinter.addText(
           `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
         );
