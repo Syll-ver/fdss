@@ -200,7 +200,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="printed(row)"
+            @click="selectPrinter(row)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -251,7 +251,7 @@
             id="print"
             class="table-button"
             size="sm"
-            @click="printed(row.item)"
+            @click="selectPrinter(row.item)"
             v-b-tooltip.hover
             title="Print Delivery Slip"
           >
@@ -385,7 +385,7 @@
           id="btn_submit_request"
           size="sm"
           variant="biotech"
-          @click="printed()"
+          @click="selectPrinter()"
           class="button-style"
           >Yes</b-button
         >
@@ -1433,7 +1433,7 @@
 
     <!-- choose printer modal -->
     <b-modal
-      size="large"
+      size="sm"
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
@@ -1448,7 +1448,7 @@
         
       <b-row>
         <b-col class="mt-2">
-          <!-- <small class="text-left">Printer</small> -->
+          <small class="text-left">Printer Location</small>
             <b-form-select
               id="uom"
               v-model="printerIP"
@@ -1459,13 +1459,26 @@
         </b-col>
       </b-row>
 
+      <b-row>
+        <b-col class="mt-2">
+          <small class="text-left">Copies To Print</small>
+            <b-form-input
+              id="uom"
+              v-model="copiesToPrint"
+              class="form-text"
+              type="number"
+              required
+            ></b-form-input>
+        </b-col>
+      </b-row>
+
       <template v-slot:modal-footer="{}">
         <b-button
           id="add_action_modal"
           size="sm"
           class="button-style"
           variant="biotech"
-          @click="add()"
+          @click="printed()"
           :disabled="showLoading === true"
         >
           Print
@@ -1731,6 +1744,7 @@ export default {
       filter: "",
       filterOn: [],
       printerIP: null,
+      copiesToPrint: 1,
       toPrint: [],
       printers: [],
     };
@@ -2235,38 +2249,40 @@ export default {
     this.$bvModal.show('select-printer-modal')
   },
 
-    async printed(transaction) {
+    async printed() {
       this.showLoading = true;
+      
       let data 
-      if(transaction.item) {
-        data = transaction.item
-        
+      if(this.toPrint.item) {
+        data = this.toPrint.item
       } else {
-        data = transaction
+        data = this.toPrint
       }
+
+      data['copies'] = (this.copiesToPrint)
 
       if(!this.printerIP) {
         this.showAlert("Please provide IP Address", "danger")
       }
       
-      await axios({
-        method: "POST",
-        url: `${process.env.serverPrintUrl}/fdss/print`,
-        data: {
-          header: data,
-          qrcode: data.U_TRX_NO,
-          uuids: process.env.uuid,
-          ip: this.printerIP
-        },
-      })
-      .then((res) => {
-        this.showLoading = false;
-        this.showAlert("Printed Successfully", "success");
-      })
-      .catch((err => {
-        console.log("error: ", err);
-        this.showLoading = false;
-      }))
+      // await axios({
+      //   method: "POST",
+      //   url: `${process.env.serverPrintUrl}/fdss/print`,
+      //   data: {
+      //     header: data,
+      //     qrcode: data.U_TRX_NO,
+      //     uuids: process.env.uuid,
+      //     ip: this.printerIP
+      //   },
+      // })
+      // .then((res) => {
+      //   this.showLoading = false;
+      //   this.showAlert("Printed Successfully", "success");
+      // })
+      // .catch((err => {
+      //   console.log("error: ", err);
+      //   this.showLoading = false;
+      // }))
 
       try {
         this.showLoading = true;
@@ -2286,7 +2302,9 @@ export default {
           }
         });
         this.showLoading = false;
-        // this.networkPrint(U_TRX_ID);
+        // this.networkPrint(U_TRX_ID)
+        this.copiesToPrint = 1;
+        this.$bvModal.hide('select-printer-modal');
         this.showAlert("Printed Successfully", "success");
         this.getTransactions();
       } catch (e) {
