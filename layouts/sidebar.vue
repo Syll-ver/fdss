@@ -1,5 +1,8 @@
 <template>
   <div class="wrapper">
+    <!-- <div> -->
+      <!-- <font-awesome-icon icon="bars" class="ml-3 mt-2" /> -->
+    <!-- </div> -->
     <nav id="sidebarBFI">
       <div class="sidebar-header">
         <div>

@@ -626,6 +626,22 @@
               </div>
             </b-col>
           </b-row>
+
+          <b-row>
+            <b-col cols="4">
+              <span>
+                Unloading Time
+              </span>
+            </b-col>
+
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span>
+                  : {{U_UNLOADING}}
+                </span>
+              </div>
+            </b-col>
+          </b-row>
         </b-form-group>
     
 
@@ -692,7 +708,8 @@
         ( U_ARRIVAL == null ||
           U_DEPARTURE == null ||
           U_TIME_START == null ||
-          U_TIME_END == null ))"
+          U_TIME_END == null ||
+          U_UNLOADING == null ))"
           id="add-time-logs"
           size="sm"
           variant="biotech"
@@ -713,7 +730,7 @@
 
     <!-- Add Time Logs -->
       <b-modal
-      size="large"
+      size="sm"
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
@@ -729,7 +746,7 @@
         <b-card>
           <b-form-group>
             <b-row class="mt-0">
-              <b-col cols="6">
+              <b-col cols="12">
                 <small class="text-left">Arrival Time</small>
                 <b-form-input
                   id="helper_name"
@@ -740,7 +757,38 @@
                   required
                 />
               </b-col>
-              <b-col cols="6">
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
+                <small class="text-left">Time Start</small>
+                <b-form-input
+                  id="helper_name"
+                  placeholder="First Name"
+                  class="form-text"
+                  v-model="U_TIME_START"
+                  type="time"
+                  required
+                />
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
+                <small class="text-left">Time End</small>
+                <b-form-input
+                  id="tendered"
+                  placeholder="Last Name"
+                  v-model="U_TIME_END"
+                  class="form-text"
+                  type="time"
+                  required
+                ></b-form-input>
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
                 <small class="text-left">Departure Time</small>
                 <b-form-input
                   id="tendered"
@@ -754,29 +802,19 @@
             </b-row>
 
             <b-row>
-              <b-col cols="6">
-                <small class="text-left">Time Start</small>
-                <b-form-input
-                  id="helper_name"
-                  placeholder="First Name"
-                  class="form-text"
-                  v-model="U_TIME_START"
-                  type="time"
-                  required
-                />
-              </b-col>
-              <b-col cols="6">
-                <small class="text-left">Time End</small>
+              <b-col cols="12">
+                <small class="text-left">Unloading Time</small>
                 <b-form-input
                   id="tendered"
                   placeholder="Last Name"
-                  v-model="U_TIME_END"
+                  v-model="U_UNLOADING"
                   class="form-text"
                   type="time"
                   required
                 ></b-form-input>
               </b-col>
             </b-row>
+
           </b-form-group>
         </b-card>
 
@@ -1130,7 +1168,6 @@ export default {
               scheduled_date: this.U_SCHEDULED_DATE,
               scheduled_time: intToTime(this.U_SCHEDULED_TIME),
 
-
               arrival: this.U_ARRIVAL,
               time_start: this.U_TIME_START,
               time_end: this.U_TIME_END,
@@ -1159,6 +1196,7 @@ export default {
                 this.U_TIME_START = null;
                 this.U_TIME_END = null;
                 this.U_DEPARTURE = null;
+                this.U_UNLOADING = null;
                 this.showLoading = false;
                 this.getTransactions();
                 this.$bvModal.hide('add-time-logs-modal')
@@ -1191,6 +1229,12 @@ export default {
     updateTime() {
       this.$bvModal.hide("view-transaction-modal");
       this.$bvModal.show('add-time-logs-modal')
+      this.U_ARRIVAL = moment(this.U_ARRIVAL, 'hh:mm A').format('HH:mm')
+      this.U_DEPARTURE = moment(this.U_DEPARTURE, 'hh:mm A').format('HH:mm')
+      this.U_TIME_START = moment(this.U_TIME_START, 'hh:mm A').format('HH:mm')
+      this.U_TIME_END = moment(this.U_TIME_END, 'hh:mm A').format('HH:mm')
+      this.U_UNLOADING = moment(this.U_UNLOADING, 'hh:mm A').format('HH:mm')
+      console.log(this.U_ARRIVAL, this.U_DEPARTURE, this.U_TIME_START, this.U_TIME_END);
     },
     
     async print() {
@@ -1362,6 +1406,7 @@ export default {
     this.U_TIME_START = null;
     this.U_TIME_END = null;
     this.U_DEPARTURE = null;
+    this.U_UNLOADING = null;
 
     const userDetails = JSON.parse(localStorage.user_details);
     this.remarks = data.U_TRX_ID;
@@ -1393,6 +1438,7 @@ export default {
       this.U_SCHEDULED_DATE_AND_TIME = data.U_SCHEDULED_DATE_AND_TIME;
       if(data.U_ARRIVAL != null && 
           data.U_DEPARTURE != null && 
+          data.U_TIME_START != null && 
           data.U_TIME_START != null && 
           data.U_TIME_END != null){
             this.U_ARRIVAL = moment(data.U_ARRIVAL, ["HH.mm"]).format("hh:mm A");
