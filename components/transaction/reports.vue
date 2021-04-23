@@ -932,6 +932,7 @@ export default {
       U_TIME_START: null,
       U_TIME_END: null,
       U_DEPARTURE: null,
+      U_UNLOADING: null,
       remarks: null,
 
       filterCompany:[],
@@ -1123,6 +1124,8 @@ export default {
           this.showAlert("Please input Time Start", "danger");
         } else if(this.U_TIME_END == null) {
           this.showAlert("Please input Time End", "danger");
+        } else if(this.U_UNLOADING == null) {
+          this.showAlert("Please input Unloading Time", "danger");
         } else {
 
           try {
@@ -1171,8 +1174,11 @@ export default {
               arrival: this.U_ARRIVAL,
               time_start: this.U_TIME_START,
               time_end: this.U_TIME_END,
-              departure: this.U_DEPARTURE
+              departure: this.U_DEPARTURE,
+              unloading: this.U_UNLOADING
             };
+
+            console.log("json", json);
 
             await axios({
               method: "PUT",
@@ -1223,6 +1229,7 @@ export default {
       this.U_TIME_START = null;
       this.U_TIME_END = null;
       this.U_DEPARTURE = null;
+      this.U_UNLOADING = null;
       this.$bvModal.hide('add-time-logs-modal')
     },
 
@@ -1234,7 +1241,7 @@ export default {
       this.U_TIME_START = moment(this.U_TIME_START, 'hh:mm A').format('HH:mm')
       this.U_TIME_END = moment(this.U_TIME_END, 'hh:mm A').format('HH:mm')
       this.U_UNLOADING = moment(this.U_UNLOADING, 'hh:mm A').format('HH:mm')
-      console.log(this.U_ARRIVAL, this.U_DEPARTURE, this.U_TIME_START, this.U_TIME_END);
+      console.log(this.U_ARRIVAL, this.U_DEPARTURE, this.U_TIME_START, this.U_TIME_END, this.U_UNLOADING);
     },
     
     async print() {
@@ -1439,12 +1446,13 @@ export default {
       if(data.U_ARRIVAL != null && 
           data.U_DEPARTURE != null && 
           data.U_TIME_START != null && 
-          data.U_TIME_START != null && 
-          data.U_TIME_END != null){
+          data.U_TIME_START != null //&& 
+          ){
             this.U_ARRIVAL = moment(data.U_ARRIVAL, ["HH.mm"]).format("hh:mm A");
             this.U_DEPARTURE = moment(data.U_DEPARTURE, ["HH.mm"]).format("hh:mm A");
             this.U_TIME_START = moment(data.U_TIME_START, ["HH.mm"]).format("hh:mm A");
             this.U_TIME_END = moment(data.U_TIME_END, ["HH.mm"]).format("hh:mm A");
+            this.U_ = moment(data.U_UNLOADING, ["HH.mm"]).format("hh:mm A");
           }
      
       this.$bvModal.show("view-transaction-modal");
@@ -1567,7 +1575,8 @@ export default {
                 U_ARRIVAL: v[i].U_ARRIVAL,
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
-                U_TIME_END: v[i].U_TIME_END
+                U_TIME_END: v[i].U_TIME_END,
+                U_UNLOADING: [i].U_UNLOADING
               });
             } else {
               this.items.push({
@@ -1603,7 +1612,8 @@ export default {
                 U_ARRIVAL: v[i].U_ARRIVAL,
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
-                U_TIME_END: v[i].U_TIME_END
+                U_TIME_END: v[i].U_TIME_END,
+                U_UNLOADING: [i].U_UNLOADING
               });
             }
           }

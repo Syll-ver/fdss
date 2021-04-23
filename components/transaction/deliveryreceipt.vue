@@ -569,7 +569,7 @@
             ></b-form-input>
           </b-col>
         </b-row>
-        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD'">
+        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TL' ">
           <b-col cols="12">
             <small class="text-left">Quantity</small>
             <b-form-input
