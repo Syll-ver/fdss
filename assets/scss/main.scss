@@ -256,8 +256,12 @@ select {
   #sidebarBFI {
     margin-left: -260px;
   }
+}
 
-
+@media (min-width: 767px) {
+  #toggleBtn {
+    opacity: 0%;
+  }
 }
 
 #sidebarBFI {
