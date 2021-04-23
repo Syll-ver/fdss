@@ -1446,13 +1446,13 @@ export default {
       if(data.U_ARRIVAL != null && 
           data.U_DEPARTURE != null && 
           data.U_TIME_START != null && 
-          data.U_TIME_START != null //&& 
-          ){
+          data.U_TIME_START != null && 
+          data.U_UNLOADING != null ){
             this.U_ARRIVAL = moment(data.U_ARRIVAL, ["HH.mm"]).format("hh:mm A");
             this.U_DEPARTURE = moment(data.U_DEPARTURE, ["HH.mm"]).format("hh:mm A");
             this.U_TIME_START = moment(data.U_TIME_START, ["HH.mm"]).format("hh:mm A");
             this.U_TIME_END = moment(data.U_TIME_END, ["HH.mm"]).format("hh:mm A");
-            this.U_ = moment(data.U_UNLOADING, ["HH.mm"]).format("hh:mm A");
+            this.U_UNLOADING = moment(data.U_UNLOADING, ["HH.mm"]).format("hh:mm A");
           }
      
       this.$bvModal.show("view-transaction-modal");
@@ -1540,7 +1540,6 @@ export default {
             const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
             const t = this.intToTime(v[i].CREATED_TIME);
             const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
-
             if(v[i].U_PLOT_CODE === null){
               this.items.push({
                 U_TRX_NO: v[i].U_TRX_NO,
@@ -1576,7 +1575,7 @@ export default {
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
-                U_UNLOADING: [i].U_UNLOADING
+                U_UNLOADING: v[i].U_UNLOADING
               });
             } else {
               this.items.push({
@@ -1613,7 +1612,7 @@ export default {
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
-                U_UNLOADING: [i].U_UNLOADING
+                U_UNLOADING: v[i].U_UNLOADING
               });
             }
           }
