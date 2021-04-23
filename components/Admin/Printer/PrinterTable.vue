@@ -149,7 +149,7 @@
         <b-row>
           <b-col>
             <small class="text-left">Location</small>
-            <b-form-select v-model="printer.location"
+            <b-form-select v-model="printer.U_LOCATION_ID"
             size="sm"
             >
             <option :value="null">Select Locations</option>
@@ -170,7 +170,7 @@
               id="printer_ip"
               placeholder="Printer IP Address"
               class="form-text"
-              v-model="printer.ip"
+              v-model="printer.U_IP_ADD"
               required
               style="font-size: 13.5px"
             />
@@ -379,12 +379,12 @@ export default {
     async addPrinter(){
       console.log(this.printer);
 
-      if(this.printer.ip == null){
+      if(this.printer.U_IP_ADD == null){
           this.showAlert("Please input IP Address", "danger");
-      } else if(this.printer.location == null) {
+      } else if(this.printer.U_LOCATION_ID == null) {
           this.showAlert("Please input Location", "danger");
       } else {
-        const existingIP = this.listPrinters.find(ip => ip.U_IP_ADD === this.printer.ip)
+        const existingIP = this.listPrinters.find(ip => ip.U_IP_ADD === this.printer.U_IP_ADD)
         if(existingIP != null){
           this.showAlert("IP Address already exists", "danger");
         } else {

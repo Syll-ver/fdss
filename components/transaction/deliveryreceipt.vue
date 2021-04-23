@@ -122,7 +122,6 @@
           </b-form-checkbox-group> -->
         </b-dropdown>
       </b-col>
-
       <!-- <b-row> -->
       <b-col align="right">
         <b-button
@@ -427,7 +426,15 @@
           class="form-text"
           :options="transaction_types"
           required
-        ></b-form-select>
+        >
+
+        <template #first>
+          <b-form-select-option :value="null" aria-selected="" disabled> 
+            Select Transaction Type
+          </b-form-select-option>
+        </template>
+        
+        </b-form-select>
         <small class="text-left">Item</small>
         <multiselect
           id="commodity"
@@ -447,7 +454,14 @@
           class="form-text"
           :options="unit"
           required
-        ></b-form-select>
+        >
+
+        <template #first>
+          <b-form-select-option value="" selected disabled> 
+            Select UOM
+          </b-form-select-option>
+        </template>
+        </b-form-select>
 
         <small class="text-left">Farmer's Name</small>
         <multiselect
@@ -603,6 +617,58 @@
           <b-col cols="6" v-else></b-col>
         </b-row>
         <b-row v-else> </b-row>
+
+        <!-- <b-form-group v-if="U_TRANSACTION_TYPE === '1'">
+          <b-row class="mt-0">
+          <b-col cols="6">
+            <small class="text-left">Arrival Time</small>
+            <b-form-input
+              id="helper_name"
+              placeholder="First Name"
+              class="form-text"
+              v-model="U_ARRIVAL"
+              type="time"
+              required
+            />
+          </b-col>
+          <b-col cols="6">
+            <small class="text-left">Departure Time</small>
+            <b-form-input
+              id="tendered"
+              placeholder="Last Name"
+              v-model="U_DEPARTURE"
+              class="form-text"
+              type="time"
+              required
+            ></b-form-input>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col cols="6">
+            <small class="text-left">Time Start</small>
+            <b-form-input
+              id="helper_name"
+              placeholder="First Name"
+              class="form-text"
+              v-model="U_TIME_START"
+              type="time"
+              required
+            />
+          </b-col>
+          <b-col cols="6">
+            <small class="text-left">Time End</small>
+            <b-form-input
+              id="tendered"
+              placeholder="Last Name"
+              v-model="U_TIME_END"
+              class="form-text"
+              type="time"
+              required
+            ></b-form-input>
+          </b-col>
+        </b-row>
+        </b-form-group> -->
       </b-card>
 
       <template v-slot:modal-footer="{}">
@@ -837,6 +903,59 @@
           <b-col cols="6" v-else></b-col>
         </b-row>
         <b-row v-else> </b-row>
+        <!-- <b-form-group v-show="(U_ARRIVAL || U_TIME_END || U_TIME_START || U_DEPARTURE)"
+          label-size="sm" label="Remarks" class="mt-2 mb-0">
+          <b-row class="mt-0">
+          <b-col cols="6">
+            <small class="text-left">Arrival Time</small>
+            <b-form-input
+              id="helper_name"
+              placeholder="First Name"
+              class="form-text"
+              v-model="U_ARRIVAL"
+              type="time"
+              required
+            />
+          </b-col>
+          <b-col cols="6">
+            <small class="text-left">Departure Time</small>
+            <b-form-input
+              id="tendered"
+              placeholder="Last Name"
+              v-model="U_DEPARTURE"
+              class="form-text"
+              type="time"
+              required
+            ></b-form-input>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col cols="6">
+            <small class="text-left">Time Start</small>
+            <b-form-input
+              id="helper_name"
+              placeholder="First Name"
+              class="form-text"
+              v-model="U_TIME_START"
+              type="time"
+              required
+            />
+          </b-col>
+          <b-col cols="6">
+            <small class="text-left">Time End</small>
+            <b-form-input
+              id="tendered"
+              placeholder="Last Name"
+              v-model="U_TIME_END"
+              class="form-text"
+              type="time"
+              required
+            ></b-form-input>
+          </b-col>
+        </b-row>
+        </b-form-group> -->
+
       </b-card>
 
       <template v-slot:modal-footer="{}">
@@ -1063,6 +1182,55 @@
                   </b-row>
                 </div>
 
+                <!-- <div>
+                  <b-form-group v-show="(U_ARRIVAL || U_TIME_START || U_TIME_END || U_DEPARTURE)">
+                    <b-row>
+                      <b-col cols="4">
+                        <span>Arrival Time</span>
+                      </b-col>
+
+                      <b-col cols="8">
+                        <div class="dotted-border">
+                          <span>: {{ U_ARRIVAL }}</span>
+                        </div>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col cols="4">
+                        <span>Time Start</span>
+                      </b-col>
+
+                      <b-col cols="8">
+                        <div class="dotted-border">
+                          <span>: {{ U_TIME_START }}</span>
+                        </div>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col cols="4">
+                        <span>Time End</span>
+                      </b-col>
+
+                      <b-col cols="8">
+                        <div class="dotted-border">
+                          <span>: {{ U_TIME_END }}</span>
+                        </div>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col cols="4">
+                        <span>Departure Time</span>
+                      </b-col>
+
+                      <b-col cols="8">
+                        <div class="dotted-border">
+                          <span>: {{ U_DEPARTURE }}</span>
+                        </div>
+                      </b-col>
+                    </b-row>
+                  </b-form-group>
+                </div> -->
+
                 <!-- <b-row>
           <b-col cols="6">           
             <span style="font-size:9px">
@@ -1262,6 +1430,58 @@
         >
       </template>
     </b-modal>
+
+    <!-- choose printer modal -->
+    <b-modal
+      size="large"
+      header-bg-variant="biotech"
+      header-text-variant="light"
+      body-bg-variant="gray"
+      id="select-printer-modal"
+      hide-header-close
+      no-close-on-backdrop
+      no-scrollable
+    >
+      <template v-slot:modal-title>
+        <h6>Select Printer Location</h6>
+      </template>
+        
+      <b-row>
+        <b-col class="mt-2">
+          <!-- <small class="text-left">Printer</small> -->
+            <b-form-select
+              id="uom"
+              v-model="printerIP"
+              class="form-text"
+              :options="printers"
+              required
+            ></b-form-select>
+        </b-col>
+      </b-row>
+
+      <template v-slot:modal-footer="{}">
+        <b-button
+          id="add_action_modal"
+          size="sm"
+          class="button-style"
+          variant="biotech"
+          @click="add()"
+          :disabled="showLoading === true"
+        >
+          Print
+        </b-button>
+        <b-button
+          id="cancel_add_action_modal"
+          size="sm"
+          class="button-style"
+          @click="close()"
+          >Cancel</b-button
+        >
+      </template>
+    </b-modal>
+
+
+
     <div>
       <b-alert
         id="alert"
@@ -1290,7 +1510,7 @@
 
 <script>
 // import { mapMutations } from "vuex";
-// import { mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import moment from "moment";
 import axios from "axios";
 import Receipt from "~/components/transaction/Receipt.vue";
@@ -1320,6 +1540,7 @@ export default {
     await this.getTransactions();
     await this.getCommodity();
     await this.getTransactionType();
+    this.getPrinters();
     // await this.getFarmer();
     await this.getLocationIP();
     // await this.pingIP();
@@ -1404,10 +1625,14 @@ export default {
       U_EMPTY_SACKS: 0,
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
+      // U_ARRIVAL: null,
+      // U_TIME_START: null,
+      // U_TIME_END: null,
+      // U_DEPARTURE: null,
       transaction_types: [],
       companyList: null,
       farmer: [],
-      bfi_farmer: [],
+      rci_farmer: [],
       farmer_plotcode: [],
       farmerAdd: [],
       commodity: [],
@@ -1506,9 +1731,17 @@ export default {
       filter: "",
       filterOn: [],
       printerIP: null,
+      toPrint: [],
+      printers: [],
     };
   },
   computed: {
+
+    ...mapGetters({
+      listPrinters: "Admin/Printer/getListPrinters",
+    }),
+
+
     filterItems() {
       let count = 0;
       this.totalRows = count;
@@ -1580,6 +1813,7 @@ export default {
       console.log(data);
     },
     async saveDR() {
+      // console.log(this.U_ARRIVAL, this.U_TIME_START, this.U_TIME_END, this.U_DEPARTURE);
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
       } else if (this.U_TRANSACTION_TYPE == null) {
@@ -1600,6 +1834,14 @@ export default {
         this.showAlert("Please input quantity not less than zero", "danger");
       } else if (this.U_TRANSACTION_TYPE == 2 && this.U_SACKS < 1) {
         this.showAlert("Please input # of Filled Bags not less than zero", "danger");
+      // } else if (this.U_TRANSACTION_TYPE == 1 && this.U_ARRIVAL == null) {
+      //   this.showAlert("Please input Arrival Time", "danger");
+      // } else if (this.U_TRANSACTION_TYPE == 1 && this.U_TIME_END == null){
+      //   this.showAlert("Please input Time End", "danger");
+      // } else if (this.U_TRANSACTION_TYPE == 1 &&  this.U_DEPARTURE == null){
+      //   this.showAlert("Please input Departure Time", "danger");
+      // } else if (this.U_TRANSACTION_TYPE == 1 && this.U_TIME_START == null){
+      //   this.showAlert("Please input Time Start", "danger");
         // } else if (this.U_SACKS < "1" ) {
         //   this.showAlert("Please input quantity/# of Filled Bags  not less than zero", "danger");
       } else {
@@ -1670,31 +1912,12 @@ export default {
       if (data.data) {
         const image = new Image();
         image.src = data.data;
-        // const fileName =
-        //   moment().format("YYYY-MM-DD_HHmmss") + "_" + employeeId;
 
         const time = moment().format("YYYY-MM-DD_HHmmss");
         const fileName = `${time}-${employee_id}.png`;
         const url = this.$axios.defaults.baseURL;
 
         const file = await srcToFile(image.src, fileName, "image/png");
-        // const path = await srcToFile(image.src, fileName, "image/png").then(
-        //   async function(file) {
-        //     var fd = new FormData();
-        //     fd.append("image", file, file.name);
-        //     // fd.append("mode", localStorage.mode);
-
-        //     const res = await axios.post(`${url}/api/transaction/add`, fd, {
-        //       headers: { Authorization: `B1SESSION=${localStorage.session}` }
-        //     });
-
-        //     const path = res.data.imagePath;
-
-        //     return path;
-        //   }
-        // );
-// test
-        // this.signaturePath = path;
         this.showLoading = false;
 
         await this.newDR(file);
@@ -1728,10 +1951,15 @@ export default {
         (this.U_SACKS = 0),
         (this.U_EMPTY_SACKS = 0),
         (this.U_HLPR_NAME = null);
+        // this.U_ARRIVAL = null;
+        // this.U_DEPARTURE = null;
+        // this.U_TIME_START = null;
+        // this.U_TIME_END = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
       this.$bvModal.hide("add-transaction-modal");
       this.$bvModal.hide("edit-transaction-modal");
+      this.$bvModal.hide("select-printer-modal");
     },
     close1() {
       (this.U_TRANSACTION_TYPE = null),
@@ -1753,6 +1981,10 @@ export default {
         (this.U_SACKS = 0),
         (this.U_EMPTY_SACKS = 0),
         (this.U_HLPR_NAME = null);
+        // this.U_ARRIVAL = null;
+        // this.U_DEPARTURE = null;
+        // this.U_TIME_START = null;
+        // this.U_TIME_END = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
       this.$bvModal.hide("bv-modal-confirmCancel");
@@ -1989,11 +2221,26 @@ export default {
     })
   },
 
+  getPrinters(){
+    for(let i = 0; i < this.listPrinters.length; i++) {
+      this.printers.push({
+        text: this.listPrinters[i].U_ADDRESS,
+        value: this.listPrinters[i].U_IP_ADD
+      });
+    }
+  },
+
+  selectPrinter(data){
+    this.toPrint = data;
+    this.$bvModal.show('select-printer-modal')
+  },
+
     async printed(transaction) {
       this.showLoading = true;
       let data 
       if(transaction.item) {
         data = transaction.item
+        
       } else {
         data = transaction
       }
@@ -2105,26 +2352,10 @@ export default {
       this.$bvModal.show("bv-modal-confirmCancel");
     },
     print(data) {
-      // this.U_CRTD_BY = data.U_CRTD_BY;
-      // this.U_TRX_ID = data.U_TRX_ID;
-      // this.U_TRX_NO = data.U_TRX_NO;
-      // this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
-      // this.U_CMMDTY = data.U_ITEM;
-      // this.U_FRMR_NAME = data.U_FRMR_NAME;
-      // this.U_FRMR_ADD = data.U_FRMR_ADD;
-      // this.U_DRVR_NAME = data.U_DRVR_NAME;
-      // this.U_HLPR_NAME = data.U_HLPR_NAME;
-      // this.U_SACKS= data.U_SACKS;
-      // this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
-      // this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.$bvModal.show("bv-modal-confirmPrint");
     },
 
     async edit(data) {
-      console.log(data);
-      // this.TRANSACTION_COMPANY_ID ={text: data.TRANSACTION_COMPA};
-      // this.TRANSACTION_COMPANY_ID = data.TRANSACTION_COMPANY_ID;
-      // this.selectedcompany= {text: data.TRANSACTION_COMPANY, value:TRANSACTION_COMPANY_ID};
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.TRANSACTION_COMPANY_ID = data.TRANSACTION_COMPANY_ID;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -2133,7 +2364,6 @@ export default {
       this.U_TRANSACTION_TYPE = data.U_TRANSCTION_TYPE_ID;
       this.U_UOM = data.U_UOM.UomName;
       (this.U_CMMDTY = { value: data.U_ITEM, text: data.U_CMMDTY }),
-        // (this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID });
       this.U_FRMR_NAME = data.U_FRMR_NAME;
       this.U_FRMR_ADD = data.U_FRMR_ADD;
       this.U_APP_ProjCode = data.U_APP_ProjCode;
@@ -2149,6 +2379,10 @@ export default {
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE = data.U_SCHEDULED_DATE;
       this.U_SCHEDULED_TIME = data.U_SCHEDULED_TIME;
+        // this.U_ARRIVAL = data.U_ARRIVAL;
+        // this.U_DEPARTURE = data.U_DEPARTURE;
+        // this.U_TIME_START = data.U_TIME_START;
+        // this.U_TIME_END = data.U_TIME_END;
 
       this.datetimeScheme2.startDate = new Date(
         moment(
@@ -2165,11 +2399,11 @@ export default {
       this.$bvModal.show("edit-transaction-modal");
 
       this.updateUOM();
-      console.log(this.unit);
       this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID };
     },
     show(data) {
       // this.U_UOM = data.U_UOM.UomName;
+      console.log(data);
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -2187,6 +2421,10 @@ export default {
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE_AND_TIME = data.U_SCHEDULED_DATE_AND_TIME;
+      // this.U_ARRIVAL = data.U_ARRIVAL;
+      // this.U_DEPARTURE = data.U_DEPARTURE;
+      // this.U_TIME_START = data.U_TIME_START;
+      // this.U_TIME_END = data.U_TIME_END;
       this.$bvModal.show("view-transaction-modal");
     },
     async getTransactionType() {
@@ -2273,6 +2511,7 @@ export default {
 
     //   }
     // },
+
     async getLocationIP(){
       this.isBusy = true;
       const locationId = JSON.parse(localStorage.user_details).U_LOCATION_ID;
@@ -2359,6 +2598,7 @@ export default {
       })
     },
     async test() {
+      console.log("transaction type", this.U_TRANSACTION_TYPE);
       this.showLoading = true;
       this.plotCode = [];
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
@@ -2468,6 +2708,13 @@ export default {
         fd.append("plate_number", this.U_PLATE_NUMBER);
         fd.append("scheduled_date", this.U_SCHEDULED_DATE);
         fd.append("scheduled_time", this.U_SCHEDULED_TIME);
+
+        // if(this.U_TRANSACTION_TYPE == '1') {
+        //   fd.append("arrival", this.U_ARRIVAL)
+        //   fd.append("departure", this.U_DEPARTURE)
+        //   fd.append("time_start", this.U_TIME_START)
+        //   fd.append("time_end", this.U_TIME_END)
+        // }
         
         const res = await axios.post(
           `${this.$axios.defaults.baseURL}/api/transaction/add`,
@@ -2537,7 +2784,11 @@ export default {
           employee_id: userDetails.Code,
           plate_number: this.U_PLATE_NUMBER,
           scheduled_date: this.U_SCHEDULED_DATE,
-          scheduled_time: intToTime(this.U_SCHEDULED_TIME)
+          scheduled_time: intToTime(this.U_SCHEDULED_TIME),
+          // arrival: this.U_ARRIVAL,
+          // time_start: this.U_TIME_START,
+          // time_end: this.U_TIME_END,
+          // departure: this.U_DEPARTURE
         };
 
         await axios({
@@ -2678,38 +2929,78 @@ export default {
           const sd = moment(v[i].SCHEDULED_DATE).format("MMM DD, YYYY");
           const st = this.intToTime(v[i].SCHEDULED_TIME);
           const sdate = moment(`${sd}  ${st}`).format("MMM DD, YYYY hh:mm A");
-          this.items.push({
-            U_TRX_NO: v[i].U_TRX_NO,
-            U_TRX_ID: v[i].TRANSACTION_ID,
-            U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
-            U_ITEM: v[i].ITEM_ID,
-            U_SUPP: v[i].SUPPLIER_ID,
-            U_TRX_NO: v[i].TRANSACTION_NUMBER,
-            // U_PRICELIST: v[i].PRICELIST_NAME,
-            U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
-            U_CMMDTY: v[i].ITEM_NAME,
-            U_UOM: v[i].UOM_NAME,
-            U_UOM_ID: v[i].UOM_ID,
-            U_FRMR_NAME: v[i].FARMER_NAME,
-            U_FRMR_ADD: v[i].FARMER_ADDRESS,
-            U_APP_ProjCode: v[i].U_PLOT_CODE,
-            U_DTE_CRTD: d,
-            U_CRTD_BY: v[i].CREATED_BY,
-            U_STATUS: v[i].STATUS,
-            U_PLATE_NUMBER: v[i].PLATE_NUMBER,
-            U_HLPR_NAME: v[i].HELPER_NAME,
-            U_DRVR_NAME: v[i].DRIVER_NAME,
-            U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
-            U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-            U_SACKS: v[i].NUMBER_OF_BAGS,
-            U_SCHEDULED_DATE_AND_TIME: sdate,
-            U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
-            U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
-            // selectedcompany: v[i].USER_COMPANY,
-            TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
-            TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-            IFPASSRMRS: v[i].ifpassRMRS
-          });
+
+          // if(v[i].U_ARRIVAL || v[i].U_DEPARTURE || v[i].U_TIME_START || v[i].U_TIME_END) {
+          //   this.items.push({
+          //     U_TRX_NO: v[i].U_TRX_NO,
+          //     U_TRX_ID: v[i].TRANSACTION_ID,
+          //     U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+          //     U_ITEM: v[i].ITEM_ID,
+          //     U_SUPP: v[i].SUPPLIER_ID,
+          //     U_TRX_NO: v[i].TRANSACTION_NUMBER,
+          //     // U_PRICELIST: v[i].PRICELIST_NAME,
+          //     U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+          //     U_CMMDTY: v[i].ITEM_NAME,
+          //     U_UOM: v[i].UOM_NAME,
+          //     U_UOM_ID: v[i].UOM_ID,
+          //     U_FRMR_NAME: v[i].FARMER_NAME,
+          //     U_FRMR_ADD: v[i].FARMER_ADDRESS,
+          //     U_APP_ProjCode: v[i].U_PLOT_CODE,
+          //     U_DTE_CRTD: d,
+          //     U_CRTD_BY: v[i].CREATED_BY,
+          //     U_STATUS: v[i].STATUS,
+          //     U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+          //     U_HLPR_NAME: v[i].HELPER_NAME,
+          //     U_DRVR_NAME: v[i].DRIVER_NAME,
+          //     U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+          //     U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+          //     U_SACKS: v[i].NUMBER_OF_BAGS,
+          //     U_SCHEDULED_DATE_AND_TIME: sdate,
+          //     U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
+          //     U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
+          //     // selectedcompany: v[i].USER_COMPANY,
+          //     TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
+          //     TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+          //     U_ARRIVAL: moment(v[i].U_ARRIVAL, ["HH.mm"]).format("hh:mm A"),
+          //     U_DEPARTURE: moment(v[i].U_DEPARTURE, ["HH.mm"]).format("hh:mm A"),
+          //     U_TIME_START: moment(v[i].U_TIME_START, ["HH.mm"]).format("hh:mm A"),
+          //     U_TIME_END: moment(v[i].U_TIME_END, ["HH.mm"]).format("hh:mm A"),
+          //     IFPASSRMRS: v[i].ifpassRMRS
+          //   });
+          // } else {
+            this.items.push({
+              U_TRX_NO: v[i].U_TRX_NO,
+              U_TRX_ID: v[i].TRANSACTION_ID,
+              U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
+              U_ITEM: v[i].ITEM_ID,
+              U_SUPP: v[i].SUPPLIER_ID,
+              U_TRX_NO: v[i].TRANSACTION_NUMBER,
+              // U_PRICELIST: v[i].PRICELIST_NAME,
+              U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
+              U_CMMDTY: v[i].ITEM_NAME,
+              U_UOM: v[i].UOM_NAME,
+              U_UOM_ID: v[i].UOM_ID,
+              U_FRMR_NAME: v[i].FARMER_NAME,
+              U_FRMR_ADD: v[i].FARMER_ADDRESS,
+              U_APP_ProjCode: v[i].U_PLOT_CODE,
+              U_DTE_CRTD: d,
+              U_CRTD_BY: v[i].CREATED_BY,
+              U_STATUS: v[i].STATUS,
+              U_PLATE_NUMBER: v[i].PLATE_NUMBER,
+              U_HLPR_NAME: v[i].HELPER_NAME,
+              U_DRVR_NAME: v[i].DRIVER_NAME,
+              U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
+              U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
+              U_SACKS: v[i].NUMBER_OF_BAGS,
+              U_SCHEDULED_DATE_AND_TIME: sdate,
+              U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
+              U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
+              // selectedcompany: v[i].USER_COMPANY,
+              TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
+              TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
+              IFPASSRMRS: v[i].ifpassRMRS
+            });
+          // }
         }
 
          
@@ -2723,6 +3014,7 @@ export default {
   },
 
   async beforeCreate() {
+    this.isBusy = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.farmer = [];
       let v; 
@@ -2742,12 +3034,14 @@ export default {
         const v1 = res1.data.view; 
         for (let i = 0; i < v1.length; i++) {
           if(v1[i].CardType == "S"){
-            this.bfi_farmer.push({
+            this.rci_farmer.push({
               text: v1[i].SUPPLIER_NAME,
               value: { id: v1[i].SUPPLIER_ID }
             });
           }
         }
+
+        console.log("farmers", this.rci_farmer);
 
         const res = await axios({
           method: "GET",
@@ -2760,17 +3054,17 @@ export default {
 
         for(var i = 0; i < v.length; i++){
           let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
-          for(var j = 0; j < this.bfi_farmer.length; j++) {
-            let frmr_name = (this.bfi_farmer[j].text).toLowerCase();
+          for(var j = 0; j < this.rci_farmer.length; j++) {
+            let frmr_name = (this.rci_farmer[j].text).toLowerCase();
             if((frmr.length == 1) && (frmr_name == frmr[0])) {
               this.farmer.push({
                 text: v[i].PrjName,
-                value: { id: this.bfi_farmer[j].value.id }
+                value: { id: this.rci_farmer[j].value.id }
               });
             } else if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
               this.farmer.push({
                 text: v[i].PrjName,
-                value: { id: this.bfi_farmer[j].value.id }
+                value: { id: this.rci_farmer[j].value.id }
               });
             }
           }
@@ -2799,6 +3093,23 @@ export default {
           }
         }
       }
+
+    await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
+      SessionId: localStorage.SessionId
+    })
+    .then( res => {
+      if (res && res.name == "Error") {
+        if (res.response && res.response.data.error) {
+          if (res.response.data.error === "Session expired") {
+            this.$bvModal.show("session_modal");
+          }
+        }
+      }
+    });
+
+    this.isBusy = false;
+
+
   },
 
     
