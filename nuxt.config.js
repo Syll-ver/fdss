@@ -64,7 +64,7 @@ module.exports = {
     // baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
     // baseURL: "https://fdss-eut.biotechfarms.net/fdss-api" 
     // baseURL: "http://172.16.4.201:8000/fdss-api" // butch 
-     baseURL: "hhtp://94.237.66.240:8223" // (UAT)
+    baseURL: "hhtp://94.237.66.240:8223" //(UAT)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api" 
 
   },
@@ -73,8 +73,8 @@ module.exports = {
     // serverPrintUrl: "http://localhost:3002",
     // networkPrinterIp: `172.16.4.173`, // gensan network printer ip
     uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
-    bfi: `139483`, // eut
-    rci: `139492` // eut
+    bfi: `145969`, // eut
+    rci: `146034` // eut
     // bfi: '4400', // prod
     // rci: '4381' // prod
     
@@ -83,4 +83,5 @@ module.exports = {
   server: { port: 9000 }
 
   // host:'172.16.4.114'}
-};
+}; 
+
