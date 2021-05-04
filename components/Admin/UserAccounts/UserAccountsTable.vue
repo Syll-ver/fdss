@@ -184,6 +184,15 @@
           </div>
         </template>
 
+        <template v-slot:cell(location)="row">
+          <div>
+            {{ 
+              listLocations.find(loc => loc.Code === row.item.U_LOCATION_ID) ? 
+              listLocations.find(loc => loc.Code === row.item.U_LOCATION_ID).U_ADDRESS : ""
+            }}
+          </div>
+        </template>
+
         <template v-slot:cell(U_IS_ACTIVE)="row">
           <div style="font-size:15px">
             <b-badge
@@ -359,7 +368,7 @@
                   >
                 </b-form-select>
 
-                <small class="ml-1">Location</small>
+                <small class="ml-1">Printer Location</small>
                 <b-form-select v-model="userDetails.U_LOCATION_ID"
                   size="sm"
                   style="font-size:10px"
@@ -736,7 +745,7 @@
                 >
               </b-form-select>
 
-               <small class="ml-1">Location</small>
+               <small class="ml-1">Printer Location</small>
                 <b-form-select v-model="userDetails.U_LOCATION_ID"
                   size="sm"
                   style="font-size:10px"
@@ -986,6 +995,13 @@ export default {
         {
           key: "U_ROLE_CODE",
           label: "Role",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+        {
+          key: "location",
+          label: "Printer Location",
           sortable: true,
           sortDirection: "desc"
         },
