@@ -626,6 +626,22 @@
               </div>
             </b-col>
           </b-row>
+
+          <b-row>
+            <b-col cols="4">
+              <span>
+                Unloading Time
+              </span>
+            </b-col>
+
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span>
+                  : {{U_UNLOADING}}
+                </span>
+              </div>
+            </b-col>
+          </b-row>
         </b-form-group>
     
 
@@ -692,7 +708,8 @@
         ( U_ARRIVAL == null ||
           U_DEPARTURE == null ||
           U_TIME_START == null ||
-          U_TIME_END == null ))"
+          U_TIME_END == null ||
+          U_UNLOADING == null ))"
           id="add-time-logs"
           size="sm"
           variant="biotech"
@@ -713,7 +730,7 @@
 
     <!-- Add Time Logs -->
       <b-modal
-      size="large"
+      size="sm"
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
@@ -729,7 +746,7 @@
         <b-card>
           <b-form-group>
             <b-row class="mt-0">
-              <b-col cols="6">
+              <b-col cols="12">
                 <small class="text-left">Arrival Time</small>
                 <b-form-input
                   id="helper_name"
@@ -740,7 +757,38 @@
                   required
                 />
               </b-col>
-              <b-col cols="6">
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
+                <small class="text-left">Time Start</small>
+                <b-form-input
+                  id="helper_name"
+                  placeholder="First Name"
+                  class="form-text"
+                  v-model="U_TIME_START"
+                  type="time"
+                  required
+                />
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
+                <small class="text-left">Time End</small>
+                <b-form-input
+                  id="tendered"
+                  placeholder="Last Name"
+                  v-model="U_TIME_END"
+                  class="form-text"
+                  type="time"
+                  required
+                ></b-form-input>
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
                 <small class="text-left">Departure Time</small>
                 <b-form-input
                   id="tendered"
@@ -754,29 +802,19 @@
             </b-row>
 
             <b-row>
-              <b-col cols="6">
-                <small class="text-left">Time Start</small>
-                <b-form-input
-                  id="helper_name"
-                  placeholder="First Name"
-                  class="form-text"
-                  v-model="U_TIME_START"
-                  type="time"
-                  required
-                />
-              </b-col>
-              <b-col cols="6">
-                <small class="text-left">Time End</small>
+              <b-col cols="12">
+                <small class="text-left">Unloading Time</small>
                 <b-form-input
                   id="tendered"
                   placeholder="Last Name"
-                  v-model="U_TIME_END"
+                  v-model="U_UNLOADING"
                   class="form-text"
                   type="time"
                   required
                 ></b-form-input>
               </b-col>
             </b-row>
+
           </b-form-group>
         </b-card>
 
@@ -894,6 +932,7 @@ export default {
       U_TIME_START: null,
       U_TIME_END: null,
       U_DEPARTURE: null,
+      U_UNLOADING: null,
       remarks: null,
 
       filterCompany:[],
@@ -1085,6 +1124,8 @@ export default {
           this.showAlert("Please input Time Start", "danger");
         } else if(this.U_TIME_END == null) {
           this.showAlert("Please input Time End", "danger");
+        } else if(this.U_UNLOADING == null) {
+          this.showAlert("Please input Unloading Time", "danger");
         } else {
 
           try {
@@ -1130,12 +1171,14 @@ export default {
               scheduled_date: this.U_SCHEDULED_DATE,
               scheduled_time: intToTime(this.U_SCHEDULED_TIME),
 
-
               arrival: this.U_ARRIVAL,
               time_start: this.U_TIME_START,
               time_end: this.U_TIME_END,
-              departure: this.U_DEPARTURE
+              departure: this.U_DEPARTURE,
+              unloading: this.U_UNLOADING
             };
+
+            console.log("json", json);
 
             await axios({
               method: "PUT",
@@ -1159,6 +1202,7 @@ export default {
                 this.U_TIME_START = null;
                 this.U_TIME_END = null;
                 this.U_DEPARTURE = null;
+                this.U_UNLOADING = null;
                 this.showLoading = false;
                 this.getTransactions();
                 this.$bvModal.hide('add-time-logs-modal')
@@ -1185,12 +1229,19 @@ export default {
       this.U_TIME_START = null;
       this.U_TIME_END = null;
       this.U_DEPARTURE = null;
+      this.U_UNLOADING = null;
       this.$bvModal.hide('add-time-logs-modal')
     },
 
     updateTime() {
       this.$bvModal.hide("view-transaction-modal");
       this.$bvModal.show('add-time-logs-modal')
+      this.U_ARRIVAL = moment(this.U_ARRIVAL, 'hh:mm A').format('HH:mm')
+      this.U_DEPARTURE = moment(this.U_DEPARTURE, 'hh:mm A').format('HH:mm')
+      this.U_TIME_START = moment(this.U_TIME_START, 'hh:mm A').format('HH:mm')
+      this.U_TIME_END = moment(this.U_TIME_END, 'hh:mm A').format('HH:mm')
+      this.U_UNLOADING = moment(this.U_UNLOADING, 'hh:mm A').format('HH:mm')
+      console.log(this.U_ARRIVAL, this.U_DEPARTURE, this.U_TIME_START, this.U_TIME_END, this.U_UNLOADING);
     },
     
     async print() {
@@ -1202,6 +1253,7 @@ export default {
 
      await new Promise(resolve => {
         this.filterItems.forEach(acknowledgement => {
+          console.log(acknowledgement);
           const valuesArray = [];
           // const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           // const t = this.intToTime(v[i].CREATED_TIME);
@@ -1215,9 +1267,6 @@ export default {
           valuesArray.push(acknowledgement.U_CRTD_BY);
           // valuesArray.push(acknowledgement.U_RMRKS);
           valuesArray.push(acknowledgement.U_STATUS);
-        
-     
-
           content.push(valuesArray);
         });
         resolve();
@@ -1238,8 +1287,7 @@ export default {
       }
 
       doc.setFontSize(12);
-      var subtitle = doc.splitTextToSize(`Farmers Deliver Slip System as of ${this.datePicker.startDate} to  ${this.datePicker.endDate}`)
-      doc.text(subtitle, 48, 18);
+      doc.text("Farmers' Deliver Slip System", 78, 17);
 
       // doc.setFontSize(10);
       // doc.text(
@@ -1363,6 +1411,7 @@ export default {
     this.U_TIME_START = null;
     this.U_TIME_END = null;
     this.U_DEPARTURE = null;
+    this.U_UNLOADING = null;
 
     const userDetails = JSON.parse(localStorage.user_details);
     this.remarks = data.U_TRX_ID;
@@ -1395,11 +1444,13 @@ export default {
       if(data.U_ARRIVAL != null && 
           data.U_DEPARTURE != null && 
           data.U_TIME_START != null && 
-          data.U_TIME_END != null){
+          data.U_TIME_START != null && 
+          data.U_UNLOADING != null ){
             this.U_ARRIVAL = moment(data.U_ARRIVAL, ["HH.mm"]).format("hh:mm A");
             this.U_DEPARTURE = moment(data.U_DEPARTURE, ["HH.mm"]).format("hh:mm A");
             this.U_TIME_START = moment(data.U_TIME_START, ["HH.mm"]).format("hh:mm A");
             this.U_TIME_END = moment(data.U_TIME_END, ["HH.mm"]).format("hh:mm A");
+            this.U_UNLOADING = moment(data.U_UNLOADING, ["HH.mm"]).format("hh:mm A");
           }
      
       this.$bvModal.show("view-transaction-modal");
@@ -1487,7 +1538,6 @@ export default {
             const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
             const t = this.intToTime(v[i].CREATED_TIME);
             const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
-
             if(v[i].U_PLOT_CODE === null){
               this.items.push({
                 U_TRX_NO: v[i].U_TRX_NO,
@@ -1522,7 +1572,8 @@ export default {
                 U_ARRIVAL: v[i].U_ARRIVAL,
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
-                U_TIME_END: v[i].U_TIME_END
+                U_TIME_END: v[i].U_TIME_END,
+                U_UNLOADING: v[i].U_UNLOADING
               });
             } else {
               this.items.push({
@@ -1558,7 +1609,8 @@ export default {
                 U_ARRIVAL: v[i].U_ARRIVAL,
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
-                U_TIME_END: v[i].U_TIME_END
+                U_TIME_END: v[i].U_TIME_END,
+                U_UNLOADING: v[i].U_UNLOADING
               });
             }
           }
