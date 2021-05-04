@@ -892,9 +892,17 @@ export default {
     // await this.getFarmer();
     // await this.getCommodity();
     this.totalRows = this.items.length;
+    const userActions = JSON.parse(localStorage.user_actions)["Reports Module"];
+
+    if (userActions.find(action => action.U_ACTION_NAME === "View Reports")) {
+      this.actions.viewReports = true;
+    }
   },
   data() {
     return {
+      actions: {
+        viewReports: false
+      },
       rci: process.env.rci,
       bfi: process.env.bfi,
       filterStatus:["Completed","Cancelled"],

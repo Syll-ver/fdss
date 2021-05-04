@@ -1612,17 +1612,12 @@ export default {
     if (userActions.find(action => action.U_ACTION_NAME === "Edit user")) {
       this.actions.editUser = true;
     }
-    if (
-      userActions.find(action => action.U_ACTION_NAME === "Reset user password")
-    ) {
+    if (userActions.find(action => action.U_ACTION_NAME === "Reset user password")) {
       this.actions.resetPassword = true;
     }
-    if (
-      userActions.find(action => action.U_ACTION_NAME === "Update SAP user")
-    ) {
+    if (userActions.find(action => action.U_ACTION_NAME === "Update SAP user")) {
       this.actions.updateUser = true;
     }
-    // await this.getLocations();
   }
 };
 </script>

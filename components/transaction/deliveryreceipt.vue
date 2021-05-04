@@ -1551,9 +1551,38 @@ export default {
     // await this.pingIP();
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
+    const userActions = JSON.parse(localStorage.user_actions)["Transactions Module"];
+
+    if (userActions.find(action => action.U_ACTION_NAME === "Add transaction")) {
+      this.actions.createDeliveryTransaction = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "Edit transaction")) {
+      this.actions.editDeliveryTransaction = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "Cancel Transaction")) {
+      this.actions.cancelDeliveryTransaction = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "Print Transaction")) {
+      this.actions.printDeliveryReceipt = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "View Transaction Table")) {
+      this.actions.viewDeliveryTable = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "View Transaction")) {
+      this.actions.viewDeliveryTransaction = true;
+    }
+   
   },
   data() {
     return {
+      actions: {
+        createDeliveryTransaction: false,
+        editDeliveryTransaction: false,
+        viewDeliveryTable: false,
+        viewDeliveryTransaction: false,
+        cancelDeliveryTransaction: false,
+        printDeliveryReceipt: false,
+      },
       rci: process.env.rci,
       bfi: process.env.bfi,
       isBusy: true,

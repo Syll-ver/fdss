@@ -262,6 +262,11 @@ export default {
   Loading },
   data() {
     return {
+      actions: {
+        view_location: false,
+        add_location: false,
+        edit_location: false
+      },
       isBusy: true,
       showLoading: false,
       printer_ip: null,

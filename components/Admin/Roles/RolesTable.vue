@@ -452,7 +452,11 @@ export default {
     return {
       showLoading: false,
       filterStatus: [1],
-      actions: { addRoleAndAccess: false, editRoleAndAccess: false },
+      actions: { 
+        addRoleAndAccess: false, 
+        editRoleAndAccess: false,
+        viewRoleAndAccess: false,
+      },
       alert: {
         showAlert: 0,
         variant: "success",
@@ -851,19 +855,14 @@ export default {
   created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
-    if (
-      userActions.find(
-        action => action.U_ACTION_NAME === "Add role and access rights"
-      )
-    ) {
-      this.actions.addRoleAndAccess = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Add role and access rights" )) {
+        this.actions.addRoleAndAccess = true;
     }
-    if (
-      userActions.find(
-        action => action.U_ACTION_NAME === "Edit role and access rights"
-      )
-    ) {
+    if (userActions.find(action => action.U_ACTION_NAME === "Edit role and access rights")) {
       this.actions.editRoleAndAccess = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "View roles and access rights")) {
+      this.actions.viewRoleAndAccess = true;
     }
   }
 };

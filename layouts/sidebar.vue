@@ -280,15 +280,6 @@ export default {
           class: "ml-2",
           active: false
         },
-        {
-          link: "/admin/modules",
-          name: "Modules",
-          icon: "th-large",
-          style: "position:relative;left:6px",
-          id: "sb-modules",
-          class: "ml-2",
-          active: false
-        },
 
         {
           link: "/admin/actions",

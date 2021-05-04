@@ -254,6 +254,9 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
+      actions: {
+        viewActivityLogs: false,
+      },
       isBusy: true,
       old_values: [],
       new_values: [],
@@ -620,6 +623,11 @@ export default {
 
       if(!this.filter) {
         this.totalRows = this.filterItems ? this.filterItems.length : 0
+      }
+
+      const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
+      if (userActions.find(action => action.U_ACTION_NAME === "View activity logs")) {
+        this.actions.viewActivityLogs = true;
       }
   }
 };

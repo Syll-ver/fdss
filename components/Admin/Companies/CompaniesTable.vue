@@ -422,7 +422,8 @@ export default {
 
       actions: {
         add_company: false,
-        edit_company: false
+        edit_company: false,
+        view_company: false
       },
 
       alert: {
@@ -732,6 +733,10 @@ export default {
     if (userActions.find(action => action.U_ACTION_NAME === "Edit company")) {
       this.actions.edit_company = true;
     }
+    if (userActions.find(action => action.U_ACTION_NAME === "View companies")) {
+      this.actions.view_company = true;
+    }
+    
   }
 };
 </script>

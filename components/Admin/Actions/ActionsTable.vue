@@ -340,7 +340,8 @@ export default {
 
       actions: {
         add_action: false,
-        edit_action: false
+        edit_action: false,
+        view_action: false,
       },
       alert: {
         showAlert: 0,
@@ -611,6 +612,10 @@ export default {
     }
     if (userActions.find(action => action.U_ACTION_NAME === "Edit action")) {
       this.actions.edit_action = true;
+    }
+
+    if (userActions.find(action => action.U_ACTION_NAME === "View actions")) {
+      this.actions.view_action = true;
     }
   }
 };

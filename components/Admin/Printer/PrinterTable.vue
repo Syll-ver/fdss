@@ -281,6 +281,11 @@ export default {
   components: { DateRangePicker, Loading },
   data() {
     return {
+      actions: {
+        view_printer: false,
+        add_printer: false,
+        edit_printer: false,
+      },
       isBusy: true,
       showLoading: false,
       printer_ip: null,
