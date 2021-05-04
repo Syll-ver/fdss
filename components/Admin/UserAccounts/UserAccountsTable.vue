@@ -184,6 +184,15 @@
           </div>
         </template>
 
+        <template v-slot:cell(location)="row">
+          <div>
+            {{ 
+              listLocations.find(loc => loc.Code === row.item.U_LOCATION_ID) ? 
+              listLocations.find(loc => loc.Code === row.item.U_LOCATION_ID).U_ADDRESS : ""
+            }}
+          </div>
+        </template>
+
         <template v-slot:cell(U_IS_ACTIVE)="row">
           <div style="font-size:15px">
             <b-badge
@@ -989,6 +998,12 @@ export default {
           sortable: true,
           sortDirection: "desc"
         },
+        {
+          key: "location",
+          label: "Location",
+          sortable: true,
+          sortDirection: "desc"
+        },
 
         {
           key: "U_IS_ACTIVE",
@@ -1163,29 +1178,38 @@ export default {
   },
 
   methods: {
-    // async getLocations() {
-    //   this.isBusy = true;
+    async getLocations(userLocationId) {
+      this.isBusy = true;
 
-    //     await axios({
-    //       method: "GET",
-    //       url: `${this.$axios.defaults.baseURL}/api/location/select`
-    //     }).then( res => {
-    //       const v = res.data.view;
-    //       this.locations.push({
-    //           text: "Select Location",
-    //           value: null,
-    //           disabled: true
-    //         })
+      this.listLocations.filter(loc => {
+        if(loc.U_LOCATION_ID && (loc.U_LOCATION_ID == userLocationId)) {
+          return loc.U_ADDRESS;
+        } else {
+          return "";
+        }
+      })
+
+      //   await axios({
+      //     method: "GET",
+      //     url: `${this.$axios.defaults.baseURL}/api/location/select`
+      //   }).then( res => {
+      //     const v = res.data.view;
+      //     this.locations.push({
+      //         text: "Select Location",
+      //         value: null,
+      //         disabled: true
+      //       })
           
-    //       for(let i = 0; i < v.length; i++) {
-    //         this.locations.push({
-    //           text: v[i].U_ADDRESS,
-    //           value: v[i].Code
-    //         })
-    //       }
-    //     })
-    //   this.isBusy = false;
-    // },
+      //     for(let i = 0; i < v.length; i++) {
+      //       this.locations.push({
+      //         text: v[i].U_ADDRESS,
+      //         value: v[i].Code
+      //       })
+      //     }
+      //   })
+      // this.isBusy = false;
+    },
+
 
     confirmUpdate() {
       this.showLoading = true;
