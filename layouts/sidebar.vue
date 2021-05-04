@@ -1,5 +1,8 @@
 <template>
   <div class="wrapper">
+    <!-- <div> -->
+      <!-- <font-awesome-icon icon="bars" class="ml-3 mt-2" /> -->
+    <!-- </div> -->
     <nav id="sidebarBFI">
       <div class="sidebar-header">
         <div>
@@ -268,7 +271,15 @@ export default {
 
       adminroutes: [
     {},
-            
+        {
+          link: "/admin/modules",
+          name: "Modules",
+          icon: "th-large",
+          style: "position:relative;left:6px",
+          id: "sb-modules",
+          class: "ml-2",
+          active: false
+        },
         {
           link: "/admin/modules",
           name: "Modules",
@@ -415,6 +426,16 @@ export default {
       localStorage.clear();
       this.$router.push("/");
     }
+  },
+
+  beforeCreate(){
+    const userDetails = JSON.parse(localStorage.user_details);
+
+    // if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+    //   variant = "revive"
+    // } else if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+    //   variant = "biotech"
+    // }
   }
 };
 </script>

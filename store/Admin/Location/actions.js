@@ -29,6 +29,7 @@ export default {
   },
 
   async addLocation({commit}, data) {
+    console.log(data);
     return await axios({
       method: "POST",
       url: `${this.$axios.defaults.baseURL}/api/location/add`,
@@ -39,9 +40,9 @@ export default {
         U_ADDRESS: data.data
       }
     }).then( res => {
-      console.log(res);
-      if(Array.isArray(res.data.view)){
-        commit("addLocation", res.data.view);
+      // console.log(data);
+      if(res.data){
+        commit("addLocation", data.data);
       } else {
         commit("addLocation", []);
       }

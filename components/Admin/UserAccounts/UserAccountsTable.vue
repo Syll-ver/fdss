@@ -368,7 +368,7 @@
                   >
                 </b-form-select>
 
-                <small class="ml-1">Location</small>
+                <small class="ml-1">Printer Location</small>
                 <b-form-select v-model="userDetails.U_LOCATION_ID"
                   size="sm"
                   style="font-size:10px"
@@ -536,12 +536,12 @@
             selectable
             show-empty
             :busy="isBusy"
-            select-mode="single"
+            :items="SearchedUsers"
+            :filter="filterUser"
+            :fields="userFields"
             :current-page="currentPageUser"
             :per-page="perPages"
-            :items="SearchedUsers"
-            :fields="userFields"
-            :filter="filterUser"
+            select-mode="single"
             @row-selected="onRowSelected"
             responsive="sm"
           >
@@ -571,16 +571,16 @@
           <hr />
 
           <b-row align-h="start">
-            <!-- <b-col cols="1" class="mb-2 mt-1">
+            <b-col cols="1" class="mb-2 mt-1">
               <b-form-group class="mb-0">
                 <b-form-select
-                  v-model="perPage"
+                  v-model="perPages"
                   id="perPageSelect_modules-pagination"
                   size="sm"
                   :options="pageOptions"
                 ></b-form-select>
               </b-form-group>
-            </b-col>  -->
+            </b-col> 
           <b-col
             label-cols-sm
             class="mb-0 mt-2 text-left"
@@ -745,7 +745,7 @@
                 >
               </b-form-select>
 
-               <small class="ml-1">Location</small>
+               <small class="ml-1">Printer Location</small>
                 <b-form-select v-model="userDetails.U_LOCATION_ID"
                   size="sm"
                   style="font-size:10px"
@@ -1006,6 +1006,13 @@ export default {
         },
 
         {
+          key: "location",
+          label: "Printer Location",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+        {
           key: "U_IS_ACTIVE",
           label: "Status",
           sortable: true,
@@ -1047,6 +1054,7 @@ export default {
       filterCompany: ["REVIVE","BIOTECH"],
       selectableTable: null,
       totalRows: null,
+      rowsUsers: null,
       currentPage: 1,
       perPage: 5,
       currentPageUser: 1,
@@ -1084,7 +1092,17 @@ export default {
       return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
     },  
     filterSearchedUsers() {
-      return this.SearchedUsers;
+      let count = 0;
+      this.rowsUsers = count;
+      return this.SearchedUsers.filter(users => {
+        if(this.listCompanies.includes(this.selectedCompany)) {
+          count++;
+          this.rowsUsers = count;
+          return (users.FirstName.toLowerCase().match(this.filterUser.toLowerCase()) || 
+                  users.MiddleName.toLowerCase().match(this.filterUser.toLowerCase()) ||
+                  users.LastName.toLowerCase().match(this.filterUser.toLowerCase()));
+        }
+      })
     },
 
     filterItems() {
@@ -1133,10 +1151,12 @@ export default {
     },
 
     bottomLabelUser() {
-      if (!this.filterSearchedUsers) return;
-
       let end = this.perPages * this.currentPageUser;
       let start = end - this.perPages + 1;
+
+      if (!this.filterSearchedUsers) {
+        return;
+      } 
 
       if (end > this.filterSearchedUsers.length) {
         end = this.filterSearchedUsers.length;
@@ -1149,13 +1169,13 @@ export default {
       return `Showing ${start} to ${end} of ${this.filterSearchedUsers.length} entries`;
     },
 
-    rowsUsers() {
-      if (this.SearchedUsers) {
-        return this.SearchedUsers.length;
-      } else {
-        return 0;
-      }
-    },
+    // rowsUsers() {
+    //   if (this.SearchedUsers) {
+    //     return this.SearchedUsers.length;
+    //   } else {
+    //     return 0;
+    //   }
+    // },
 
     sortOptions() {
       // Create an options list from our fields
@@ -1243,16 +1263,15 @@ export default {
       this.userDetails = { ...data };
       this.$bvModal.show("update-user-modal");
     },
-    fetchEmployees() {
+    async fetchEmployees() {
       console.log(this.selectedCompany)
       //  this.showLoading = true;
       this.isBusy = true;
-      this.$store
+      await this.$store
         .dispatch("Admin/Users/searchEmployees", {
           SessionId: localStorage.SessionId,
           CompanyDB: this.selectedCompany
         })
-
 
         .then(res => {
           if (res && res.name == "Error") {
@@ -1265,7 +1284,11 @@ export default {
               this.showAlert(res.message, "danger");
             }
           }
-      //  this.showLoading = false;
+
+          if(!this.filterUser) {
+            this.rowsUsers = this.SearchedUsers ? this.SearchedUsers.length : 0
+          }
+        //  this.showLoading = false;
           this.isBusy = false;
         });
     },
@@ -1300,6 +1323,8 @@ export default {
       // this.selectedCompany = null;
       // this.$bvModal.show("find-user-modal");
       // this.showLoading = false;
+      this.perPages = 5;
+      this.currentPageUser = 1;
       this.selectedCompany = null;
       this.filterUser = "";
       if (this.selectedCompany == null) {

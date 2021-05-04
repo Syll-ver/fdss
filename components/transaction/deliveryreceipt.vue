@@ -569,7 +569,7 @@
             ></b-form-input>
           </b-col>
         </b-row>
-        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TRUCKLOAD' || U_UOM.UomName === 'TL'">
+        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TL' || U_UOM.UomName === 'TRUCKLOAD' ">
           <b-col cols="12">
             <small class="text-left">Quantity</small>
             <b-form-input
@@ -1317,7 +1317,6 @@
       </b-card>
 
       <template v-slot:modal-footer="{}">
-        <!-- <button class="btn btn-danger" @click="generatePdf">generate PDF</button> -->
         <b-button
           id="cancel_add_action_modal"
           size="sm"
@@ -1510,19 +1509,12 @@
         />
         {{ alert.message }}
       </b-alert>
-      <!-- <VueQrcode
-        id="QRcode"
-        type="String"
-        :value="receiptData1"
-      ></VueQrcode> -->
     </div>
 
-    <!-- View Transaction -->
   </div>
 </template>
 
 <script>
-// import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 import moment from "moment";
 import axios from "axios";
@@ -1805,7 +1797,6 @@ export default {
         }
       }
     },
-
     clearSignature() {
       this.$refs.signaturePad.undoSignature();
     },
@@ -2219,37 +2210,34 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
-  async pingIP(){
-    let pingMe = '172.16.4.182';
-    ping(pingMe).then(function(delta) {
-      console.log("Ping time was", String(delta) + ' ms.');
-    }).catch(err => {
-      console.log(error, err);
-    })
+    async pingIP(){
+      let pingMe = '172.16.4.182';
+      ping(pingMe).then(function(delta) {
+        console.log("Ping time was", String(delta) + ' ms.');
+      }).catch(err => {
+        console.log(error, err);
+      })
 
-    let pingMe2 = '172.16.4.156';
-    ping(pingMe2).then(function(delta) {
-      console.log("Ping time was", String(delta) + ' ms.');
-    }).catch(err => {
-      console.log(error, err);
-    })
-  },
-
-  getPrinters(){
-    for(let i = 0; i < this.listPrinters.length; i++) {
-      this.printers.push({
-        text: this.listPrinters[i].U_ADDRESS,
-        value: this.listPrinters[i].U_IP_ADD
-      });
-    }
-  },
-
-  selectPrinter(data){
-    this.toPrint = data;
-    this.$bvModal.show('select-printer-modal')
-  },
-
-    async printed() {
+      let pingMe2 = '172.16.4.156';
+      ping(pingMe2).then(function(delta) {
+        console.log("Ping time was", String(delta) + ' ms.');
+      }).catch(err => {
+        console.log(error, err);
+      })
+    },
+    getPrinters(){
+      for(let i = 0; i < this.listPrinters.length; i++) {
+        this.printers.push({
+          text: this.listPrinters[i].U_ADDRESS,
+          value: this.listPrinters[i].U_IP_ADD
+        });
+      }
+    },
+    selectPrinter(data){
+      this.toPrint = data;
+      this.$bvModal.show('select-printer-modal')
+    },
+    async printed(transaction) {
       this.showLoading = true;
       
       let data 
@@ -2343,7 +2331,6 @@ export default {
         this.showAlert("Please Input Remarks", "danger");
       }
     },
-
     cancel(data) {
       this.U_APP_ProjCode = null;
       this.remarks = null;
@@ -2372,7 +2359,6 @@ export default {
     print(data) {
       this.$bvModal.show("bv-modal-confirmPrint");
     },
-
     async edit(data) {
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.TRANSACTION_COMPANY_ID = data.TRANSACTION_COMPANY_ID;
@@ -2529,7 +2515,6 @@ export default {
 
     //   }
     // },
-
     async getLocationIP(){
       this.isBusy = true;
       const locationId = JSON.parse(localStorage.user_details).U_LOCATION_ID;
@@ -2547,7 +2532,6 @@ export default {
         })
       this.isBusy = false;
     },
-
     async getCommodity() {
       this.isBusy = true;
       const userDetails = JSON.parse(localStorage.user_details);
@@ -2844,7 +2828,6 @@ export default {
         }
       }
     },
-
     onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filterItems.length;
@@ -2883,7 +2866,6 @@ export default {
 
       doc.save("test.pdf");
     },
-
     async resetDate() {
       this.isBusy = true;
       this.datePicker.startDate = moment().format("MMM DD, YYYY");
@@ -3030,7 +3012,6 @@ export default {
       }
     },
   },
-
   async beforeCreate() {
     this.isBusy = true;
       const userDetails = JSON.parse(localStorage.user_details);
@@ -3129,8 +3110,6 @@ export default {
 
 
   },
-
-    
   reloadFunction() {
     this.values = [{ label: "2" }, { label: "3" }];
   },

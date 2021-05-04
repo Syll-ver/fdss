@@ -25,7 +25,7 @@
           <date-range-picker
             id="actvty_date"
             ref="picker"
-            :opens="opens"
+            
             :locale-data="localeData"
             :autoApply="true"
             :singleDatePicker="false"

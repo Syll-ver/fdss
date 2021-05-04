@@ -24,8 +24,8 @@ export default {
         Authorization : `B1SESSION=${data.sessionID}`
       },
       data: {
-        U_IP_ADD: data.data.ip,
-        U_LOCATION_ID: data.data.location
+        U_IP_ADD: data.data.U_IP_ADD,
+        U_LOCATION_ID: data.data.U_LOCATION_ID
       }
     }).then( res => {
       console.log(res);
@@ -41,7 +41,7 @@ export default {
     console.log(data);
     return await axios({
       method: "PUT",
-      url: `${this.$axios.defaults.baseURL}/api/printer/update/${data.data.Name}`,
+      url: `${this.$axios.defaults.baseURL}/api/printer/update/${data.data.Code}`,
       headers: {
         Authorization : `B1SESSION=${data.sessionId}`
       },
