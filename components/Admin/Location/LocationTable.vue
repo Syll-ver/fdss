@@ -33,6 +33,7 @@
       <!-- <b-row> -->
       <b-col align="right">
         <b-button
+        v-if="actions.add_location"
           id="create"
           variant="biotech"
           class="button-style mt-3"
@@ -47,6 +48,7 @@
 
     <!-- Main table element -->
     <b-table
+    v-if="actions.view_location"
       id="location-table"
       class="table-style"
       show-empty
@@ -79,6 +81,7 @@
       <template v-slot:cell(actions)="row">
         <div>
           <b-button
+          v-if="actions.edit_location"
             variant="edit"
             id="edit"
             class="table-button"
@@ -262,12 +265,17 @@ export default {
   Loading },
   data() {
     return {
+      actions: {
+        view_location: false,
+        add_location: false,
+        edit_location: false
+      },
       isBusy: true,
       showLoading: false,
       printer_ip: null,
       printer_location: null,
       printer_port: null,
-      action: [],
+      // action: [],
       itemsFields: [
         {
           key: "Code",
@@ -480,15 +488,15 @@ export default {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View location')) {
-      this.action.view_location = true;
+      this.actions.view_location = true;
     }
 
     if(userActions.find(action => action.U_ACTION_NAME === 'Add location')) {
-      this.action.add_location = true;
+      this.actions.add_location = true;
     }
     
     if(userActions.find(action => action.U_ACTION_NAME === 'Edit location')) {
-      this.action.edit_location = true;
+      this.actions.edit_location = true;
     }
   },
 };

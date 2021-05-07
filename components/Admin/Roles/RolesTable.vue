@@ -92,7 +92,7 @@
           class="button-style"
           variant="biotech"
           @click="addRole()"
-          v-if="actions.addRoleAndAccess"
+          v-if="actions.add_roleAccess"
         >
           <font-awesome-icon icon="plus" class="mr-1" />Add Role
         </b-button>
@@ -101,6 +101,7 @@
 
       <!-- Main table element -->
       <b-table
+      v-if="actions.view_roleAccess"
         id="roles-table"
         class="table-style"
         show-empty
@@ -137,7 +138,7 @@
             class="table-button"
             v-b-tooltip.hover
             title="Update Roles"
-            v-if="actions.editRoleAndAccess"
+            v-if="actions.edit_roleAccess"
           >
             <font-awesome-icon icon="edit" />
           </b-button>
@@ -443,7 +444,6 @@
 <script>
 import moment from "moment";
 import Loading from "~/components/Loading/Loading.vue";
-import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
@@ -452,7 +452,11 @@ export default {
     return {
       showLoading: false,
       filterStatus: [1],
-      actions: { addRoleAndAccess: false, editRoleAndAccess: false },
+      actions: { 
+        add_roleAccess: false, 
+        edit_roleAccess: false,
+        view_roleAccess: false,
+      },
       alert: {
         showAlert: 0,
         variant: "success",
@@ -556,6 +560,7 @@ export default {
     },
 
     activeActions() {
+      console.log("actions: ", this.listActions.filter(action => action.U_IS_ACTIVE === 1 && action.U_MODULE_NAME === 'Delivery Receipt Module'));
       return this.listActions.filter(action => action.U_IS_ACTIVE === 1);
     },
 
@@ -851,19 +856,14 @@ export default {
   created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
-    if (
-      userActions.find(
-        action => action.U_ACTION_NAME === "Add role and access rights"
-      )
-    ) {
-      this.actions.addRoleAndAccess = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Add role and access rights" )) {
+        this.actions.add_roleAccess = true;
     }
-    if (
-      userActions.find(
-        action => action.U_ACTION_NAME === "Edit role and access rights"
-      )
-    ) {
-      this.actions.editRoleAndAccess = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Edit role and access rights")) {
+      this.actions.edit_roleAccess = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "View roles and access rights")) {
+      this.actions.view_roleAccess = true;
     }
   }
 };

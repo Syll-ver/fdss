@@ -94,7 +94,7 @@
             variant="biotech"
             class="button-style"
             @click="addUser()"
-            v-if="actions.addUser"
+            v-if="actions.add_user"
           >
             <font-awesome-icon icon="plus" class="mr-1" />Add User
           </b-button>
@@ -103,7 +103,7 @@
 
       <!-- Main table element -->
       <b-table
-        id="user-table"
+      v-if="actions.view_users"
         class="table-style"
         show-empty
         scrollable
@@ -139,7 +139,7 @@
             class="table-button"
             v-b-tooltip.hover
             title="Update User"
-            v-if="actions.editUser"
+            v-if="actions.edit_user"
           >
             <font-awesome-icon icon="edit" />
           </b-button>
@@ -152,7 +152,7 @@
             class="table-button" 
             v-b-tooltip.hover
             title="Update"
-            v-if="actions.updateUser && row.item.ApplicationUserID"
+            v-if="actions.update_SAP_user && row.item.ApplicationUserID"
           >
             <font-awesome-icon icon="sync" />
           </b-button>
@@ -164,7 +164,7 @@
             variant="danger"
             v-b-tooltip.hover
             title="Reset Password"
-            v-if="actions.resetPassword && !row.item.ApplicationUserID"
+            v-if="actions.reset_password && !row.item.ApplicationUserID"
           >
             <font-awesome-icon icon="undo-alt" />
           </b-button>
@@ -936,10 +936,11 @@ export default {
       findUser: null,
       filterStatus: [1],
       actions: {
-        addUser: false,
-        editUser: false,
-        resetPassword: false,
-        updateUser: false
+        add_user: false,
+        edit_user: false,
+        view_user: false,
+        reset_password: false,
+        update_SAP_user: false
       },
       alert: {
         showAlert: 0,
@@ -995,6 +996,12 @@ export default {
         {
           key: "U_ROLE_CODE",
           label: "Role",
+          sortable: true,
+          sortDirection: "desc"
+        },
+        {
+          key: "location",
+          label: "Location",
           sortable: true,
           sortDirection: "desc"
         },
@@ -1192,29 +1199,38 @@ export default {
   },
 
   methods: {
-    // async getLocations() {
-    //   this.isBusy = true;
+    async getLocations(userLocationId) {
+      this.isBusy = true;
 
-    //     await axios({
-    //       method: "GET",
-    //       url: `${this.$axios.defaults.baseURL}/api/location/select`
-    //     }).then( res => {
-    //       const v = res.data.view;
-    //       this.locations.push({
-    //           text: "Select Location",
-    //           value: null,
-    //           disabled: true
-    //         })
+      this.listLocations.filter(loc => {
+        if(loc.U_LOCATION_ID && (loc.U_LOCATION_ID == userLocationId)) {
+          return loc.U_ADDRESS;
+        } else {
+          return "";
+        }
+      })
+
+      //   await axios({
+      //     method: "GET",
+      //     url: `${this.$axios.defaults.baseURL}/api/location/select`
+      //   }).then( res => {
+      //     const v = res.data.view;
+      //     this.locations.push({
+      //         text: "Select Location",
+      //         value: null,
+      //         disabled: true
+      //       })
           
-    //       for(let i = 0; i < v.length; i++) {
-    //         this.locations.push({
-    //           text: v[i].U_ADDRESS,
-    //           value: v[i].Code
-    //         })
-    //       }
-    //     })
-    //   this.isBusy = false;
-    // },
+      //     for(let i = 0; i < v.length; i++) {
+      //       this.locations.push({
+      //         text: v[i].U_ADDRESS,
+      //         value: v[i].Code
+      //       })
+      //     }
+      //   })
+      // this.isBusy = false;
+    },
+
 
     confirmUpdate() {
       this.showLoading = true;
@@ -1592,22 +1608,20 @@ export default {
     
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add user")) {
-      this.actions.addUser = true;
+      this.actions.add_user = true;
     }
     if (userActions.find(action => action.U_ACTION_NAME === "Edit user")) {
-      this.actions.editUser = true;
+      this.actions.edit_user = true;
     }
-    if (
-      userActions.find(action => action.U_ACTION_NAME === "Reset user password")
-    ) {
-      this.actions.resetPassword = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Reset user password")) {
+      this.actions.reset_password = true;
     }
-    if (
-      userActions.find(action => action.U_ACTION_NAME === "Update SAP user")
-    ) {
-      this.actions.updateUser = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Update SAP user")) {
+      this.actions.update_SAP_user = true;
     }
-    // await this.getLocations();
+    if (userActions.find(action => action.U_ACTION_NAME === "View users")) {
+      this.actions.view_users = true;
+    }
   }
 };
 </script>

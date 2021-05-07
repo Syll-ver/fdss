@@ -61,6 +61,7 @@
 
       <!-- Main table element -->
       <b-table
+      v-if="actions.view_module"
         id="module-table"
         class="table-style"
         show-empty
@@ -290,7 +291,8 @@ export default {
       filterStatus: [1],
       actions: {
         add_module: false,
-        edit_module: false
+        edit_module: false,
+        view_module: false,
       },
       alert: {
         showAlert: 0,
@@ -533,6 +535,9 @@ export default {
     }
     if (userActions.find(action => action.U_ACTION_NAME === "Edit module")) {
       this.actions.edit_module = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "View modules")) {
+      this.actions.view_module = true;
     }
   }
 };

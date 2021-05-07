@@ -51,7 +51,6 @@ module.exports = {
   /*
    ** Build configuration
    */
-  
   build: {
     /*
      ** You can extend webpack config here
@@ -62,9 +61,9 @@ module.exports = {
     // baseURL: "http://94.237.66.240:8000" (MASTER)
     // baseURL: "http://94.237.66.240:8100" (SQA)
     // baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
-    // baseURL: "https://fdss-eut.biotechfarms.net/fdss-api" 
+    baseURL: "https://fdss-eut.biotechfarms.net/fdss-api" 
     // baseURL: "http://172.16.4.201:8000/fdss-api" // butch 
-    baseURL: "http://94.237.65.245:8223/fdss-api" //DEV
+    // baseURL: "hhtp://94.237.66.240:8200" (UAT)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api" 
 
   },
@@ -83,5 +82,4 @@ module.exports = {
   server: { port: 9000 }
 
   // host:'172.16.4.114'}
-}; 
-
+};

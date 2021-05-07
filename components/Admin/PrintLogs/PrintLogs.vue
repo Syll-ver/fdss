@@ -242,6 +242,9 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
+      actions: {
+        view_printlogs: false,
+      },
       isBusy: true,
     //   old_values: [],
     //   new_values: [],
