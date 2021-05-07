@@ -167,6 +167,10 @@
       </div>
     </template>
 
+    <template v-slot:cell(U_TRANSACTION_TYPE)="row">
+        {{ row.item.U_TRANSACTION_TYPE == 'Delivery' ? 'Direct' : 'Pick-up' }}
+    </template>
+
       <template v-slot:cell(U_STATUS)="row">
         <b-badge
           v-show="row.item.U_STATUS === 'Pending'"
@@ -424,15 +428,23 @@
           id="transact_type"
           v-model="U_TRANSACTION_TYPE"
           class="form-text"
-          :options="transaction_types"
           required
         >
 
-        <template #first>
-          <b-form-select-option :value="null" aria-selected="" disabled> 
+          <!-- <template #first>
+            <b-form-select-option :value="null" aria-selected="" disabled> 
+              Select Transaction Type
+            </b-form-select-option>
+          </template> -->
+          <option :value="null">
             Select Transaction Type
-          </b-form-select-option>
-        </template>
+          </option>
+          <option
+            v-for="(type, i) of transaction_types"
+            :key="i"
+            :value="type.value"
+          >{{ type.text == 'Delivery' ? 'Direct' : 'Pick-up' }}</option
+          >
         
         </b-form-select>
         <small class="text-left">Item</small>
@@ -737,6 +749,7 @@
           v-model="U_TRANSACTION_TYPE"
           class="form-text"
           :options="transaction_types"
+          disabled
         ></b-form-select>
         <small class="text-left">Item</small>
         <multiselect
@@ -1008,7 +1021,7 @@
                 </span>
 
                 <center>
-                  <span>DELIVERY SLIP | {{ U_TRANSACTION_TYPE }}</span>
+                  <span>DELIVERY SLIP | {{ U_TRANSACTION_TYPE == 'Delivery' ? 'Direct' : 'Pick-up' }}</span>
                   <br />
                   <span>
                     <small>Date: {{ U_DTE_CRTD }}</small>
@@ -1732,7 +1745,6 @@ export default {
     ...mapGetters({
       listPrinters: "Admin/Printer/getListPrinters",
     }),
-
 
     filterItems() {
       let count = 0;
@@ -2471,10 +2483,12 @@ export default {
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
-        this.unit.push({
-          text: v[i].UomName,
-          value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
-        });
+        if(!(v[i].UomName.toLowerCase().includes("kilogram"))) {
+          this.unit.push({
+            text: v[i].UomName,
+            value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
+          });
+        }
       }
       this.showLoading = false;
 

@@ -209,6 +209,10 @@
           <span class="loading_spinner">Loading...</span>
         </div>
       </template>
+
+      <template v-slot:cell(U_TRANSACTION_TYPE)="row">
+        {{ row.item.U_TRANSACTION_TYPE == 'Delivery' ? 'Direct' : 'Pick-up' }}
+      </template>
         <!-- :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection" -->
       <template v-slot:cell(U_STATUS)="row">
@@ -378,7 +382,7 @@
 
         <center>
           <span>
-            DELIVERY SLIP | {{ U_TRANSACTION_TYPE }}
+            DELIVERY SLIP | {{ U_TRANSACTION_TYPE == 'Delivery' ? 'Direct' : 'Pick-up' }}
           </span>
           <br>
           <span><small>
