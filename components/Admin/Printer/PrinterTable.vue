@@ -33,6 +33,7 @@
 
       <b-col align="right">
         <b-button
+        v-if="actions.add_printer"
           id="create"
           variant="biotech"
           class="button-style mt-3"
@@ -48,6 +49,7 @@
     <!-- Main table element -->
     <span>
       <b-table
+      v-if="actions.view_printer"
         id="location-table"
         class="table-style"
         show-empty
@@ -80,6 +82,7 @@
         <template v-slot:cell(actions)="row">
           <div>
             <b-button
+            v-if="actions.edit_printer"
               variant="edit"
               id="edit"
               class="table-button"
@@ -290,7 +293,7 @@ export default {
       showLoading: false,
       printer_ip: null,
       printer_location: null,
-      action: [],
+      // action: [],
       itemsFields: [
         {
           key: "U_IP_ADD",
@@ -516,16 +519,16 @@ export default {
   created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'View Printer')) {
-      this.action.view_printer = true;
+    if(userActions.find(action => action.U_ACTION_NAME === 'View printer')) {
+      this.actions.view_printer = true;
     }
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'Add Printer')) {
-      this.action.add_printer = true;
+    if(userActions.find(action => action.U_ACTION_NAME === 'Add printer')) {
+      this.actions.add_printer = true;
     }
     
-    if(userActions.find(action => action.U_ACTION_NAME === 'Edit Printer')) {
-      this.action.edit_printer = true;
+    if(userActions.find(action => action.U_ACTION_NAME === 'Edit printer')) {
+      this.actions.edit_printer = true;
     }
   }
 };

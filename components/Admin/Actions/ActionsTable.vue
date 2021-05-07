@@ -78,6 +78,7 @@
 
       <!-- Main table element -->
       <b-table
+      v-if="actions.view_action"
         id="action-table"
         class="table-style"
         show-empty

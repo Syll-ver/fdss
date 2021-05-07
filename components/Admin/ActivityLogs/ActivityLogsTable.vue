@@ -47,41 +47,12 @@
   <b-col ></b-col>
 
       <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-          <!-- <b-dropdown
-            right
-            id="filter_roles"
-            class="button-sq"
-            size="sm"
-            variant="dark"
-          >
-          <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
-            <b-form-checkbox-group
-              id="status_group"
-              name="flavour-2"
-              class="pl-2"
-              style="font-size:12px"
-              v-model="filterStatus"
-            >
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
-              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-dropdown> -->
-     
       </b-col>
     </b-row>
 
     <!-- Main table element -->
     <b-table
+    v-if="actions.view_activityLogs"
       id="activity-table"
       show-empty
       class="table-style"
@@ -255,7 +226,7 @@ export default {
   data() {
     return {
       actions: {
-        viewActivityLogs: false,
+        view_activityLogs: false,
       },
       isBusy: true,
       old_values: [],
@@ -573,6 +544,11 @@ export default {
     }
   },
   async created() {
+
+    const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
+    if (userActions.find(action => action.U_ACTION_NAME === "View activity logs")) {
+      this.actions.view_activityLogs = true;
+    }
     
     this.isBusy = true;
 
@@ -623,11 +599,6 @@ export default {
 
       if(!this.filter) {
         this.totalRows = this.filterItems ? this.filterItems.length : 0
-      }
-
-      const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
-      if (userActions.find(action => action.U_ACTION_NAME === "View activity logs")) {
-        this.actions.viewActivityLogs = true;
       }
   }
 };

@@ -36,7 +36,7 @@
     </b-row> -->
 
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="6" sm="5" lg="2" xs="1" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -48,9 +48,8 @@
           </b-input-group>
         </b-form-group>
       </b-col>
-
-      <b-col class="mt-3">
-        <b-input-group prepend="Date" style="height:10px" size="sm">
+      <b-col cols="12" md="6" lg="5" sm="12" xs="6" class="mt-3">
+        <b-input-group style="height:10px" size="sm">
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -73,7 +72,7 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col class="mt-3" align="left">
+      <b-col cols="12" md="6" lg="2" sm="12" xs="10" class="mt-3" align="left">
         <b-dropdown
           right
           id="filter_actions"
@@ -165,19 +164,6 @@
           >
             <font-awesome-icon icon="file-excel" />
           </b-button>
-      </b-col>
- 
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-        
-     
       </b-col>
     </b-row>
 
