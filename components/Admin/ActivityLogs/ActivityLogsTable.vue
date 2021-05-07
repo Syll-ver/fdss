@@ -3,7 +3,7 @@
     <!-- Main table -->
 
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -15,8 +15,8 @@
           </b-input-group>
         </b-form-group>
       </b-col>
-      <b-col cols="4" class="mt-3">
-        <b-input-group prepend="Date" style="height:10px" size="sm">
+      <b-col cols="12" md="8" lg="6" sm="7" xs="4" class="mt-3" align="right">
+        <b-input-group style="height:10px" size="sm">
           <!-- <b-input-group-prepend>
               <div style="background-color: green">
                 <v-icon color="#ffffff" small>fa-calendar-week</v-icon>
@@ -43,10 +43,6 @@
             <b-button @click="resetDate" id="date-reset" style="font-size:12px">Reset</b-button>
           </b-input-group-append>
         </b-input-group>
-      </b-col>
-  <b-col ></b-col>
-
-      <b-col cols="2"  class="mt-3" align="right">
       </b-col>
     </b-row>
 

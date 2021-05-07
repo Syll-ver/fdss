@@ -33,7 +33,7 @@
 
     <Receipt ref="Receipt" v-show="false" />
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="12" xs="12" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -46,7 +46,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="10" xs="10" class="mt-3">
         <b-input-group size="sm">
           <date-range-picker
             id="actvty_date"
@@ -74,7 +74,7 @@
         
       </b-col>
 
-      <b-col class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="2" xs="2" class="mr-auto mt-3">
         <b-dropdown
           right
           id="filter_actions"
@@ -123,12 +123,12 @@
         </b-dropdown>
       </b-col>
       <!-- <b-row> -->
-      <b-col align="right">
+      <b-col cols="12" md="3" lg="3" sm="12" xs="12" align="right" class="mt-3">
         <b-button
           id="create"
           variant="biotech"
-          class="button-style mt-3"
-          size="sm"
+          class="button-style"
+          size="md"
           @click="$bvModal.show('add-transaction-modal')"
         >
           <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
@@ -141,7 +141,7 @@
     <b-table
       id="delivery_receipt_table"
       show-empty
-      class="table-style"
+      class="table-style mt-3"
       scrollable
       sticky-header
       no-border-collapse
@@ -1541,7 +1541,7 @@ import { DateTimePicker } from "@lazy-copilot/datetimepicker";
 import Multiselect from "vue-multiselect";
 import jsPDF from "jspdf";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
-import ping from 'web-pingjs'
+// import Ping from 'ping.js';
 export default {
   components: {
     jsPDF,
@@ -1831,6 +1831,19 @@ export default {
   },
 
   methods: { 
+    // pingIP() {
+    //   var p = new Ping();
+    //   this.listPrinters.filter(printer => {
+    //     p.ping(printer.ip)
+    //     .then(data => {
+    //       console.log("Successful ping: " + data);
+    //     })
+    //     .catch(data => {
+    //       console.error("Ping failed: " + data);
+    //     })
+    //   })
+      
+    // },
     rowClassMain(items) {
       if(items){
         if(items.IFPASSRMRS != null){
@@ -2251,21 +2264,21 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
-    async pingIP(){
-      let pingMe = '172.16.4.182';
-      ping(pingMe).then(function(delta) {
-        console.log("Ping time was", String(delta) + ' ms.');
-      }).catch(err => {
-        console.log(error, err);
-      })
+    // async pingIP(){
+    //   let pingMe = '172.16.4.182';
+    //   ping(pingMe).then(function(delta) {
+    //     console.log("Ping time was", String(delta) + ' ms.');
+    //   }).catch(err => {
+    //     console.log(error, err);
+    //   })
 
-      let pingMe2 = '172.16.4.156';
-      ping(pingMe2).then(function(delta) {
-        console.log("Ping time was", String(delta) + ' ms.');
-      }).catch(err => {
-        console.log(error, err);
-      })
-    },
+    //   let pingMe2 = '172.16.4.156';
+    //   ping(pingMe2).then(function(delta) {
+    //     console.log("Ping time was", String(delta) + ' ms.');
+    //   }).catch(err => {
+    //     console.log(error, err);
+    //   })
+    // },
     getPrinters(){
       for(let i = 0; i < this.listPrinters.length; i++) {
         this.printers.push({

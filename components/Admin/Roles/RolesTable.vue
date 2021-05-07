@@ -20,7 +20,7 @@
     </div>
 
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -33,7 +33,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col cols="2" class="mt-3">
+      <b-col cols="12" md="4" lg="3" sm="2" xs="4" class="mt-3"  align="left">
         <b-dropdown
             right
             id="filter_roles"
@@ -85,7 +85,7 @@
         </b-input-group> -->
       </b-col>
  
-      <b-col cols="7" class="mt-3" align="right">
+      <b-col cols="12" md="4" lg="6" sm="5" xs="4" class="mt-3" align="right">
         <b-button
           id="add_role"
           size="sm"
@@ -103,7 +103,7 @@
       <b-table
       v-if="actions.view_roleAccess"
         id="roles-table"
-        class="table-style"
+        class="table-style mt-3"
         show-empty
         scrollable
         sticky-header

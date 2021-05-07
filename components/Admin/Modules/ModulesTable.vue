@@ -2,7 +2,7 @@
  <div >
 <Loading v-if="showLoading" />
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="12" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -15,7 +15,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col cols="2" class="mt-3">
+      <b-col cols="12" md="6" lg="4" sm="8" class="mt-3">
         <b-dropdown
             right
             id="filter_actions"
@@ -42,7 +42,7 @@
           </b-dropdown>
       </b-col>
  
-      <b-col cols="7"  class="mt-3" align="right">
+      <b-col cols="12" md="3" lg="5" sm="4" class="mt-3" align="right">
           <b-col>
           <b-button
             id="add_module"
@@ -63,7 +63,7 @@
       <b-table
       v-if="actions.view_module"
         id="module-table"
-        class="table-style"
+        class="table-style mt-3"
         show-empty
         scrollable
         sticky-header
