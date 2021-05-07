@@ -36,7 +36,7 @@
     </b-row> -->
 
     <b-row>
-      <b-col cols="12" md="3" lg="3" sm="12" xs="1" class="mt-3 border border-danger">
+      <b-col cols="12" md="3" lg="3" sm="12" xs="1" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -48,7 +48,7 @@
           </b-input-group>
         </b-form-group>
       </b-col>
-      <b-col cols="12" md="6" lg="4" sm="8" xs="6" class="mt-3 border border-danger" style="display:flex" >
+      <b-col cols="12" md="6" lg="4" sm="8" xs="6" class="mt-3" style="display:flex" >
         <b-input-group style="height:10px" size="sm">
           <date-range-picker
             id="actvty_date"
@@ -72,7 +72,7 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col cols="12" md="3" lg="5" sm="4" xs="10" class="mt-3 border border-danger" align="left">
+      <b-col cols="12" md="3" lg="5" sm="4" xs="10" class="mt-3" align="left">
         <b-dropdown
           right
           id="filter_actions"
