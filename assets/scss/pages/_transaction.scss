@@ -1,0 +1,26 @@
+.container1 {
+    padding: 40px 20px;
+    text-align: center;
+    display: block;
+  }
+  .pinBox {
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+  
+    border-bottom: 2px solid grey;
+    height: 40px;
+    position: center;
+    width: 140px;
+    background-image: url("https://rgwit.ams3.digitaloceanspaces.com/images/box.svg");
+  }
+  .pinEntry {
+    padding: 2px 11px;
+    font-family: courier, monospaced;
+    font-size: xx-large;
+    border: none;
+    outline: none;
+    width: 6em;
+    letter-spacing: 15px;
+    background-color: transparent;
+  }

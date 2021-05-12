@@ -1,53 +1,54 @@
 <template>
-
     <div class="body_loading">
+
+      
       <Loading v-if="showLoading" />
       <div class="container">
         <div>
           <b-card class="bcard mt-3">
        
-              <img class="sidebar_header" src="/REvives.png" />
+            <img class="sidebar_header" src="/REvives.png" />
 
-              <h6 class="title">
-                FARMER'S DELIVERY<br>SLIP SYSTEM
-              </h6>
-              <h2 class="subtitle">
-            Version 1.0.0
-          </h2>
+            <h6 class="title">
+              FARMER'S DELIVERY<br>SLIP SYSTEM
+            </h6>
+            <h2 class="subtitle">
+              Version 1.0.0
+            </h2>
 
-          <b-form @submit.prevent="login" id="login_form">
-            <input
-              id="emp_id"
-              class="username"
-              v-model="user.name"
-              :state="inputValidation"
-              v-on:keyup.enter="focusPassword()"
-              placeholder="Employee ID"
-              required
-            />
-            <input
-              id="password"
-              class="password"
-              v-model="user.password"
-              :state="inputValidation"
-              placeholder="Password"
-              type="password"
-              ref="password"
-              style="margin-top: 20px"
-              v-on:keyup.enter="login()"
-              required
-            />
-            <!-- <span v-show="hasCapsLock">
-              <b-popover
-              :show.sync="hasCapsLock"
-                target="password"
-                placement="right"
-                variant="warning"
-                content="Capslock is on"
-              >
-              </b-popover>
-            </span> -->
-             </b-form>
+            <b-form @submit.prevent="login" id="login_form">
+              <input
+                id="emp_id"
+                class="username"
+                v-model="user.name"
+                :state="inputValidation"
+                v-on:keyup.enter="focusPassword()"
+                placeholder="Employee ID"
+                required
+              />
+              <input
+                id="password"
+                class="password"
+                v-model="user.password"
+                :state="inputValidation"
+                placeholder="Password"
+                type="password"
+                ref="password"
+                style="margin-top: 20px"
+                v-on:keyup.enter="login()"
+                required
+              />
+              <!-- <span v-show="hasCapsLock">
+                <b-popover
+                :show.sync="hasCapsLock"
+                  target="password"
+                  placement="right"
+                  variant="warning"
+                  content="Capslock is on"
+                >
+                </b-popover>
+              </span> -->
+            </b-form>
             <b-btn
               pill
               id="btn_login"
@@ -59,36 +60,34 @@
             >
               LOGIN
             </b-btn>
-         
-       
           
-          <h2 class="subtitle" style="margin-top:30px">
-            &copy;2020 BIOTECH FARMS INCORPORATED
-          </h2>
-        </b-card>
+            <h2 class="subtitle" style="margin-top:30px">
+              &copy;2020 BIOTECH FARMS INCORPORATED
+            </h2>
+          </b-card>
     
         </div>
       </div>
-             <div>
-            <b-alert
-              :show="alert.showAlert"
-              dismissible
-              fade
-              :variant="alert.variant"
-              @dismissed="alert.showAlert = null"
-            >
-              <font-awesome-icon
-                :icon="
-                  alert.variant == 'success'
-                    ? 'check-circle'
-                    : 'exclamation-triangle'
-                "
-                class="mr-1"
-                style="font-size:20px"
-              />
-              {{ alert.message }}
-            </b-alert>
-          </div>
+      <div>
+        <b-alert
+          :show="alert.showAlert"
+          dismissible
+          fade
+          :variant="alert.variant"
+          @dismissed="alert.showAlert = null"
+        >
+          <font-awesome-icon
+            :icon="
+              alert.variant == 'success'
+                ? 'check-circle'
+                : 'exclamation-triangle'
+            "
+            class="mr-1"
+            style="font-size:20px"
+          />
+          {{ alert.message }}
+        </b-alert>
+      </div>
   </div>
 
 </template>
@@ -102,6 +101,7 @@ export default {
   components: { Loading },
   data() {
     return {
+      showOverlay: true,
       showLoading: false,
       user: {
         name: "",

@@ -40,12 +40,3 @@ export default {
   methods: {},
 };
 </script>
-
-<style scoped>
-
-  @media (max-width: 768px){
-    .mainPages {
-      margin-left: 10px;
-    }
-  }  
-</style>

@@ -1,52 +1,49 @@
 <template>
-  <div class="wrapper">
-    <!-- <div> -->
-      <!-- <font-awesome-icon icon="bars" class="ml-3 mt-2" /> -->
-    <!-- </div> -->
+  <div class="wrapper" id="wrapper">
     <nav id="sidebarBFI">
       <div class="sidebar-header">
         <div>
-          <b-img src="/rlogo.png" class="sidebar-image" center>
-          </b-img><center>
-          <p class="h9" >FARMER'S DELIVERY SLIP SYSTEM</p>
+          <b-img src="/rlogo.png" class="sidebar-image" style="padding:0px 0px 0px 0px" center>
+          </b-img>
+          <b-img src="/rci-org.png" class="sidebar-image-mini" center></b-img>
+          <center>
+          <p class="h9 sidebar-image" >FARMER'S DELIVERY SLIP SYSTEM</p>
           </center>
         </div>
         <hr class="hr-style" />
         <ul class="list-unstyled">
           <li v-if="isAdmin">
-            <a
-              @click="visible = !visible"
+            <a @click="visible = !visible"
               data-toggle="collapse"
               aria-expanded="false"
               class="mb-2"
-            >
-              <font-awesome-icon icon="user-cog" class="ml-2 mr-2" />Admin
-              <font-awesome-icon
-                :icon="visible == false ? 'caret-right' : 'caret-down'"
-                class="mr-2 mt-1"
-                style="float:right; 
-                "
-              />
+              title="Admin">
+              <b-row align-items="center">
+                  <font-awesome-icon icon="user-cog" class="ml-3 mr-2" />
+                  <span class="route-name">Admin</span>
+                  <font-awesome-icon
+                  :icon="visible == false ? 'caret-right' : 'caret-down'"
+                  class="mr-2 mt-1 ml-auto" />
+              </b-row>
             </a>
 
             <b-collapse id="collapse" class="mt-1" v-model="visible">
               <li
                 v-for="(adminroute, i) in adminroutes"
-                class="ml-3 mt-1"
+                class="mt-1"
                 :key="i"
-                :style="
-                  adminroute.active
-                    ? 'background: #00803e; border-radius:3px'
-                    : ''
-                "
+                :style="adminroute.active ? 'background: #00803e; border-radius:0px' : '' "
                 @click="setAdminActive(i)"
               >
                 <router-link :to="adminroute.link" :id="adminroute.id">
-                  <font-awesome-icon
-                    :icon="adminroute.icon"
-                    :class="adminroute.class"
-                  />
-                  <span :style="adminroute.style">{{ adminroute.name }}</span>
+                  <b-row class="ml-1">
+                    <b-col cols="2">
+                      <font-awesome-icon :icon="adminroute.icon" />
+                    </b-col>
+                    <b-col>
+                      <span class="route-name" >{{ adminroute.name }}</span>
+                    </b-col>
+                  </b-row>
                 </router-link>
               </li>
             </b-collapse>
@@ -62,8 +59,8 @@
             class="mt-2"
           >
             <router-link :to="route.link" :id="route.id">
-              <font-awesome-icon :icon="route.icon" :class="route.class" />
-              {{ route.name }}
+              <font-awesome-icon :icon="route.icon" class="ml-0" />
+              <span class="route-name">{{ route.name }}</span>
             </router-link>
           </li>
         </ul>
@@ -71,43 +68,38 @@
     </nav>
 
     <!-- HEADER NAVIGATION BAR-->
-    <div class="content" fluid>
+    <div class="content">
       <div class="right">
         <b-row>
-          <b-col cols="3" style="margin-top:10px">
+          <b-col cols="4" style="margin-top:10px;position:relative;right:8px">
             <font-awesome-icon
-              style="color: #2F3028; height: 28px; width:28px"
+              style="color:black;height:25px;width:25px;"
               icon="user"
             />
           </b-col>
-          <b-col cols="6" style="margin-top:5px">
+          <b-col cols="4" class="mt-1" style="position:relative;right:22px">
             <b-row>
               <b style="font-size:12px">{{ user }}&nbsp;</b>
             </b-row>
             <b-row>
-              <b-badge variant="biotech" style="font-size:9px; width:4rem">{{
+              <b-badge variant="biotech" style="font-size:9px;">{{
                 &nbsp; role  &nbsp;
               }}</b-badge>
             </b-row>
           </b-col>
-          <b-col id="btn-logout" cols="3" style="margin-top:10px;">
+          <b-col cols="4" class="mt-2">
             <b-button
-              id="btn-logout"
-              size="sm"
               @click="confirmLogout()"
-              class="button-circle"
-              variant="secondary"
+              class="table-button"
+              style="width:30px; height:30px"
             >
               <font-awesome-icon
-                style="font-size:12.5px; margin-right: 2px"
+                style="font-size:15px; position:relative; right:5px;"
                 icon="power-off"
               />
             </b-button>
           </b-col>
         </b-row>
-      </div>
-      <div class="nuxt-table ml-3">
-        <nuxt />
       </div>
     </div>
 
@@ -268,6 +260,7 @@ export default {
       isAdmin: false,
       visible: false,
       visiblePrice: false,
+      toggleBtnActive: true,
 
       adminroutes: [
     {},
@@ -362,20 +355,18 @@ export default {
 
       routes: [
         {
-          id: "deliveryreceipt",
+
           link: "/transaction/deliveryreceipt",
           name: "Delivery Slip",
           icon: "file-signature",
-          style: "position:relative;left:6px",
-          class: "ml-2",
+
           active: false
         },
         {
-          id: "reports",
+
           link: "/transaction/reports",
           name: "Reports", 
           icon: "file",
-          class: "ml-2 mr-1",
           active: false
         },
         {}
@@ -384,6 +375,10 @@ export default {
   },
 
   methods: {
+    // toggleSideBar() {
+    //   this.toggleBtnActive == true ? this.toggleBtnActive = false : this.toggleBtnActive = true;
+    // },
+
     async setActive(i) {
       this.visible = false;
       this.adminroutes.map(route => (route.active = false));

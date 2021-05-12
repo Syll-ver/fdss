@@ -40,18 +40,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  /* .mainPages {
-      overflow: hidden;
-    } */
-
-@media (max-width: 768px){
-    .mainPages {
-      margin-left: 10px;
-      /* width: 40rem; */
-    }
-  }
-  
-
-</style>

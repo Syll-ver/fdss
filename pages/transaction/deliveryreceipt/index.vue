@@ -36,12 +36,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  @media (max-width: 768px){
-    .mainPages {
-      margin-left: 10px;
-    }
-  }  
-
-</style>
