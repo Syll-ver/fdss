@@ -633,6 +633,19 @@
             </b-col>
           </b-row>
         </b-form-group>
+
+        <b-form-group>
+          <b-row>
+            <b-col cols="4">
+              <span>Remarks:</span>
+            </b-col>
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span> : {{ U_REMARKS }} </span>
+              </div>
+            </b-col>
+          </b-row>
+        </b-form-group>
     
 
 <br>
@@ -931,7 +944,7 @@ export default {
       U_TIME_END: null,
       U_DEPARTURE: null,
       U_UNLOADING: null,
-      remarks: null,
+      U_REMARKS: null,
 
       filterCompany:[],
       filterTransaction:["Pick-up","Delivery"],
@@ -1430,6 +1443,7 @@ export default {
       if(data.U_APP_ProjCode){
         this.U_APP_ProjCode = data.U_APP_ProjCode;
       }
+      this.U_REMARKS = data.U_REMARKS;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
       this.U_REQUESTED_SACKS = data.U_REQUESTED_SACKS;
@@ -1571,7 +1585,8 @@ export default {
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
-                U_UNLOADING: v[i].U_UNLOADING
+                U_UNLOADING: v[i].U_UNLOADING,
+                U_REMARKS: v[i].U_REMARKS
               });
             } else {
               this.items.push({
@@ -1608,7 +1623,8 @@ export default {
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
-                U_UNLOADING: v[i].U_UNLOADING
+                U_UNLOADING: v[i].U_UNLOADING,
+                U_REMARKS: v[i].U_REMARKS
               });
             }
           }
