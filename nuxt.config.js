@@ -73,12 +73,12 @@ module.exports = {
     // networkPrinterIp: `172.16.4.173`, // gensan network printer ip
     uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
     bfi: `145969`, // dev
-    rci: `146034` // dev
+    rci: `146034`, // dev
     // bfi: '4400', // prod
     // rci: '4381' // prod
     // bfi: `139483`, // eut
     // rci: `139492` // eut
-    
+    rciGeneral: 154151631
   },
 
   server: { port: 9000 }
