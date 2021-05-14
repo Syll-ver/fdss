@@ -1,6 +1,24 @@
 <template>
   <div >
-        <Loading v-if="showLoading" />
+    <div>
+      <b-alert
+        id="alert"
+        class="alerticon"
+        :show="alert.showAlert"
+        dismissible
+        :variant="alert.variant"
+        @dismissed="alert.showAlert = null"
+      >
+        <font-awesome-icon
+          :icon="alert.variant == 'danger' ? 'exclamation' : 'check-circle'"
+          class="mr-1 alerticon"
+        />
+        {{ alert.message }}
+      </b-alert>
+
+    </div>
+    
+    <Loading v-if="showLoading" />
 
     <Receipt ref="Receipt" v-show="false" />
     <!-- Main table -->
@@ -18,7 +36,7 @@
     </b-row> -->
 
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="12" xs="1" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -30,9 +48,8 @@
           </b-input-group>
         </b-form-group>
       </b-col>
-
-      <b-col class="mt-3">
-        <b-input-group prepend="Date" style="height:10px" size="sm">
+      <b-col cols="12" md="6" lg="4" sm="8" xs="6" class="mt-3" style="display:flex" >
+        <b-input-group style="height:10px" size="sm">
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -55,7 +72,7 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col class="mt-3" align="left">
+      <b-col cols="12" md="3" lg="5" sm="4" xs="10" class="mt-3" align="left">
         <b-dropdown
           right
           id="filter_actions"
@@ -148,19 +165,6 @@
             <font-awesome-icon icon="file-excel" />
           </b-button>
       </b-col>
- 
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-        
-     
-      </b-col>
     </b-row>
 
     <!-- Main table element -->
@@ -168,7 +172,7 @@
     <b-table
       id="delivery_receipt_table"
       show-empty
-      class="table-style"
+      class="table-style mt-3"
       scrollable
       sticky-header
       no-border-collapse
@@ -190,6 +194,10 @@
           </b-spinner>
           <span class="loading_spinner">Loading...</span>
         </div>
+      </template>
+
+      <template v-slot:cell(U_TRANSACTION_TYPE)="row">
+        {{ row.item.U_TRANSACTION_TYPE == 'Delivery' ? 'Direct' : 'Pick-up' }}
       </template>
         <!-- :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection" -->
@@ -353,32 +361,28 @@
          <b-card class="card-shadow">
               <div id="receipt">
     <b-row>
-      <div class=" mr-4" style="width:31rem; height:40rem">
-            <span>
-             
-                 <b-img src="/logo1.png" class="receipt-logo" center/>
-       
-           
-            </span>
-    
+      <div class=" mr-4" :style="(U_TRANSACTION_TYPE == 'Pick-up' && U_ARRIVAL != null && U_DEPARTURE != null && U_TIME_START != null && U_TIME_END != null ) ? 'width:31rem; height:50rem' : 'width:31rem; height:43rem'">
+        <span>
+          <b-img src="/logo1.png" class="receipt-logo" center/>
+        </span>
 
-    <center>
- 
-            <span>
-              DELIVERY SLIP | {{ U_TRANSACTION_TYPE }}
-            </span>
-            <br>
-            <span><small>
-              Date: {{U_DTE_CRTD}} 
-            </small></span>
-    </center>
-
+        <center>
+          <span>
+            DELIVERY SLIP | {{ U_TRANSACTION_TYPE == 'Delivery' ? 'Direct' : 'Pick-up' }}
+          </span>
+          <br>
+          <span><small>
+            Date: {{U_DTE_CRTD}} 
+          </small></span>
+        </center>
+        
         <br />
 
- <span>
-Transaction Number : {{ U_TRX_NO }}
-</span>
-<br/><br>
+        <span>
+        Transaction Number : {{ U_TRX_NO }}
+        </span>
+
+        <br/><br>
 
         <b-row>
           <b-col cols="4">
@@ -512,7 +516,7 @@ Transaction Number : {{ U_TRX_NO }}
           </b-col>
         </b-row>
         </div>
-<div v-else>
+        <div v-else>
                <b-row >
           <b-col cols="4">
             <span>
@@ -538,26 +542,98 @@ Transaction Number : {{ U_TRX_NO }}
           <b-col cols="8">
             <div class="dotted-border">
               <span>
-                : {{U_EMPTY_SACKS}}
+                : {{U_EMPTY_SACKS}} 
               </span>
             </div>
           </b-col>
         </b-row>
-</div>
+      </div>
+
+      <!-- <b-form-group v-show="!(U_ARRIVAL == null || U_DEPARTURE == null || U_TIME_START == null || U_TIME_END == null )"> -->
+          <b-form-group v-if="(U_TRANSACTION_TYPE === 'Pick-up') && 
+          ( U_ARRIVAL != null && U_DEPARTURE != null && 
+            U_TIME_START != null && U_TIME_END )">
+          <b-row>
+            <b-col cols="4">
+              <span>
+                Arrival Time
+              </span>
+            </b-col>
+
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span>
+                  : {{U_ARRIVAL}}
+                </span>
+              </div>
+            </b-col>
+          </b-row>
+
+          <b-row>
+            <b-col cols="4">
+              <span>
+                Time Start
+              </span>
+            </b-col>
+
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span>
+                  : {{U_TIME_START}}
+                </span>
+              </div>
+            </b-col>
+          </b-row>
+
+          <b-row>
+            <b-col cols="4">
+              <span>
+                Time End
+              </span>
+            </b-col>
+
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span>
+                  : {{U_TIME_END}}
+                </span>
+              </div>
+            </b-col>
+          </b-row>
+
+          <b-row>
+            <b-col cols="4">
+              <span>
+                Departure Time
+              </span>
+            </b-col>
+
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span>
+                  : {{U_DEPARTURE}}
+                </span>
+              </div>
+            </b-col>
+          </b-row>
+
+          <b-row>
+            <b-col cols="4">
+              <span>
+                Unloading Time
+              </span>
+            </b-col>
+
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span>
+                  : {{U_UNLOADING}}
+                </span>
+              </div>
+            </b-col>
+          </b-row>
+        </b-form-group>
     
-   
-      <!-- <b-row>
-          <b-col cols="6">           
-            <span style="font-size:9px">
-              {{U_FRMR_NAME}}
-            </span>
-          </b-col>
-          <b-col cols="6" text-align="center">           
-            <span style="font-size:9px">
-              {{U_HLPR_NAME}}
-            </span>
-          </b-col>
-      </b-row> -->
 
 <br>
         <b-row class="my-4">
@@ -609,28 +685,28 @@ Transaction Number : {{ U_TRX_NO }}
 
         </b-row>
 <br>
-        <!-- <b-row class="mt-4">
-          <b-col>
-            <span style="font-size:10px" class="mr-2">
-              <i>
-                This does not serve as an Official Receipt
-              </i>
-            </span>
 
-            <span style="font-size:12px; float:right" class="mr-1">
-              <b>
-                Farmer's Copy
-              </b>
-            </span>
-          </b-col>
-        </b-row> -->
       </div>
     </b-row>
   </div>
 
           </b-card>
 
-      <template v-slot:modal-footer="{cancel }">
+      <template v-slot:modal-footer="{}">
+        <b-button
+        v-show="(U_TRANSACTION_TYPE == 'Pick-up' && 
+        ( U_ARRIVAL == null ||
+          U_DEPARTURE == null ||
+          U_TIME_START == null ||
+          U_TIME_END == null ||
+          U_UNLOADING == null ))"
+          id="add-time-logs"
+          size="sm"
+          variant="biotech"
+          class="button-style"
+          @click="updateTime()"
+          >Add Time Logs</b-button
+        >
         <b-button
           id="cancel_add_action_modal"
           size="sm"
@@ -640,6 +716,122 @@ Transaction Number : {{ U_TRX_NO }}
         >
       </template>
     </b-modal>
+
+
+    <!-- Add Time Logs -->
+      <b-modal
+      size="sm"
+      header-bg-variant="biotech"
+      header-text-variant="light"
+      body-bg-variant="gray"
+      id="add-time-logs-modal"
+      hide-header-close
+      no-close-on-backdrop
+      no-scrollable
+    >
+      <template v-slot:modal-title>
+        <h6>Add Time Logs</h6>
+      </template>
+        
+        <b-card>
+          <b-form-group>
+            <b-row class="mt-0">
+              <b-col cols="12">
+                <small class="text-left">Arrival Time</small>
+                <b-form-input
+                  id="helper_name"
+                  placeholder="First Name"
+                  class="form-text"
+                  v-model="U_ARRIVAL"
+                  type="time"
+                  required
+                />
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
+                <small class="text-left">Time Start</small>
+                <b-form-input
+                  id="helper_name"
+                  placeholder="First Name"
+                  class="form-text"
+                  v-model="U_TIME_START"
+                  type="time"
+                  required
+                />
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
+                <small class="text-left">Time End</small>
+                <b-form-input
+                  id="tendered"
+                  placeholder="Last Name"
+                  v-model="U_TIME_END"
+                  class="form-text"
+                  type="time"
+                  required
+                ></b-form-input>
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
+                <small class="text-left">Departure Time</small>
+                <b-form-input
+                  id="tendered"
+                  placeholder="Last Name"
+                  v-model="U_DEPARTURE"
+                  class="form-text"
+                  type="time"
+                  required
+                ></b-form-input>
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col cols="12">
+                <small class="text-left">Unloading Time</small>
+                <b-form-input
+                  id="tendered"
+                  placeholder="Last Name"
+                  v-model="U_UNLOADING"
+                  class="form-text"
+                  type="time"
+                  required
+                ></b-form-input>
+              </b-col>
+            </b-row>
+
+          </b-form-group>
+        </b-card>
+
+      <template v-slot:modal-footer="{}">
+        <b-button
+          id="add_action_modal"
+          size="sm"
+          class="button-style"
+          variant="biotech"
+          @click="addTime()"
+          :disabled="showLoading === true"
+        >
+          Add
+        </b-button>
+        <b-button
+          id="cancel_add_action_modal"
+          size="sm"
+          class="button-style"
+          @click="cancelTimeLog()"
+          >Cancel</b-button
+        >
+      </template>
+    </b-modal>
+
+    <!-- End Add Time Logs -->
+
+
   <div>
       <b-alert
         id="alert"
@@ -656,6 +848,8 @@ Transaction Number : {{ U_TRX_NO }}
         {{ alert.message }}
       </b-alert>
     </div>
+
+
 
     <!-- View Transaction -->
   </div>
@@ -688,9 +882,17 @@ export default {
     // await this.getFarmer();
     // await this.getCommodity();
     this.totalRows = this.items.length;
+    const userActions = JSON.parse(localStorage.user_actions)["Reports Module"];
+
+    if (userActions.find(action => action.U_ACTION_NAME === "View Reports")) {
+      this.actions.viewReports = true;
+    }
   },
   data() {
     return {
+      actions: {
+        viewReports: false
+      },
       rci: process.env.rci,
       bfi: process.env.bfi,
       filterStatus:["Completed","Cancelled"],
@@ -724,7 +926,13 @@ export default {
       U_EMPTY_SACKS:null,
       U_HLPR_NAME:null,
       opens1:"",
-    
+      U_ARRIVAL: null,
+      U_TIME_START: null,
+      U_TIME_END: null,
+      U_DEPARTURE: null,
+      U_UNLOADING: null,
+      U_REMARKS: null,
+
       filterCompany:[],
       filterTransaction:["Pick-up","Delivery"],
       transaction_types:[],
@@ -887,6 +1095,152 @@ export default {
   },
 
   methods: {
+    cancel() {
+      // this.U_ARRIVAL = null;
+      // this.U_TIME_START = null;
+      // this.U_TIME_END = null;
+      // this.U_DEPARTURE = null;
+      this.$bvModal.hide("view-transaction-modal");
+    },
+
+    showAlert(message, variant) {
+      this.alert = {
+        showAlert: 3,
+        variant,
+        message
+      };
+    },
+
+    async addTime() {
+      // update
+
+      if(this.U_ARRIVAL == null) {
+          this.showAlert("Please input Arrival Time", "danger");
+        } else if(this.U_DEPARTURE == null) {
+          this.showAlert("Please input Departure Time", "danger");
+        } else if(this.U_TIME_START == null) {
+          this.showAlert("Please input Time Start", "danger");
+        } else if(this.U_TIME_END == null) {
+          this.showAlert("Please input Time End", "danger");
+        } else if(this.U_UNLOADING == null) {
+          this.showAlert("Please input Unloading Time", "danger");
+        } else {
+
+          try {
+            this.showLoading = true;
+
+            const userDetails = JSON.parse(localStorage.user_details);
+
+            const intToTime = i => {
+              if (i) {
+                const str = i.toString();
+                const len = str.length;
+
+                let time = null;
+
+                if (len == 4) {
+                  const hour = str.substring(0, 2);
+                  const min = str.substring(2, 4);
+                  time = `${hour}:${min}`;
+                  return time;
+                } else if (len == 3) {
+                  const hour = str.substring(0, 1);
+                  const min = str.substring(1, 3);
+                  time = `0${hour}:${min}`;
+                  return time;
+                } else {
+                  return `00:00`;
+                }
+              } else {
+                return `00:00`;
+              }
+            };
+            
+            const json = {
+              comapany: this.TRANSACTION_COMPANY_ID,
+              uom_id: this.U_UOM_ID,
+              driver_name: this.U_DRVR_NAME,
+              helper_name: this.U_HLPR_NAME,
+              no_of_requested_bags: this.U_REQUESTED_SACKS,
+              no_of_bags: this.U_SACKS,
+              no_of_empty_bags: this.U_EMPTY_SACKS,
+              employee_id: userDetails.Code,
+              plate_number: this.U_PLATE_NUMBER,
+              scheduled_date: this.U_SCHEDULED_DATE,
+              scheduled_time: intToTime(this.U_SCHEDULED_TIME),
+
+              arrival: this.U_ARRIVAL,
+              time_start: this.U_TIME_START,
+              time_end: this.U_TIME_END,
+              departure: this.U_DEPARTURE,
+              unloading: this.U_UNLOADING
+            };
+
+            console.log("json", json);
+
+            await axios({
+              method: "PUT",
+              url: `${this.$axios.defaults.baseURL}/api/transaction/update/${this.remarks}`,
+              headers: {
+                Authorization: `B1SESSION=${localStorage.SessionId}`
+              },
+              data: {
+                ...json
+              }
+            }).then((res) => {
+              if (res && res.name == "Error") {
+                if (res.response && res.response.data.errorMsg) {
+                  if (res.response.data.errorMsg === "Invalid session.") {
+                    this.$bvModal.show("session_modal");
+                  }
+                }
+                this.showLoading = false;
+              } else {
+                this.U_ARRIVAL = null;
+                this.U_TIME_START = null;
+                this.U_TIME_END = null;
+                this.U_DEPARTURE = null;
+                this.U_UNLOADING = null;
+                this.showLoading = false;
+                this.getTransactions();
+                this.$bvModal.hide('add-time-logs-modal')
+                this.showAlert("Successfully Added", "success");
+              }
+            })
+            
+          } catch (e) {
+            console.log(e);
+            this.showLoading = false;
+            if (e.response && e.response.data.error) {
+              this.showAlert(e.response.data.error, "danger");
+            } else {
+              this.showAlert("Please input all fields", "danger");
+            }
+          }
+
+        }
+
+    },
+
+    cancelTimeLog() {
+      this.U_ARRIVAL = null;
+      this.U_TIME_START = null;
+      this.U_TIME_END = null;
+      this.U_DEPARTURE = null;
+      this.U_UNLOADING = null;
+      this.$bvModal.hide('add-time-logs-modal')
+    },
+
+    updateTime() {
+      this.$bvModal.hide("view-transaction-modal");
+      this.$bvModal.show('add-time-logs-modal')
+      this.U_ARRIVAL = moment(this.U_ARRIVAL, 'hh:mm A').format('HH:mm')
+      this.U_DEPARTURE = moment(this.U_DEPARTURE, 'hh:mm A').format('HH:mm')
+      this.U_TIME_START = moment(this.U_TIME_START, 'hh:mm A').format('HH:mm')
+      this.U_TIME_END = moment(this.U_TIME_END, 'hh:mm A').format('HH:mm')
+      this.U_UNLOADING = moment(this.U_UNLOADING, 'hh:mm A').format('HH:mm')
+      console.log(this.U_ARRIVAL, this.U_DEPARTURE, this.U_TIME_START, this.U_TIME_END, this.U_UNLOADING);
+    },
     
     async print() {
       // Pass the element id here
@@ -897,6 +1251,7 @@ export default {
 
      await new Promise(resolve => {
         this.filterItems.forEach(acknowledgement => {
+          console.log(acknowledgement);
           const valuesArray = [];
           // const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           // const t = this.intToTime(v[i].CREATED_TIME);
@@ -910,9 +1265,6 @@ export default {
           valuesArray.push(acknowledgement.U_CRTD_BY);
           // valuesArray.push(acknowledgement.U_RMRKS);
           valuesArray.push(acknowledgement.U_STATUS);
-        
-     
-
           content.push(valuesArray);
         });
         resolve();
@@ -933,8 +1285,7 @@ export default {
       }
 
       doc.setFontSize(12);
-      var subtitle = doc.splitTextToSize(`Farmers Deliver Slip System as of ${this.datePicker.startDate} to  ${this.datePicker.endDate}`)
-      doc.text(subtitle, 48, 18);
+      doc.text("Farmers' Deliver Slip System", 78, 17);
 
       // doc.setFontSize(10);
       // doc.text(
@@ -959,6 +1310,7 @@ export default {
       return doc;
       
     },
+
      exportReports() {
       const csv = Papa.unparse(this.items, { header: true });
       let csvData = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -1030,7 +1382,7 @@ export default {
         });
       }
     },
-        async getFarmer() {
+    async getFarmer() {
       const res = await axios({
         method: "POST",
         url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
@@ -1052,16 +1404,25 @@ export default {
       
       this.U_FRMR_ADD= this.U_FRMR_NAME.address
     },
-show(data) {
-  this.U_APP_ProjCode = "";
-       console.log(data)
+  show(data) {
+    this.U_ARRIVAL = null;
+    this.U_TIME_START = null;
+    this.U_TIME_END = null;
+    this.U_DEPARTURE = null;
+    this.U_UNLOADING = null;
+
+    const userDetails = JSON.parse(localStorage.user_details);
+    this.remarks = data.U_TRX_ID;
+    this.U_APP_ProjCode = "";     
        this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
+       this.TRANSACTION_COMPANY_ID = userDetails.U_COMPANY_CODE;
       (this.U_UOM = data.U_UOM);
-       this.U_DTE_CRTD = data.U_DTE_CRTD;
-       this.U_TME_CRTD = data.U_TME_CRTD;
+      this.U_DTE_CRTD = data.U_DTE_CRTD;
+      this.U_TME_CRTD = data.U_TME_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
+      this.U_UOM_ID = data.U_UOM_ID;
       this.U_TRANSACTION_TYPE = data.U_TRANSACTION_TYPE;
       this.U_CMMDTY = data.U_CMMDTY;
       this.U_FRMR_NAME = data.U_FRMR_NAME;
@@ -1069,12 +1430,28 @@ show(data) {
       if(data.U_APP_ProjCode){
         this.U_APP_ProjCode = data.U_APP_ProjCode;
       }
+      this.U_REMARKS = data.U_REMARKS;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
       this.U_REQUESTED_SACKS = data.U_REQUESTED_SACKS;
       this.U_SACKS= data.U_SACKS;
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
+      this.U_SCHEDULED_DATE = data.U_SCHEDULED_DATE;
+      this.U_SCHEDULED_TIME = data.U_SCHEDULED_TIME;
+      this.U_SCHEDULED_DATE_AND_TIME = data.U_SCHEDULED_DATE_AND_TIME;
+      if(data.U_ARRIVAL != null && 
+          data.U_DEPARTURE != null && 
+          data.U_TIME_START != null && 
+          data.U_TIME_START != null && 
+          data.U_UNLOADING != null ){
+            this.U_ARRIVAL = moment(data.U_ARRIVAL, ["HH.mm"]).format("hh:mm A");
+            this.U_DEPARTURE = moment(data.U_DEPARTURE, ["HH.mm"]).format("hh:mm A");
+            this.U_TIME_START = moment(data.U_TIME_START, ["HH.mm"]).format("hh:mm A");
+            this.U_TIME_END = moment(data.U_TIME_END, ["HH.mm"]).format("hh:mm A");
+            this.U_UNLOADING = moment(data.U_UNLOADING, ["HH.mm"]).format("hh:mm A");
+          }
+     
       this.$bvModal.show("view-transaction-modal");
     },
   
@@ -1155,13 +1532,11 @@ show(data) {
         });
        
         const v = res.data.view;
-
         if(v.length > 0){
           for (let i = 0; i < v.length; i++) {
             const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
             const t = this.intToTime(v[i].CREATED_TIME);
             const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
-
             if(v[i].U_PLOT_CODE === null){
               this.items.push({
                 U_TRX_NO: v[i].U_TRX_NO,
@@ -1171,6 +1546,7 @@ show(data) {
                 U_TRX_ID: v[i].TRANSACTION_ID,
                 U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
                 U_ITEM: v[i].ITEM_ID,
+                U_UOM_ID: v[i].UOM_ID,
                 U_SUPP: v[i].SUPPLIER_ID,
                 U_TRX_NO: v[i].TRANSACTION_NUMBER,
                 U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
@@ -1187,7 +1563,17 @@ show(data) {
                 U_HLPR_NAME: v[i].HELPER_NAME,
                 U_DRVR_NAME: v[i].DRIVER_NAME,
                 U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-                U_SACKS: v[i].NUMBER_OF_BAGS
+                U_SACKS: v[i].NUMBER_OF_BAGS,
+                U_SCHEDULED_DATE_AND_TIME: date,
+                U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
+                U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
+                TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
+                U_ARRIVAL: v[i].U_ARRIVAL,
+                U_DEPARTURE: v[i].U_DEPARTURE,
+                U_TIME_START: v[i].U_TIME_START,
+                U_TIME_END: v[i].U_TIME_END,
+                U_UNLOADING: v[i].U_UNLOADING,
+                U_REMARKS: v[i].U_REMARKS,
               });
             } else {
               this.items.push({
@@ -1198,6 +1584,7 @@ show(data) {
                 U_TRX_ID: v[i].TRANSACTION_ID,
                 U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
                 U_ITEM: v[i].ITEM_ID,
+                U_UOM_ID: v[i].UOM_ID,
                 U_SUPP: v[i].SUPPLIER_ID,
                 U_TRX_NO: v[i].TRANSACTION_NUMBER,
                 U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
@@ -1214,11 +1601,22 @@ show(data) {
                 U_HLPR_NAME: v[i].HELPER_NAME,
                 U_DRVR_NAME: v[i].DRIVER_NAME,
                 U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-                U_SACKS: v[i].NUMBER_OF_BAGS
+                U_SACKS: v[i].NUMBER_OF_BAGS,
+                U_SCHEDULED_DATE_AND_TIME: date,
+                U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
+                U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
+                TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
+                U_ARRIVAL: v[i].U_ARRIVAL,
+                U_DEPARTURE: v[i].U_DEPARTURE,
+                U_TIME_START: v[i].U_TIME_START,
+                U_TIME_END: v[i].U_TIME_END,
+                U_UNLOADING: v[i].U_UNLOADING,
+                U_REMARKS: v[i].U_REMARKS,
               });
             }
           }
           this.isBusy = false;
+          console.log("transactions",this.items);
         } else {
           this.isBusy = false;
         }

@@ -209,19 +209,6 @@ export default {
             this.showAlert(err.message, "danger");
           }
         });
-      // if(this.user.name == this.user.password) {
-      //     this.$router.push("/change-password");
-      // } else {
-      //     if(this.user.name == "123" && this.user.password == "test") {
-      //         this.$router.push("/suppliers");
-      //     }
-      //     if(this.user.name == "1234" && this.user.password == "test") {
-      //         this.$router.push("/customers");
-      //     }
-      //     if(this.user.name == "admin" && this.user.password == "test") {
-      //         this.$router.push("/admin/modules");
-      //     }
-      // }
     }
   }
 };

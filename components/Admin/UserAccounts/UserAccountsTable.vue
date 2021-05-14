@@ -19,7 +19,7 @@
     <div>
       <!-- Main table -->
       <b-row>
-        <b-col cols="3" class="mt-3">
+        <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
           <b-form-group>
             <b-input-group size="sm">
               <b-form-input
@@ -32,7 +32,7 @@
           </b-form-group>
         </b-col>
 
-        <b-col cols="2" class="mt-3">
+        <b-col cols="12" md="4" lg="3" sm="2" xs="4" class="mt-3" align="left">
           <b-dropdown
               right
               id="filter_roles"
@@ -87,14 +87,14 @@
         </b-col>
         <!-- <b-col></b-col> -->
  
-        <b-col cols="7"  class="mt-3" align="right">
+        <b-col cols="12" md="4" lg="6" sm="5" xs="4" class="mt-3" align="right">
           <b-button
             id="add_user"
             size="sm"
             variant="biotech"
             class="button-style"
             @click="addUser()"
-            v-if="actions.addUser"
+            v-if="actions.add_user"
           >
             <font-awesome-icon icon="plus" class="mr-1" />Add User
           </b-button>
@@ -103,8 +103,8 @@
 
       <!-- Main table element -->
       <b-table
-        id="user-table"
-        class="table-style"
+      v-if="actions.view_users"
+        class="table-style mt-3"
         show-empty
         scrollable
         sticky-header
@@ -139,7 +139,7 @@
             class="table-button"
             v-b-tooltip.hover
             title="Update User"
-            v-if="actions.editUser"
+            v-if="actions.edit_user"
           >
             <font-awesome-icon icon="edit" />
           </b-button>
@@ -152,7 +152,7 @@
             class="table-button" 
             v-b-tooltip.hover
             title="Update"
-            v-if="actions.updateUser && row.item.ApplicationUserID"
+            v-if="actions.update_SAP_user && row.item.ApplicationUserID"
           >
             <font-awesome-icon icon="sync" />
           </b-button>
@@ -164,7 +164,7 @@
             variant="danger"
             v-b-tooltip.hover
             title="Reset Password"
-            v-if="actions.resetPassword && !row.item.ApplicationUserID"
+            v-if="actions.reset_password && !row.item.ApplicationUserID"
           >
             <font-awesome-icon icon="undo-alt" />
           </b-button>
@@ -180,6 +180,15 @@
                     listRoles => listRoles.Code === row.item.U_ROLE_CODE
                   ).Name
                 : ""
+            }}
+          </div>
+        </template>
+
+        <template v-slot:cell(location)="row">
+          <div>
+            {{ 
+              listLocations.find(loc => loc.Code === row.item.U_LOCATION_ID) ? 
+              listLocations.find(loc => loc.Code === row.item.U_LOCATION_ID).U_ADDRESS : ""
             }}
           </div>
         </template>
@@ -359,12 +368,12 @@
                   >
                 </b-form-select>
 
-                <small class="ml-1">Location</small>
+                <small class="ml-1">Printer Location</small>
                 <b-form-select v-model="userDetails.U_LOCATION_ID"
                   size="sm"
                   style="font-size:10px"
                   >
-                  <option :value="null">Select Role</option>
+                  <option :value="null">Select Location</option>
 
                   <option
                     :value="loc.Code"
@@ -527,12 +536,12 @@
             selectable
             show-empty
             :busy="isBusy"
-            select-mode="single"
+            :items="SearchedUsers"
+            :filter="filterUser"
+            :fields="userFields"
             :current-page="currentPageUser"
             :per-page="perPages"
-            :items="SearchedUsers"
-            :fields="userFields"
-            :filter="filterUser"
+            select-mode="single"
             @row-selected="onRowSelected"
             responsive="sm"
           >
@@ -562,16 +571,16 @@
           <hr />
 
           <b-row align-h="start">
-            <!-- <b-col cols="1" class="mb-2 mt-1">
+            <b-col cols="1" class="mb-2 mt-1">
               <b-form-group class="mb-0">
                 <b-form-select
-                  v-model="perPage"
+                  v-model="perPages"
                   id="perPageSelect_modules-pagination"
                   size="sm"
                   :options="pageOptions"
                 ></b-form-select>
               </b-form-group>
-            </b-col>  -->
+            </b-col> 
           <b-col
             label-cols-sm
             class="mb-0 mt-2 text-left"
@@ -736,7 +745,7 @@
                 >
               </b-form-select>
 
-               <small class="ml-1">Location</small>
+               <small class="ml-1">Printer Location</small>
                 <b-form-select v-model="userDetails.U_LOCATION_ID"
                   size="sm"
                   style="font-size:10px"
@@ -927,10 +936,11 @@ export default {
       findUser: null,
       filterStatus: [1],
       actions: {
-        addUser: false,
-        editUser: false,
-        resetPassword: false,
-        updateUser: false
+        add_user: false,
+        edit_user: false,
+        view_user: false,
+        reset_password: false,
+        update_SAP_user: false
       },
       alert: {
         showAlert: 0,
@@ -989,6 +999,19 @@ export default {
           sortable: true,
           sortDirection: "desc"
         },
+        {
+          key: "location",
+          label: "Location",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+        {
+          key: "location",
+          label: "Printer Location",
+          sortable: true,
+          sortDirection: "desc"
+        },
 
         {
           key: "U_IS_ACTIVE",
@@ -1032,6 +1055,7 @@ export default {
       filterCompany: ["REVIVE","BIOTECH"],
       selectableTable: null,
       totalRows: null,
+      rowsUsers: null,
       currentPage: 1,
       perPage: 5,
       currentPageUser: 1,
@@ -1069,7 +1093,17 @@ export default {
       return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
     },  
     filterSearchedUsers() {
-      return this.SearchedUsers;
+      let count = 0;
+      this.rowsUsers = count;
+      return this.SearchedUsers.filter(users => {
+        if(this.listCompanies.includes(this.selectedCompany)) {
+          count++;
+          this.rowsUsers = count;
+          return (users.FirstName.toLowerCase().match(this.filterUser.toLowerCase()) || 
+                  users.MiddleName.toLowerCase().match(this.filterUser.toLowerCase()) ||
+                  users.LastName.toLowerCase().match(this.filterUser.toLowerCase()));
+        }
+      })
     },
 
     filterItems() {
@@ -1118,10 +1152,12 @@ export default {
     },
 
     bottomLabelUser() {
-      if (!this.filterSearchedUsers) return;
-
       let end = this.perPages * this.currentPageUser;
       let start = end - this.perPages + 1;
+
+      if (!this.filterSearchedUsers) {
+        return;
+      } 
 
       if (end > this.filterSearchedUsers.length) {
         end = this.filterSearchedUsers.length;
@@ -1134,13 +1170,13 @@ export default {
       return `Showing ${start} to ${end} of ${this.filterSearchedUsers.length} entries`;
     },
 
-    rowsUsers() {
-      if (this.SearchedUsers) {
-        return this.SearchedUsers.length;
-      } else {
-        return 0;
-      }
-    },
+    // rowsUsers() {
+    //   if (this.SearchedUsers) {
+    //     return this.SearchedUsers.length;
+    //   } else {
+    //     return 0;
+    //   }
+    // },
 
     sortOptions() {
       // Create an options list from our fields
@@ -1163,29 +1199,38 @@ export default {
   },
 
   methods: {
-    // async getLocations() {
-    //   this.isBusy = true;
+    async getLocations(userLocationId) {
+      this.isBusy = true;
 
-    //     await axios({
-    //       method: "GET",
-    //       url: `${this.$axios.defaults.baseURL}/api/location/select`
-    //     }).then( res => {
-    //       const v = res.data.view;
-    //       this.locations.push({
-    //           text: "Select Location",
-    //           value: null,
-    //           disabled: true
-    //         })
+      this.listLocations.filter(loc => {
+        if(loc.U_LOCATION_ID && (loc.U_LOCATION_ID == userLocationId)) {
+          return loc.U_ADDRESS;
+        } else {
+          return "";
+        }
+      })
+
+      //   await axios({
+      //     method: "GET",
+      //     url: `${this.$axios.defaults.baseURL}/api/location/select`
+      //   }).then( res => {
+      //     const v = res.data.view;
+      //     this.locations.push({
+      //         text: "Select Location",
+      //         value: null,
+      //         disabled: true
+      //       })
           
-    //       for(let i = 0; i < v.length; i++) {
-    //         this.locations.push({
-    //           text: v[i].U_ADDRESS,
-    //           value: v[i].Code
-    //         })
-    //       }
-    //     })
-    //   this.isBusy = false;
-    // },
+      //     for(let i = 0; i < v.length; i++) {
+      //       this.locations.push({
+      //         text: v[i].U_ADDRESS,
+      //         value: v[i].Code
+      //       })
+      //     }
+      //   })
+      // this.isBusy = false;
+    },
+
 
     confirmUpdate() {
       this.showLoading = true;
@@ -1219,16 +1264,15 @@ export default {
       this.userDetails = { ...data };
       this.$bvModal.show("update-user-modal");
     },
-    fetchEmployees() {
+    async fetchEmployees() {
       console.log(this.selectedCompany)
       //  this.showLoading = true;
       this.isBusy = true;
-      this.$store
+      await this.$store
         .dispatch("Admin/Users/searchEmployees", {
           SessionId: localStorage.SessionId,
           CompanyDB: this.selectedCompany
         })
-
 
         .then(res => {
           if (res && res.name == "Error") {
@@ -1241,7 +1285,11 @@ export default {
               this.showAlert(res.message, "danger");
             }
           }
-      //  this.showLoading = false;
+
+          if(!this.filterUser) {
+            this.rowsUsers = this.SearchedUsers ? this.SearchedUsers.length : 0
+          }
+        //  this.showLoading = false;
           this.isBusy = false;
         });
     },
@@ -1276,6 +1324,8 @@ export default {
       // this.selectedCompany = null;
       // this.$bvModal.show("find-user-modal");
       // this.showLoading = false;
+      this.perPages = 5;
+      this.currentPageUser = 1;
       this.selectedCompany = null;
       this.filterUser = "";
       if (this.selectedCompany == null) {
@@ -1558,22 +1608,20 @@ export default {
     
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add user")) {
-      this.actions.addUser = true;
+      this.actions.add_user = true;
     }
     if (userActions.find(action => action.U_ACTION_NAME === "Edit user")) {
-      this.actions.editUser = true;
+      this.actions.edit_user = true;
     }
-    if (
-      userActions.find(action => action.U_ACTION_NAME === "Reset user password")
-    ) {
-      this.actions.resetPassword = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Reset user password")) {
+      this.actions.reset_password = true;
     }
-    if (
-      userActions.find(action => action.U_ACTION_NAME === "Update SAP user")
-    ) {
-      this.actions.updateUser = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Update SAP user")) {
+      this.actions.update_SAP_user = true;
     }
-    // await this.getLocations();
+    if (userActions.find(action => action.U_ACTION_NAME === "View users")) {
+      this.actions.view_users = true;
+    }
   }
 };
 </script>

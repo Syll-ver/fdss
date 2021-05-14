@@ -17,7 +17,7 @@
     <Loading v-if="showLoading" />
 
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -31,11 +31,12 @@
       </b-col>
 
       <!-- <b-row> -->
-      <b-col align="right">
+      <b-col cols="12" md="8" lg="9" sm="7" xs="4" class="mt-3" align="right">
         <b-button
+        v-if="actions.add_location"
           id="create"
           variant="biotech"
-          class="button-style mt-3"
+          class="button-style"
           size="sm"
           @click="$bvModal.show('add-location-modal')"
         >
@@ -47,8 +48,9 @@
 
     <!-- Main table element -->
     <b-table
+    v-if="actions.view_location"
       id="location-table"
-      class="table-style"
+      class="table-style mt-3"
       show-empty
       scrollable="true"
       sticky-header
@@ -79,6 +81,7 @@
       <template v-slot:cell(actions)="row">
         <div>
           <b-button
+          v-if="actions.edit_location"
             variant="edit"
             id="edit"
             class="table-button"
@@ -262,12 +265,17 @@ export default {
   Loading },
   data() {
     return {
+      actions: {
+        view_location: false,
+        add_location: false,
+        edit_location: false
+      },
       isBusy: true,
       showLoading: false,
       printer_ip: null,
       printer_location: null,
       printer_port: null,
-      action: [],
+      // action: [],
       itemsFields: [
         {
           key: "Code",
@@ -419,9 +427,9 @@ export default {
               this.isBusy = false;
             } else {
               this.showLoading = false;
-              this.$store.dispatch("Admin/Location/fetchListLocations")
               this.$bvModal.hide("add-location-modal");
               this.new_location = null;
+              this.$store.dispatch("Admin/Location/fetchListLocations")
               this.showAlert("Successfully Added", "success");
               this.isBusy = false;
             }
@@ -480,15 +488,15 @@ export default {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View location')) {
-      this.action.view_location = true;
+      this.actions.view_location = true;
     }
 
     if(userActions.find(action => action.U_ACTION_NAME === 'Add location')) {
-      this.action.add_location = true;
+      this.actions.add_location = true;
     }
     
     if(userActions.find(action => action.U_ACTION_NAME === 'Edit location')) {
-      this.action.edit_location = true;
+      this.actions.edit_location = true;
     }
   },
 };

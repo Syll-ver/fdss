@@ -22,7 +22,7 @@
       <!-- Main table -->
        
      <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -35,32 +35,7 @@
         </b-form-group>
       </b-col>
 
-      <b-co class="mt-3">
-        <!-- <b-input-group prepend="Date" size="sm">
-          <date-range-picker
-            id="date_pending"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
-            v-model="datePicker"
-            @update="updateValues"
-          >
-            <div slot="input" id="date_pending" >
-              {{ datePicker.startDate }} - {{ datePicker.endDate }}
-            </div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button
-              @click="resetDate"
-              id="date_reset_pending"
-              style="font-size:12px"
-              >Reset</b-button
-            >
-          </b-input-group-append>
-        </b-input-group> -->
+      <b-co cols="12" md="4" lg="3" sm="2" xs="4" class="mt-3" align="left">
         <b-dropdown
             right
             id="filter_actions"
@@ -87,22 +62,14 @@
       </b-co>
       <b-col ></b-col>
  
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
+      <b-col cols="12" md="4" lg="6" sm="5" xs="4" class="mt-3" align="right">
           <b-button
             id="add_action"
             size="sm"
             class="button-style"
             variant="biotech"
             @click="addCompany()"
-             v-if="actions.add_company"
-          >
+             v-if="actions.add_company">
             <font-awesome-icon icon="plus" class="mr-1" />Add Company
           </b-button>
       </b-col>
@@ -110,8 +77,9 @@
 
       <!-- Main table element -->
       <b-table
+      v-if="actions.view_company"
         id="company-table"
-        class="table-style"
+        class="table-style mt-3"
         show-empty
         scrollable
         sticky-header
@@ -159,8 +127,7 @@
                 ? row.item.U_MODULE_NAME
                 : listModules.find(
                     modules => modules.Code === row.item.U_MODULE_CODE
-                  ).Name
-            }}
+                  ).Name}}
           </div>
         </template>
 
@@ -191,17 +158,6 @@
       <hr />
 
       <b-row>
-        <!-- <b-col cols="1" class="mb-2 mt-1">
-          <b-form-group class="mb-0">
-            <b-form-select
-              v-model="perPage"
-              id="perPageSelect_company"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-select>
-          </b-form-group>
-        </b-col> -->
-
         <b-col cols="1" class="mb-2 mt-1">
           <b-form-group class="mb-0">
             <b-form-select
@@ -422,7 +378,8 @@ export default {
 
       actions: {
         add_company: false,
-        edit_company: false
+        edit_company: false,
+        view_company: false
       },
 
       alert: {
@@ -732,6 +689,10 @@ export default {
     if (userActions.find(action => action.U_ACTION_NAME === "Edit company")) {
       this.actions.edit_company = true;
     }
+    if (userActions.find(action => action.U_ACTION_NAME === "View companies")) {
+      this.actions.view_company = true;
+    }
+    
   }
 };
 </script>

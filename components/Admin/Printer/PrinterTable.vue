@@ -18,7 +18,7 @@
     <Loading v-if="showLoading" />
 
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -31,11 +31,12 @@
         </b-form-group>
       </b-col>
 
-      <b-col align="right">
+      <b-col cols="12" md="8" lg="9" sm="7" xs="4" class="mt-3" align="right">
         <b-button
+        v-if="actions.add_printer"
           id="create"
           variant="biotech"
-          class="button-style mt-3"
+          class="button-style"
           size="sm"
           @click="$bvModal.show('add-printerlocation-modal')"
         >
@@ -48,8 +49,9 @@
     <!-- Main table element -->
     <span>
       <b-table
+      v-if="actions.view_printer"
         id="location-table"
-        class="table-style"
+        class="table-style mt-3"
         show-empty
         scrollable="true"
         sticky-header
@@ -80,6 +82,7 @@
         <template v-slot:cell(actions)="row">
           <div>
             <b-button
+            v-if="actions.edit_printer"
               variant="edit"
               id="edit"
               class="table-button"
@@ -149,7 +152,7 @@
         <b-row>
           <b-col>
             <small class="text-left">Location</small>
-            <b-form-select v-model="printer.location"
+            <b-form-select v-model="printer.U_LOCATION_ID"
             size="sm"
             >
             <option :value="null">Select Locations</option>
@@ -170,7 +173,7 @@
               id="printer_ip"
               placeholder="Printer IP Address"
               class="form-text"
-              v-model="printer.ip"
+              v-model="printer.U_IP_ADD"
               required
               style="font-size: 13.5px"
             />
@@ -281,11 +284,16 @@ export default {
   components: { DateRangePicker, Loading },
   data() {
     return {
+      actions: {
+        view_printer: false,
+        add_printer: false,
+        edit_printer: false,
+      },
       isBusy: true,
       showLoading: false,
       printer_ip: null,
       printer_location: null,
-      action: [],
+      // action: [],
       itemsFields: [
         {
           key: "U_IP_ADD",
@@ -379,12 +387,12 @@ export default {
     async addPrinter(){
       console.log(this.printer);
 
-      if(this.printer.ip == null){
+      if(this.printer.U_IP_ADD == null){
           this.showAlert("Please input IP Address", "danger");
-      } else if(this.printer.location == null) {
+      } else if(this.printer.U_LOCATION_ID == null) {
           this.showAlert("Please input Location", "danger");
       } else {
-        const existingIP = this.listPrinters.find(ip => ip.U_IP_ADD === this.printer.ip)
+        const existingIP = this.listPrinters.find(ip => ip.U_IP_ADD === this.printer.U_IP_ADD)
         if(existingIP != null){
           this.showAlert("IP Address already exists", "danger");
         } else {
@@ -512,15 +520,16 @@ export default {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View Printer')) {
-      this.action.view_printer = true;
+      this.actions.view_printer = true;
+      console.log(this.actions.view_printer)
     }
 
     if(userActions.find(action => action.U_ACTION_NAME === 'Add Printer')) {
-      this.action.add_printer = true;
+      this.actions.add_printer = true;
     }
     
     if(userActions.find(action => action.U_ACTION_NAME === 'Edit Printer')) {
-      this.action.edit_printer = true;
+      this.actions.edit_printer = true;
     }
   }
 };
