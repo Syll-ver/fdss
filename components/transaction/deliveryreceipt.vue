@@ -532,9 +532,9 @@
           @change="test"    
           required
         ></b-form-select> -->
-        <small class="text-left" v-if="TRANSACTION_COMPANY_ID != null && user == rciGeneral" >Plot Code</small>
+        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci || user == rciGeneral" >Plot Code</small>
         <multiselect
-          v-if="TRANSACTION_COMPANY_ID == rci && user == rciGeneral"
+          v-if="TRANSACTION_COMPANY_ID == rci || user == rciGeneral"
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -545,12 +545,6 @@
           @input="getPlotAddress"
           required
         ></multiselect>
-        <b-form-input
-          v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral"
-          id="plot_code"
-          class="form-text"
-          v-model="U_APP_ProjCode"
-        />
 
         <small class="text-left">Address</small>
         <b-form-input
@@ -558,6 +552,14 @@
           id="farmer_add"
           class="form-text"
           v-model="U_FRMR_ADD"
+        />
+
+        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral" >Plot Code</small>
+        <b-form-input
+          v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral"
+          id="plot_code"
+          class="form-text"
+          v-model="U_APP_ProjCode"
         />
 
         <b-row>
@@ -1958,15 +1960,25 @@ export default {
       this.farmer = [];
       this.commodity = [];
       this.U_APP_ProjCode = null;
+      this.U_CMMDTY.value = null;
+      this.U_FRMR_NAME = null;
+      this.U_FRMR_ADD = null;
+      this.U_UOM = [];
       if(this.TRANSACTION_COMPANY_ID == this.rci) {
         await this.getFarmer();
         await this.getCommodity();
-        this.showLoading = false;
       } else if(this.TRANSACTION_COMPANY_ID == this.bfi) {
         await this.getFarmer();
         await this.getCommodity();
-        this.showLoading = false;
+      } else if(this.TRANSACTION_COMPANY_ID == null ) {
+         this.farmer = [];
+        this.commodity = [];
+        this.U_CMMDTY.value = null;
+        this.U_FRMR_NAME = null;
+        this.U_FRMR_ADD = null;
+        this.U_UOM = [];
       }
+      this.showLoading = false;
     },
     
     rowClassMain(items) {
@@ -2116,7 +2128,9 @@ export default {
       return;
     },
     close() {
-      (this.U_TRANSACTION_TYPE = null),
+      if(this.user == this.rciGeneral) {
+        this.U_TRANSACTION_TYPE = null;
+      }
       (this.U_REMARKS = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
