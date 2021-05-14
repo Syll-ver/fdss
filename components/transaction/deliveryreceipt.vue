@@ -535,9 +535,9 @@
           @change="test"    
           required
         ></b-form-select> -->
-        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci && user == rciGeneral" >Plot Code</small>
+        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci || user == rciGeneral" >Plot Code</small>
         <multiselect
-          v-if="TRANSACTION_COMPANY_ID == rci && user == rciGeneral"
+          v-if="TRANSACTION_COMPANY_ID == rci || user == rciGeneral"
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -2134,8 +2134,9 @@ export default {
       return;
     },
     close() {
-      (this.U_TRANSACTION_TYPE = null),
-      (this.TRANSACTION_COMPANY_ID = null),
+      if(this.user == this.rciGeneral) {
+        this.U_TRANSACTION_TYPE = null;
+      }
       (this.U_REMARKS = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),

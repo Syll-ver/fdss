@@ -1624,7 +1624,7 @@ export default {
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
                 U_UNLOADING: v[i].U_UNLOADING,
-                U_REMARKS: v[i].U_REMARKS
+                U_REMARKS: v[i].U_REMARKS,
               });
             }
           }
