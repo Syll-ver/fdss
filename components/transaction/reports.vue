@@ -706,7 +706,7 @@
           </b-card>
 
       <template v-slot:modal-footer="{}">
-        <b-button
+        <!-- <b-button
         v-show="(U_TRANSACTION_TYPE == 'Pick-up' && 
         ( U_ARRIVAL == null ||
           U_DEPARTURE == null ||
@@ -719,7 +719,7 @@
           class="button-style"
           @click="updateTime()"
           >Add Time Logs</b-button
-        >
+        > -->
         <b-button
           id="cancel_add_action_modal"
           size="sm"
