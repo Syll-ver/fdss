@@ -412,16 +412,15 @@
       id="add-transaction-modal"
       hide-header-close
       no-close-on-backdrop
+      no-scrollable
     >
       <template v-slot:modal-title>
         <h6>New Delivery Slip</h6>
       </template>
 
       <b-card class="card-shadow">
-        <div id="add-transaction">
-          <b-row>
-            <div class="ml-2" style=" 'overflow-x': hidden;
-  'overflow': scroll">
+
+           
         <small v-if="user == rciGeneral" >Transaction Company </small>
         <b-form-select
         v-if="user == rciGeneral"
@@ -742,9 +741,8 @@
           </b-col>
         </b-row>
         </b-form-group> -->
-      </div>
-          </b-row>
-        </div>
+      
+
       </b-card>
 
       <template v-slot:modal-footer="{}">
