@@ -36,7 +36,7 @@
     </b-row> -->
 
     <b-row>
-      <b-col cols="12" md="3" lg="3" sm="12" xs="1" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -48,8 +48,9 @@
           </b-input-group>
         </b-form-group>
       </b-col>
-      <b-col cols="12" md="6" lg="4" sm="8" xs="6" class="mt-3" style="display:flex" >
-        <b-input-group style="height:10px" size="sm">
+
+      <b-col class="mt-3">
+        <b-input-group prepend="Date" style="height:10px" size="sm">
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -72,7 +73,7 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col cols="12" md="3" lg="5" sm="4" xs="10" class="mt-3" align="left">
+      <b-col class="mt-3" align="left">
         <b-dropdown
           right
           id="filter_actions"
@@ -165,6 +166,19 @@
             <font-awesome-icon icon="file-excel" />
           </b-button>
       </b-col>
+ 
+      <b-col cols="2"  class="mt-3" align="right">
+        <!-- <b-form-group class="mb-0">
+          <b-form-select
+            id="perPageSelect_action"
+            size="sm"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group> -->
+      
+        
+     
+      </b-col>
     </b-row>
 
     <!-- Main table element -->
@@ -172,7 +186,7 @@
     <b-table
       id="delivery_receipt_table"
       show-empty
-      class="table-style mt-3"
+      class="table-style"
       scrollable
       sticky-header
       no-border-collapse
@@ -633,19 +647,6 @@
             </b-col>
           </b-row>
         </b-form-group>
-
-        <b-form-group>
-          <b-row>
-            <b-col cols="4">
-              <span>Remarks:</span>
-            </b-col>
-            <b-col cols="8">
-              <div class="dotted-border">
-                <span> : {{ U_REMARKS }} </span>
-              </div>
-            </b-col>
-          </b-row>
-        </b-form-group>
     
 
 <br>
@@ -895,17 +896,9 @@ export default {
     // await this.getFarmer();
     // await this.getCommodity();
     this.totalRows = this.items.length;
-    const userActions = JSON.parse(localStorage.user_actions)["Reports Module"];
-
-    if (userActions.find(action => action.U_ACTION_NAME === "View Reports")) {
-      this.actions.viewReports = true;
-    }
   },
   data() {
     return {
-      actions: {
-        viewReports: false
-      },
       rci: process.env.rci,
       bfi: process.env.bfi,
       filterStatus:["Completed","Cancelled"],
@@ -944,7 +937,7 @@ export default {
       U_TIME_END: null,
       U_DEPARTURE: null,
       U_UNLOADING: null,
-      U_REMARKS: null,
+      remarks: null,
 
       filterCompany:[],
       filterTransaction:["Pick-up","Delivery"],
@@ -1443,7 +1436,6 @@ export default {
       if(data.U_APP_ProjCode){
         this.U_APP_ProjCode = data.U_APP_ProjCode;
       }
-      this.U_REMARKS = data.U_REMARKS;
       this.U_DRVR_NAME = data.U_DRVR_NAME;
       this.U_HLPR_NAME = data.U_HLPR_NAME;
       this.U_REQUESTED_SACKS = data.U_REQUESTED_SACKS;
@@ -1585,8 +1577,7 @@ export default {
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
-                U_UNLOADING: v[i].U_UNLOADING,
-                U_REMARKS: v[i].U_REMARKS
+                U_UNLOADING: v[i].U_UNLOADING
               });
             } else {
               this.items.push({
@@ -1623,8 +1614,7 @@ export default {
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
-                U_UNLOADING: v[i].U_UNLOADING,
-                U_REMARKS: v[i].U_REMARKS,
+                U_UNLOADING: v[i].U_UNLOADING
               });
             }
           }
