@@ -419,6 +419,22 @@
       </template>
 
       <b-card class="card-shadow">
+        <small v-if="user == rciGeneral" >Transaction Company </small>
+        <b-form-select
+        v-if="user == rciGeneral"
+          id="transact_company"
+          v-model="TRANSACTION_COMPANY_ID"
+          class="form-text"
+          required
+          @change="fetch()"
+        > 
+          <option :value="null">
+            Select Transaction Company
+          </option>
+          <option v-for="(comp, i) of filterCompany"
+          :key="i" :value="comp.U_COMPANYCODE"> {{ comp.COMPANYNAME }} </option>
+        </b-form-select>
+
         <small>Schedule Date</small>
         <br />
         <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
@@ -516,9 +532,9 @@
           @change="test"    
           required
         ></b-form-select> -->
-        <small class="text-left" v-show="companyCode == rci " >Plot Code</small>
+        <small class="text-left" v-show="TRANSACTION_COMPANY_ID == rci " >Plot Code</small>
         <multiselect
-          v-show="companyCode == rci "
+          v-show="TRANSACTION_COMPANY_ID == rci "
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -744,6 +760,21 @@
       </template>
 
       <b-card class="card-shadow">
+        <small v-if="user == rciGeneral" >Transaction Company </small>
+        <b-form-select
+        v-if="user == rciGeneral"
+          id="transact_company"
+          v-model="TRANSACTION_COMPANY_ID"
+          class="form-text"
+          required
+          @change="fetch()"
+        > 
+          <option :value="null">
+            Select Transaction Company
+          </option>
+          <option v-for="(comp, i) of filterCompany"
+          :key="i" :value="comp.U_COMPANYCODE"> {{ comp.COMPANYNAME }} </option>
+        </b-form-select>
         <!-- <small class="text-left">Company</small>
         <br />
         <b> {{ this.TRANSACTION_COMPANY }}</b>
@@ -1596,18 +1627,24 @@ export default {
   },
   async created() {
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
+    this.user = localStorage.username;
+    if(this.user === this.rciGeneral) {
+      this.TRANSACTION_COMPANY_ID = null;
+    } else {
+      this.TRANSACTION_COMPANY_ID = this.companyCode
+      // this.fetch();
+    }
     await this.getTransactions();
-    // await this.getCommodity();
     await this.getTransactionType();
     await this.getPrinters();
-    // await this.getFarmer();
     await this.getLocationIP();
-    // await this.pingIP();
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
   },
   data() {
     return {
+      rciGeneral: process.env.rciGeneral,
+      user: null,
       rci: process.env.rci,
       bfi: process.env.bfi,
       isBusy: true,
@@ -1641,7 +1678,7 @@ export default {
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
       filterStatus: ["Pick-up", "Delivery"],
-      filterCompany: [],
+      // filterCompany: [],
       showLoading: false,
       alert: {
         showAlert: 0,
@@ -1663,6 +1700,7 @@ export default {
       // pricelist:[],
       unit: [],
       TRANSACTION_COMPANY: null,
+      TRANSACTION_COMPANY_ID: null,
       U_UOM: { UomName: "", UomEntry: "" },
       U_TRANSACTION_TYPE: null,
       U_FRMR_NAME: null,
@@ -1799,6 +1837,7 @@ export default {
 
     ...mapGetters({
       listPrinters: "Admin/Printer/getListPrinters",
+      listCompanies: "Admin/Company/getListCompanies",
     }),
 
     filterItems() {
@@ -1810,6 +1849,15 @@ export default {
           this.totalRows = count;
           return (request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase(), this.totalRows = request.length))
         }
+      })
+    },
+
+    filterCompany() {
+      return this.listCompanies.filter(company => {
+        if(company.U_IS_ACTIVE) {
+          return company;
+        }
+
       })
     },
 
@@ -1848,6 +1896,32 @@ export default {
       this.$bvModal.show('add-transaction-modal');
       await this.getCommodity();
       await this.getFarmer();
+      this.showLoading = false;
+    },
+
+    async fetch() {
+      this.showLoading = true;
+      this.farmer = [];
+      this.commodity = [];
+      this.U_APP_ProjCode = null;
+      this.U_CMMDTY = [];
+      this.U_FRMR_NAME = null;
+      this.U_FRMR_ADD = null;
+      this.U_UOM = [];
+      if(this.TRANSACTION_COMPANY_ID == this.rci) {
+        await this.getFarmer();
+        await this.getCommodity();
+      } else if(this.TRANSACTION_COMPANY_ID == this.bfi) {
+        await this.getFarmer();
+        await this.getCommodity();
+      } else if(this.TRANSACTION_COMPANY_ID == null) {
+        this.farmer = [];
+        this.commodity = [];
+        this.U_CMMDTY = [];
+        this.U_FRMR_NAME = null;
+        this.U_FRMR_ADD = null;
+        this.U_UOM = [];
+      }
       this.showLoading = false;
     },
 
@@ -1998,6 +2072,9 @@ export default {
       return;
     },
     close() {
+      if(this.user == this.rciGeneral) {
+        this.TRANSACTION_COMPANY_ID = null;
+      }
       (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
@@ -2393,6 +2470,9 @@ export default {
       }
     },
     cancel(data) {
+      if(this.user == this.rciGeneral) {
+        this.TRANSACTION_COMPANY_ID = null;
+      }
       this.U_APP_ProjCode = null;
       this.remarks = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -2546,7 +2626,7 @@ export default {
           Authorization: localStorage.SessionId
         },
         data: {
-          company: userDetails.U_COMPANY_CODE
+          company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
         }
       });
       const v = res.data.view;
@@ -2601,27 +2681,20 @@ export default {
       this.isBusy = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.commodity = [];
-      const res = await axios({
-        method: "POST",
-        url: `${this.$axios.defaults.baseURL}/api/items/select`,
-        headers: {
-          Authorization: localStorage.SessionId
-        },
-        data: {
-          company: userDetails.U_COMPANY_CODE
-        }
-      });
-      const v = res.data.view;
 
-      for(var i = 0; i < v.length; i++){
-        this.commodity.push({
-          text: v[i].ItemCode + ' : ' + v[i].ItemName,
-          value: v[i].ItemCode
-        })
-      }
+      if(this.TRANSACTION_COMPANY_ID == this.rci) {
+        const res = await axios({
+          method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/items/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
+          }
+        });
+        const v = res.data.view;
 
-      if(this.companyCode == `${process.env.rci}`) { 
-        this.commodity = [];
         // filter only agri-ops items
         const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
 
@@ -2631,26 +2704,42 @@ export default {
             value: startsWithFG[i].ItemCode
           });
         }
-      }
+        
+      } else if(this.TRANSACTION_COMPANY_ID == this.bfi) {
+        const res = await axios({
+          method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/items/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
+          }
+        });
+        const v = res.data.view;
 
-      if(this.companyCode == `${process.env.bfi}`) {
+        for(var i = 0; i < v.length; i++){
+          this.commodity.push({
+            text: v[i].ItemCode + ' : ' + v[i].ItemName,
+            value: v[i].ItemCode
+          })
+        }
+
+        // add the rice bran raw material
         const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
         this.commodity.push({
           text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
           value: riceBran[0].ItemCode
         })
       }
-
       this.isBusy = false;
-
-
     },
     async getFarmer() {
       this.isBusy = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.farmer = [];
       let v; 
-      if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+      if(this.TRANSACTION_COMPANY_ID == this.rci) {
         // RCI
 
         const res1 = await axios({
@@ -2660,7 +2749,7 @@ export default {
             Authorization: localStorage.SessionId
           },
           data: {
-            company: userDetails.U_COMPANY_CODE
+            company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
           }
         });
 
@@ -2701,7 +2790,7 @@ export default {
           }
         }
 
-      } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
+      } else if(this.TRANSACTION_COMPANY_ID == this.bfi) {
         // BFI
         const res = await axios({
         method: "POST",
@@ -2710,7 +2799,7 @@ export default {
             Authorization: localStorage.SessionId
           },
           data: {
-            company: userDetails.U_COMPANY_CODE
+            company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
           }
         });
         v = res.data.view;
@@ -2745,15 +2834,12 @@ export default {
       })
     },
     async test() {
-      console.log("transaction type", this.U_TRANSACTION_TYPE);
       this.showLoading = true;
       this.plotCode = [];
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
       let v = "";
 
-      if(this.companyCode == `${process.env.bfi}`) {
-
-      } else if(this.companyCode == `${process.env.rci}`) {
+      if(this.TRANSACTION_COMPANY_ID == this.rci) {
         this.U_APP_ProjCode = "";
         this.U_FRMR_ADD = "";
 
@@ -2797,9 +2883,9 @@ export default {
         const userDetails = JSON.parse(localStorage.user_details); 
 
         let json = {};
-        if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
+        if(this.TRANSACTION_COMPANY_ID == this.bfi) {
           json = {
-            company: userDetails.U_COMPANY_CODE,
+            company: this.TRANSACTION_COMPANY_ID, //userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
@@ -2813,9 +2899,9 @@ export default {
             plate_number: this.U_PLATE_NUMBER,
             signature: this.signaturePath
           };
-        } else if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+        } else if(this.TRANSACTION_COMPANY_ID == this.rci) {
           json = {
-            company: userDetails.U_COMPANY_CODE,
+            company: this.TRANSACTION_COMPANY_ID, //userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
@@ -2834,7 +2920,8 @@ export default {
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
-        fd.append("company", userDetails.U_COMPANY_CODE);
+        // fd.append("company", userDetails.U_COMPANY_CODE);
+        fd.append("company", this.TRANSACTION_COMPANY_ID);
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
@@ -3159,84 +3246,104 @@ export default {
   },
   async beforeCreate() {
     this.isBusy = true;
-      const userDetails = JSON.parse(localStorage.user_details);
-      this.farmer = [];
-      let v; 
-      if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
-        // RCI
 
-        const res1 = await axios({
-        method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-          data: {
-            company: userDetails.U_COMPANY_CODE
-          }
-        });
-        const v1 = res1.data.view; 
-        for (let i = 0; i < v1.length; i++) {
-          if(v1[i].CardType == "S"){
-            this.rci_farmer.push({
-              text: v1[i].SUPPLIER_NAME,
-              value: { id: v1[i].SUPPLIER_ID }
-            });
-          }
-        }
-
-        console.log("farmers", this.rci_farmer);
-
-        const res = await axios({
-          method: "GET",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-        });
-        v = res.data.view;
-
-        for(var i = 0; i < v.length; i++){
-          let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
-          for(var j = 0; j < this.rci_farmer.length; j++) {
-            let frmr_name = (this.rci_farmer[j].text).toLowerCase();
-            if((frmr.length == 1) && (frmr_name == frmr[0])) {
-              this.farmer.push({
-                text: v[i].PrjName,
-                value: { id: this.rci_farmer[j].value.id }
-              });
-            } else if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
-              this.farmer.push({
-                text: v[i].PrjName,
-                value: { id: this.rci_farmer[j].value.id }
-              });
+    await this.$store
+      .dispatch("Admin/Company/fetchListCompany", {
+        user_actions: JSON.parse(localStorage.user_actions),
+        SessionId: localStorage.SessionId,
+        Admin: "Y"
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.errorMsg) {
+            if (res.response.data.errorMsg === "Invalid session.") {
+              this.$bvModal.show("session_modal");
+            }
+            if (res.response.data.errorMsg === "Session restore error.") {
+              this.$bvModal.show("session_modal");
             }
           }
         }
+      });
 
-      } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
-        // BFI
-        const res = await axios({
-        method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-          data: {
-            company: userDetails.U_COMPANY_CODE
-          }
-        });
-        v = res.data.view;
+      // const userDetails = JSON.parse(localStorage.user_details);
+      // this.farmer = [];
+      // let v; 
+      // if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+      //   // RCI
 
-        for (let i = 0; i < v.length; i++) {
-          if(v[i].CardType == "S"){
-            this.farmer.push({
-              text: v[i].SUPPLIER_NAME,
-              value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-            });
-          }
-        }
-      }
+      //   const res1 = await axios({
+      //   method: "POST",
+      //     url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+      //     headers: {
+      //       Authorization: localStorage.SessionId
+      //     },
+      //     data: {
+      //       company: userDetails.U_COMPANY_CODE
+      //     }
+      //   });
+      //   const v1 = res1.data.view; 
+      //   for (let i = 0; i < v1.length; i++) {
+      //     if(v1[i].CardType == "S"){
+      //       this.rci_farmer.push({
+      //         text: v1[i].SUPPLIER_NAME,
+      //         value: { id: v1[i].SUPPLIER_ID }
+      //       });
+      //     }
+      //   }
+
+      //   console.log("farmers", this.rci_farmer);
+
+      //   const res = await axios({
+      //     method: "GET",
+      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+      //     headers: {
+      //       Authorization: localStorage.SessionId
+      //     },
+      //   });
+      //   v = res.data.view;
+
+      //   for(var i = 0; i < v.length; i++){
+      //     let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
+      //     for(var j = 0; j < this.rci_farmer.length; j++) {
+      //       let frmr_name = (this.rci_farmer[j].text).toLowerCase();
+      //       if((frmr.length == 1) && (frmr_name == frmr[0])) {
+      //         this.farmer.push({
+      //           text: v[i].PrjName,
+      //           value: { id: this.rci_farmer[j].value.id }
+      //         });
+      //       } else if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
+      //         this.farmer.push({
+      //           text: v[i].PrjName,
+      //           value: { id: this.rci_farmer[j].value.id }
+      //         });
+      //       }
+      //     }
+      //   }
+
+      // } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
+      //   // BFI
+      //   const res = await axios({
+      //   method: "POST",
+      //     url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+      //     headers: {
+      //       Authorization: localStorage.SessionId
+      //     },
+      //     data: {
+      //       company: userDetails.U_COMPANY_CODE
+      //     }
+      //   });
+      //   v = res.data.view;
+
+      //   for (let i = 0; i < v.length; i++) {
+      //     if(v[i].CardType == "S"){
+      //       this.farmer.push({
+      //         text: v[i].SUPPLIER_NAME,
+      //         value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+      //       });
+      //     }
+      //   }
+      // }
 
     await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
       SessionId: localStorage.SessionId
