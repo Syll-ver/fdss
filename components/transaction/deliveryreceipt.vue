@@ -33,7 +33,7 @@
 
     <Receipt ref="Receipt" v-show="false" />
     <b-row>
-      <b-col cols="12" md="3" lg="3" sm="12" xs="12" class="mt-3">
+      <b-col cols="3" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -46,7 +46,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col cols="12" md="3" lg="3" sm="10" xs="10" class="mt-3">
+      <b-col class="mt-3">
         <b-input-group size="sm">
           <date-range-picker
             id="actvty_date"
@@ -74,7 +74,7 @@
         
       </b-col>
 
-      <b-col cols="12" md="3" lg="3" sm="2" xs="2" class="mr-auto mt-3">
+      <b-col class="mt-3">
         <b-dropdown
           right
           id="filter_actions"
@@ -123,11 +123,11 @@
         </b-dropdown>
       </b-col>
       <!-- <b-row> -->
-      <b-col cols="12" md="3" lg="3" sm="12" xs="12" align="right" class="mt-3">
+      <b-col align="right">
         <b-button
           id="create"
           variant="biotech"
-          class="button-style"
+          class="button-style mt-3"
           size="sm"
           @click="createDR()"
         >
@@ -141,7 +141,7 @@
     <b-table
       id="delivery_receipt_table"
       show-empty
-      class="table-style mt-3"
+      class="table-style"
       scrollable
       sticky-header
       no-border-collapse
@@ -405,7 +405,7 @@
     <!-- Add Transaction -->
 
     <b-modal
-      size="m"
+      size="large"
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
@@ -419,27 +419,9 @@
       </template>
 
       <b-card class="card-shadow">
-
-           
-        <small v-if="user == rciGeneral" >Transaction Company </small>
-        <b-form-select
-        v-if="user == rciGeneral"
-          id="transact_company"
-          v-model="TRANSACTION_COMPANY_ID"
-          class="form-text"
-          required
-          @change="fetch()"
-        > 
-          <option :value="null">
-            Select Transaction Company
-          </option>
-          <option v-for="(comp, i) of filterCompany"
-          :key="i" :value="comp.U_COMPANYCODE"> {{ comp.COMPANYNAME }} </option>
-        </b-form-select>
-
         <small>Schedule Date</small>
         <br />
-        <date-time-picker  v-bind="datetimeScheme" @onChange="onChangeHandler" />
+        <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
 
         <small class="text-left">Transaction Type</small>
         <b-form-select
@@ -466,7 +448,7 @@
         
         </b-form-select>
         <small class="text-left">Item</small>
-          <vSelect id="commodity"
+        <vSelect id="commodity"
           placeholder="Select Item"
           v-model="U_CMMDTY.value"
           :options="commodity"
@@ -496,11 +478,11 @@
           required
         >
 
-          <template #first>
-            <b-form-select-option value="" selected disabled> 
-              Select UOM
-            </b-form-select-option>
-          </template>
+        <template #first>
+          <b-form-select-option value="" selected disabled> 
+            Select UOM
+          </b-form-select-option>
+        </template>
         </b-form-select>
 
         <small class="text-left">Farmer's Name</small>
@@ -525,7 +507,7 @@
           :clearable="false"
           required
           />
-        
+
         <!-- <b-form-select
           id="customer"
           class="form-text"
@@ -534,9 +516,9 @@
           @change="test"    
           required
         ></b-form-select> -->
-        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci" >Plot Code</small>
+        <small class="text-left" v-show="companyCode == rci " >Plot Code</small>
         <multiselect
-          v-if="TRANSACTION_COMPANY_ID == rci"
+          v-show="companyCode == rci "
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -554,14 +536,6 @@
           id="farmer_add"
           class="form-text"
           v-model="U_FRMR_ADD"
-        />
-
-        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral" >Plot Code</small>
-        <b-form-input
-          v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral"
-          id="plot_code"
-          class="form-text"
-          v-model="U_APP_ProjCode"
         />
 
         <b-row>
@@ -675,20 +649,7 @@
           </b-col>
           <b-col cols="6" v-else></b-col>
         </b-row>
-        <b-row>
-          <b-col>
-            <small class="text-left">Remark</small>
-            <b-form-textarea
-              id="remarks"
-              class="form-text"
-              v-model="U_REMARKS"
-              placeholder="Enter Remarks..."
-              rows="2"
-              max-rows="3"
-            ></b-form-textarea>
-          </b-col>
-        </b-row>
-        <!-- <b-row v-else> </b-row> -->
+        <b-row v-else> </b-row>
 
         <!-- <b-form-group v-if="U_TRANSACTION_TYPE === '1'">
           <b-row class="mt-0">
@@ -741,8 +702,6 @@
           </b-col>
         </b-row>
         </b-form-group> -->
-      
-
       </b-card>
 
       <template v-slot:modal-footer="{}">
@@ -811,10 +770,27 @@
           v-model="U_TRANSACTION_TYPE"
           class="form-text"
           :options="transaction_types"
-          disabled
-        ></b-form-select>
+          disabled>
+         <option :value="null">
+            Select Transaction Type
+          </option>
+          <option
+            v-for="(type, i) of transaction_types"
+            :key="i"
+            :value="type.value"
+          >{{ type.text == 'Delivery' ? 'Direct' : 'Pick-up' }}</option>
+        </b-form-select>
         <small class="text-left">Item</small>
-        <multiselect
+        <vSelect id="commodity"
+          placeholder="Select Item"
+          v-model="U_CMMDTY.value"
+          :options="commodity"
+          label="text"
+          @input="getUOM"
+          :clearable="false"
+          required
+          />
+        <!-- <multiselect
           id="commodity"
           placeholder="Select Item"
           v-model="U_CMMDTY"
@@ -825,7 +801,7 @@
           label="text"
           track-by="text"
           disabled
-        ></multiselect>
+        ></multiselect> -->
         <!-- <b-form-select
           id="commodity"
           v-model=" U_CMMDTY"
@@ -978,19 +954,6 @@
           <b-col cols="6" v-else></b-col>
         </b-row>
         <b-row v-else> </b-row>
-        <b-row>
-          <b-col>
-            <small class="text-left">Remark</small>
-            <b-form-textarea
-              id="remarks"
-              class="form-text"
-              v-model="U_REMARKS"
-              placeholder="Enter Remarks..."
-              rows="2"
-              max-rows="3"
-            ></b-form-textarea>
-          </b-col>
-        </b-row>
         <!-- <b-form-group v-show="(U_ARRIVAL || U_TIME_END || U_TIME_START || U_DEPARTURE)"
           label-size="sm" label="Remarks" class="mt-2 mb-0">
           <b-row class="mt-0">
@@ -1090,7 +1053,7 @@
         <div id="app" ref="testHtml">
           <div id="receipt">
             <b-row>
-              <div class="mr-4" style="width:31rem; height:45rem">
+              <div class="mr-4" style="width:31rem; height:40rem">
                 <span>
                   <b-img src="/logo1.png" class="receipt-logo" center />
                 </span>
@@ -1130,7 +1093,7 @@
                   </b-col>
                 </b-row>
 
-                <b-row v-if="U_APP_ProjCode">
+                <b-row v-show="U_APP_ProjCode">
                   <b-col cols="4">
                     <span>Plot Code</span>
                   </b-col>
@@ -1265,19 +1228,6 @@
                     <b-col cols="8">
                       <div class="dotted-border">
                         <span>: {{ U_EMPTY_SACKS }}</span>
-                      </div>
-                    </b-col>
-                  </b-row>
-                </div>
-
-                <div>
-                  <b-row>
-                    <b-col cols="4">
-                      <span>Remark</span>
-                    </b-col>
-                    <b-col cols="8">
-                      <div class="dotted-border">
-                        <span>: {{ U_REMARKS }} </span>
                       </div>
                     </b-col>
                   </b-row>
@@ -1533,7 +1483,7 @@
 
     <!-- choose printer modal -->
     <b-modal
-      size="sm"
+      size="large"
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
@@ -1631,7 +1581,7 @@ import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
 import jsPDF from "jspdf";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
-// import Ping from 'ping.js';
+// import ping from 'web-pingjs'
 export default {
   components: {
     jsPDF,
@@ -1646,15 +1596,6 @@ export default {
   },
   async created() {
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
-    this.user = localStorage.username;
-    // make transaction company null if user is ma'am zaina
-    if(this.user === this.rciGeneral) {
-      this.TRANSACTION_COMPANY_ID = null;
-    } else {
-      this.TRANSACTION_COMPANY_ID = this.companyCode
-      // this.fetch();
-    }
-    
     await this.getTransactions();
     // await this.getCommodity();
     await this.getTransactionType();
@@ -1664,40 +1605,9 @@ export default {
     // await this.pingIP();
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
-    // const userActions = JSON.parse(localStorage.user_actions)["Transactions Module"];
-
-    // if (userActions.find(action => action.U_ACTION_NAME === "Add transaction")) {
-    //   this.actions.createDeliveryTransaction = true;
-    // }
-    // if (userActions.find(action => action.U_ACTION_NAME === "Edit transaction")) {
-    //   this.actions.editDeliveryTransaction = true;
-    // }
-    // if (userActions.find(action => action.U_ACTION_NAME === "Cancel Transaction")) {
-    //   this.actions.cancelDeliveryTransaction = true;
-    // }
-    // if (userActions.find(action => action.U_ACTION_NAME === "Print Transaction")) {
-    //   this.actions.printDeliveryReceipt = true;
-    // }
-    // if (userActions.find(action => action.U_ACTION_NAME === "View Transaction Table")) {
-    //   this.actions.viewDeliveryTable = true;
-    // }
-    // if (userActions.find(action => action.U_ACTION_NAME === "View Transaction")) {
-    //   this.actions.viewDeliveryTransaction = true;
-    // }
-   
   },
   data() {
     return {
-      rciGeneral: process.env.rciGeneral,
-      user: null,
-      actions: {
-        createDeliveryTransaction: false,
-        editDeliveryTransaction: false,
-        viewDeliveryTable: false,
-        viewDeliveryTransaction: false,
-        cancelDeliveryTransaction: false,
-        printDeliveryReceipt: false,
-      },
       rci: process.env.rci,
       bfi: process.env.bfi,
       isBusy: true,
@@ -1731,7 +1641,7 @@ export default {
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
       filterStatus: ["Pick-up", "Delivery"],
-      // filterCompany: [],
+      filterCompany: [],
       showLoading: false,
       alert: {
         showAlert: 0,
@@ -1753,7 +1663,6 @@ export default {
       // pricelist:[],
       unit: [],
       TRANSACTION_COMPANY: null,
-      TRANSACTION_COMPANY_ID: null,
       U_UOM: { UomName: "", UomEntry: "" },
       U_TRANSACTION_TYPE: null,
       U_FRMR_NAME: null,
@@ -1775,7 +1684,6 @@ export default {
       U_EMPTY_SACKS: 0,
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
-      U_REMARKS: null,
       // U_ARRIVAL: null,
       // U_TIME_START: null,
       // U_TIME_END: null,
@@ -1783,13 +1691,9 @@ export default {
       transaction_types: [],
       companyList: null,
       farmer: [],
-      farmerRCI: [],
-      farmerBFI:[],
       rci_farmer: [],
       farmer_plotcode: [],
       farmerAdd: [],
-      commodityRCI: [],
-      commodityBFI: [],
       commodity: [],
       plotCode: [],
       status: "",
@@ -1895,7 +1799,6 @@ export default {
 
     ...mapGetters({
       listPrinters: "Admin/Printer/getListPrinters",
-      listCompanies: "Admin/Company/getListCompanies",
     }),
 
     filterItems() {
@@ -1907,15 +1810,6 @@ export default {
           this.totalRows = count;
           return (request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) || request.U_UOM.toLowerCase().match(this.filter.toLowerCase(), this.totalRows = request.length))
         }
-      })
-    },
-
-    filterCompany() {
-      return this.listCompanies.filter(company => {
-        if(company.U_IS_ACTIVE) {
-          return company;
-        }
-
       })
     },
 
@@ -1951,40 +1845,12 @@ export default {
   methods: { 
     async createDR() {
       this.showLoading = true;
-      this.$bvModal.show('add-transaction-modal')
-      if(this.TRANSACTION_COMPANY_ID != null) {
-        await this.getFarmer();
-        await this.getCommodity();
-      }
+      this.$bvModal.show('add-transaction-modal');
+      await this.getCommodity();
+      await this.getFarmer();
       this.showLoading = false;
+    },
 
-    },
-    async fetch() {
-      this.showLoading = true;
-      this.farmer = [];
-      this.commodity = [];
-      this.U_APP_ProjCode = null;
-      this.U_CMMDTY.value = null;
-      this.U_FRMR_NAME = null;
-      this.U_FRMR_ADD = null;
-      this.U_UOM = [];
-      if(this.TRANSACTION_COMPANY_ID == this.rci) {
-        await this.getFarmer();
-        await this.getCommodity();
-      } else if(this.TRANSACTION_COMPANY_ID == this.bfi) {
-        await this.getFarmer();
-        await this.getCommodity();
-      } else if(this.TRANSACTION_COMPANY_ID == null) {
-        this.farmer = [];
-        this.commodity = [];
-        this.U_CMMDTY.value = null;
-        this.U_FRMR_NAME = null;
-        this.U_FRMR_ADD = null;
-        this.U_UOM = [];
-      }
-      this.showLoading = false;
-    },
-    
     rowClassMain(items) {
       if(items){
         if(items.IFPASSRMRS != null){
@@ -2132,10 +1998,7 @@ export default {
       return;
     },
     close() {
-      if(this.user == this.rciGeneral) {
-        this.U_TRANSACTION_TYPE = null;
-      }
-      (this.U_REMARKS = null),
+      (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
         (this.U_APP_ProjCode = null),
@@ -2437,7 +2300,7 @@ export default {
     },
     async printed(transaction) {
       this.showLoading = true;
-      
+
       let data 
       if(this.toPrint.item) {
         data = this.toPrint.item
@@ -2488,7 +2351,7 @@ export default {
           }
         });
         this.showLoading = false;
-        // this.networkPrint(U_TRX_ID)
+        // this.networkPrint(U_TRX_ID);
         this.copiesToPrint = 1;
         this.$bvModal.hide('select-printer-modal');
         this.showAlert("Printed Successfully", "success");
@@ -2531,7 +2394,7 @@ export default {
     },
     cancel(data) {
       this.U_APP_ProjCode = null;
-      this.U_REMARKS = null;
+      this.remarks = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
@@ -2581,7 +2444,6 @@ export default {
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE = data.U_SCHEDULED_DATE;
       this.U_SCHEDULED_TIME = data.U_SCHEDULED_TIME;
-      this.U_REMARKS = data.U_REMARKS;
         // this.U_ARRIVAL = data.U_ARRIVAL;
         // this.U_DEPARTURE = data.U_DEPARTURE;
         // this.U_TIME_START = data.U_TIME_START;
@@ -2624,7 +2486,6 @@ export default {
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE_AND_TIME = data.U_SCHEDULED_DATE_AND_TIME;
-      this.U_REMARKS = data.U_REMARKS;
       // this.U_ARRIVAL = data.U_ARRIVAL;
       // this.U_DEPARTURE = data.U_DEPARTURE;
       // this.U_TIME_START = data.U_TIME_START;
@@ -2664,18 +2525,17 @@ export default {
       const v = res.data.view;
 
       for (let i = 0; i < v.length; i++) {
-        this.unit.push({
-          text: v[i].UomName,
-          value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
-        });
+        if(!(v[i].UomName.toLowerCase().includes("kilogram"))) {
+          this.unit.push({
+            text: v[i].UomName,
+            value: { UomName: v[i].UomName, UomEntry: v[i].UomEntry }
+          });
+        }
       }
       this.showLoading = false;
 
     },
     async getUOM() {
-      if(this.U_CMMDTY)
-      console.log("transaction company id",this.TRANSACTION_COMPANY_ID);
-
       this.showLoading = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.unit = [];
@@ -2686,11 +2546,10 @@ export default {
           Authorization: localStorage.SessionId
         },
         data: {
-          company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
+          company: userDetails.U_COMPANY_CODE
         }
       });
       const v = res.data.view;
-      console.log(v);
 
       for (let i = 0; i < v.length; i++) {
         if(!(v[i].UomName.toLowerCase().includes("kilogram"))) {
@@ -2738,11 +2597,62 @@ export default {
         })
       this.isBusy = false;
     },
+    async getCommodity() {
+      this.isBusy = true;
+      const userDetails = JSON.parse(localStorage.user_details);
+      this.commodity = [];
+      const res = await axios({
+        method: "POST",
+        url: `${this.$axios.defaults.baseURL}/api/items/select`,
+        headers: {
+          Authorization: localStorage.SessionId
+        },
+        data: {
+          company: userDetails.U_COMPANY_CODE
+        }
+      });
+      const v = res.data.view;
+
+      for(var i = 0; i < v.length; i++){
+        this.commodity.push({
+          text: v[i].ItemCode + ' : ' + v[i].ItemName,
+          value: v[i].ItemCode
+        })
+      }
+
+      if(this.companyCode == `${process.env.rci}`) { 
+        this.commodity = [];
+        // filter only agri-ops items
+        const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
+
+        for (let i = 0; i < startsWithFG.length; i++) {
+          this.commodity.push({
+            text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
+            value: startsWithFG[i].ItemCode
+          });
+        }
+      }
+
+      if(this.companyCode == `${process.env.bfi}`) {
+        const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
+        this.commodity.push({
+          text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
+          value: riceBran[0].ItemCode
+        })
+      }
+
+      this.isBusy = false;
+
+
+    },
     async getFarmer() {
+      this.isBusy = true;
+      const userDetails = JSON.parse(localStorage.user_details);
       this.farmer = [];
       let v; 
-      
-      if(this.TRANSACTION_COMPANY_ID == this.rci) {
+      if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+        // RCI
+
         const res1 = await axios({
         method: "POST",
           url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
@@ -2750,9 +2660,10 @@ export default {
             Authorization: localStorage.SessionId
           },
           data: {
-            company: this.rci 
+            company: userDetails.U_COMPANY_CODE
           }
         });
+
         const v1 = res1.data.view; 
         for (let i = 0; i < v1.length; i++) {
           if(v1[i].CardType == "S"){
@@ -2763,8 +2674,6 @@ export default {
           }
         }
 
-        console.log("farmers", this.rci_farmer);
-
         const res = await axios({
           method: "GET",
           url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
@@ -2773,12 +2682,7 @@ export default {
           },
         });
         v = res.data.view;
-        this.farmerRCI = [];
 
-      /**farmer name in bp master data are in uppercase, 
-       * farmer name in OPRJ is title case
-       * 
-       */
         for(var i = 0; i < v.length; i++){
           let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
           for(var j = 0; j < this.rci_farmer.length; j++) {
@@ -2796,20 +2700,20 @@ export default {
             }
           }
         }
-      } else {
-        // bfi
-        const res2 = await axios({
+
+      } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
+        // BFI
+        const res = await axios({
         method: "POST",
           url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
           headers: {
             Authorization: localStorage.SessionId
           },
           data: {
-            company: this.bfi
+            company: userDetails.U_COMPANY_CODE
           }
         });
-        v = res2.data.view;
-        this.farmerBFI = [];
+        v = res.data.view;
 
         for (let i = 0; i < v.length; i++) {
           if(v[i].CardType == "S"){
@@ -2820,62 +2724,6 @@ export default {
           }
         }
       }
-    },
-
-    async getCommodity() {
-      // this.isBusy = true;
-      this.showLoading = true;
-      this.commodity = [];
-      if(this.TRANSACTION_COMPANY_ID == this.rci) {
-        // get rci commodity
-        const res = await axios({
-          method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/items/select`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-          data: {
-            company: this.rci
-          }
-        });
-        const v = res.data.view;
-        // filter so only the finished goods items will be added to the array
-        const startsWithFG = v.filter((itemCode) => itemCode.ItemCode.startsWith("FG"));
-
-        for (let i = 0; i < startsWithFG.length; i++) {
-          this.commodity.push({
-            text: startsWithFG[i].ItemCode + ' : ' + startsWithFG[i].ItemName,
-            value: startsWithFG[i].ItemCode
-          });
-        }
-      } else if(this.TRANSACTION_COMPANY_ID == this.bfi) {
-        // get bfi commodity
-        const res1 = await axios({
-          method: "POST",
-          url: `${this.$axios.defaults.baseURL}/api/items/select`,
-          headers: {
-            Authorization: localStorage.SessionId
-          },
-          data: {
-            company: this.bfi
-          }
-        });
-        const v1 = res1.data.view;
-        for(var i = 0; i < v1.length; i++){
-          this.commodity.push({
-            text: v1[i].ItemCode + ' : ' + v1[i].ItemName,
-            value: v1[i].ItemCode
-          })
-        }
-        // add the rice bran raw material
-        const riceBran = v1.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
-        this.commodity.push({
-          text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
-          value: riceBran[0].ItemCode
-        })
-      }
-      // this.isBusy = false;
-      this.showLoading = false;
     },
     titleCase(str){
       // since getFarmer returns all UPPERCASE and getPlotCodes return Uppercase And Lowercase
@@ -2897,15 +2745,15 @@ export default {
       })
     },
     async test() {
+      console.log("transaction type", this.U_TRANSACTION_TYPE);
       this.showLoading = true;
       this.plotCode = [];
       this.U_FRMR_ADD = this.U_FRMR_NAME.value.address;
       let v = "";
 
-      // if(this.companyCode == `${process.env.bfi}`) {
+      if(this.companyCode == `${process.env.bfi}`) {
 
-      // } else 
-      if(this.TRANSACTION_COMPANY_ID == this.rci) {
+      } else if(this.companyCode == `${process.env.rci}`) {
         this.U_APP_ProjCode = "";
         this.U_FRMR_ADD = "";
 
@@ -2949,10 +2797,9 @@ export default {
         const userDetails = JSON.parse(localStorage.user_details); 
 
         let json = {};
-        if(this.TRANSACTION_COMPANY_ID == `${process.env.bfi}`) {
-        //userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
+        if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
           json = {
-            company: this.TRANSACTION_COMPANY_ID,//userDetails.U_COMPANY_CODE,
+            company: userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
@@ -2966,10 +2813,9 @@ export default {
             plate_number: this.U_PLATE_NUMBER,
             signature: this.signaturePath
           };
-        } else if(this.TRANSACTION_COMPANY_ID == `${process.env.rci}`) {
-          //userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+        } else if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
           json = {
-            company: this.TRANSACTION_COMPANY_ID, //userDetails.U_COMPANY_CODE,
+            company: userDetails.U_COMPANY_CODE,
             uom_id: this.U_UOM.UomEntry,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
@@ -2988,9 +2834,7 @@ export default {
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
-        // fd.append("company", userDetails.U_COMPANY_CODE);
-        fd.append("remarks", this.U_REMARKS);
-        fd.append("company", this.TRANSACTION_COMPANY_ID);
+        fd.append("company", userDetails.U_COMPANY_CODE);
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
@@ -2999,11 +2843,7 @@ export default {
         
         fd.append("farmer_name", this.U_FRMR_NAME.text);
         if(this.U_APP_ProjCode){
-          if(this.U_APP_ProjCode.text) {
-            fd.append("plot_code", this.U_APP_ProjCode.text);
-          } else {
-            fd.append("plot_code", this.U_APP_ProjCode);
-          }
+          fd.append("plot_code", this.U_APP_ProjCode.text);
         }
         fd.append("farmer_add", this.U_FRMR_ADD);
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
@@ -3092,7 +2932,6 @@ export default {
           plate_number: this.U_PLATE_NUMBER,
           scheduled_date: this.U_SCHEDULED_DATE,
           scheduled_time: intToTime(this.U_SCHEDULED_TIME),
-          remarks: this.U_REMARKS,
           // arrival: this.U_ARRIVAL,
           // time_start: this.U_TIME_START,
           // time_end: this.U_TIME_END,
@@ -3227,7 +3066,6 @@ export default {
         });
 
         const v = res.data.view;
-        console.log(v);
         for (let i = 0; i < v.length; i++) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
           // const t = this.intToTime(v[i].CREATED_TIME);
@@ -3305,8 +3143,7 @@ export default {
               // selectedcompany: v[i].USER_COMPANY,
               TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
               TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-              IFPASSRMRS: v[i].ifpassRMRS,
-              U_REMARKS: v[i].U_REMARKS,
+              IFPASSRMRS: v[i].ifpassRMRS
             });
           // }
         }
@@ -3322,127 +3159,84 @@ export default {
   },
   async beforeCreate() {
     this.isBusy = true;
+      const userDetails = JSON.parse(localStorage.user_details);
+      this.farmer = [];
+      let v; 
+      if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
+        // RCI
 
-    await this.$store
-      .dispatch("Admin/Company/fetchListCompany", {
-        user_actions: JSON.parse(localStorage.user_actions),
-        SessionId: localStorage.SessionId,
-        Admin: "Y"
-      })
-      .then(res => {
-        if (res && res.name == "Error") {
-          if (res.response && res.response.data.errorMsg) {
-            if (res.response.data.errorMsg === "Invalid session.") {
-              this.$bvModal.show("session_modal");
-            }
-            if (res.response.data.errorMsg === "Session restore error.") {
-              this.$bvModal.show("session_modal");
+        const res1 = await axios({
+        method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: userDetails.U_COMPANY_CODE
+          }
+        });
+        const v1 = res1.data.view; 
+        for (let i = 0; i < v1.length; i++) {
+          if(v1[i].CardType == "S"){
+            this.rci_farmer.push({
+              text: v1[i].SUPPLIER_NAME,
+              value: { id: v1[i].SUPPLIER_ID }
+            });
+          }
+        }
+
+        console.log("farmers", this.rci_farmer);
+
+        const res = await axios({
+          method: "GET",
+          url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+        });
+        v = res.data.view;
+
+        for(var i = 0; i < v.length; i++){
+          let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
+          for(var j = 0; j < this.rci_farmer.length; j++) {
+            let frmr_name = (this.rci_farmer[j].text).toLowerCase();
+            if((frmr.length == 1) && (frmr_name == frmr[0])) {
+              this.farmer.push({
+                text: v[i].PrjName,
+                value: { id: this.rci_farmer[j].value.id }
+              });
+            } else if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
+              this.farmer.push({
+                text: v[i].PrjName,
+                value: { id: this.rci_farmer[j].value.id }
+              });
             }
           }
         }
-      });
-      const userDetails = JSON.parse(localStorage.user_details);
-      // this.farmer = [];
-      // let v; 
-      // // if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
-      //   // RCI
-      //   const res1 = await axios({
-      //   method: "POST",
-      //     url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-      //     data: {
-      //       company: this.rci //userDetails.U_COMPANY_CODE
-      //     }
-      //   });
-      //   const v1 = res1.data.view; 
-      //   for (let i = 0; i < v1.length; i++) {
-      //     if(v1[i].CardType == "S"){
-      //       this.rci_farmer.push({
-      //         text: v1[i].SUPPLIER_NAME,
-      //         value: { id: v1[i].SUPPLIER_ID }
-      //       });
-      //     }
-      //   }
 
-      //   console.log("farmers", this.rci_farmer);
+      } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
+        // BFI
+        const res = await axios({
+        method: "POST",
+          url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
+          headers: {
+            Authorization: localStorage.SessionId
+          },
+          data: {
+            company: userDetails.U_COMPANY_CODE
+          }
+        });
+        v = res.data.view;
 
-      //   const res = await axios({
-      //     method: "GET",
-      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-      //   });
-      //   v = res.data.view;
-      //   this.farmerRCI = [];
-
-      //   for(var i = 0; i < v.length; i++){
-      //     let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
-      //     for(var j = 0; j < this.rci_farmer.length; j++) {
-      //       let frmr_name = (this.rci_farmer[j].text).toLowerCase();
-      //       if((frmr.length == 1) && (frmr_name == frmr[0])) {
-      //         this.farmerRCI.push({
-      //           text: v[i].PrjName,
-      //           value: { id: this.rci_farmer[j].value.id }
-      //         });
-      //       } else if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
-      //         this.farmerRCI.push({
-      //           text: v[i].PrjName,
-      //           value: { id: this.rci_farmer[j].value.id }
-      //         });
-      //       }
-      //     }
-      //   }
-
-      //   // bfi
-      //   const res2 = await axios({
-      //   method: "POST",
-      //     url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-      //     data: {
-      //       company: this.bfi
-      //     }
-      //   });
-      //   v = res2.data.view;
-      //   this.farmerBFI = [];
-
-      //   for (let i = 0; i < v.length; i++) {
-      //     if(v[i].CardType == "S"){
-      //       this.farmerBFI.push({
-      //         text: v[i].SUPPLIER_NAME,
-      //         value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-      //       });
-      //     }
-      //   }
-
-      // } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
-      //   // BFI
-      //   const res = await axios({
-      //   method: "POST",
-      //     url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-      //     data: {
-      //       company: this.bfi //userDetails.U_COMPANY_CODE
-      //     }
-      //   });
-      //   v = res.data.view;
-      //   this.farmerBFI = [];
-
-      //   for (let i = 0; i < v.length; i++) {
-      //     if(v[i].CardType == "S"){
-      //       this.farmerBFI.push({
-      //         text: v[i].SUPPLIER_NAME,
-      //         value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-      //       });
-      //     }
-      //   }
-      // }
+        for (let i = 0; i < v.length; i++) {
+          if(v[i].CardType == "S"){
+            this.farmer.push({
+              text: v[i].SUPPLIER_NAME,
+              value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
+            });
+          }
+        }
+      }
 
     await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
       SessionId: localStorage.SessionId
