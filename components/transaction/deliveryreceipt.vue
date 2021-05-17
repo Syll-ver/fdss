@@ -405,7 +405,7 @@
     <!-- Add Transaction -->
 
     <b-modal
-      size="large"
+      size="m"
       header-bg-variant="biotech"
       header-text-variant="light"
       body-bg-variant="gray"
@@ -419,6 +419,8 @@
       </template>
 
       <b-card class="card-shadow">
+
+           
         <small v-if="user == rciGeneral" >Transaction Company </small>
         <b-form-select
         v-if="user == rciGeneral"
@@ -437,7 +439,7 @@
 
         <small>Schedule Date</small>
         <br />
-        <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
+        <date-time-picker  v-bind="datetimeScheme" @onChange="onChangeHandler" />
 
         <small class="text-left">Transaction Type</small>
         <b-form-select
@@ -532,9 +534,9 @@
           @change="test"    
           required
         ></b-form-select> -->
-        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci || user == rciGeneral" >Plot Code</small>
+        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci" >Plot Code</small>
         <multiselect
-          v-if="TRANSACTION_COMPANY_ID == rci || user == rciGeneral"
+          v-if="TRANSACTION_COMPANY_ID == rci"
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
@@ -739,6 +741,8 @@
           </b-col>
         </b-row>
         </b-form-group> -->
+      
+
       </b-card>
 
       <template v-slot:modal-footer="{}">
@@ -1086,7 +1090,7 @@
         <div id="app" ref="testHtml">
           <div id="receipt">
             <b-row>
-              <div class="mr-4" style="width:31rem; height:40rem">
+              <div class="mr-4" style="width:31rem; height:45rem">
                 <span>
                   <b-img src="/logo1.png" class="receipt-logo" center />
                 </span>
@@ -1970,8 +1974,8 @@ export default {
       } else if(this.TRANSACTION_COMPANY_ID == this.bfi) {
         await this.getFarmer();
         await this.getCommodity();
-      } else if(this.TRANSACTION_COMPANY_ID == null ) {
-         this.farmer = [];
+      } else if(this.TRANSACTION_COMPANY_ID == null) {
+        this.farmer = [];
         this.commodity = [];
         this.U_CMMDTY.value = null;
         this.U_FRMR_NAME = null;
@@ -2995,7 +2999,11 @@ export default {
         
         fd.append("farmer_name", this.U_FRMR_NAME.text);
         if(this.U_APP_ProjCode){
-          fd.append("plot_code", this.U_APP_ProjCode.text);
+          if(this.U_APP_ProjCode.text) {
+            fd.append("plot_code", this.U_APP_ProjCode.text);
+          } else {
+            fd.append("plot_code", this.U_APP_ProjCode);
+          }
         }
         fd.append("farmer_add", this.U_FRMR_ADD);
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);

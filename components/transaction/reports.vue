@@ -633,6 +633,19 @@
             </b-col>
           </b-row>
         </b-form-group>
+
+        <b-form-group>
+          <b-row>
+            <b-col cols="4">
+              <span>Remarks:</span>
+            </b-col>
+            <b-col cols="8">
+              <div class="dotted-border">
+                <span> : {{ U_REMARKS }} </span>
+              </div>
+            </b-col>
+          </b-row>
+        </b-form-group>
     
 
 <br>
@@ -1573,7 +1586,7 @@ export default {
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
                 U_UNLOADING: v[i].U_UNLOADING,
-                U_REMARKS: v[i].U_REMARKS,
+                U_REMARKS: v[i].U_REMARKS
               });
             } else {
               this.items.push({

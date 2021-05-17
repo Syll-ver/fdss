@@ -75,9 +75,9 @@ module.exports = {
     bfi: `145969`, // dev
     rci: `146034`, // dev
     // bfi: '4400', // prod
-    // rci: '4381', // prod
+    // rci: '4381' // prod
     // bfi: `139483`, // eut
-    // rci: `139492`, // eut
+    // rci: `139492` // eut
     rciGeneral: 154151631
   },
 
