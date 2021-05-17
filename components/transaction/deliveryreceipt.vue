@@ -532,9 +532,9 @@
           @change="test"    
           required
         ></b-form-select> -->
-        <small class="text-left" v-show="TRANSACTION_COMPANY_ID == rci " >Plot Code</small>
+        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci" >Plot Code</small>
         <multiselect
-          v-show="TRANSACTION_COMPANY_ID == rci "
+          v-if="TRANSACTION_COMPANY_ID == rci"
           id="plot_code"
           :options="plotCode"
           placeholder="Select Plot Code"
