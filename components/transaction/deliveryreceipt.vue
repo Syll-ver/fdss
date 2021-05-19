@@ -1754,6 +1754,7 @@ export default {
       U_EMPTY_SACKS: 0,
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
+      U_REMARKS: null,
       // U_ARRIVAL: null,
       // U_TIME_START: null,
       // U_TIME_END: null,
