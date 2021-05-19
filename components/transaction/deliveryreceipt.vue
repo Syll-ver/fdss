@@ -554,6 +554,14 @@
           v-model="U_FRMR_ADD"
         />
 
+        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral" >Plot Code</small>
+        <b-form-input
+          v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral"
+          id="plot_code"
+          class="form-text"
+          v-model="U_APP_ProjCode"
+        />
+
         <b-row>
           <b-col cols="6">
             <small class="text-left">Helper's Name</small>
@@ -665,7 +673,19 @@
           </b-col>
           <b-col cols="6" v-else></b-col>
         </b-row>
-        <b-row v-else> </b-row>
+        <b-row>
+          <b-col>
+            <small class="text-left">Remark</small>
+            <b-form-textarea
+              id="remarks"
+              class="form-text"
+              v-model="U_REMARKS"
+              placeholder="Enter Remarks..."
+              rows="2"
+              max-rows="3"
+            ></b-form-textarea>
+          </b-col>
+        </b-row>
 
         <!-- <b-form-group v-if="U_TRANSACTION_TYPE === '1'">
           <b-row class="mt-0">
@@ -859,21 +879,21 @@
           disabled
         ></b-form-input>
 
+        <small class="text-left" v-if="U_APP_ProjCode">Plot Code</small>
+        <b-form-input
+          v-if="U_APP_ProjCode"
+          id="plot_code"
+          class="form-text"
+          v-model="U_APP_ProjCode"
+          disabled
+        />
+
         <small class="text-left">Address</small>
         <b-form-input
           id="farmer_add"
           class="form-text"
           v-model="U_FRMR_ADD"
           disabled
-        />
-
-        <small v-show="U_APP_ProjCode" class="text-left">Plot Code</small>
-        <b-form-input
-          v-show="U_APP_ProjCode"
-          disabled
-          id="farmer_plot_code"
-          class="form-text"
-          v-model="U_APP_ProjCode"
         />
 
         <b-row>
@@ -984,7 +1004,19 @@
           </b-col>
           <b-col cols="6" v-else></b-col>
         </b-row>
-        <b-row v-else> </b-row>
+        <b-row>
+          <b-col>
+            <small class="text-left">Remark</small>
+            <b-form-textarea
+              id="remarks"
+              class="form-text"
+              v-model="U_REMARKS"
+              placeholder="Enter Remarks..."
+              rows="2"
+              max-rows="3"
+            ></b-form-textarea>
+          </b-col>
+        </b-row>
         <!-- <b-form-group v-show="(U_ARRIVAL || U_TIME_END || U_TIME_START || U_DEPARTURE)"
           label-size="sm" label="Remarks" class="mt-2 mb-0">
           <b-row class="mt-0">
@@ -2524,6 +2556,7 @@ export default {
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE = data.U_SCHEDULED_DATE;
       this.U_SCHEDULED_TIME = data.U_SCHEDULED_TIME;
+      this.U_REMARKS = data.U_REMARKS;
         // this.U_ARRIVAL = data.U_ARRIVAL;
         // this.U_DEPARTURE = data.U_DEPARTURE;
         // this.U_TIME_START = data.U_TIME_START;
@@ -2547,8 +2580,6 @@ export default {
       this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID };
     },
     show(data) {
-      // this.U_UOM = data.U_UOM.UomName;
-      console.log(data);
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -2566,6 +2597,7 @@ export default {
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE_AND_TIME = data.U_SCHEDULED_DATE_AND_TIME;
+      this.U_REMARKS = data.U_REMARKS;
       // this.U_ARRIVAL = data.U_ARRIVAL;
       // this.U_DEPARTURE = data.U_DEPARTURE;
       // this.U_TIME_START = data.U_TIME_START;
@@ -2920,17 +2952,21 @@ export default {
 
         var fd = new FormData();
         fd.append("", signature, signature.name);
-        // fd.append("company", userDetails.U_COMPANY_CODE);
+        if(this.U_REMARKS) {
+          fd.append("remarks", this.U_REMARKS);
+        }
         fd.append("company", this.TRANSACTION_COMPANY_ID);
         fd.append("transaction_type_id", this.U_TRANSACTION_TYPE);
         fd.append("item_id", this.U_CMMDTY.value.value);
         fd.append("uom_id", this.U_UOM.UomEntry);
-          fd.append("farmer_id", this.U_FRMR_NAME.value.id);
-
-        
+        fd.append("farmer_id", this.U_FRMR_NAME.value.id);
         fd.append("farmer_name", this.U_FRMR_NAME.text);
         if(this.U_APP_ProjCode){
-          fd.append("plot_code", this.U_APP_ProjCode.text);
+          if(this.U_APP_ProjCode.text) {
+            fd.append("plot_code", this.U_APP_ProjCode.text);
+          } else {
+            fd.append("plot_code", this.U_APP_ProjCode);
+          }
         }
         fd.append("farmer_add", this.U_FRMR_ADD);
         fd.append("driver_name", this.U_DRVR_LNAME + ", " + this.U_DRVR_FNAME);
@@ -3019,6 +3055,7 @@ export default {
           plate_number: this.U_PLATE_NUMBER,
           scheduled_date: this.U_SCHEDULED_DATE,
           scheduled_time: intToTime(this.U_SCHEDULED_TIME),
+          remarks: this.U_REMARKS,
           // arrival: this.U_ARRIVAL,
           // time_start: this.U_TIME_START,
           // time_end: this.U_TIME_END,
