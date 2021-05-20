@@ -1116,7 +1116,7 @@
         <div id="app" ref="testHtml">
           <div id="receipt">
             <b-row>
-              <div class="mr-4" style="width:31rem; height:40rem">
+              <div class="mr-4" style="width:31rem; height:45rem">
                 <span>
                   <b-img src="/logo1.png" class="receipt-logo" center />
                 </span>
@@ -1162,7 +1162,8 @@
                   </b-col>
                   <b-col cols="8">
                     <div class="dotted-border">
-                      <span> : {{ U_APP_ProjCode }} </span>
+                      <span> : {{ U_APP_ProjCode != null ? U_APP_ProjCode : "" ||
+                        U_APP_ProjCode != undefined ? U_APP_ProjCode : "" }} </span>
                     </div>
                   </b-col>
                 </b-row>
@@ -1291,6 +1292,18 @@
                     <b-col cols="8">
                       <div class="dotted-border">
                         <span>: {{ U_EMPTY_SACKS }}</span>
+                      </div>
+                    </b-col>
+                  </b-row>
+
+                  <b-row>
+                    <b-col cols="4">
+                      <span>Remarks</span>
+                    </b-col>
+                    <b-col cols="8">
+                      <div class="dotted-border">
+                        <span class="mt-1">: {{ U_REMARKS != null ? U_REMARKS : ""
+                          || U_REMARKS != undefined ? U_REMARKS : "" }}</span>
                       </div>
                     </b-col>
                   </b-row>
@@ -2179,176 +2192,176 @@ export default {
         message1
       };
     },
-    async networkPrint(data) {
-      let QRCode = require("qrcode");
+    // async networkPrint(data) {
+    //   let QRCode = require("qrcode");
 
-      this.qrString = JSON.stringify(data.U_TRX_NO);
+    //   this.qrString = JSON.stringify(data.U_TRX_NO);
 
-      const qr = await QRCode.toDataURL(data.U_TRX_NO);
+    //   const qr = await QRCode.toDataURL(data.U_TRX_NO);
 
-      let canvas1 = document.createElement("canvas");
-      canvas1.width = 100;
-      canvas1.height = 100;
+    //   let canvas1 = document.createElement("canvas");
+    //   canvas1.width = 100;
+    //   canvas1.height = 100;
 
-      let biotechLogoContext = canvas1.getContext("2d");
+    //   let biotechLogoContext = canvas1.getContext("2d");
 
-      const biotechLogo = await new Promise(resolve => {
-        let image1 = new Image();
-        image1.src = qr;
-        image1.onload = () => resolve(image1);
-      });
+    //   const biotechLogo = await new Promise(resolve => {
+    //     let image1 = new Image();
+    //     image1.src = qr;
+    //     image1.onload = () => resolve(image1);
+    //   });
 
-      biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
+    //   biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
 
-      let canvas = document.createElement("canvas");
-      canvas.width = 200;
-      canvas.height = 100;
+    //   let canvas = document.createElement("canvas");
+    //   canvas.width = 200;
+    //   canvas.height = 100;
 
-      let revivelogoContext = canvas.getContext("2d");
+    //   let revivelogoContext = canvas.getContext("2d");
 
-      const revivelogo = await new Promise(resolve => {
-        let image = new Image();
-        image.src = "/logo1.png";
-        image.onload = () => resolve(image);
-      });
+    //   const revivelogo = await new Promise(resolve => {
+    //     let image = new Image();
+    //     image.src = "/logo1.png";
+    //     image.onload = () => resolve(image);
+    //   });
 
-      revivelogoContext.drawImage(revivelogo, 0, 0, 180, 100);
+    //   revivelogoContext.drawImage(revivelogo, 0, 0, 180, 100);
 
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
-      this.networkPrinter.addImage(revivelogoContext, 0, 0, 180, 95);
-      this.networkPrinter.addText(`CROPTECH INC.\n`);
-      this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
+    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
+    //   this.networkPrinter.addImage(revivelogoContext, 0, 0, 180, 95);
+    //   this.networkPrinter.addText(`CROPTECH INC.\n`);
+    //   this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
 
-      this.networkPrinter.addText(
-        `Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`
-      );
-      this.networkPrinter.addText(`${data.U_DTE_CRTD}\n`);
+    //   this.networkPrinter.addText(
+    //     `Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`
+    //   );
+    //   this.networkPrinter.addText(`${data.U_DTE_CRTD}\n`);
 
-      this.networkPrinter.addText(`\n`);
-      // this.networkPrinter.align('right');
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
-      // this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
-      this.networkPrinter.addText(`Transaction Number: ${data.U_TRX_NO}\n`);
+    //   this.networkPrinter.addText(`\n`);
+    //   // this.networkPrinter.align('right');
+    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
+    //   // this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
+    //   this.networkPrinter.addText(`Transaction Number: ${data.U_TRX_NO}\n`);
 
-      this.networkPrinter.addText(
-        `Delivery Schedule: ${data.U_SCHEDULED_DATE_AND_TIME}\n`
-      );
-      this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
-      this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
-      if(data.U_APP_ProjCode){
-        this.networkPrinter.addText(`Plot Code: ${data.U_APP_ProjCode}\n`)
-      }
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
-      this.networkPrinter.addText(
-        `Requested Empty Sacks: ${data.U_REQUESTED_SACKS}\n`
-      );
-      if (data.U_TRANSACTION_TYPE == "Delivery") {
-        this.networkPrinter.addText(
-          `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
-        );
-      } else if (
-        data.U_TRANSACTION_TYPE == "Pick-up" &&
-        data.U_UOM.UomName == "TRUCK LOAD"
-      ) {
-        this.networkPrinter.addText(
-          `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
-        );
-      } else {
-        this.networkPrinter.addText(`Quantity:  \n`);
-      }
-      this.networkPrinter.addText(
-        `Returned Empty Sacks: ${data.U_EMPTY_SACKS}\n`
-      );
-      this.networkPrinter.addText(`Driver's Name: ${data.U_DRVR_NAME}\n`);
-      this.networkPrinter.addText(`Plate Number: ${data.U_PLATE_NUMBER}\n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
+    //   this.networkPrinter.addText(
+    //     `Delivery Schedule: ${data.U_SCHEDULED_DATE_AND_TIME}\n`
+    //   );
+    //   this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
+    //   this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
+    //   if(data.U_APP_ProjCode){
+    //     this.networkPrinter.addText(`Plot Code: ${data.U_APP_ProjCode}\n`)
+    //   }
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
+    //   this.networkPrinter.addText(
+    //     `Requested Empty Sacks: ${data.U_REQUESTED_SACKS}\n`
+    //   );
+    //   if (data.U_TRANSACTION_TYPE == "Delivery") {
+    //     this.networkPrinter.addText(
+    //       `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
+    //     );
+    //   } else if (
+    //     data.U_TRANSACTION_TYPE == "Pick-up" &&
+    //     data.U_UOM.UomName == "TRUCK LOAD"
+    //   ) {
+    //     this.networkPrinter.addText(
+    //       `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
+    //     );
+    //   } else {
+    //     this.networkPrinter.addText(`Quantity:  \n`);
+    //   }
+    //   this.networkPrinter.addText(
+    //     `Returned Empty Sacks: ${data.U_EMPTY_SACKS}\n`
+    //   );
+    //   this.networkPrinter.addText(`Driver's Name: ${data.U_DRVR_NAME}\n`);
+    //   this.networkPrinter.addText(`Plate Number: ${data.U_PLATE_NUMBER}\n`);
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
 
-      this.networkPrinter.addText(`SIGNED BY:         REVIEWED BY: \n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(
-        `${data.U_FRMR_NAME}    ${data.U_HLPR_NAME}\n`
-      );
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`VERIFIED BY: \n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
-      this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
-      // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
-      // this.networkPrinter.addText(
-      //   `Supplier Code: ${data.header.supplier_code}\n`
-      // );
-      // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
-      // this.networkPrinter.addText(`${data.header.date}\n`);
+    //   this.networkPrinter.addText(`SIGNED BY:         REVIEWED BY: \n`);
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addText(
+    //     `${data.U_FRMR_NAME}    ${data.U_HLPR_NAME}\n`
+    //   );
+    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addText(`VERIFIED BY: \n`);
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
+    //   this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
+    //   // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
+    //   // this.networkPrinter.addText(
+    //   //   `Supplier Code: ${data.header.supplier_code}\n`
+    //   // );
+    //   // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
+    //   // this.networkPrinter.addText(`${data.header.date}\n`);
 
-      this.networkPrinter.addText("\n");
-      this.networkPrinter.addCut(); // for auto cutting
+    //   this.networkPrinter.addText("\n");
+    //   this.networkPrinter.addCut(); // for auto cutting
       
 
-      // this.networkPrinter.send();
-    },
-    async networkPrintInit() {
+    //   // this.networkPrinter.send();
+    // },
+    // async networkPrintInit() {
         
-      let ePosDev = new epson.ePOSDevice();
+    //   let ePosDev = new epson.ePOSDevice();
 
-      let ipAddress = 'tcp://'+process.env.networkPrinterIp,
-      // let ipAddress = localStorage.printer_ip,
-        port = process.env.networkPrinterPort;
-        // port = localStorage.printer_port;
+    //   let ipAddress = 'tcp://'+process.env.networkPrinterIp,
+    //   // let ipAddress = localStorage.printer_ip,
+    //     port = process.env.networkPrinterPort;
+    //     // port = localStorage.printer_port;
 
-      let deviceId = "bfi_printer";
-      let options = { crypto: false, buffer: false };
+    //   let deviceId = "bfi_printer";
+    //   let options = { crypto: false, buffer: false };
 
-      const connectionResult = await new Promise(resolve => {
-        ePosDev.connect(ipAddress, port, resultConnect => {
-          resolve(resultConnect);
-        });
-      });
+    //   const connectionResult = await new Promise(resolve => {
+    //     ePosDev.connect(ipAddress, port, resultConnect => {
+    //       resolve(resultConnect);
+    //     });
+    //   });
 
-      if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
-          this.isPrinterAvailable = false;
-        console.log("Connecting to IP address and port failed");
-        this.showLoading = false;
-        // this.showAlert("Print error: Connecting to Printer failed" , "danger");
-        return;
-      }
+    //   if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
+    //       this.isPrinterAvailable = false;
+    //     console.log("Connecting to IP address and port failed");
+    //     this.showLoading = false;
+    //     // this.showAlert("Print error: Connecting to Printer failed" , "danger");
+    //     return;
+    //   }
 
-      const createDeviceResult = await new Promise(resolve => {
-        ePosDev.createDevice(
-          deviceId,
-          ePosDev.DEVICE_TYPE_PRINTER,
-          options,
-          (deviceObj, errorCode) => {
-            resolve(deviceObj);
-          }
-        );
-      });
+    //   const createDeviceResult = await new Promise(resolve => {
+    //     ePosDev.createDevice(
+    //       deviceId,
+    //       ePosDev.DEVICE_TYPE_PRINTER,
+    //       options,
+    //       (deviceObj, errorCode) => {
+    //         resolve(deviceObj);
+    //       }
+    //     );
+    //   });
 
-      console.log(createDeviceResult);
+    //   console.log(createDeviceResult);
 
-      if (createDeviceResult === null) {
-        console.log("Creating device failed");
-        this.showLoading = false;
-        return;
-      }
+    //   if (createDeviceResult === null) {
+    //     console.log("Creating device failed");
+    //     this.showLoading = false;
+    //     return;
+    //   }
 
-      this.networkPrinter = createDeviceResult;
+    //   this.networkPrinter = createDeviceResult;
 
-      this.networkPrinter.onreceive = response => {
-        console.log(response);
-        if (response.success) {
+    //   this.networkPrinter.onreceive = response => {
+    //     console.log(response);
+    //     if (response.success) {
         
-          console.log("Callback create device response success");
-        } else {
+    //       console.log("Callback create device response success");
+    //     } else {
         
-          console.log("Callback create device response failed");
-        }
-      };
+    //       console.log("Callback create device response failed");
+    //     }
+    //   };
 
        
-    },
+    // },
     // async printReceipt(data) {
     //   console.log(data);
     //   // this.$refs.Receipt.print(data);
@@ -3267,7 +3280,8 @@ export default {
               // selectedcompany: v[i].USER_COMPANY,
               TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
               TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-              IFPASSRMRS: v[i].ifpassRMRS
+              IFPASSRMRS: v[i].ifpassRMRS,
+              U_REMARKS: v[i].U_REMARKS
             });
           // }
         }
