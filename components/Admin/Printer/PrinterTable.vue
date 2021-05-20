@@ -521,6 +521,7 @@ export default {
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View printer')) {
       this.actions.view_printer = true;
+      console.log(this.actions.view_printer)
     }
 
     if(userActions.find(action => action.U_ACTION_NAME === 'Add printer')) {
