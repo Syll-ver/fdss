@@ -787,7 +787,7 @@
           v-model="TRANSACTION_COMPANY_ID"
           class="form-text"
           required
-          @change="fetch()"
+          disabled
         > 
           <option :value="null">
             Select Transaction Company
@@ -1788,6 +1788,7 @@ export default {
       U_EMPTY_SACKS: 0,
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
+      U_REMARKS: null,
       // U_ARRIVAL: null,
       // U_TIME_START: null,
       // U_TIME_END: null,
@@ -2194,6 +2195,7 @@ export default {
         (this.U_SACKS = 0),
         (this.U_EMPTY_SACKS = 0),
         (this.U_HLPR_NAME = null);
+        (this.U_REMARKS = null);
         // this.U_ARRIVAL = null;
         // this.U_DEPARTURE = null;
         // this.U_TIME_START = null;
@@ -2544,7 +2546,7 @@ export default {
         this.TRANSACTION_COMPANY_ID = null;
       }
       this.U_APP_ProjCode = null;
-      this.remarks = null;
+      this.U_REMARKS = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;

@@ -62,9 +62,9 @@ module.exports = {
     // baseURL: "http://94.237.66.240:8100" (SQA)
     // baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
     // baseURL: "https://fdss.biotechfarms.net/fdss-api" // prod
-    baseURL: "https://fdss-eut.biotechfarms.net/fdss-api"  // eut
+    // baseURL: "https://fdss-eut.biotechfarms.net/fdss-api"  // eut
     // baseURL: "http://172.16.4.201:8000/fdss-api" // butch 
-    // baseURL: "http://94.237.65.245:8223/fdss-api"// (DEV)
+    baseURL: "http://94.237.65.245:8223/fdss-api"// (DEV)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api" 
 
   },
@@ -77,8 +77,8 @@ module.exports = {
     rci: `148808`, // dev
     // bfi: '4400', // prod
     // rci: '4381', // prod
-    bfi: `139483`, // eut
-    rci: `139492`, // eut
+    // bfi: `139483`, // eut
+    // rci: `139492`, // eut
     rciGeneral: 154151631
     
   },
