@@ -45,7 +45,7 @@
     font-size: 1.1em;
     display: block;
     color: #fff;
-    border-radius: 3px;
+    // border-radius: 3px;
   }
   #sidebarBFI ul li a:hover {
     color: #fff;
@@ -54,10 +54,10 @@
     transition: 0.5s;
   }
   
-  #sidebarBFI .sidebar-header {
-    padding: 10px;
+  // #sidebarBFI .sidebar-header {
+    // padding: 10px;
     /* background: linear-gradient(-90deg, #aac758, #476e03); */
-  }
+  // }
   
   #sidebarBFI ul li.active > a,
   a[aria-expanded="true"] {

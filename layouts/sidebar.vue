@@ -3,7 +3,7 @@
     <nav id="sidebarBFI">
       <div class="sidebar-header">
         <div>
-          <b-img src="/rlogo.png" class="sidebar-image" style="padding:0px 0px 0px 0px" center>
+          <b-img src="/rlogo.png" class="sidebar-image" style="padding:8px 8px 0px 8px" center>
           </b-img>
           <b-img src="/rci-org.png" class="sidebar-image-mini" center></b-img>
           <center>
@@ -16,10 +16,9 @@
             <a @click="visible = !visible"
               data-toggle="collapse"
               aria-expanded="false"
-              class="mb-2"
               title="Admin">
-              <b-row align-items="center">
-                  <font-awesome-icon icon="user-cog" class="ml-3 mr-2" />
+              <b-row align-items="center" class="mr-1">
+                  <font-awesome-icon icon="user-cog" class="ml-4 mr-2" />
                   <span class="route-name">Admin</span>
                   <font-awesome-icon
                   :icon="visible == false ? 'caret-right' : 'caret-down'"
@@ -56,11 +55,11 @@
               route.active ? 'background: #00803e; border-radius:3px' : ''
             "
             @click="setActive(i)"
-            class="mt-2"
+            class="mt-1"
           >
             <router-link :to="route.link" :id="route.id">
-              <font-awesome-icon :icon="route.icon" class="ml-0" />
-              <span class="route-name">{{ route.name }}</span>
+              <font-awesome-icon :icon="route.icon" class="ml-2" />
+              <span class="route-name ml-2">{{ route.name }}</span>
             </router-link>
           </li>
         </ul>

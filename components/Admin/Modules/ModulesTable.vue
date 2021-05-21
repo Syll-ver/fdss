@@ -17,13 +17,14 @@
 
       <b-col cols="12" md="3" lg="4" sm="2" xs="2" class="mt-3">
         <b-dropdown
-            right
+            left
             id="filter_actions"
             class="button-sq"
             size="sm"
             variant="dark"
           >
           <template v-slot:button-content>
+            <span>Filter</span>
             <font-awesome-icon icon="filter" class="mr-1" />   
           </template>
 
@@ -42,7 +43,7 @@
           </b-dropdown>
       </b-col>
  
-      <b-col cols="12" md="6" lg="5" sm="5" xs="10" class="mt-3" align="right">
+      <b-col cols="12" md="6" lg="5" sm="5" xs="2" class="mt-3" align="right">
           <b-button
             id="add_module"
             size="sm"
@@ -133,7 +134,7 @@
           </b-form-group>
         </b-col> 
 
-        <b-col  label-cols-sm
+        <b-col v-if="windowWidth > 576" label-cols-sm
           class="mb-0 mt-2 text-left"
           cols="3"
           align-h="center">

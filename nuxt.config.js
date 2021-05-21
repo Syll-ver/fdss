@@ -7,7 +7,7 @@ module.exports = {
     title: process.env.npm_package_name || "",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, shrink-to-fit=no" },
       {
         hid: "description",
         name: "description",
@@ -64,6 +64,7 @@ module.exports = {
     // baseURL: "https://fdss.biotechfarms.net/fdss-api" // prod
     // baseURL: "https://fdss-eut.biotechfarms.net/fdss-api"  // eut
     // baseURL: "http://172.16.4.201:8000/fdss-api" // butch 
+    // baseURL: "http://172.16.4.168:8000/fdss-api" // coach 
     baseURL: "http://94.237.65.245:8223/fdss-api"// (DEV)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api" 
 

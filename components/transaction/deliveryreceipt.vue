@@ -33,7 +33,7 @@
 
     <Receipt ref="Receipt" v-show="false" />
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="12" xs="12" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -46,7 +46,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="10" xs="10"  class="mt-3">
         <b-input-group size="sm">
           <date-range-picker
             id="actvty_date"
@@ -74,7 +74,7 @@
         
       </b-col>
 
-      <b-col class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="2" xs="2" class="mr-auto mt-3">
         <b-dropdown
           right
           id="filter_actions"
@@ -123,7 +123,7 @@
         </b-dropdown>
       </b-col>
       <!-- <b-row> -->
-      <b-col align="right">
+      <b-col cols="12" md="3" lg="3" sm="10" xs="12" align="right" class="mt-3">
         <b-button
           id="create"
           variant="biotech"
@@ -141,7 +141,7 @@
     <b-table
       id="delivery_receipt_table"
       show-empty
-      class="table-style"
+      class="table-style mt-2"
       scrollable
       sticky-header
       no-border-collapse
@@ -1302,8 +1302,7 @@
                     </b-col>
                     <b-col cols="8">
                       <div class="dotted-border">
-                        <span class="mt-1">: {{ U_REMARKS != null ? U_REMARKS : ""
-                          || U_REMARKS != undefined ? U_REMARKS : "" }}</span>
+                        <span class="mt-1">: {{ U_REMARKS }}</span>
                       </div>
                     </b-col>
                   </b-row>
