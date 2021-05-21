@@ -49,7 +49,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col cols="12" md="6" lg="4" sm="8" xs="6" class="mt-3" style="display:flex" >
+      <b-col cols="12" md="6" lg="4" sm="8" xs="6" class="mt-3 mb-3" style="display:flex" >
         <b-input-group style="height:10px" size="sm">
           <date-range-picker
             id="actvty_date"
@@ -661,8 +661,6 @@
           </b-row>
         </b-form-group>
     
-
-<br>
         <b-row class="my-4">
           <b-col cols="6">
 
@@ -671,7 +669,7 @@
                 {{U_FRMR_NAME}}
               </span>
               <br>
-              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+              <span class="report-sign"><B>
                &nbsp;&nbsp; FARMER'S NAME & SIGNATURE
                &nbsp;&nbsp; </B>
               </span>
@@ -686,7 +684,7 @@
                 {{U_HLPR_NAME}}
               </span>
               <br>
-              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+              <span class="report-sign" ><B>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REVIEWED BY
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </B>
               </span>
@@ -702,7 +700,7 @@
             &nbsp;&nbsp;{{U_CRTD_BY}}&nbsp;&nbsp;
         </span>
       <br>
-        <span style="border-top-style: solid; border-width:1px;font-size:9px;">
+        <span class="report-sign">
             <b>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED BY
               &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
         </span>

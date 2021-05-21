@@ -46,84 +46,88 @@
         </b-form-group>
       </b-col>
 
-      <b-col cols="12" md="3" lg="3" sm="10" xs="10"  class="mt-3">
-        <b-input-group size="sm">
-          <date-range-picker
-            id="actvty_date"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
-            v-model="datePicker"
-            @update="updateValues"
-            size="sm"
-            style="height:2rem; font-size:12px"
-          >
-            <div id="actvty_date" slot="input" style="height:2rem; font-size:14px;">
-              {{ datePicker.startDate }} - {{ datePicker.endDate }}
-            </div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button @click="resetDate" id="date-reset" style="font-size:12px"
-              >Reset</b-button
+      <b-col cols="12" md="6" lg="6" sm="8" xs="6"  class="mt-3">
+        <b-row>
+          <b-col cols="12" md="10" sm="10" lg="10" class="mb-3">
+            <b-input-group size="sm">
+              <date-range-picker
+                id="actvty_date"
+                ref="picker"
+                :opens="opens1"
+                :locale-data="localeData"
+                :autoApply="true"
+                :singleDatePicker="false"
+                :showWeekNumbers="true"
+                v-model="datePicker"
+                @update="updateValues"
+                size="sm"
+                style="height:2rem; font-size:12px"
+              >
+                <div id="actvty_date" slot="input" style="height:2rem; font-size:14px;">
+                  {{ datePicker.startDate }} - {{ datePicker.endDate }}
+                </div>
+              </date-range-picker>
+              <b-input-group-append style="height:2rem; font-size:12px">
+                <b-button @click="resetDate" id="date-reset" style="font-size:12px"
+                  >Reset</b-button
+                >
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+
+          <b-col cols="12" md="2" sm="2" lg="2">
+            <b-dropdown
+              right
+              id="filter_actions"
+              class="button-sq"
+              size="sm"
+              variant="dark"
             >
-          </b-input-group-append>
-        </b-input-group>
+              <template v-slot:button-content>
+                <font-awesome-icon icon="filter" class="mr-1" />
+              </template>
+              <b-form-checkbox-group
+                id="status_group"
+                name="flavour-2"
+                class="pl-2"
+                style="font-size:12px"
+                v-model="filterStatus"
+                v-b-tooltip.hover
+                title="Filter Transaction Type "
+              >
+                Transaction Type
+                <b-form-checkbox id="Pick-up" value="Pick-up"
+                  >Pick-up</b-form-checkbox
+                >
+                <b-form-checkbox id="delivery" value="Delivery"
+                  >Delivery</b-form-checkbox
+                >
+              </b-form-checkbox-group>
+              <!-- <b-form-checkbox-group
+                id="status_group1"
+                name="flavour-2"
+                class="pl-2"
+                style="font-size:12px"
+                v-model="filterCompany"
+                v-b-tooltip.hover
+                title="Filter Company "
+              >
+            Company<br>
+            
+                      <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+                  >Biotech</b-form-checkbox
+                >
+                <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+                  >REvive</b-form-checkbox
+                >
+              </b-form-checkbox-group> -->
+            </b-dropdown>
+          </b-col>
+        </b-row>
         
       </b-col>
 
-      <b-col cols="12" md="3" lg="3" sm="2" xs="2" class="mr-auto mt-3">
-        <b-dropdown
-          right
-          id="filter_actions"
-          class="button-sq"
-          size="sm"
-          variant="dark"
-        >
-          <template v-slot:button-content>
-            <font-awesome-icon icon="filter" class="mr-1" />
-          </template>
-          <b-form-checkbox-group
-            id="status_group"
-            name="flavour-2"
-            class="pl-2"
-            style="font-size:12px"
-            v-model="filterStatus"
-            v-b-tooltip.hover
-            title="Filter Transaction Type "
-          >
-            Transaction Type
-            <b-form-checkbox id="Pick-up" value="Pick-up"
-              >Pick-up</b-form-checkbox
-            >
-            <b-form-checkbox id="delivery" value="Delivery"
-              >Delivery</b-form-checkbox
-            >
-          </b-form-checkbox-group>
-          <!-- <b-form-checkbox-group
-            id="status_group1"
-            name="flavour-2"
-            class="pl-2"
-            style="font-size:12px"
-            v-model="filterCompany"
-            v-b-tooltip.hover
-            title="Filter Company "
-          >
-         Company<br>
-         
-                   <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
-              >Biotech</b-form-checkbox
-            >
-            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
-              >REvive</b-form-checkbox
-            >
-          </b-form-checkbox-group> -->
-        </b-dropdown>
-      </b-col>
-      <!-- <b-row> -->
-      <b-col cols="12" md="3" lg="3" sm="10" xs="12" align="right" class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="4" xs="12" align="right" class="mt-3">
         <b-button
           id="create"
           variant="biotech"
