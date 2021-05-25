@@ -519,16 +519,16 @@ export default {
   created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'View printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'View Printer')) {
       this.actions.view_printer = true;
       console.log(this.actions.view_printer)
     }
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'Add printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'Add Printer')) {
       this.actions.add_printer = true;
     }
     
-    if(userActions.find(action => action.U_ACTION_NAME === 'Edit printer')) {
+    if(userActions.find(action => action.U_ACTION_NAME === 'Edit Printer')) {
       this.actions.edit_printer = true;
     }
   }
