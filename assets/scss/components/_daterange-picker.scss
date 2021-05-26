@@ -1,0 +1,51 @@
+
+.reportrange-text[data-v-0fe7292a] {
+    /* background: #fff; */
+    /* cursor: pointer; */
+    /* padding: 5px 10px; */
+    border: 1px solid #ccc;
+    height: 2rem;
+    width: 14rem;
+    font-size: 11px;
+  }
+  
+  .daterangepicker.show-ranges .drp-calendar.left {
+    position: relative;
+    right: 8px;
+  }
+  
+  .daterangepicker.show-ranges .drp-calendar.left {
+     border-left: 0px solid #ddd;
+  }
+  
+  .daterangepicker .ranges li.active {
+    background-color: #743013;
+    color: #fff;
+  }
+  
+  .daterangepicker td.active,
+  .daterangepicker td.active:hover {
+    background-color: #743013;
+    border-color: transparent;
+    color: #fff;
+  }
+  
+  .daterangepicker .ranges li.active {
+    background-color: #743013;
+    color: #fff;
+  }
+
+  .dateTimePickerWrapper .calendarTrigger .calendarInput[data-v-9336155c] {
+    background: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #75361a;
+    font-size: 16px;
+    padding: 0px;
+    outline: none;
+    z-index: 1;
+    cursor: pointer;
+  }

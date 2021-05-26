@@ -7,7 +7,7 @@ module.exports = {
     title: process.env.npm_package_name || "",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, shrink-to-fit=no" },
       {
         hid: "description",
         name: "description",
@@ -61,24 +61,28 @@ module.exports = {
     // baseURL: "http://94.237.66.240:8000" (MASTER)
     // baseURL: "http://94.237.66.240:8100" (SQA)
     // baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
-    baseURL: "https://fdss.biotechfarms.net/fdss-api" 
+    // baseURL: "https://fdss.biotechfarms.net/fdss-api" // prod
+    // baseURL: "https://fdss-eut.biotechfarms.net/fdss-api"  // eut
     // baseURL: "http://172.16.4.201:8000/fdss-api" // butch 
-    // baseURL: "http://94.237.65.245:8223/fdss-api"// (DEV)
+    // baseURL: "http://172.16.4.168:8000/fdss-api" // coach 
+    baseURL: "http://94.237.65.245:8223/fdss-api"// (DEV)
     // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api" 
 
   },
   env:{
-    serverPrintUrl: "http://172.16.4.182:887", 
+    // serverPrintUrl: "http://172.16.4.182:887", 
+    serverPrintUrl: "http://94.237.65.245:887", 
     // serverPrintUrl: "http://localhost:3002",
     // networkPrinterIp: `172.16.4.173`, // gensan network printer ip
     uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
-    // bfi: `145969`, // dev
-    // rci: `146034`, // dev
-    bfi: '4400', // prod
-    rci: '4381', // prod
+    bfi: `148781`, // dev
+    rci: `148808`, // dev
+    // bfi: '4400', // prod
+    // rci: '4381', // prod
     // bfi: `139483`, // eut
-    // rci: `139492` // eut
+    // rci: `139492`, // eut
     rciGeneral: 154151631
+    
   },
 
   server: { port: 9000 }

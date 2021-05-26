@@ -36,7 +36,7 @@
     </b-row> -->
 
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="12" xs="1" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -49,8 +49,8 @@
         </b-form-group>
       </b-col>
 
-      <b-col class="mt-3">
-        <b-input-group prepend="Date" style="height:10px" size="sm">
+      <b-col cols="12" md="6" lg="4" sm="8" xs="6" class="mt-3 mb-3" style="display:flex" >
+        <b-input-group style="height:10px" size="sm">
           <date-range-picker
             id="actvty_date"
             ref="picker"
@@ -73,7 +73,7 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col class="mt-3" align="left">
+      <b-col cols="12" md="3" lg="5" sm="4" xs="10" class="mt-3" align="left">
         <b-dropdown
           right
           id="filter_actions"
@@ -661,8 +661,6 @@
           </b-row>
         </b-form-group>
     
-
-<br>
         <b-row class="my-4">
           <b-col cols="6">
 
@@ -671,7 +669,7 @@
                 {{U_FRMR_NAME}}
               </span>
               <br>
-              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+              <span class="report-sign"><B>
                &nbsp;&nbsp; FARMER'S NAME & SIGNATURE
                &nbsp;&nbsp; </B>
               </span>
@@ -686,7 +684,7 @@
                 {{U_HLPR_NAME}}
               </span>
               <br>
-              <span style="font-size:9px;border-top-style: solid; border-width:1px;margin:0;padding:0"><B>
+              <span class="report-sign" ><B>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REVIEWED BY
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </B>
               </span>
@@ -702,7 +700,7 @@
             &nbsp;&nbsp;{{U_CRTD_BY}}&nbsp;&nbsp;
         </span>
       <br>
-        <span style="border-top-style: solid; border-width:1px;font-size:9px;">
+        <span class="report-sign">
             <b>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED BY
               &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
         </span>
@@ -1629,7 +1627,8 @@ export default {
                 U_DEPARTURE: v[i].U_DEPARTURE,
                 U_TIME_START: v[i].U_TIME_START,
                 U_TIME_END: v[i].U_TIME_END,
-                U_UNLOADING: v[i].U_UNLOADING
+                U_UNLOADING: v[i].U_UNLOADING,
+                U_REMARKS: v[i].U_REMARKS
               });
             }
           }

@@ -136,11 +136,19 @@
         </template>
 
         <template v-slot:cell(U_IS_ACTIVE)="row">
-            <b-badge
-              class="table-badge"
-              pill
-              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
-            >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
+          <font-awesome-icon
+            v-if="windowWidth < 576"
+            icon="circle"
+            :class="row.item.U_IS_ACTIVE 
+              ? 'active-status' : 'inactive-status'"
+          />
+
+          <b-badge
+            v-else
+            class="table-badge"
+            pill
+            :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
+          >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
         </template>
       </b-table>
 
@@ -389,7 +397,8 @@ export default {
       sortDesc: false,
       sortDirection: "asc",
       filter: "",
-      filterOn: []
+      filterOn: [],
+      windowWidth: window.innerWidth,
     };
   },
   computed: {
@@ -563,6 +572,12 @@ export default {
         message
       };
     }
+  },
+
+  mounted() {
+    window.addEventListener("resize", () => {
+      this.windowWidth = window.innerWidth
+    })
   },
 
   async beforeCreate() {    

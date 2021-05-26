@@ -33,7 +33,7 @@
 
     <Receipt ref="Receipt" v-show="false" />
     <b-row>
-      <b-col cols="3" class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="12" xs="12" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -46,88 +46,92 @@
         </b-form-group>
       </b-col>
 
-      <b-col class="mt-3">
-        <b-input-group size="sm">
-          <date-range-picker
-            id="actvty_date"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
-            v-model="datePicker"
-            @update="updateValues"
-            size="sm"
-            style="height:2rem; font-size:12px"
-          >
-            <div id="actvty_date" slot="input" style="height:2rem; font-size:14px;">
-              {{ datePicker.startDate }} - {{ datePicker.endDate }}
-            </div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button @click="resetDate" id="date-reset" style="font-size:12px"
-              >Reset</b-button
+      <b-col cols="12" md="6" lg="6" sm="8" xs="6"  class="mt-3">
+        <b-row>
+          <b-col cols="12" md="10" sm="10" lg="10" class="mb-3">
+            <b-input-group size="sm">
+              <date-range-picker
+                id="actvty_date"
+                ref="picker"
+                :opens="opens1"
+                :locale-data="localeData"
+                :autoApply="true"
+                :singleDatePicker="false"
+                :showWeekNumbers="true"
+                v-model="datePicker"
+                @update="updateValues"
+                size="sm"
+                style="height:2rem; font-size:12px"
+              >
+                <div id="actvty_date" slot="input" style="height:2rem; font-size:14px;">
+                  {{ datePicker.startDate }} - {{ datePicker.endDate }}
+                </div>
+              </date-range-picker>
+              <b-input-group-append style="height:2rem; font-size:12px">
+                <b-button @click="resetDate" id="date-reset" style="font-size:12px"
+                  >Reset</b-button
+                >
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+
+          <b-col cols="12" md="2" sm="2" lg="2">
+            <b-dropdown
+              right
+              id="filter_actions"
+              class="button-sq"
+              size="sm"
+              variant="dark"
             >
-          </b-input-group-append>
-        </b-input-group>
+              <template v-slot:button-content>
+                <font-awesome-icon icon="filter" class="mr-1" />
+              </template>
+              <b-form-checkbox-group
+                id="status_group"
+                name="flavour-2"
+                class="pl-2"
+                style="font-size:12px"
+                v-model="filterStatus"
+                v-b-tooltip.hover
+                title="Filter Transaction Type "
+              >
+                Transaction Type
+                <b-form-checkbox id="Pick-up" value="Pick-up"
+                  >Pick-up</b-form-checkbox
+                >
+                <b-form-checkbox id="delivery" value="Delivery"
+                  >Delivery</b-form-checkbox
+                >
+              </b-form-checkbox-group>
+              <!-- <b-form-checkbox-group
+                id="status_group1"
+                name="flavour-2"
+                class="pl-2"
+                style="font-size:12px"
+                v-model="filterCompany"
+                v-b-tooltip.hover
+                title="Filter Company "
+              >
+            Company<br>
+            
+                      <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+                  >Biotech</b-form-checkbox
+                >
+                <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+                  >REvive</b-form-checkbox
+                >
+              </b-form-checkbox-group> -->
+            </b-dropdown>
+          </b-col>
+        </b-row>
         
       </b-col>
 
-      <b-col class="mt-3">
-        <b-dropdown
-          right
-          id="filter_actions"
-          class="button-sq"
-          size="sm"
-          variant="dark"
-        >
-          <template v-slot:button-content>
-            <font-awesome-icon icon="filter" class="mr-1" />
-          </template>
-          <b-form-checkbox-group
-            id="status_group"
-            name="flavour-2"
-            class="pl-2"
-            style="font-size:12px"
-            v-model="filterStatus"
-            v-b-tooltip.hover
-            title="Filter Transaction Type "
-          >
-            Transaction Type
-            <b-form-checkbox id="Pick-up" value="Pick-up"
-              >Pick-up</b-form-checkbox
-            >
-            <b-form-checkbox id="delivery" value="Delivery"
-              >Delivery</b-form-checkbox
-            >
-          </b-form-checkbox-group>
-          <!-- <b-form-checkbox-group
-            id="status_group1"
-            name="flavour-2"
-            class="pl-2"
-            style="font-size:12px"
-            v-model="filterCompany"
-            v-b-tooltip.hover
-            title="Filter Company "
-          >
-         Company<br>
-         
-                   <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
-              >Biotech</b-form-checkbox
-            >
-            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
-              >REvive</b-form-checkbox
-            >
-          </b-form-checkbox-group> -->
-        </b-dropdown>
-      </b-col>
-      <!-- <b-row> -->
-      <b-col align="right">
+      <b-col cols="12" md="3" lg="3" sm="4" xs="12" align="right" class="mt-3">
         <b-button
           id="create"
           variant="biotech"
-          class="button-style mt-3"
+          class="button-style"
           size="sm"
           @click="createDR()"
         >
@@ -141,7 +145,7 @@
     <b-table
       id="delivery_receipt_table"
       show-empty
-      class="table-style"
+      class="table-style mt-2"
       scrollable
       sticky-header
       no-border-collapse
@@ -464,7 +468,7 @@
         
         </b-form-select>
         <small class="text-left">Item</small>
-        <vSelect id="commodity"
+          <vSelect id="commodity"
           placeholder="Select Item"
           v-model="U_CMMDTY.value"
           :options="commodity"
@@ -491,14 +495,15 @@
           v-model="U_UOM"
           class="form-text"
           :options="unit"
+          @change="sacks"
           required
         >
 
-        <template #first>
-          <b-form-select-option value="" selected disabled> 
-            Select UOM
-          </b-form-select-option>
-        </template>
+          <template #first>
+            <b-form-select-option value="" selected disabled> 
+              Select UOM
+            </b-form-select-option>
+          </template>
         </b-form-select>
 
         <small class="text-left">Farmer's Name</small>
@@ -523,7 +528,7 @@
           :clearable="false"
           required
           />
-
+        
         <!-- <b-form-select
           id="customer"
           class="form-text"
@@ -532,7 +537,7 @@
           @change="test"    
           required
         ></b-form-select> -->
-        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci" >Plot Code</small>
+        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci " >Plot Code</small>
         <multiselect
           v-if="TRANSACTION_COMPANY_ID == rci"
           id="plot_code"
@@ -626,7 +631,7 @@
             ></b-form-input>
           </b-col>
         </b-row>
-        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TL' || U_UOM.UomName === 'TRUCKLOAD' ">
+        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TL' || U_UOM.UomName === 'TRUCKLOAD'">
           <b-col cols="12">
             <small class="text-left">Quantity</small>
             <b-form-input
@@ -787,7 +792,7 @@
           v-model="TRANSACTION_COMPANY_ID"
           class="form-text"
           required
-          @change="fetch()"
+          disabled
         > 
           <option :value="null">
             Select Transaction Company
@@ -1116,7 +1121,7 @@
         <div id="app" ref="testHtml">
           <div id="receipt">
             <b-row>
-              <div class="mr-4" style="width:31rem; height:40rem">
+              <div class="mr-4" style="width:31rem; height:45rem">
                 <span>
                   <b-img src="/logo1.png" class="receipt-logo" center />
                 </span>
@@ -1162,7 +1167,8 @@
                   </b-col>
                   <b-col cols="8">
                     <div class="dotted-border">
-                      <span> : {{ U_APP_ProjCode }} </span>
+                      <span> : {{ U_APP_ProjCode != null ? U_APP_ProjCode : "" ||
+                        U_APP_ProjCode != undefined ? U_APP_ProjCode : "" }} </span>
                     </div>
                   </b-col>
                 </b-row>
@@ -1291,6 +1297,17 @@
                     <b-col cols="8">
                       <div class="dotted-border">
                         <span>: {{ U_EMPTY_SACKS }}</span>
+                      </div>
+                    </b-col>
+                  </b-row>
+
+                  <b-row>
+                    <b-col cols="4">
+                      <span>Remarks</span>
+                    </b-col>
+                    <b-col cols="8">
+                      <div class="dotted-border">
+                        <span class="mt-1">: {{ U_REMARKS }}</span>
                       </div>
                     </b-col>
                   </b-row>
@@ -1672,6 +1689,27 @@ export default {
     await this.getLocationIP();
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
+    // const userActions = JSON.parse(localStorage.user_actions)["Transactions Module"];
+
+    // if (userActions.find(action => action.U_ACTION_NAME === "Add transaction")) {
+    //   this.actions.createDeliveryTransaction = true;
+    // }
+    // if (userActions.find(action => action.U_ACTION_NAME === "Edit transaction")) {
+    //   this.actions.editDeliveryTransaction = true;
+    // }
+    // if (userActions.find(action => action.U_ACTION_NAME === "Cancel Transaction")) {
+    //   this.actions.cancelDeliveryTransaction = true;
+    // }
+    // if (userActions.find(action => action.U_ACTION_NAME === "Print Transaction")) {
+    //   this.actions.printDeliveryReceipt = true;
+    // }
+    // if (userActions.find(action => action.U_ACTION_NAME === "View Transaction Table")) {
+    //   this.actions.viewDeliveryTable = true;
+    // }
+    // if (userActions.find(action => action.U_ACTION_NAME === "View Transaction")) {
+    //   this.actions.viewDeliveryTransaction = true;
+    // }
+   
   },
   data() {
     return {
@@ -1762,9 +1800,13 @@ export default {
       transaction_types: [],
       companyList: null,
       farmer: [],
+      farmerRCI: [],
+      farmerBFI:[],
       rci_farmer: [],
       farmer_plotcode: [],
       farmerAdd: [],
+      commodityRCI: [],
+      commodityBFI: [],
       commodity: [],
       plotCode: [],
       status: "",
@@ -1924,6 +1966,16 @@ export default {
   },
 
   methods: { 
+    sacks() {
+      if(this.U_UOM.UomName == 'TRUCK LOAD' || this.U_UOM.UomName == 'TL' ||
+      this.U_UOM.UomName == 'TRUCKLOAD') {
+        this.U_SACKS = 1;
+      }
+
+      if(this.U_UOM.UomName == 'BAG') {
+        this.U_SACKS = 0;
+      }
+    },
     async createDR() {
       this.showLoading = true;
       this.$bvModal.show('add-transaction-modal');
@@ -2157,6 +2209,7 @@ export default {
         (this.U_SACKS = 0),
         (this.U_EMPTY_SACKS = 0),
         (this.U_HLPR_NAME = null);
+        (this.U_REMARKS = null);
         // this.U_ARRIVAL = null;
         // this.U_DEPARTURE = null;
         // this.U_TIME_START = null;
@@ -2180,176 +2233,176 @@ export default {
         message1
       };
     },
-    async networkPrint(data) {
-      let QRCode = require("qrcode");
+    // async networkPrint(data) {
+    //   let QRCode = require("qrcode");
 
-      this.qrString = JSON.stringify(data.U_TRX_NO);
+    //   this.qrString = JSON.stringify(data.U_TRX_NO);
 
-      const qr = await QRCode.toDataURL(data.U_TRX_NO);
+    //   const qr = await QRCode.toDataURL(data.U_TRX_NO);
 
-      let canvas1 = document.createElement("canvas");
-      canvas1.width = 100;
-      canvas1.height = 100;
+    //   let canvas1 = document.createElement("canvas");
+    //   canvas1.width = 100;
+    //   canvas1.height = 100;
 
-      let biotechLogoContext = canvas1.getContext("2d");
+    //   let biotechLogoContext = canvas1.getContext("2d");
 
-      const biotechLogo = await new Promise(resolve => {
-        let image1 = new Image();
-        image1.src = qr;
-        image1.onload = () => resolve(image1);
-      });
+    //   const biotechLogo = await new Promise(resolve => {
+    //     let image1 = new Image();
+    //     image1.src = qr;
+    //     image1.onload = () => resolve(image1);
+    //   });
 
-      biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
+    //   biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
 
-      let canvas = document.createElement("canvas");
-      canvas.width = 200;
-      canvas.height = 100;
+    //   let canvas = document.createElement("canvas");
+    //   canvas.width = 200;
+    //   canvas.height = 100;
 
-      let revivelogoContext = canvas.getContext("2d");
+    //   let revivelogoContext = canvas.getContext("2d");
 
-      const revivelogo = await new Promise(resolve => {
-        let image = new Image();
-        image.src = "/logo1.png";
-        image.onload = () => resolve(image);
-      });
+    //   const revivelogo = await new Promise(resolve => {
+    //     let image = new Image();
+    //     image.src = "/logo1.png";
+    //     image.onload = () => resolve(image);
+    //   });
 
-      revivelogoContext.drawImage(revivelogo, 0, 0, 180, 100);
+    //   revivelogoContext.drawImage(revivelogo, 0, 0, 180, 100);
 
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
-      this.networkPrinter.addImage(revivelogoContext, 0, 0, 180, 95);
-      this.networkPrinter.addText(`CROPTECH INC.\n`);
-      this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
+    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
+    //   this.networkPrinter.addImage(revivelogoContext, 0, 0, 180, 95);
+    //   this.networkPrinter.addText(`CROPTECH INC.\n`);
+    //   this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
 
-      this.networkPrinter.addText(
-        `Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`
-      );
-      this.networkPrinter.addText(`${data.U_DTE_CRTD}\n`);
+    //   this.networkPrinter.addText(
+    //     `Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`
+    //   );
+    //   this.networkPrinter.addText(`${data.U_DTE_CRTD}\n`);
 
-      this.networkPrinter.addText(`\n`);
-      // this.networkPrinter.align('right');
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
-      // this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
-      this.networkPrinter.addText(`Transaction Number: ${data.U_TRX_NO}\n`);
+    //   this.networkPrinter.addText(`\n`);
+    //   // this.networkPrinter.align('right');
+    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
+    //   // this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
+    //   this.networkPrinter.addText(`Transaction Number: ${data.U_TRX_NO}\n`);
 
-      this.networkPrinter.addText(
-        `Delivery Schedule: ${data.U_SCHEDULED_DATE_AND_TIME}\n`
-      );
-      this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
-      this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
-      if(data.U_APP_ProjCode){
-        this.networkPrinter.addText(`Plot Code: ${data.U_APP_ProjCode}\n`)
-      }
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
-      this.networkPrinter.addText(
-        `Requested Empty Sacks: ${data.U_REQUESTED_SACKS}\n`
-      );
-      if (data.U_TRANSACTION_TYPE == "Delivery") {
-        this.networkPrinter.addText(
-          `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
-        );
-      } else if (
-        data.U_TRANSACTION_TYPE == "Pick-up" &&
-        data.U_UOM.UomName == "TRUCK LOAD"
-      ) {
-        this.networkPrinter.addText(
-          `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
-        );
-      } else {
-        this.networkPrinter.addText(`Quantity:  \n`);
-      }
-      this.networkPrinter.addText(
-        `Returned Empty Sacks: ${data.U_EMPTY_SACKS}\n`
-      );
-      this.networkPrinter.addText(`Driver's Name: ${data.U_DRVR_NAME}\n`);
-      this.networkPrinter.addText(`Plate Number: ${data.U_PLATE_NUMBER}\n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
+    //   this.networkPrinter.addText(
+    //     `Delivery Schedule: ${data.U_SCHEDULED_DATE_AND_TIME}\n`
+    //   );
+    //   this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
+    //   this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
+    //   if(data.U_APP_ProjCode){
+    //     this.networkPrinter.addText(`Plot Code: ${data.U_APP_ProjCode}\n`)
+    //   }
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
+    //   this.networkPrinter.addText(
+    //     `Requested Empty Sacks: ${data.U_REQUESTED_SACKS}\n`
+    //   );
+    //   if (data.U_TRANSACTION_TYPE == "Delivery") {
+    //     this.networkPrinter.addText(
+    //       `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
+    //     );
+    //   } else if (
+    //     data.U_TRANSACTION_TYPE == "Pick-up" &&
+    //     data.U_UOM.UomName == "TRUCK LOAD"
+    //   ) {
+    //     this.networkPrinter.addText(
+    //       `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
+    //     );
+    //   } else {
+    //     this.networkPrinter.addText(`Quantity:  \n`);
+    //   }
+    //   this.networkPrinter.addText(
+    //     `Returned Empty Sacks: ${data.U_EMPTY_SACKS}\n`
+    //   );
+    //   this.networkPrinter.addText(`Driver's Name: ${data.U_DRVR_NAME}\n`);
+    //   this.networkPrinter.addText(`Plate Number: ${data.U_PLATE_NUMBER}\n`);
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
 
-      this.networkPrinter.addText(`SIGNED BY:         REVIEWED BY: \n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(
-        `${data.U_FRMR_NAME}    ${data.U_HLPR_NAME}\n`
-      );
-      this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`VERIFIED BY: \n`);
-      this.networkPrinter.addText(`\n`);
-      this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
-      this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
-      // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
-      // this.networkPrinter.addText(
-      //   `Supplier Code: ${data.header.supplier_code}\n`
-      // );
-      // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
-      // this.networkPrinter.addText(`${data.header.date}\n`);
+    //   this.networkPrinter.addText(`SIGNED BY:         REVIEWED BY: \n`);
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addText(
+    //     `${data.U_FRMR_NAME}    ${data.U_HLPR_NAME}\n`
+    //   );
+    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addText(`VERIFIED BY: \n`);
+    //   this.networkPrinter.addText(`\n`);
+    //   this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
+    //   this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
+    //   // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
+    //   // this.networkPrinter.addText(
+    //   //   `Supplier Code: ${data.header.supplier_code}\n`
+    //   // );
+    //   // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
+    //   // this.networkPrinter.addText(`${data.header.date}\n`);
 
-      this.networkPrinter.addText("\n");
-      this.networkPrinter.addCut(); // for auto cutting
+    //   this.networkPrinter.addText("\n");
+    //   this.networkPrinter.addCut(); // for auto cutting
       
 
-      // this.networkPrinter.send();
-    },
-    async networkPrintInit() {
+    //   // this.networkPrinter.send();
+    // },
+    // async networkPrintInit() {
         
-      let ePosDev = new epson.ePOSDevice();
+    //   let ePosDev = new epson.ePOSDevice();
 
-      let ipAddress = 'tcp://'+process.env.networkPrinterIp,
-      // let ipAddress = localStorage.printer_ip,
-        port = process.env.networkPrinterPort;
-        // port = localStorage.printer_port;
+    //   let ipAddress = 'tcp://'+process.env.networkPrinterIp,
+    //   // let ipAddress = localStorage.printer_ip,
+    //     port = process.env.networkPrinterPort;
+    //     // port = localStorage.printer_port;
 
-      let deviceId = "bfi_printer";
-      let options = { crypto: false, buffer: false };
+    //   let deviceId = "bfi_printer";
+    //   let options = { crypto: false, buffer: false };
 
-      const connectionResult = await new Promise(resolve => {
-        ePosDev.connect(ipAddress, port, resultConnect => {
-          resolve(resultConnect);
-        });
-      });
+    //   const connectionResult = await new Promise(resolve => {
+    //     ePosDev.connect(ipAddress, port, resultConnect => {
+    //       resolve(resultConnect);
+    //     });
+    //   });
 
-      if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
-          this.isPrinterAvailable = false;
-        console.log("Connecting to IP address and port failed");
-        this.showLoading = false;
-        // this.showAlert("Print error: Connecting to Printer failed" , "danger");
-        return;
-      }
+    //   if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
+    //       this.isPrinterAvailable = false;
+    //     console.log("Connecting to IP address and port failed");
+    //     this.showLoading = false;
+    //     // this.showAlert("Print error: Connecting to Printer failed" , "danger");
+    //     return;
+    //   }
 
-      const createDeviceResult = await new Promise(resolve => {
-        ePosDev.createDevice(
-          deviceId,
-          ePosDev.DEVICE_TYPE_PRINTER,
-          options,
-          (deviceObj, errorCode) => {
-            resolve(deviceObj);
-          }
-        );
-      });
+    //   const createDeviceResult = await new Promise(resolve => {
+    //     ePosDev.createDevice(
+    //       deviceId,
+    //       ePosDev.DEVICE_TYPE_PRINTER,
+    //       options,
+    //       (deviceObj, errorCode) => {
+    //         resolve(deviceObj);
+    //       }
+    //     );
+    //   });
 
-      console.log(createDeviceResult);
+    //   console.log(createDeviceResult);
 
-      if (createDeviceResult === null) {
-        console.log("Creating device failed");
-        this.showLoading = false;
-        return;
-      }
+    //   if (createDeviceResult === null) {
+    //     console.log("Creating device failed");
+    //     this.showLoading = false;
+    //     return;
+    //   }
 
-      this.networkPrinter = createDeviceResult;
+    //   this.networkPrinter = createDeviceResult;
 
-      this.networkPrinter.onreceive = response => {
-        console.log(response);
-        if (response.success) {
+    //   this.networkPrinter.onreceive = response => {
+    //     console.log(response);
+    //     if (response.success) {
         
-          console.log("Callback create device response success");
-        } else {
+    //       console.log("Callback create device response success");
+    //     } else {
         
-          console.log("Callback create device response failed");
-        }
-      };
+    //       console.log("Callback create device response failed");
+    //     }
+    //   };
 
        
-    },
+    // },
     // async printReceipt(data) {
     //   console.log(data);
     //   // this.$refs.Receipt.print(data);
@@ -2440,6 +2493,7 @@ export default {
       })
       .catch((err => {
         console.log("error: ", err);
+        this.showAlert(err, "danger");
         this.showLoading = false;
       }))
 
@@ -2507,7 +2561,7 @@ export default {
         this.TRANSACTION_COMPANY_ID = null;
       }
       this.U_APP_ProjCode = null;
-      this.remarks = null;
+      this.U_REMARKS = null;
       this.U_CRTD_BY = data.U_CRTD_BY;
       this.U_TRX_ID = data.U_TRX_ID;
       this.U_TRX_NO = data.U_TRX_NO;
@@ -2649,6 +2703,9 @@ export default {
 
     },
     async getUOM() {
+      if(this.U_CMMDTY)
+      console.log("transaction company id",this.TRANSACTION_COMPANY_ID);
+
       this.showLoading = true;
       const userDetails = JSON.parse(localStorage.user_details);
       this.unit = [];
@@ -2663,6 +2720,7 @@ export default {
         }
       });
       const v = res.data.view;
+      console.log(v);
 
       for (let i = 0; i < v.length; i++) {
         if(!(v[i].UomName.toLowerCase().includes("kilogram"))) {
@@ -3268,7 +3326,8 @@ export default {
               // selectedcompany: v[i].USER_COMPANY,
               TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
               TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-              IFPASSRMRS: v[i].ifpassRMRS
+              IFPASSRMRS: v[i].ifpassRMRS,
+              U_REMARKS: v[i].U_REMARKS
             });
           // }
         }

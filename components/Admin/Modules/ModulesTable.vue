@@ -2,7 +2,7 @@
  <div >
 <Loading v-if="showLoading" />
     <b-row>
-      <b-col cols="12" md="3" lg="3" sm="12" class="mt-3">
+      <b-col cols="12" md="3" lg="3" sm="5" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -15,15 +15,16 @@
         </b-form-group>
       </b-col>
 
-      <b-col cols="12" md="6" lg="4" sm="8" class="mt-3">
+      <b-col cols="12" md="3" lg="4" sm="2" xs="2" class="mt-3">
         <b-dropdown
-            right
+            left
             id="filter_actions"
             class="button-sq"
             size="sm"
             variant="dark"
           >
           <template v-slot:button-content>
+            <span>Filter</span>
             <font-awesome-icon icon="filter" class="mr-1" />   
           </template>
 
@@ -42,8 +43,7 @@
           </b-dropdown>
       </b-col>
  
-      <b-col cols="12" md="3" lg="5" sm="4" class="mt-3" align="right">
-          <b-col>
+      <b-col cols="12" md="6" lg="5" sm="5" xs="2" class="mt-3" align="right">
           <b-button
             id="add_module"
             size="sm"
@@ -53,9 +53,7 @@
             v-if="actions.add_module"
           >
             <font-awesome-icon icon="plus" class="mr-1" />Add Module
-          </b-button>
-        </b-col>
-     
+          </b-button> 
       </b-col>
     </b-row>
 
@@ -105,11 +103,20 @@
         </template>
 
         <template v-slot:cell(U_IS_ACTIVE)="row">
+          <font-awesome-icon
+            v-if="windowWidth < 576"
+            icon="circle"
+            :class="row.item.U_IS_ACTIVE 
+              ? 'active-status' : 'inactive-status'"
+          />
+
             <b-badge
+              v-else
               class="table-badge"
               pill
               :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
-            >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
+              >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}
+            </b-badge>
         </template>
       </b-table>
 
@@ -127,7 +134,7 @@
           </b-form-group>
         </b-col> 
 
-        <b-col  label-cols-sm
+        <b-col v-if="windowWidth > 576" label-cols-sm
           class="mb-0 mt-2 text-left"
           cols="3"
           align-h="center">
@@ -287,6 +294,7 @@ export default {
   components: {Loading},
   data() {
     return {
+      windowWidth: window.innerWidth,
       showLoading: false,
       filterStatus: [1],
       actions: {
@@ -499,6 +507,12 @@ export default {
       this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
+  },
+
+  mounted() {
+    window.addEventListener("resize", () => {
+      this.windowWidth = window.innerWidth
+    })
   },
 
   async beforeCreate() {
