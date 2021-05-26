@@ -495,6 +495,7 @@
           v-model="U_UOM"
           class="form-text"
           :options="unit"
+          @change="sacks"
           required
         >
 
@@ -630,7 +631,7 @@
             ></b-form-input>
           </b-col>
         </b-row>
-        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TL' || U_UOM.UomName === 'TRUCKLOAD' ">
+        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TL' || U_UOM.UomName === 'TRUCKLOAD'">
           <b-col cols="12">
             <small class="text-left">Quantity</small>
             <b-form-input
@@ -1965,6 +1966,16 @@ export default {
   },
 
   methods: { 
+    sacks() {
+      if(this.U_UOM.UomName == 'TRUCK LOAD' || this.U_UOM.UomName == 'TL' ||
+      this.U_UOM.UomName == 'TRUCKLOAD') {
+        this.U_SACKS = 1;
+      }
+
+      if(this.U_UOM.UomName == 'BAG') {
+        this.U_SACKS = 0;
+      }
+    },
     async createDR() {
       this.showLoading = true;
       this.$bvModal.show('add-transaction-modal');
@@ -2482,6 +2493,7 @@ export default {
       })
       .catch((err => {
         console.log("error: ", err);
+        this.showAlert(err, "danger");
         this.showLoading = false;
       }))
 

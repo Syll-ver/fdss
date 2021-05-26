@@ -84,7 +84,7 @@
             </b-row>
             <b-row>
               <b-badge variant="biotech" style="font-size:9px;">{{
-                &nbsp; role  &nbsp;
+                &nbsp; role &nbsp;
               }}</b-badge>
             </b-row>
           </b-col>
@@ -190,7 +190,10 @@ export default {
     const user_role = JSON.parse(localStorage.user_role);
     const user_actions = JSON.parse(localStorage.user_actions);
     this.user = `${user_details.LastName}`;
-    this.role = user_role.Name;
+    
+    this.role = "";
+    this.roleCode = JSON.parse(localStorage.user_role).Code;
+    this.roleCode == 9 ? this.role = 'Admin Staff' : this.role = user_role.Name;
 
     if (user_actions["Admin Module"]) {
       this.isAdmin = true;
@@ -255,6 +258,7 @@ export default {
 
   data() {
     return {
+      roleCode: "",
       role: "",
       user: "",
       activelinks: [],
