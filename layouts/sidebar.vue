@@ -33,6 +33,7 @@
                 :key="i"
                 :style="adminroute.active ? 'background: #00803e; border-radius:0px' : '' "
                 @click="setAdminActive(i)"
+                :title="adminroute.name"
               >
                 <router-link :to="adminroute.link" :id="adminroute.id">
                   <b-row class="ml-1">
@@ -56,6 +57,7 @@
             "
             @click="setActive(i)"
             class="mt-1"
+            :title="route.name"
           >
             <router-link :to="route.link" :id="route.id">
               <font-awesome-icon :icon="route.icon" class="ml-2" />
