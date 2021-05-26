@@ -13,7 +13,7 @@
                 FARMER'S DELIVERY<br>SLIP SYSTEM
               </h6>
               <h2 class="subtitle">
-            Version 1.1.0
+            Version 1.2.0
           </h2>
 
             <b-form @submit.prevent="login" id="login_form">
