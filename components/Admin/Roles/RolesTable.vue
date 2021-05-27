@@ -90,7 +90,7 @@
           id="add_role"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="addRole()"
           v-if="actions.add_roleAccess"
         >
@@ -207,7 +207,7 @@
 
       <b-modal
         size="xl"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="add-role-modal"
@@ -297,7 +297,7 @@
           <b-button
             id="add_roles_and_access_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addRoleAccessTable()"
             style="font-size:13px"
             class="button-style"
@@ -321,7 +321,7 @@
       <!-- Edit Role -->
       <b-modal
         size="xl"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="edit-role-modal"
@@ -427,7 +427,7 @@
           <b-button
             id="edit_roles_and_access_edit_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="editRoleTable()"
             class="button-style"
             :disabled="showLoading === true"
@@ -458,6 +458,9 @@ export default {
   components: {Loading},
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
       windowWidth: window.innerWidth,
       showLoading: false,
       filterStatus: [1],
@@ -870,6 +873,8 @@ export default {
 
   },
   created() {
+    const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add role and access rights" )) {

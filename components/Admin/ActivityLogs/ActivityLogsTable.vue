@@ -132,7 +132,7 @@
 
     <b-modal
       size="lg"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       body-bg-variant="light"
       header-text-variant="light"
       id="view-activity-modal"
@@ -221,6 +221,10 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
+      windowWidth: window.innerWidth,
       actions: {
         view_activityLogs: false,
       },
@@ -540,6 +544,8 @@ export default {
     }
   },
   async created() {
+    const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
 
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
     if (userActions.find(action => action.U_ACTION_NAME === "View activity logs")) {

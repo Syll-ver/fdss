@@ -57,7 +57,7 @@
                 {{ errorMessage }}
                 </div>-->
               </b-form-group>
-              <b-button id="change_password_login" class="login" @click="Confirm()" block variant="biotech">Confirm</b-button>
+              <b-button id="change_password_login" class="login" @click="Confirm()" block :variant="company == rci ? 'revive' : 'biotech'">Confirm</b-button>
             </b-form>
           </b-card>
         </div>

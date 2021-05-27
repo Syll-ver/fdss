@@ -35,7 +35,7 @@
         <b-button
         v-if="actions.add_location"
           id="create"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           class="button-style"
           size="sm"
           @click="$bvModal.show('add-location-modal')"
@@ -135,7 +135,7 @@
 
     <b-modal
       size="large"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-location-modal"
@@ -166,7 +166,7 @@
           id="add_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="add()"
           :disabled="showLoading === true"
         >
@@ -186,7 +186,7 @@
 
       <b-modal
       size="large"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="edit-location-modal"
@@ -232,7 +232,7 @@
           id="add_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="updateLocation()"
           :disabled="showLoading === true"
         >
@@ -265,6 +265,10 @@ export default {
   Loading },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      windowWidth: window.innerWidth,
+      company: null,
       actions: {
         view_location: false,
         add_location: false,
@@ -485,6 +489,8 @@ export default {
   },
 
   created(){
+    const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View location')) {

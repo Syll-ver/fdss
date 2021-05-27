@@ -35,7 +35,7 @@
         <b-button
         v-if="actions.add_printer"
           id="create"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           class="button-style"
           size="sm"
           @click="$bvModal.show('add-printerlocation-modal')"
@@ -137,7 +137,7 @@
 
     <b-modal
       size="large"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-printerlocation-modal"
@@ -185,7 +185,7 @@
           id="add_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="addPrinter()"
           :disabled="showLoading === true"
         >
@@ -205,7 +205,7 @@
 
       <b-modal
       size="large"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="edit-printerlocation-modal"
@@ -253,7 +253,7 @@
           id="add_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="updatePrinter()"
           :disabled="showLoading === true"
         >
@@ -284,6 +284,10 @@ export default {
   components: { DateRangePicker, Loading },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
+      windowWidth: window.innerWidth,
       actions: {
         view_printer: false,
         add_printer: false,
@@ -517,6 +521,9 @@ export default {
   },
 
   created() {
+    const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
+    
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if(userActions.find(action => action.U_ACTION_NAME === 'View Printer')) {

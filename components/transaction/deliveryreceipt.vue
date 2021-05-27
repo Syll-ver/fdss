@@ -130,7 +130,7 @@
       <b-col cols="12" md="3" lg="3" sm="4" xs="12" align="right" class="mt-3">
         <b-button
           id="create"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           class="button-style"
           size="sm"
           @click="createDR()"
@@ -332,7 +332,7 @@
     <!-- Confirm Cancel -->
     <b-modal
       size="sm"
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       id="bv-modal-confirmCancel"
       class="modal-small"
@@ -357,7 +357,7 @@
         <b-button
           id="btn_submit_request"
           size="sm"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           @click="confirmCancel()"
           class="button-style"
           >Yes</b-button
@@ -374,7 +374,7 @@
 
     <b-modal
       size="sm"
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       id="bv-modal-confirmPrint"
       class="modal-small"
@@ -392,7 +392,7 @@
         <b-button
           id="btn_submit_request"
           size="sm"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           @click="selectPrinter()"
           class="button-style"
           >Yes</b-button
@@ -410,7 +410,7 @@
 
     <b-modal
       size="large"
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-transaction-modal"
@@ -750,7 +750,7 @@
           id="add_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           @click="saveDR()"
           :disabled="showLoading === true"
         >
@@ -772,7 +772,7 @@
 
     <b-modal
       size="m"
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="edit-transaction-modal"
@@ -1082,7 +1082,7 @@
           id="edit_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           @click="updateDR(U_TRX_ID)"
           :disabled="showLoading === true"
         >
@@ -1105,7 +1105,7 @@
 
     <b-modal
       size="m"
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="view-transaction-modal"
@@ -1463,7 +1463,7 @@
       id="pin"
       no-close-on-backdrop
       hide-header-close
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
     >
       <template v-slot:modal-title>
@@ -1490,7 +1490,7 @@
         <b-button
           id="save"
           size="sm"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           @click="confirmpin()"
           style="font-size:13px"
           >Save</b-button
@@ -1509,7 +1509,7 @@
     <b-modal
       id="signature"
       no-close-on-backdrop
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       size="xl"
       hide-header-close
@@ -1546,7 +1546,7 @@
         <b-button
           id="rmaf-verify"
           size="sm"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           @click="addSignature()"
           style="font-size:13px"
           >Save</b-button
@@ -1564,7 +1564,7 @@
     <!-- choose printer modal -->
     <b-modal
       size="large"
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="select-printer-modal"
@@ -1607,7 +1607,7 @@
           id="add_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           @click="printed()"
           :disabled="showLoading === true"
         >
@@ -1713,6 +1713,7 @@ export default {
   },
   data() {
     return {
+      company: null,
       rciGeneral: process.env.rciGeneral,
       user: null,
       rci: process.env.rci,

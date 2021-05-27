@@ -91,7 +91,7 @@
           <b-button
             id="add_user"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             class="button-style"
             @click="addUser()"
             v-if="actions.add_user"
@@ -250,7 +250,7 @@
 
       <b-modal
         size="lg"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="add-user-modal"
@@ -268,7 +268,7 @@
                   <b-button
                     id="add_user"
                     size="sm"
-                    variant="biotech"
+                    :variant="company == rci ? 'revive' : 'biotech'"
                     class="button-style"
                     style="font-size:12px; box-shadow:0px 10px 20px -10px #000000 "
                     @click="findUsers()"
@@ -460,7 +460,7 @@
           <b-button
             id="add_add_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addUserTable()"
             style="font-size:13px"
             class="button-style"
@@ -485,7 +485,7 @@
 
       <b-modal
         size="lg"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="find-user-modal"
@@ -612,7 +612,7 @@
           <b-button
             id="add_add_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="selectedUser.length > 0 ? selectUser() : ''"
             class="button-style"
             >Select</b-button
@@ -634,7 +634,7 @@
       <b-modal
         size="lg"
         body-bg-variant="light"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         id="edit-modal"
       >
@@ -825,7 +825,7 @@
           <b-button
             size="sm"
             id="edt_edit_modal"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="editTable()"
             class="button-style"
             >Update</b-button
@@ -846,7 +846,7 @@
 
       <b-modal
         size="sm"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         id="update-user-modal"
       >
@@ -862,7 +862,7 @@
           <b-button
             size="sm"
             class="button-style"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="confirmUpdate()"
             
             >Update</b-button
@@ -881,7 +881,7 @@
 
       <b-modal
         size="sm"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         id="reset-modal"
       >
@@ -897,7 +897,7 @@
           <b-button
             id="Resetbutton"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="confirmReset()"
             class="button-style"
             >Reset</b-button
@@ -929,6 +929,10 @@ export default {
   },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
+      windowWidth: window.innerWidth,
       isBusy: true,
       selectedCompany: null,
      
@@ -1605,6 +1609,7 @@ export default {
   async created() {
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
     const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
     
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add user")) {

@@ -1,11 +1,11 @@
 <template>
   <div class="wrapper" id="wrapper">
-    <nav id="sidebarBFI">
+    <nav :id="company == rci ? 'sidebarRCI' : 'sidebarBFI'">
       <div class="sidebar-header">
         <div>
-          <b-img src="/rlogo.png" class="sidebar-image" style="padding:8px 8px 0px 8px" center>
+          <b-img :src="company == rci ? '/rlogo.png' : '/blogo.png'" class="sidebar-image" style="padding:8px 8px 0px 8px" center>
           </b-img>
-          <b-img src="/rci-org.png" class="sidebar-image-mini" center></b-img>
+          <b-img :src="company == rci ? '/rci-org.png' : '/bfi-org.png'" class="sidebar-image-mini" center></b-img>
           <center>
           <p class="h9 sidebar-image" >FARMER'S DELIVERY SLIP SYSTEM</p>
           </center>
@@ -83,7 +83,7 @@
               <b style="font-size:12px">{{ user }}&nbsp;</b>
             </b-row>
             <b-row>
-              <b-badge variant="biotech" style="font-size:9px;">{{
+              <b-badge :variant="company == rci ? 'revive' : 'biotech'" style="font-size:9px;">{{
                 &nbsp; role &nbsp;
               }}</b-badge>
             </b-row>
@@ -106,7 +106,7 @@
 
     <b-modal
       size="md"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       id="bv-modal-confirmLogout"
       class="modal"
@@ -125,7 +125,7 @@
         <b-button
           id="btn-save-logout"
           size="sm"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="logout()"
           style="font-size:13px"
           >Yes</b-button
@@ -187,6 +187,9 @@
 export default {
   created() {
     const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
+    console.log(this.company);
+
     const user_role = JSON.parse(localStorage.user_role);
     const user_actions = JSON.parse(localStorage.user_actions);
     this.user = `${user_details.LastName}`;
@@ -258,6 +261,9 @@ export default {
 
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
       roleCode: "",
       role: "",
       user: "",

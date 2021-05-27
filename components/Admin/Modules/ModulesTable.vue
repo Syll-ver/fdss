@@ -48,7 +48,7 @@
             id="add_module"
             size="sm"
             class="button-style"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addModule()"
             v-if="actions.add_module"
           >
@@ -162,7 +162,7 @@
 
       <b-modal
         size="sm"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="add-module-modal"
@@ -188,7 +188,7 @@
           <b-button
             id="add_module_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="saveModule()"
             class="button-style"
             :disabled="showLoading === true"
@@ -210,7 +210,7 @@
 
       <b-modal
         size="sm"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         id="edit-module-modal"
         body-bg-variant="light"
@@ -248,7 +248,7 @@
           <b-button
             id="edit_module_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="editModule()"
             class="button-style"
             :disabled="showLoading === true"
@@ -294,6 +294,9 @@ export default {
   components: {Loading},
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
       windowWidth: window.innerWidth,
       showLoading: false,
       filterStatus: [1],
@@ -542,6 +545,8 @@ export default {
   },
 
   created() {    
+    const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add module")) {

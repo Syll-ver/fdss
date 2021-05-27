@@ -65,11 +65,11 @@
               id="add_action"
               size="sm"
               class="button-style"
-              variant="biotech"
+              :variant="company == rci ? 'revive' : 'biotech'"
               @click="addAction()"
               v-if="actions.add_action"
             >
-              <font-awesome-icon icon="plus" class="" />Add Action
+              <font-awesome-icon icon="plus" class="" /> Add Action
             </b-button>
           </b-col>
      
@@ -193,7 +193,7 @@
       <!-- Add Action -->
       <b-modal
         size="sm"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="add-action-modal"
@@ -237,7 +237,7 @@
           <b-button
             id="add_action_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addActionTable()"
             style="font-size:13px"
             class="button-style"
@@ -259,7 +259,7 @@
       <!-- Edit Action -->
       <b-modal
         size="sm"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="edit-action-modal"
@@ -316,7 +316,7 @@
           <b-button
             id="update_action"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="editActionTable()"
             class="button-style"
             :disabled="showLoading === true"
@@ -344,6 +344,9 @@ export default {
   },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
       showLoading: false,
       filterStatus: [1],
 
@@ -621,6 +624,8 @@ export default {
   },
 
   created() {
+    const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add action")) {

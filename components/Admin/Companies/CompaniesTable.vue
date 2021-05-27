@@ -67,7 +67,7 @@
             id="add_action"
             size="sm"
             class="button-style"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addCompany()"
              v-if="actions.add_company">
             <font-awesome-icon icon="plus" class="mr-1" />Add Company
@@ -201,7 +201,7 @@
 
       <b-modal
         size="md"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         footer-bg-variant="light"
@@ -252,7 +252,7 @@
           <b-button
             id="add_action_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addCompanyTable()"
             style="font-size:13px"
             class="button"
@@ -276,7 +276,7 @@
 
       <b-modal
         size="md"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         footer-bg-variant="light"
@@ -340,7 +340,7 @@
         
           <b-button
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="editCompanyTable()"
             style="font-size:13px"
             class="button"
@@ -372,6 +372,9 @@ export default {
   },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
       isBusy: true,
       showLoading: false,
       filterStatus: [1],
@@ -682,6 +685,8 @@ export default {
   },
 
   created() {
+    const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
     if (userActions.find(action => action.U_ACTION_NAME === "Add company")) {
       this.actions.add_company = true;

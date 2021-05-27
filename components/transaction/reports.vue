@@ -25,7 +25,7 @@
     <!-- <b-row>
       <b-col>
         <b-button
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           class="button-style"
           size="sm"
           @click="$bvModal.show('add-transaction-modal')"
@@ -359,7 +359,7 @@
 
     <b-modal
       size="m"
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="view-transaction-modal"
@@ -727,7 +727,7 @@
           U_UNLOADING == null ))"
           id="add-time-logs"
           size="sm"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           class="button-style"
           @click="updateTime()"
           >Add Time Logs</b-button
@@ -746,7 +746,7 @@
     <!-- Add Time Logs -->
       <b-modal
       size="sm"
-      header-bg-variant="biotech"
+      :header-bg-variant="companyCode == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-time-logs-modal"
@@ -838,7 +838,7 @@
           id="add_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="companyCode == rci ? 'revive' : 'biotech'"
           @click="addTime()"
           :disabled="showLoading === true"
         >
@@ -910,6 +910,7 @@ export default {
   },
   data() {
     return {
+      windowWidth: window.innerWidth,
       rci: process.env.rci,
       bfi: process.env.bfi,
       filterStatus:["Completed","Cancelled"],

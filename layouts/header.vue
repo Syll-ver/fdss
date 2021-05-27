@@ -15,7 +15,7 @@
               <b style="font-size:12px">{{ user }}&nbsp;</b>
             </b-row>
             <b-row>
-              <b-badge variant="biotech" style="font-size:9px; width:4rem">{{
+              <b-badge :variant="company == rci ? 'revive' : 'biotech'" style="font-size:9px; width:4rem">{{
                 &nbsp; role  &nbsp;
               }}</b-badge>
             </b-row>
@@ -43,7 +43,7 @@
 
     <b-modal
       size="md"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       id="bv-modal-confirmLogout"
       class="modal"
@@ -62,7 +62,7 @@
         <b-button
           id="btn-save-logout"
           size="sm"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="logout()"
           style="font-size:13px"
           >Yes</b-button

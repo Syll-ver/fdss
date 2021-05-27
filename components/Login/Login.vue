@@ -56,7 +56,7 @@
               @click="login()"
         
               block
-              variant="biotech"
+              variant="revive"
             >
               LOGIN
             </b-btn>

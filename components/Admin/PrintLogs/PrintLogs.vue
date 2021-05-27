@@ -209,6 +209,10 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
+      windowWidth: window.innerWidth,
       actions: {
         view_printlogs: false,
       },
@@ -286,6 +290,10 @@ export default {
       filter: "",
       filterOn: []
     };
+  },
+  created() {
+    const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
   },
   computed: {    
     filterItems(){
