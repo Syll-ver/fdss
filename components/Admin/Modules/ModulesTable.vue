@@ -24,7 +24,6 @@
             variant="dark"
           >
           <template v-slot:button-content>
-            <span>Filter</span>
             <font-awesome-icon icon="filter" class="mr-1" />   
           </template>
 
@@ -52,7 +51,7 @@
             @click="addModule()"
             v-if="actions.add_module"
           >
-            <font-awesome-icon icon="plus" class="mr-1" />Add Module
+            Add Module
           </b-button> 
       </b-col>
     </b-row>

@@ -94,7 +94,7 @@
           @click="addRole()"
           v-if="actions.add_roleAccess"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Add Role
+           Add Role
         </b-button>
       </b-col>
     </b-row>

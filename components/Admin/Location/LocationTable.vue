@@ -40,7 +40,7 @@
           size="sm"
           @click="$bvModal.show('add-location-modal')"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Add Location
+           Add Location
         </b-button>
       </b-col>
     <!-- </b-row> -->

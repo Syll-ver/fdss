@@ -70,7 +70,7 @@
             :variant="company == rci ? 'revive' : 'biotech'"
             @click="addCompany()"
              v-if="actions.add_company">
-            <font-awesome-icon icon="plus" class="mr-1" />Add Company
+             Add Company
           </b-button>
       </b-col>
     </b-row>

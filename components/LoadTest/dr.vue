@@ -34,7 +34,7 @@
           size="sm"
           @click="newDR('static')"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
+           Create Delivery Slip
         </b-button>
       </b-col>
 
@@ -46,7 +46,7 @@
           size="sm"
           @click="postPO()"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Post Purchase Order
+           Post Purchase Order
         </b-button>
       </b-col> -->
     </b-row>

@@ -135,7 +135,7 @@
           size="sm"
           @click="createDR()"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
+           Create Delivery Slip
         </b-button>
       </b-col>
     <!-- </b-row> -->

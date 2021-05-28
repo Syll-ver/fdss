@@ -8,7 +8,7 @@
       <b-tabs
         card
         small
-        active-nav-item-class="font-weight-bold text-uppercase text-biotech"
+        active-nav-item-class="font-weight-bold text-uppercase text-print"
       >
         <b-tab title="Modules">
           <div>

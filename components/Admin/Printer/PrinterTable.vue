@@ -40,7 +40,7 @@
           size="sm"
           @click="$bvModal.show('add-printerlocation-modal')"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Add Printer
+           Add Printer
         </b-button>
       </b-col>
     <!-- </b-row> -->

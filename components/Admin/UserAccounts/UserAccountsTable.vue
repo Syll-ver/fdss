@@ -96,7 +96,7 @@
             @click="addUser()"
             v-if="actions.add_user"
           >
-            <font-awesome-icon icon="plus" class="mr-1" />Add User
+             Add User
           </b-button>
         </b-col>
       </b-row>
