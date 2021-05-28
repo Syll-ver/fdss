@@ -188,7 +188,6 @@ export default {
   created() {
     const user_details = JSON.parse(localStorage.user_details);
     this.company = user_details.U_COMPANY_CODE;
-    console.log(this.company);
 
     const user_role = JSON.parse(localStorage.user_role);
     const user_actions = JSON.parse(localStorage.user_actions);
@@ -202,7 +201,6 @@ export default {
       this.isAdmin = true;
 
       const module_actions = user_actions["Admin Module"];
-      console.log(module_actions);
       // if (
       //   !module_actions.find(action => action.U_ACTION_NAME == "View modules")
       // ) {

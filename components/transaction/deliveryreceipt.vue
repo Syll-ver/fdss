@@ -1123,7 +1123,8 @@
             <b-row>
               <div class="mr-4" style="width:31rem; height:45rem">
                 <span>
-                  <b-img src="/logo1.png" class="receipt-logo" center />
+                  <b-img :src="logo"
+                    class="receipt-logo" center />
                 </span>
 
                 <center>
@@ -1300,18 +1301,18 @@
                       </div>
                     </b-col>
                   </b-row>
-
-                  <b-row>
-                    <b-col cols="4">
-                      <span>Remarks</span>
-                    </b-col>
-                    <b-col cols="8">
-                      <div class="dotted-border">
-                        <span class="mt-1">: {{ U_REMARKS }}</span>
-                      </div>
-                    </b-col>
-                  </b-row>
                 </div>
+
+                <b-row>
+                  <b-col cols="4">
+                    <span>Remarks</span>
+                  </b-col>
+                  <b-col cols="8">
+                    <div class="dotted-border">
+                      <span class="mt-1">: {{ U_REMARKS }}</span>
+                    </div>
+                  </b-col>
+                </b-row>
 
                 <!-- <div>
                   <b-form-group v-show="(U_ARRIVAL || U_TIME_START || U_TIME_END || U_DEPARTURE)">
@@ -1411,18 +1412,24 @@
                 </b-row>
 
                 <center>
-                  <span style="font-size:9px"
-                    >&nbsp;&nbsp;{{ U_CRTD_BY }}&nbsp;&nbsp;</span
-                  >
-                  <br />
-                  <span
-                    style="border-top-style: solid; border-width:1px;font-size:9px;"
-                  >
-                    <b>
-                      &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED
-                      BY &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </b>
-                  </span>
+                  <div class="signature-name">
+                    <img class="signature-sign" :src="U_SIGNATURE_PATH">
+                    <br>
+                    <br>
+                    <div class="signature-print">
+                      <span class="" style="font-size:9px;">
+                        &nbsp;&nbsp;{{ U_CRTD_BY }}&nbsp;&nbsp;
+                      </span>
+                      <br />
+                      <span style="border-top-style: solid; border-width:1px;font-size:9px;">
+                        <b>
+                          &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED
+                          BY &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </b>
+                      </span>
+                    </div>
+                  </div>
+                  
                 </center>
                 <b-row style="float:right" class="mr-1 mt-1"></b-row>
                 <br />
@@ -1713,6 +1720,7 @@ export default {
   },
   data() {
     return {
+      logo: "",
       company: null,
       rciGeneral: process.env.rciGeneral,
       user: null,
@@ -1794,6 +1802,7 @@ export default {
       U_HLPR_NAME: null,
       U_SCHEDULED_DATE_AND_TIME: null,
       U_REMARKS: null,
+      U_SIGNATURE_PATH: null,
       // U_ARRIVAL: null,
       // U_TIME_START: null,
       // U_TIME_END: null,
@@ -2191,6 +2200,7 @@ export default {
       this.$bvModal.hide("select-printer-modal");
     },
     close1() {
+      (this.U_SIGNATURE_PATH = null),
       (this.U_TRANSACTION_TYPE = null),
         (this.U_FRMR_NAME = null),
         (this.U_FRMR_ADD = null),
@@ -2635,7 +2645,14 @@ export default {
       this.updateUOM();
       this.U_UOM = { UomName: data.U_UOM, UomEntry: data.U_UOM_ID };
     },
-    show(data) {
+    async show(data) {
+      if(data.U_TRX_NO.charAt(0) == 'R') {
+        this.logo = '/logo1.png'
+      } else {
+        this.logo = '/blogo.png'
+      }
+      this.U_SIGNATURE_PATH = await this.getSignature(data.U_TRX_NO);
+
       this.TRANSACTION_COMPANY = data.TRANSACTION_COMPANY;
       this.U_DTE_CRTD = data.U_DTE_CRTD;
       this.U_CRTD_BY = data.U_CRTD_BY;
@@ -2660,6 +2677,17 @@ export default {
       // this.U_TIME_END = data.U_TIME_END;
       this.$bvModal.show("view-transaction-modal");
     },
+    async getSignature(U_TRX_NO) {
+      this.showLoading = true;
+      const res = await axios({
+        method: "GET",
+        url: `${this.$axios.defaults.baseURL}/api/transaction/get-signature/${U_TRX_NO}`,
+      })
+      console.log(this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE);
+      this.showLoading = false;
+      return this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE;
+    },
+
     async getTransactionType() {
       const res = await axios({
         method: "POST",
@@ -3224,6 +3252,7 @@ export default {
       if(!this.filter) {
         this.totalRows = this.filterItems ? this.filterItems.length : 0
       }
+        this.isBusy = true;
 
       try {
         const userDetails = JSON.parse(localStorage.user_details);
@@ -3231,9 +3260,7 @@ export default {
 
         const employee_id = userDetails.Code;
         const employee_role = roleDetails.Name;
-
           
-        this.isBusy = true;
         this.items = [];
         const res = await axios({
           method: "POST",
@@ -3259,44 +3286,6 @@ export default {
           const st = this.intToTime(v[i].SCHEDULED_TIME);
           const sdate = moment(`${sd}  ${st}`).format("MMM DD, YYYY hh:mm A");
 
-          // if(v[i].U_ARRIVAL || v[i].U_DEPARTURE || v[i].U_TIME_START || v[i].U_TIME_END) {
-          //   this.items.push({
-          //     U_TRX_NO: v[i].U_TRX_NO,
-          //     U_TRX_ID: v[i].TRANSACTION_ID,
-          //     U_TRANSCTION_TYPE_ID: v[i].TRANSACTION_TYPE_ID,
-          //     U_ITEM: v[i].ITEM_ID,
-          //     U_SUPP: v[i].SUPPLIER_ID,
-          //     U_TRX_NO: v[i].TRANSACTION_NUMBER,
-          //     // U_PRICELIST: v[i].PRICELIST_NAME,
-          //     U_TRANSACTION_TYPE: v[i].TRANSACTION_TYPE,
-          //     U_CMMDTY: v[i].ITEM_NAME,
-          //     U_UOM: v[i].UOM_NAME,
-          //     U_UOM_ID: v[i].UOM_ID,
-          //     U_FRMR_NAME: v[i].FARMER_NAME,
-          //     U_FRMR_ADD: v[i].FARMER_ADDRESS,
-          //     U_APP_ProjCode: v[i].U_PLOT_CODE,
-          //     U_DTE_CRTD: d,
-          //     U_CRTD_BY: v[i].CREATED_BY,
-          //     U_STATUS: v[i].STATUS,
-          //     U_PLATE_NUMBER: v[i].PLATE_NUMBER,
-          //     U_HLPR_NAME: v[i].HELPER_NAME,
-          //     U_DRVR_NAME: v[i].DRIVER_NAME,
-          //     U_REQUESTED_SACKS: v[i].NUMBER_OF_REQUESTED_BAGS,
-          //     U_EMPTY_SACKS: v[i].NUMBER_OF_EMPTY_BAGS,
-          //     U_SACKS: v[i].NUMBER_OF_BAGS,
-          //     U_SCHEDULED_DATE_AND_TIME: sdate,
-          //     U_SCHEDULED_DATE: moment(v[i].SCHEDULED_DATE).format("YYYY-MM-DD"),
-          //     U_SCHEDULED_TIME: v[i].SCHEDULED_TIME,
-          //     // selectedcompany: v[i].USER_COMPANY,
-          //     TRANSACTION_COMPANY_ID: v[i].TRANSACTION_COMPANY_ID,
-          //     TRANSACTION_COMPANY: v[i].TRANSACTION_COMPANY,
-          //     U_ARRIVAL: moment(v[i].U_ARRIVAL, ["HH.mm"]).format("hh:mm A"),
-          //     U_DEPARTURE: moment(v[i].U_DEPARTURE, ["HH.mm"]).format("hh:mm A"),
-          //     U_TIME_START: moment(v[i].U_TIME_START, ["HH.mm"]).format("hh:mm A"),
-          //     U_TIME_END: moment(v[i].U_TIME_END, ["HH.mm"]).format("hh:mm A"),
-          //     IFPASSRMRS: v[i].ifpassRMRS
-          //   });
-          // } else {
             this.items.push({
               U_TRX_NO: v[i].U_TRX_NO,
               U_TRX_ID: v[i].TRANSACTION_ID,

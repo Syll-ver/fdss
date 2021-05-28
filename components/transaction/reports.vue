@@ -375,9 +375,9 @@
          <b-card class="card-shadow">
               <div id="receipt">
     <b-row>
-      <div class=" mr-4" :style="(U_TRANSACTION_TYPE == 'Pick-up' && U_ARRIVAL != null && U_DEPARTURE != null && U_TIME_START != null && U_TIME_END != null ) ? 'width:31rem; height:50rem' : 'width:31rem; height:43rem'">
+      <div class=" mr-4" :style="(U_TRANSACTION_TYPE == 'Pick-up' && U_ARRIVAL != null && U_DEPARTURE != null && U_TIME_START != null && U_TIME_END != null ) ? 'width:31rem; height:50rem' : 'width:31rem; height:45rem'">
         <span>
-          <b-img src="/logo1.png" class="receipt-logo" center/>
+          <b-img :src="logo" class="receipt-logo" center/>
         </span>
 
         <center>
@@ -695,17 +695,25 @@
  
 
         <center>
-          
-        <span style="font-size:9px">
-            &nbsp;&nbsp;{{U_CRTD_BY}}&nbsp;&nbsp;
-        </span>
-      <br>
-        <span class="report-sign">
-            <b>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED BY
-              &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-        </span>
-
+          <div class="signature-name">
+            <img class="signature-sign" :src="U_SIGNATURE_PATH">
+            <br>
+            <br>
+            <div class="signature-print">
+              <span class="" style="font-size:9px;">
+                &nbsp;&nbsp;{{ U_CRTD_BY }}&nbsp;&nbsp;
+              </span>
+              <br />
+              <span style="border-top-style: solid; border-width:1px;font-size:9px;">
+                <b>
+                  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERIFIED
+                  BY &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </b>
+              </span>
+            </div>
+          </div>          
         </center>
+
         <b-row style="float:right" class="mr-1 mt-1">
 
         </b-row>
@@ -910,6 +918,7 @@ export default {
   },
   data() {
     return {
+      logo: "",
       windowWidth: window.innerWidth,
       rci: process.env.rci,
       bfi: process.env.bfi,
@@ -1422,7 +1431,14 @@ export default {
       
       this.U_FRMR_ADD= this.U_FRMR_NAME.address
     },
-  show(data) {
+  async show(data) {
+    if(data.U_TRX_NO.charAt(0) == 'R') {
+      this.logo = '/logo1.png'
+    } else {
+      this.logo = '/blogo.png'
+    }
+    this.U_SIGNATURE_PATH = await this.getSignature(data.U_TRX_NO);
+
     this.U_ARRIVAL = null;
     this.U_TIME_START = null;
     this.U_TIME_END = null;
@@ -1471,6 +1487,16 @@ export default {
           }
      
       this.$bvModal.show("view-transaction-modal");
+  },
+  async getSignature(U_TRX_NO) {
+    this.showLoading = true;
+    const res = await axios({
+      method: "GET",
+      url: `${this.$axios.defaults.baseURL}/api/transaction/get-signature/${U_TRX_NO}`,
+    })
+    console.log(this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE);
+    this.showLoading = false;
+    return this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE;
   },
   
 
