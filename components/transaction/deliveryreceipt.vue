@@ -2468,9 +2468,14 @@ export default {
         });
       }
     },
-    selectPrinter(data){
+    async selectPrinter(data){
+      this.showLoading = true;
       this.toPrint = data;
+      await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
+        SessionId: localStorage.SessionId
+      })
       this.$bvModal.show('select-printer-modal')
+      this.showLoading = false;
     },
     async printed(transaction) {
       this.showLoading = true;

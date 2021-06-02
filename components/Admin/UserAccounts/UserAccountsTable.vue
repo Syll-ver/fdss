@@ -130,6 +130,14 @@
           </div>
         </template>
 
+        <template v-slot:cell(FirstName, MiddleName, LastName)="row">
+          <div v-if="windowWidth < 576" >
+            <span> {{ row.item.Firstname + ' ' +
+              row.item.MiddleName != null ? row.item.MiddleName : '' 
+              + ' ' + row.item.LastName }} </span>
+          </div>
+        </template>
+
         <template v-slot:cell(actions)="row">
           <b-button
             id="edit_user"
@@ -195,12 +203,18 @@
 
         <template v-slot:cell(U_IS_ACTIVE)="row">
           <div style="font-size:15px">
+            <font-awesome-icon
+            v-if="windowWidth < 576"
+            icon="circle"
+            :class="row.item.U_IS_ACTIVE 
+              ? 'active-status' : 'inactive-status'"
+          />
             <b-badge
+            v-else
               style="width:70px"
               pill
               :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
-              >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
-            >
+              >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
           </div>
         </template>
       </b-table>

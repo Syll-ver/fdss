@@ -264,6 +264,47 @@
       </b-modal>
 
       <!-- Edit Module -->
+
+      <!-- View Updates -->
+      <b-modal
+      size="large"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
+      header-text-variant="light"
+      body-bg-variant="light"
+      id="updates-modal"
+      hide-header-close
+      no-close-on-backdrop
+      no-scrollable
+    >
+      <template v-slot:modal-title>
+        <h6>What's New in version 1.1.0</h6>
+      </template>
+        
+      <b-row>
+        <b-col class="mt-2">
+          <ul>
+            <li v-for="(message, html) of newUpdate" :key="html">
+              {{ message.raw }}
+            </li>
+          </ul>
+          <!-- {{ newUpdate }} -->
+        </b-col>
+      </b-row>
+
+      <template v-slot:modal-footer="{ok}">
+        <b-button
+          id="add_action_modal"
+          size="sm"
+          class="button-style"
+          :variant="company == rci ? 'revive' : 'biotech'"
+          @click="ok()"
+          :disabled="showLoading === true"
+        >
+          Ok
+        </b-button>
+      </template>
+    </b-modal>
+
     <div>
       <b-alert
         id="alert"
@@ -293,6 +334,8 @@ export default {
   components: {Loading},
   data() {
     return {
+      newUpdate: [],
+      whatsNew: [],
       rci: process.env.rci,
       bfi: process.env.bfi,
       company: null,
@@ -404,6 +447,22 @@ export default {
   },
 
   methods: {
+    updates() {
+      this.$bvModal.show("updates-modal");
+    },
+
+    newUpdates() {
+      this.whatsNew.filter(update => {
+        // console.log(update.parents);
+        if(update.parents.length == 1){
+          this.newUpdate.push(
+            update.rendered.message
+          )
+        }
+      })
+      console.log(this.newUpdate);
+    },
+
     trues() {},
 
     falses() {
@@ -547,6 +606,7 @@ export default {
     const user_details = JSON.parse(localStorage.user_details);
     this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
+    // this.whatsNew = JSON.parse(localStorage.commits);
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add module")) {
       this.actions.add_module = true;
@@ -557,6 +617,9 @@ export default {
     if (userActions.find(action => action.U_ACTION_NAME === "View modules")) {
       this.actions.view_module = true;
     }
+
+    // this.$bvModal.show("updates-modal");
+    // this.newUpdates()
   }
 };
 </script>

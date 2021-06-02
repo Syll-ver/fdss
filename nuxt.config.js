@@ -81,8 +81,7 @@ module.exports = {
     // rci: '4381', // prod
     // bfi: `139483`, // eut
     // rci: `139492`, // eut
-    rciGeneral: 154151631
-    
+    rciGeneral: 154151631,
   },
 
   server: { port: 9000 }

@@ -959,6 +959,8 @@ export default {
       U_DEPARTURE: null,
       U_UNLOADING: null,
       remarks: null,
+      U_SIGNATURE_PATH: null,
+      U_REMARKS: null,
 
       filterCompany:[],
       filterTransaction:["Pick-up","Delivery"],

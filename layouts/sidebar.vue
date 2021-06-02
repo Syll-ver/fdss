@@ -5,7 +5,9 @@
         <div>
           <b-img :src="company == rci ? '/rlogo.png' : '/blogo.png'" class="sidebar-image" style="padding:8px 8px 0px 8px" center>
           </b-img>
-          <b-img :src="company == rci ? '/rci-org.png' : '/bfi-org.png'" class="sidebar-image-mini" center></b-img>
+          <div class="image-box">
+            <b-img :src="company == rci ? '/rci-org.png' : '/bfi-org.png'" class="sidebar-image-mini" center></b-img>
+          </div>
           <center>
           <p class="h9 sidebar-image" >FARMER'S DELIVERY SLIP SYSTEM</p>
           </center>
@@ -13,55 +15,59 @@
         <hr class="hr-style" />
         <ul class="list-unstyled">
           <li v-if="isAdmin">
-            <a @click="visible = !visible"
+            <a id="admin_toggle"
+              @click="visible = !visible"
               data-toggle="collapse"
               aria-expanded="false"
+              class="sidebar_item"
+              v-b-tooltip.hover.bottomleft.noninteractive
               title="Admin">
-              <b-row align-items="center" class="mr-1">
-                  <font-awesome-icon icon="user-cog" class="ml-4 mr-2" />
-                  <span class="route-name">Admin</span>
-                  <font-awesome-icon
-                  :icon="visible == false ? 'caret-right' : 'caret-down'"
-                  class="mr-2 mt-1 ml-auto" />
-              </b-row>
+              <font-awesome-icon icon="user-cog" class="mr-2" />
+              <span class="route-name">Admin</span>
+              <font-awesome-icon :icon="visible == false 
+                ? 'caret-right' : 'caret-down'"
+                class="mr-2 mt-1"
+                style="float:right;" />
             </a>
 
             <b-collapse id="collapse" class="mt-1" v-model="visible">
               <li
                 v-for="(adminroute, i) in adminroutes"
-                class="mt-1"
+                class="ml-3 mt-1 mr-3"
                 :key="i"
-                :style="adminroute.active ? 'background: #00803e; border-radius:0px' : '' "
-                @click="setAdminActive(i)"
-                :title="adminroute.name"
-              >
+                :style="adminroute.active
+                    ? 'background: #00803e; border-radius:3px'
+                    : '' " @click="setAdminActive(i)"
+                v-b-tooltip.hover.bottomleft.noninteractive
+                :title="adminroute.name" >
                 <router-link :to="adminroute.link" :id="adminroute.id">
-                  <b-row class="ml-1">
-                    <b-col cols="2">
-                      <font-awesome-icon :icon="adminroute.icon" />
-                    </b-col>
-                    <b-col>
-                      <span class="route-name" >{{ adminroute.name }}</span>
-                    </b-col>
-                  </b-row>
+                  <font-awesome-icon
+                    :icon="adminroute.icon"
+                    :class="adminroute.class"
+                  />
+                  <span class="route-name" :style="adminroute.style">{{
+                    adminroute.name
+                  }}</span>
                 </router-link>
               </li>
             </b-collapse>
           </li>
 
-          <li
-            v-for="(route, i) in routes"
+          <!-- SUPPLIER, CUSTOMER, ITEM TABS -->
+          <li v-for="(route, i) in routes"
             :key="i"
-            :style="
-              route.active ? 'background: #00803e; border-radius:3px' : ''
-            "
-            @click="setActive(i)"
-            class="mt-1"
-            :title="route.name"
-          >
-            <router-link :to="route.link" :id="route.id">
-              <font-awesome-icon :icon="route.icon" class="ml-2" />
-              <span class="route-name ml-2">{{ route.name }}</span>
+            :style="route.active 
+            ? 'background: #00803e; border-radius:3px' : '' "
+            class="mt-2 mb-2"
+            @click="active = route.link"
+            :id="route.link"
+            v-b-tooltip.hover.bottomleft.noninteractive
+            :title="route.name">
+            <router-link :to="route.link" :id="route.id" >
+              <font-awesome-icon :icon="route.icon" :class="route.class"  />
+              <span class="route-name">
+                {{ route.name }}
+              </span>
             </router-link>
           </li>
         </ul>
@@ -255,7 +261,7 @@ export default {
       const index = this.routes.findIndex(route => (route.name == "Reports"));
       this.routes.splice(index, 1);
     }
-  },
+},
 
   data() {
     return {
@@ -327,7 +333,7 @@ export default {
           name: "Companies",
           icon: "building",
           style: "position:relative;left:6px",
-          id: "sb-modules",
+          id: "sb-companies",
           class: "ml-2",
           active: false
         },
@@ -355,7 +361,7 @@ export default {
           link: "/admin/location",
           name: "Location",
           style: "position:relative;left:12px",
-          id: "sb-printer",
+          id: "sb-location",
           icon: "location-arrow",
           class: "ml-2",
           active: false
@@ -377,7 +383,6 @@ export default {
           link: "/transaction/deliveryreceipt",
           name: "Delivery Slip",
           icon: "file-signature",
-
           active: false
         },
         {
@@ -393,9 +398,6 @@ export default {
   },
 
   methods: {
-    // toggleSideBar() {
-    //   this.toggleBtnActive == true ? this.toggleBtnActive = false : this.toggleBtnActive = true;
-    // },
 
     async setActive(i) {
       this.visible = false;
@@ -410,9 +412,10 @@ export default {
       });
     },
 
-    async setAdminActive(i) {
-      // this.visible = true;
+    setAdminActive(i) {
+      this.visible = true;
       this.routes.map(route => (route.active = false));
+
       this.adminroutes.map((adminroute, index) => {
         if (index === i) {
           adminroute.active = true;
@@ -434,21 +437,15 @@ export default {
 
   beforeCreate(){
     const userDetails = JSON.parse(localStorage.user_details);
-
-    // if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
-    //   variant = "revive"
-    // } else if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
-    //   variant = "biotech"
-    // }
   }
 };
 </script>
 
 <style scoped>
-a {
+ a {
   color: #fff;
   text-decoration: none;
   background-color: transparent;
-}
+} 
 
 </style>
