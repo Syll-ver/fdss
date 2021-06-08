@@ -416,333 +416,347 @@
       id="add-transaction-modal"
       hide-header-close
       no-close-on-backdrop
-      no-scrollable
+      scrollable
     >
       <template v-slot:modal-title>
         <h6>New Delivery Slip</h6>
       </template>
 
       <b-card class="card-shadow">
-        <small v-if="user == rciGeneral" >Transaction Company </small>
-        <b-form-select
-        v-if="user == rciGeneral"
-          id="transact_company"
-          v-model="TRANSACTION_COMPANY_ID"
-          class="form-text"
-          required
-          @change="fetch()"
-        > 
-          <option :value="null">
-            Select Transaction Company
-          </option>
-          <option v-for="(comp, i) of filterCompany"
-          :key="i" :value="comp.U_COMPANYCODE"> {{ comp.COMPANYNAME }} </option>
-        </b-form-select>
+              <small v-if="user == rciGeneral" >Transaction Company </small>
+              <b-form-select
+              v-if="user == rciGeneral"
+                id="transact_company"
+                v-model="TRANSACTION_COMPANY_ID"
+                class="form-text"
+                required
+                @change="fetch()"
+              > 
+                <option :value="null">
+                  Select Transaction Company
+                </option>
+                <option v-for="(comp, i) of filterCompany"
+                :key="i" :value="comp.U_COMPANYCODE"> {{ comp.COMPANYNAME }} </option>
+              </b-form-select>
 
-        <small>Schedule Date</small>
-        <br />
-        <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" />
+              <small>Schedule Date and Time</small>
+              <br />
+              <b-row>
+                <b-col cols="6">
+                  <b-form-input 
+                    id="transact_date"
+                    type="date"
+                    class="form-text"
+                    v-model="U_SCHEDULED_DATE"
+                    @onChange="onChangeHandler"
+                  />
+                </b-col>
+                <b-col cols="6">
+                  <b-form-input 
+                    id="transact_date"
+                    type="time"
+                    class="form-text"
+                    v-model="U_SCHEDULED_TIME"
+                    @onChange="onChangeHandler"
+                  />
+                </b-col>
+              </b-row>
+              <!-- <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" /> -->
 
-        <small class="text-left">Transaction Type</small>
-        <b-form-select
-          id="transact_type"
-          v-model="U_TRANSACTION_TYPE"
-          class="form-text"
-          required
-        >
+              <small class="text-left">Transaction Type</small>
+              <b-form-select
+                id="transact_type"
+                v-model="U_TRANSACTION_TYPE"
+                class="form-text"
+                required
+              >
+                <option :value="null">
+                  Select Transaction Type
+                </option>
+                <option
+                  v-for="(type, i) of transaction_types"
+                  :key="i"
+                  :value="type.value"
+                >{{ type.text == 'Delivery' ? 'Direct' : 'Pick-up' }}</option
+                >
+              
+              </b-form-select>
+              <small class="text-left">Item</small>
+                <vSelect id="commodity"
+                placeholder="Select Item"
+                v-model="U_CMMDTY.value"
+                :options="commodity"
+                label="text"
+                @input="getUOM"
+                :clearable="false"
+                required
+                />
+              <!-- <multiselect
+                id="commodity"
+                placeholder="Select Item"
+                v-model="U_CMMDTY.value"
+                class="form-text"
+                :options="commodity"
+                @input="getUOM"
+                required
+                label="text"
+                track-by="text"
+                :hide-selected="true"
+              ></multiselect> -->
+              <small class="text-left">Unit of Measure</small>
+              <b-form-select
+                id="uom"
+                v-model="U_UOM"
+                class="form-text"
+                :options="unit"
+                @change="sacks"
+                required
+              >
 
-          <!-- <template #first>
-            <b-form-select-option :value="null" aria-selected="" disabled> 
-              Select Transaction Type
-            </b-form-select-option>
-          </template> -->
-          <option :value="null">
-            Select Transaction Type
-          </option>
-          <option
-            v-for="(type, i) of transaction_types"
-            :key="i"
-            :value="type.value"
-          >{{ type.text == 'Delivery' ? 'Direct' : 'Pick-up' }}</option
-          >
-        
-        </b-form-select>
-        <small class="text-left">Item</small>
-          <vSelect id="commodity"
-          placeholder="Select Item"
-          v-model="U_CMMDTY.value"
-          :options="commodity"
-          label="text"
-          @input="getUOM"
-          :clearable="false"
-          required
-          />
-        <!-- <multiselect
-          id="commodity"
-          placeholder="Select Item"
-          v-model="U_CMMDTY.value"
-          class="form-text"
-          :options="commodity"
-          @input="getUOM"
-          required
-          label="text"
-          track-by="text"
-          :hide-selected="true"
-        ></multiselect> -->
-        <small class="text-left">Unit of Measure</small>
-        <b-form-select
-          id="uom"
-          v-model="U_UOM"
-          class="form-text"
-          :options="unit"
-          @change="sacks"
-          required
-        >
+                <template #first>
+                  <b-form-select-option value="" selected disabled> 
+                    Select UOM
+                  </b-form-select-option>
+                </template>
+              </b-form-select>
 
-          <template #first>
-            <b-form-select-option value="" selected disabled> 
-              Select UOM
-            </b-form-select-option>
-          </template>
-        </b-form-select>
+              <small class="text-left">Farmer's Name</small>
+              <!-- <multiselect
+                id="customer"
+                :options="farmer"
+                placeholder="Select Farmer"
+                class="form-text"
+                v-model="U_FRMR_NAME"
+                label="text"
+                track-by="text"
+                @input="test"
+                required
+              ></multiselect> -->
+              <vSelect id="customer"
+                size="sm"
+                placeholder="Select Farmer"
+                v-model="U_FRMR_NAME"
+                :options="farmer"
+                label="text"
+                @input="test"
+                :clearable="false"
+                required
+                />
+              
+              <!-- <b-form-select
+                id="customer"
+                class="form-text"
+                v-model=" U_FRMR_NAME"
+                :options="farmer"
+                @change="test"    
+                required
+              ></b-form-select> -->
+              <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci " >Plot Code</small>
+              <multiselect
+                v-if="TRANSACTION_COMPANY_ID == rci"
+                id="plot_code"
+                :options="plotCode"
+                placeholder="Select Plot Code"
+                class="form-text"
+                v-model="U_APP_ProjCode"
+                label="text"
+                track-by="text"
+                @input="getPlotAddress"
+                required
+              ></multiselect>
 
-        <small class="text-left">Farmer's Name</small>
-        <!-- <multiselect
-          id="customer"
-          :options="farmer"
-          placeholder="Select Farmer"
-          class="form-text"
-          v-model="U_FRMR_NAME"
-          label="text"
-          track-by="text"
-          @input="test"
-          required
-        ></multiselect> -->
-        <vSelect id="customer"
-          size="sm"
-          placeholder="Select Farmer"
-          v-model="U_FRMR_NAME"
-          :options="farmer"
-          label="text"
-          @input="test"
-          :clearable="false"
-          required
-          />
-        
-        <!-- <b-form-select
-          id="customer"
-          class="form-text"
-          v-model=" U_FRMR_NAME"
-          :options="farmer"
-          @change="test"    
-          required
-        ></b-form-select> -->
-        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci " >Plot Code</small>
-        <multiselect
-          v-if="TRANSACTION_COMPANY_ID == rci"
-          id="plot_code"
-          :options="plotCode"
-          placeholder="Select Plot Code"
-          class="form-text"
-          v-model="U_APP_ProjCode"
-          label="text"
-          track-by="text"
-          @input="getPlotAddress"
-          required
-        ></multiselect>
+              <small class="text-left">Address</small>
+              <b-form-input
+                disabled
+                id="farmer_add"
+                class="form-text"
+                v-model="U_FRMR_ADD"
+              />
 
-        <small class="text-left">Address</small>
-        <b-form-input
-          disabled
-          id="farmer_add"
-          class="form-text"
-          v-model="U_FRMR_ADD"
-        />
+              <small class="text-left" v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral" >Plot Code</small>
+              <b-form-input
+                v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral"
+                id="plot_code"
+                class="form-text"
+                v-model="U_APP_ProjCode"
+              />
 
-        <small class="text-left" v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral" >Plot Code</small>
-        <b-form-input
-          v-if="TRANSACTION_COMPANY_ID == bfi && user == rciGeneral"
-          id="plot_code"
-          class="form-text"
-          v-model="U_APP_ProjCode"
-        />
+              <b-row>
+                <b-col cols="6">
+                  <small class="text-left">Helper's Name</small>
+                  <b-form-input
+                    id="helper_fname"
+                    placeholder="First Name"
+                    class="form-text"
+                    v-model="U_HLPR_FNAME"
+                    required
+                  />
+                </b-col>
+                <b-col cols="6">
+                  <small class="text-left">&nbsp;</small>
+                  <b-form-input
+                    id="helper_lname"
+                    placeholder="Last Name"
+                    v-model="U_HLPR_LNAME"
+                    class="form-text"
+                    required
+                  ></b-form-input>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col cols="6">
+                  <small class="text-left">Driver's Name</small>
+                  <b-form-input
+                    id="driver_fname"
+                    placeholder="First Name"
+                    class="form-text"
+                    v-model="U_DRVR_FNAME"
+                    required
+                  />
+                </b-col>
+                <b-col cols="6">
+                  <small class="text-left">&nbsp;</small>
+                  <b-form-input
+                    id="driver_lname"
+                    placeholder="Last Name"
+                    v-model="U_DRVR_LNAME"
+                    class="form-text"
+                    required
+                  ></b-form-input>
+                </b-col>
+              </b-row>
 
-        <b-row>
-          <b-col cols="6">
-            <small class="text-left">Helper's Name</small>
-            <b-form-input
-              id="helper_name"
-              placeholder="First Name"
-              class="form-text"
-              v-model="U_HLPR_FNAME"
-              required
-            />
-          </b-col>
-          <b-col cols="6">
-            <small class="text-left">&nbsp;</small>
-            <b-form-input
-              id="tendered"
-              placeholder="Last Name"
-              v-model="U_HLPR_LNAME"
-              class="form-text"
-              required
-            ></b-form-input>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="6">
-            <small class="text-left">Driver's Name</small>
-            <b-form-input
-              id="helper_name"
-              placeholder="First Name"
-              class="form-text"
-              v-model="U_DRVR_FNAME"
-              required
-            />
-          </b-col>
-          <b-col cols="6">
-            <small class="text-left">&nbsp;</small>
-            <b-form-input
-              id="tendered"
-              placeholder="Last Name"
-              v-model="U_DRVR_LNAME"
-              class="form-text"
-              required
-            ></b-form-input>
-          </b-col>
-        </b-row>
+              <small class="text-left">Plate Number</small>
+              <b-form-input
+                id="tendered"
+                v-model="U_PLATE_NUMBER"
+                class="form-text"
+                required
+              ></b-form-input>
+              <b-row v-if="U_TRANSACTION_TYPE === '1'">
+                <b-col cols="12" v-if="U_UOM.UomName === 'BAG'">
+                  <small class="text-left"># of Requested Bags</small>
+                  <b-form-input
+                    id="requestedsacks"
+                    type="number"
+                    v-model="U_REQUESTED_SACKS"
+                    class="form-text"
+                    required
+                  ></b-form-input>
+                </b-col>
+              </b-row>
+              <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TL' || U_UOM.UomName === 'TRUCKLOAD'">
+                <b-col cols="12">
+                  <small class="text-left">Quantity</small>
+                  <b-form-input
+                    id="Bags"
+                    type="number"
+                    v-model="U_SACKS"
+                    class="form-text"
+                    required
+                  ></b-form-input>
+                </b-col>
+              </b-row>
+              <b-row v-else></b-row>
 
-        <small class="text-left">Plate Number</small>
-        <b-form-input
-          id="tendered"
-          v-model="U_PLATE_NUMBER"
-          class="form-text"
-          required
-        ></b-form-input>
-        <b-row v-if="U_TRANSACTION_TYPE === '1'">
-          <b-col cols="12" v-if="U_UOM.UomName === 'BAG'">
-            <small class="text-left"># of Requested Bags</small>
-            <b-form-input
-              id="requestedsacks"
-              type="number"
-              v-model="U_REQUESTED_SACKS"
-              class="form-text"
-              required
-            ></b-form-input>
-          </b-col>
-        </b-row>
-        <b-row v-if="U_UOM.UomName === 'TRUCK LOAD' || U_UOM.UomName === 'TL' || U_UOM.UomName === 'TRUCKLOAD'">
-          <b-col cols="12">
-            <small class="text-left">Quantity</small>
-            <b-form-input
-              id="Bags"
-              type="number"
-              v-model="U_SACKS"
-              class="form-text"
-              required
-            ></b-form-input>
-          </b-col>
-        </b-row>
-        <b-row v-else></b-row>
+              <b-row v-if="U_TRANSACTION_TYPE === '2'">
+                <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
+                  <small class="text-left"># of Requested Bags</small>
+                  <b-form-input
+                    id="requestedsacks"
+                    type="number"
+                    v-model="U_REQUESTED_SACKS"
+                    class="form-text"
+                    required
+                  ></b-form-input>
+                  <small class="text-left"># of Filled Bags</small>
+                  <b-form-input
+                    type="number"
+                    id="Bags"
+                    class="form-text"
+                    v-model="U_SACKS"
+                  />
+                </b-col>
+                <!-- <b-col cols="6" v-else>
+                  <small class="text-left">Quantity</small>
+                  <b-form-input type="number" id="Bags" class="form-text" v-model="U_SACKS" />
+                </b-col> -->
+                <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
+                  <small class="text-left"># of Empty Bags</small>
+                  <b-form-input
+                    type="number"
+                    id="emptysacks"
+                    class="form-text"
+                    v-model="U_EMPTY_SACKS"
+                  />
+                </b-col>
+                <b-col cols="6" v-else></b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <small class="text-left">Remark</small>
+                  <b-form-textarea
+                    id="remarks"
+                    class="form-text"
+                    v-model="U_REMARKS"
+                    placeholder="Enter Remarks..."
+                    rows="1"
+                    max-rows="3"
+                  ></b-form-textarea>
+                </b-col>
+              </b-row>
 
-        <b-row v-if="U_TRANSACTION_TYPE === '2'">
-          <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
-            <small class="text-left"># of Requested Bags</small>
-            <b-form-input
-              id="requestedsacks"
-              type="number"
-              v-model="U_REQUESTED_SACKS"
-              class="form-text"
-              required
-            ></b-form-input>
-            <small class="text-left"># of Filled Bags</small>
-            <b-form-input
-              type="number"
-              id="Bags"
-              class="form-text"
-              v-model="U_SACKS"
-            />
-          </b-col>
-          <!-- <b-col cols="6" v-else>
-            <small class="text-left">Quantity</small>
-            <b-form-input type="number" id="Bags" class="form-text" v-model="U_SACKS" />
-          </b-col> -->
-          <b-col cols="6" v-if="U_UOM.UomName === 'BAG'">
-            <small class="text-left"># of Empty Bags</small>
-            <b-form-input
-              type="number"
-              id="emptysacks"
-              class="form-text"
-              v-model="U_EMPTY_SACKS"
-            />
-          </b-col>
-          <b-col cols="6" v-else></b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <small class="text-left">Remark</small>
-            <b-form-textarea
-              id="remarks"
-              class="form-text"
-              v-model="U_REMARKS"
-              placeholder="Enter Remarks..."
-              rows="2"
-              max-rows="3"
-            ></b-form-textarea>
-          </b-col>
-        </b-row>
+              <!-- <b-form-group v-if="U_TRANSACTION_TYPE === '1'">
+                <b-row class="mt-0">
+                <b-col cols="6">
+                  <small class="text-left">Arrival Time</small>
+                  <b-form-input
+                    id="helper_name"
+                    placeholder="First Name"
+                    class="form-text"
+                    v-model="U_ARRIVAL"
+                    type="time"
+                    required
+                  />
+                </b-col>
+                <b-col cols="6">
+                  <small class="text-left">Departure Time</small>
+                  <b-form-input
+                    id="tendered"
+                    placeholder="Last Name"
+                    v-model="U_DEPARTURE"
+                    class="form-text"
+                    type="time"
+                    required
+                  ></b-form-input>
+                </b-col>
+              </b-row>
 
-        <!-- <b-form-group v-if="U_TRANSACTION_TYPE === '1'">
-          <b-row class="mt-0">
-          <b-col cols="6">
-            <small class="text-left">Arrival Time</small>
-            <b-form-input
-              id="helper_name"
-              placeholder="First Name"
-              class="form-text"
-              v-model="U_ARRIVAL"
-              type="time"
-              required
-            />
-          </b-col>
-          <b-col cols="6">
-            <small class="text-left">Departure Time</small>
-            <b-form-input
-              id="tendered"
-              placeholder="Last Name"
-              v-model="U_DEPARTURE"
-              class="form-text"
-              type="time"
-              required
-            ></b-form-input>
-          </b-col>
-        </b-row>
-
-        <b-row>
-          <b-col cols="6">
-            <small class="text-left">Time Start</small>
-            <b-form-input
-              id="helper_name"
-              placeholder="First Name"
-              class="form-text"
-              v-model="U_TIME_START"
-              type="time"
-              required
-            />
-          </b-col>
-          <b-col cols="6">
-            <small class="text-left">Time End</small>
-            <b-form-input
-              id="tendered"
-              placeholder="Last Name"
-              v-model="U_TIME_END"
-              class="form-text"
-              type="time"
-              required
-            ></b-form-input>
-          </b-col>
-        </b-row>
-        </b-form-group> -->
+              <b-row>
+                <b-col cols="6">
+                  <small class="text-left">Time Start</small>
+                  <b-form-input
+                    id="helper_name"
+                    placeholder="First Name"
+                    class="form-text"
+                    v-model="U_TIME_START"
+                    type="time"
+                    required
+                  />
+                </b-col>
+                <b-col cols="6">
+                  <small class="text-left">Time End</small>
+                  <b-form-input
+                    id="tendered"
+                    placeholder="Last Name"
+                    v-model="U_TIME_END"
+                    class="form-text"
+                    type="time"
+                    required
+                  ></b-form-input>
+                </b-col>
+              </b-row>
+              </b-form-group> -->
       </b-card>
 
       <template v-slot:modal-footer="{}">
@@ -813,12 +827,32 @@
         ></b-form-select> {{this.TRANSACTION_COMPANY_ID}} 
         <br /> -->
 
-        <small>Schedule Date</small>
+        <small>Schedule Date and Time</small>
+        <b-row>
+          <b-col cols="6">
+            <b-form-input 
+              id="transact_date"
+              type="date"
+              class="form-text"
+              v-model="U_SCHEDULED_DATE"
+              @onChange="onChangeHandler"
+            />
+          </b-col>
+          <b-col cols="6">
+            <b-form-input 
+              id="transact_date"
+              type="time"
+              class="form-text"
+              v-model="U_SCHEDULED_TIME"
+              @onChange="onChangeHandler"
+            />
+          </b-col>
+        </b-row>
 
-        <date-time-picker
+        <!-- <date-time-picker
           v-bind="datetimeScheme2"
           @onChange="onChangeHandler"
-        />
+        /> -->
 
         <small class="text-left">Transaction Type</small>
         <b-form-select
@@ -1716,7 +1750,7 @@ export default {
     // if (userActions.find(action => action.U_ACTION_NAME === "View Transaction")) {
     //   this.actions.viewDeliveryTransaction = true;
     // }
-   
+  //  this.changeEnv();
   },
   data() {
     return {
@@ -1726,6 +1760,8 @@ export default {
       user: null,
       rci: process.env.rci,
       bfi: process.env.bfi,
+      // rci: null,
+      // bfi: null,
       isBusy: true,
       isPrinterAvailable: true,
       receiptData: {},
@@ -1976,6 +2012,20 @@ export default {
   },
 
   methods: { 
+    changeEnv() {
+      this.listCompanies.filter(company => {
+        if(company.U_IS_ACTIVE) {
+          console.log(company);
+          if(company.COMPANYNAME.toLowerCase().includes('biotech') ||
+            company.COMPANYNAME.toLowerCase().includes('bfi')) {
+              this.bfi = company.U_COMPANYCODE
+          } else if(company.COMPANYNAME.toLowerCase().includes('revive') ||
+            company.COMPANYNAME.toLowerCase().includes('rci')) {
+              this.rci = company.U_COMPANYCODE
+          }
+        }
+      })
+    },
     sacks() {
       if(this.U_UOM.UomName == 'TRUCK LOAD' || this.U_UOM.UomName == 'TL' ||
       this.U_UOM.UomName == 'TRUCKLOAD') {
@@ -2040,12 +2090,20 @@ export default {
         console.log("Error: ", e);
       }
     },
-    onChangeHandler: function(data) {
-      (this.U_SCHEDULED_DATE = moment(data.startDate).format("YYYY-MM-DD")),
-        (this.U_SCHEDULED_TIME = this.fixTime(
-          moment(data.startDate).format("HH:mm")
-        ));
-      console.log(data);
+    // onChangeHandler: function(data) {
+    //   (this.U_SCHEDULED_DATE = moment(data.startDate).format("YYYY-MM-DD")),
+    //     (this.U_SCHEDULED_TIME = this.fixTime(
+    //       moment(data.startDate).format("HH:mm")
+    //     ));
+    //   console.log(data);
+    // },
+    onChangeHandler() {
+      if(this.U_SCHEDULED_DATE != null) {
+        this.U_SCHEDULED_DATE = moment(this.U_SCHEDULED_DATE).format("YYY-MM-DD")
+      }
+      if(this.U_SCHEDULED_TIME != null) {
+        this.U_SCHEDULED_TIME = this.fixTime(moment(this.U_SCHEDULED_TIME).format("HH:mm"))
+      }
     },
     async saveDR() {
       // console.log(this.U_ARRIVAL, this.U_TIME_START, this.U_TIME_END, this.U_DEPARTURE);
@@ -2193,6 +2251,7 @@ export default {
         // this.U_DEPARTURE = null;
         // this.U_TIME_START = null;
         // this.U_TIME_END = null;
+      this.U_REMARKS = null;
       this.U_SCHEDULED_DATE = null;
       this.U_SCHEDULED_TIME = null;
       this.$bvModal.hide("add-transaction-modal");
@@ -2626,25 +2685,12 @@ export default {
       this.U_EMPTY_SACKS = data.U_EMPTY_SACKS;
       this.U_PLATE_NUMBER = data.U_PLATE_NUMBER;
       this.U_SCHEDULED_DATE = data.U_SCHEDULED_DATE;
-      this.U_SCHEDULED_TIME = data.U_SCHEDULED_TIME;
+      this.U_SCHEDULED_TIME = this.intToTime(data.U_SCHEDULED_TIME)
       this.U_REMARKS = data.U_REMARKS;
         // this.U_ARRIVAL = data.U_ARRIVAL;
         // this.U_DEPARTURE = data.U_DEPARTURE;
         // this.U_TIME_START = data.U_TIME_START;
         // this.U_TIME_END = data.U_TIME_END;
-
-      this.datetimeScheme2.startDate = new Date(
-        moment(
-          `${data.U_SCHEDULED_DATE} ${this.intToTime(data.U_SCHEDULED_TIME)}`
-        ).format("YYYY-MM-DD HH:mm")
-      );
-      console.log(
-        new Date(
-          moment(
-            `${data.U_SCHEDULED_DATE} ${this.intToTime(data.U_SCHEDULED_TIME)}`
-          ).format("YYYY-MM-DD HH:mm")
-        )
-      );
       this.$bvModal.show("edit-transaction-modal");
 
       this.updateUOM();
@@ -2688,7 +2734,6 @@ export default {
         method: "GET",
         url: `${this.$axios.defaults.baseURL}/api/transaction/get-signature/${U_TRX_NO}`,
       })
-      console.log(this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE);
       this.showLoading = false;
       return this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE;
     },
@@ -2738,7 +2783,6 @@ export default {
     },
     async getUOM() {
       if(this.U_CMMDTY)
-      console.log("transaction company id",this.TRANSACTION_COMPANY_ID);
 
       this.showLoading = true;
       const userDetails = JSON.parse(localStorage.user_details);
@@ -2851,11 +2895,11 @@ export default {
         }
 
         // add the rice bran raw material
-        const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
-        this.commodity.push({
-          text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
-          value: riceBran[0].ItemCode
-        })
+        // const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
+        // this.commodity.push({
+        //   text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
+        //   value: riceBran[0].ItemCode
+        // })
       }
       this.isBusy = false;
     },
@@ -3357,85 +3401,6 @@ export default {
           }
         }
       });
-
-      // const userDetails = JSON.parse(localStorage.user_details);
-      // this.farmer = [];
-      // let v; 
-      // if(userDetails.U_COMPANY_CODE == `${process.env.rci}`) {
-      //   // RCI
-
-      //   const res1 = await axios({
-      //   method: "POST",
-      //     url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-      //     data: {
-      //       company: userDetails.U_COMPANY_CODE
-      //     }
-      //   });
-      //   const v1 = res1.data.view; 
-      //   for (let i = 0; i < v1.length; i++) {
-      //     if(v1[i].CardType == "S"){
-      //       this.rci_farmer.push({
-      //         text: v1[i].SUPPLIER_NAME,
-      //         value: { id: v1[i].SUPPLIER_ID }
-      //       });
-      //     }
-      //   }
-
-      //   console.log("farmers", this.rci_farmer);
-
-      //   const res = await axios({
-      //     method: "GET",
-      //     url: `${this.$axios.defaults.baseURL}/api/transaction/projCode`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-      //   });
-      //   v = res.data.view;
-
-      //   for(var i = 0; i < v.length; i++){
-      //     let frmr = ((v[i].PrjName).toLowerCase()).split(", ");
-      //     for(var j = 0; j < this.rci_farmer.length; j++) {
-      //       let frmr_name = (this.rci_farmer[j].text).toLowerCase();
-      //       if((frmr.length == 1) && (frmr_name == frmr[0])) {
-      //         this.farmer.push({
-      //           text: v[i].PrjName,
-      //           value: { id: this.rci_farmer[j].value.id }
-      //         });
-      //       } else if(frmr_name.includes(frmr[0])&& frmr_name.includes(frmr[1])){
-      //         this.farmer.push({
-      //           text: v[i].PrjName,
-      //           value: { id: this.rci_farmer[j].value.id }
-      //         });
-      //       }
-      //     }
-      //   }
-
-      // } else if(userDetails.U_COMPANY_CODE == `${process.env.bfi}`) {
-      //   // BFI
-      //   const res = await axios({
-      //   method: "POST",
-      //     url: `${this.$axios.defaults.baseURL}/api/suppliers/select`,
-      //     headers: {
-      //       Authorization: localStorage.SessionId
-      //     },
-      //     data: {
-      //       company: userDetails.U_COMPANY_CODE
-      //     }
-      //   });
-      //   v = res.data.view;
-
-      //   for (let i = 0; i < v.length; i++) {
-      //     if(v[i].CardType == "S"){
-      //       this.farmer.push({
-      //         text: v[i].SUPPLIER_NAME,
-      //         value: { id: v[i].SUPPLIER_ID, address: v[i].SUPPLIER_ADDRESS }
-      //       });
-      //     }
-      //   }
-      // }
 
     await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
       SessionId: localStorage.SessionId

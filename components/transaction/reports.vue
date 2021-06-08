@@ -959,8 +959,8 @@ export default {
       U_DEPARTURE: null,
       U_UNLOADING: null,
       remarks: null,
-      U_SIGNATURE_PATH: null,
       U_REMARKS: null,
+      U_SIGNATURE_PATH: null,
 
       filterCompany:[],
       filterTransaction:["Pick-up","Delivery"],
@@ -1124,6 +1124,20 @@ export default {
   },
 
   methods: {
+    changeEnv() {
+      this.listCompanies.filter(company => {
+        if(company.U_IS_ACTIVE) {
+          console.log(company);
+          if(company.COMPANYNAME.toLowerCase().includes('biotech') ||
+            company.COMPANYNAME.toLowerCase().includes('bfi')) {
+              this.bfi = company.U_COMPANYCODE
+          } else if(company.COMPANYNAME.toLowerCase().includes('revive') ||
+            company.COMPANYNAME.toLowerCase().includes('rci')) {
+              this.rci = company.U_COMPANYCODE
+          }
+        }
+      })
+    },
     cancel() {
       // this.U_ARRIVAL = null;
       // this.U_TIME_START = null;
@@ -1496,7 +1510,6 @@ export default {
       method: "GET",
       url: `${this.$axios.defaults.baseURL}/api/transaction/get-signature/${U_TRX_NO}`,
     })
-    console.log(this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE);
     this.showLoading = false;
     return this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE;
   },
