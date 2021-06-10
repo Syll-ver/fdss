@@ -177,7 +177,31 @@ export default {
         url: `${this.$axios.defaults.baseURL}/login`,
         data: { username: this.user.name, password: this.user.password }
       })
-        .then(result => {
+      .then(result => {
+
+        this.$store
+        .dispatch("Admin/Company/fetchListCompany", {
+          user_actions: result.data.user_actions,
+          SessionId: result.data.SessionId,
+          Admin: "Y"
+        })
+        .then(res => {
+          console.log(res);
+          const company = {};
+          res.data.companies.filter(comp => {
+            if(comp.U_IS_ACTIVE == 1){
+              if(comp.COMPANYNAME.toLowerCase().includes('revive') 
+              || comp.COMPANYNAME.toLowerCase().includes('rci')) {
+                company["rci"] = comp.U_COMPANYCODE
+              } else if(comp.COMPANYNAME.toLowerCase().includes('biotech')
+              || comp.COMPANYNAME.toLowerCase().includes('bfi')) {
+                company["bfi"] = comp.U_COMPANYCODE
+              }
+            }
+          })
+          localStorage.companyCode = JSON.stringify(company);
+        });
+
           localStorage.username = this.user.name;
           localStorage.user_details = JSON.stringify(result.data.user_details);
           localStorage.user_role = JSON.stringify(result.data.user_role);
@@ -199,19 +223,19 @@ export default {
             this.showLoading = false;
           }
         })
-        .catch(err => {
-          this.showLoading = false;
-                  if(this.user.name === "" && this.user.password === "") {
-            this.showAlert("Please Input all Fields", "danger");
-                 }
-          else if (err.response && err.response.data.errorMsg) {
-            this.showAlert(err.response.data.errorMsg, "danger");
-          
-     
-          } else {
-            this.showAlert(err.message, "danger");
-          }
-        });
+      .catch(err => {
+        this.showLoading = false;
+                if(this.user.name === "" && this.user.password === "") {
+          this.showAlert("Please Input all Fields", "danger");
+                }
+        else if (err.response && err.response.data.errorMsg) {
+          this.showAlert(err.response.data.errorMsg, "danger");
+        
+    
+        } else {
+          this.showAlert(err.message, "danger");
+        }
+      });
     },
     async getCommits() {
       await axios({

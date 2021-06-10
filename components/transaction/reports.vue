@@ -1675,7 +1675,6 @@ export default {
             }
           }
           this.isBusy = false;
-          console.log("transactions",this.items);
         } else {
           this.isBusy = false;
         }
