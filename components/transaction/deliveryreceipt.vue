@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="windowWidth > 576">
+    <div>
       <b-alert
         id="alert_action"
         class="alerticon"
@@ -1703,7 +1703,7 @@
       </div>
 
     </div>
-    <div v-else >
+    <!-- <div v-else >
       <div>
         
         <div>
@@ -1714,7 +1714,7 @@
           />
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
