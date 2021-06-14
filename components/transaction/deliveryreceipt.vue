@@ -2607,56 +2607,54 @@ export default {
 
       if(!this.printerIP) {
         this.showAlert("Please provide IP Address", "danger")
-      }
-      
-      await axios({
-        method: "POST",
-        url: `${process.env.serverPrintUrl}/fdss/print`,
-        data: {
-          header: data,
-          qrcode: data.U_TRX_NO,
-          uuids: process.env.uuid,
-          ip: this.printerIP
-        },
-      })
-      .then((res) => {
-        this.showLoading = false;
-        this.showAlert("Printed Successfully", "success");
-      })
-      .catch((err => {
-        console.log("error: ", err);
-        this.showAlert(err, "danger");
-        this.showLoading = false;
-      }))
-
-      try {
-        this.showLoading = true;
-        const userDetails = JSON.parse(localStorage.user_details);
-
-        const employee_id = userDetails.Code;
-
-        const res = await axios({
-          method: "PUT",
-          url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data.U_TRX_ID}`,
-          headers: {
-            Authorization: `B1SESSION=${localStorage.SessionId}`
-          },
+      } else {
+        await axios({
+          method: "POST",
+          url: `${process.env.serverPrintUrl}/fdss/print`,
           data: {
-            employee_id,
-            U_TRX_ID: data.U_TRX_NO
+            header: data,
+            qrcode: data.U_TRX_NO,
+            uuids: process.env.uuid,
+            ip: this.printerIP
           }
-        });
-        this.showLoading = false;
-        // this.networkPrint(U_TRX_ID);
-        this.copiesToPrint = 1;
-        this.$bvModal.hide('select-printer-modal');
-        this.showAlert("Printed Successfully", "success");
-        this.getTransactions();
-      } catch (e) {
-        console.log(e);
-        this.showAlert("Print error: Printer not connected", "danger");
-        this.showLoading = false;
-        this.showAlert(res.message, "danger");
+        })
+        .then((res) => {
+          if(res.status === 201) {
+            try {
+              this.showLoading = true;
+              const userDetails = JSON.parse(localStorage.user_details);
+
+              const employee_id = userDetails.Code;
+
+              const res = axios({
+                method: "PUT",
+                url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data.U_TRX_ID}`,
+                headers: {
+                  Authorization: `B1SESSION=${localStorage.SessionId}`
+                },
+                data: {
+                  employee_id,
+                  U_TRX_ID: data.U_TRX_NO
+                }
+              });
+              this.showLoading = false;
+              this.copiesToPrint = 1;
+              this.$bvModal.hide('select-printer-modal');
+              this.showAlert("Printed Successfully", "success");
+              this.getTransactions();
+            } catch (e) {
+              console.log(e);
+              this.showAlert(e, "danger");
+              this.showLoading = false;
+            }
+          this.showAlert("Printed Successfully", "success");
+          }
+        })
+        .catch((err => {
+          console.log("error: ", err);
+          this.showAlert(err, "danger");
+          this.showLoading = false;
+        }))
       }
     },
     async confirmCancel(U_TRX_ID) {
