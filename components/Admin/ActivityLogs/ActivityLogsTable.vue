@@ -545,6 +545,10 @@ export default {
   },
   async created() {
     const user_details = JSON.parse(localStorage.user_details);
+    const user_role = JSON.parse(localStorage.user_role);
+    if(user_role.Name.toLowerCase() !== 'administrator') {
+      this.$router.push("/transaction/deliveryreceipt")
+    }
     this.company = user_details.U_COMPANY_CODE;
 
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
