@@ -1735,6 +1735,7 @@ import 'vue-select/dist/vue-select.css';
 import jsPDF from "jspdf";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import TableForm from "@/components/TableForm/TableForm";
+import JsNetworkMonitor from "js-network-monitor";
 export default {
   components: {
     jsPDF,
@@ -1746,7 +1747,8 @@ export default {
     VueSignaturePad,
     VueQrcode,
     vSelect,
-    TableForm
+    TableForm,
+    JsNetworkMonitor
   },
   async created() {
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
@@ -1767,6 +1769,7 @@ export default {
     await this.getTransactionType();
     await this.getPrinters();
     await this.getLocationIP();
+    await this.pingPrinter
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
     // const userActions = JSON.parse(localStorage.user_actions)["Transactions Module"];
@@ -2065,7 +2068,29 @@ export default {
         .map(f => {
           return { text: f.label, value: f.key };
         });
-    }
+    },
+
+    async pingPrinter() {
+      fetch(`172.17.128.105?_t=`+parseInt(Math.random() * 10000))
+      .then((res) => {
+        console.log(res)
+        console.log("online")
+      }).catch((err) => {
+        console.log(err)
+        if (err.message.indexOf(`Failed to fetch`) !== -1 ) {
+        // todo offline
+        console.log("failed to fetch", err)
+        }
+      })
+      // var options = {
+      //   url: '172.17.128.105', // default
+      //   timeout: 3000, // default 3 seconds
+      //   sleep_delay: 5000, // default 5 seconds
+      // };
+      // var js_network_monitor = new JsNetworkMonitor(options);
+      // js_network_monitor.start();
+      // console.log(js_network_monitor)
+    },
   },
 
   methods: { 
@@ -2471,28 +2496,25 @@ export default {
     //   // this.networkPrinter.send();
     // },
     // async networkPrintInit() {
-        
+    //   this.showLoading = true;
     //   let ePosDev = new epson.ePOSDevice();
 
-    //   let ipAddress = 'tcp://'+process.env.networkPrinterIp,
-    //   // let ipAddress = localStorage.printer_ip,
-    //     port = process.env.networkPrinterPort;
-    //     // port = localStorage.printer_port;
+    //   let ipAddress = `172.16.4.40`,
+    //     port = `8008`;
 
     //   let deviceId = "bfi_printer";
     //   let options = { crypto: false, buffer: false };
 
-    //   const connectionResult = await new Promise(resolve => {
-    //     ePosDev.connect(ipAddress, port, resultConnect => {
+    //   console.log(ipAddress, port)
+
+    //   const connectionResult = await new Promise((resolve) => {
+    //     ePosDev.connect(ipAddress, port, (resultConnect) => {
     //       resolve(resultConnect);
     //     });
     //   });
 
     //   if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
-    //       this.isPrinterAvailable = false;
     //     console.log("Connecting to IP address and port failed");
-    //     this.showLoading = false;
-    //     // this.showAlert("Print error: Connecting to Printer failed" , "danger");
     //     return;
     //   }
 
@@ -2561,21 +2583,6 @@ export default {
     //   this.$refs.Receipt.print(data);
     //    }
     // },
-    // async pingIP(){
-    //   let pingMe = '172.16.4.182';
-    //   ping(pingMe).then(function(delta) {
-    //     console.log("Ping time was", String(delta) + ' ms.');
-    //   }).catch(err => {
-    //     console.log(error, err);
-    //   })
-
-    //   let pingMe2 = '172.16.4.156';
-    //   ping(pingMe2).then(function(delta) {
-    //     console.log("Ping time was", String(delta) + ' ms.');
-    //   }).catch(err => {
-    //     console.log(error, err);
-    //   })
-    // },
     getPrinters(){
       for(let i = 0; i < this.listPrinters.length; i++) {
         this.printers.push({
@@ -2608,6 +2615,8 @@ export default {
       if(!this.printerIP) {
         this.showAlert("Please provide IP Address", "danger")
       } else {
+        // this.pingPrinter();
+        const session = localStorage.SessionId;
         await axios({
           method: "POST",
           url: `${process.env.serverPrintUrl}/fdss/print`,
@@ -2615,10 +2624,15 @@ export default {
             header: data,
             qrcode: data.U_TRX_NO,
             uuids: process.env.uuid,
-            ip: this.printerIP
+            ip: this.printerIP,
+            sessionId: session,
           }
         })
         .then((res) => {
+          if(res.data.posted.status && res.data.posted.status == 500) {
+            this.showAlert(
+              res.data.posted.status+' '+res.data.posted.statusText, "danger");
+          }
           if(res.status === 201) {
             try {
               this.showLoading = true;
@@ -2626,7 +2640,7 @@ export default {
 
               const employee_id = userDetails.Code;
 
-              const res = axios({
+              axios({
                 method: "PUT",
                 url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data.U_TRX_ID}`,
                 headers: {
@@ -2636,18 +2650,20 @@ export default {
                   employee_id,
                   U_TRX_ID: data.U_TRX_NO
                 }
-              });
-              this.showLoading = false;
-              this.copiesToPrint = 1;
-              this.$bvModal.hide('select-printer-modal');
-              this.showAlert("Printed Successfully", "success");
-              this.getTransactions();
+              }).then(res => {
+                this.getTransactions();
+                this.showLoading = false;
+                this.copiesToPrint = 1;
+                this.$bvModal.hide('select-printer-modal');
+                this.showAlert("Printed Successfully", "success");
+              })
             } catch (e) {
               console.log(e);
               this.showAlert(e, "danger");
               this.showLoading = false;
             }
-          this.showAlert("Printed Successfully", "success");
+          } else if(res.includes('500')) {
+            this.showAlert(res, "danger")
           }
         })
         .catch((err => {
@@ -2788,6 +2804,10 @@ export default {
       const res = await axios({
         method: "GET",
         url: `${this.$axios.defaults.baseURL}/api/transaction/get-signature/${U_TRX_NO}`,
+        headers: {
+          Authorization: localStorage.SessionId,
+          'Content-Type' : 'application/json'
+        }
       })
       this.showLoading = false;
       return this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE;
@@ -3188,8 +3208,8 @@ export default {
         this.$bvModal.hide("signature");
         this.showLoading = false;
         this.getTransactions();
-        this.$bvModal.hide("add-transaction-modal");
-        this.showAlert(res.data.posted.msg, "success");
+        // this.$bvModal.hide("add-transaction-modal");
+        // this.showAlert(res.data.posted.msg, "success");
         this.close();
       } catch (e) {
         console.log(e);

@@ -30,6 +30,7 @@
     "font-awesome-icons": "^1.6.0",
     "fs": "0.0.1-security",
     "html2canvas": "^1.0.0-rc.5",
+    "js-network-monitor": "^1.0.9",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.5.4",
     "moment": "^2.24.0",
