@@ -1769,7 +1769,6 @@ export default {
     await this.getTransactionType();
     await this.getPrinters();
     await this.getLocationIP();
-    await this.pingPrinter
     // await this.networkPrintInit();
     this.totalRows = this.items.length;
     // const userActions = JSON.parse(localStorage.user_actions)["Transactions Module"];
@@ -2069,19 +2068,7 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
-
-    async pingPrinter() {
-      fetch(`172.17.128.105?_t=`+parseInt(Math.random() * 10000))
-      .then((res) => {
-        console.log(res)
-        console.log("online")
-      }).catch((err) => {
-        console.log(err)
-        if (err.message.indexOf(`Failed to fetch`) !== -1 ) {
-        // todo offline
-        console.log("failed to fetch", err)
-        }
-      })
+    
       // var options = {
       //   url: '172.17.128.105', // default
       //   timeout: 3000, // default 3 seconds
@@ -2090,7 +2077,6 @@ export default {
       // var js_network_monitor = new JsNetworkMonitor(options);
       // js_network_monitor.start();
       // console.log(js_network_monitor)
-    },
   },
 
   methods: { 
