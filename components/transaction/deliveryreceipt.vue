@@ -1735,7 +1735,6 @@ import 'vue-select/dist/vue-select.css';
 import jsPDF from "jspdf";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import TableForm from "@/components/TableForm/TableForm";
-import JsNetworkMonitor from "js-network-monitor";
 export default {
   components: {
     jsPDF,
@@ -1748,7 +1747,6 @@ export default {
     VueQrcode,
     vSelect,
     TableForm,
-    JsNetworkMonitor
   },
   async created() {
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
@@ -2068,15 +2066,6 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
-    
-      // var options = {
-      //   url: '172.17.128.105', // default
-      //   timeout: 3000, // default 3 seconds
-      //   sleep_delay: 5000, // default 5 seconds
-      // };
-      // var js_network_monitor = new JsNetworkMonitor(options);
-      // js_network_monitor.start();
-      // console.log(js_network_monitor)
   },
 
   methods: { 

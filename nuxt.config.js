@@ -75,8 +75,8 @@ module.exports = {
     // serverPrintUrl: "http://localhost:3002",
     // networkPrinterIp: `172.16.4.173`, // gensan network printer ip
     uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
-    bfi: 156274, // dev
-    rci: 156266, // dev
+    bfi: 157321, // dev
+    rci: 157333, // dev
     // bfi: '4400', // prod
     // rci: '4381', // prod
     // bfi: `139483`, // eut
