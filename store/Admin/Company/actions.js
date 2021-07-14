@@ -10,6 +10,10 @@ export default {
       data: {
         user_actions
       },
+      proxy: {
+        host: '172.16.1.6',
+        port: 3128
+      }
       // params: {
       //   Admin: Admin ? "Y" : null
       // }

@@ -34,7 +34,7 @@ export default {
 }
 .loading {
   position: relative;
-  top: 350px;
+  top: 330px;
   border: 4px solid #ffffff00;
   border-radius: 50%;
   border-top: 4px solid #ffd400;
@@ -44,13 +44,13 @@ export default {
 }
 .load {
   position: relative;
-  top: 171px;
+  top: 165px;
   border: 4px solid #ffffff00;
   border-radius: 50%;
   border-top: 4px solid #75361a;
   width: 180px;
   height: 180px;
-  animation: spin2 1s linear infinite;
+  animation: spin2 0.8s linear infinite;
 }
 .logo_load {
   position: relative;
@@ -59,7 +59,7 @@ export default {
   background-size: cover;
   width: 120px;
   height: 120px;
-  animation: vrotate 2.3s linear infinite;
+  animation: 2.3s linear infinite;
 }
 @media only screen and (max-width: 1366px) {
   .loading {
@@ -97,7 +97,7 @@ export default {
     -webkit-transform: rotate(0deg);
   }
   100% {
-    -webkit-transform: rotate(-360deg);
+    -webkit-transform: rotate(360deg);
   }
 }
 @keyframes spin2 {
@@ -105,7 +105,7 @@ export default {
     transform: rotate(0deg);
   }
   100% {
-    transform: rotate(-360deg);
+    transform: rotate(360deg);
   }
 }
 @-webkit-keyframes fadeIn {
@@ -122,28 +122,6 @@ export default {
   }
   to {
     opacity: 1;
-  }
-}
-@-webkit-keyframes vrotate {
-  0% {
-    transform: scaleX(1);
-  }
-  50% {
-    transform: scaleX(-1);
-  }
-  100% {
-    transform: scaleX(1);
-  }
-}
-@keyframes vrotate {
-  0% {
-    transform: scaleX(1);
-  }
-  50% {
-    transform: scaleX(-1);
-  }
-  100% {
-    transform: scaleX(1);
   }
 }
 /* UNTIL HERE LOADING OVERLAY */

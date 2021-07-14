@@ -1,60 +1,73 @@
 <template>
-  <div class="wrapper">
-    <nav id="sidebarBFI">
+  <div class="wrapper" id="wrapper">
+    <nav :id="company == rci ? 'sidebarRCI' : 'sidebarBFI'">
       <div class="sidebar-header">
         <div>
-          <b-img src="/rlogo.png" class="sidebar-image" center>
-          </b-img><center>
-          <p class="h9" >FARMER'S SLIP SYSTEM</p>
+          <b-img :src="company == rci ? '/rlogo.png' : '/blogo.png'" class="sidebar-image" style="padding:8px 8px 0px 8px" center>
+          </b-img>
+          <div class="image-box">
+            <b-img :src="company == rci ? '/rci-org.png' : '/bfi-org.png'" class="sidebar-image-mini" center></b-img>
+          </div>
+          <center>
+          <p class="h9 sidebar-image" >FARMER'S DELIVERY SLIP SYSTEM</p>
           </center>
         </div>
         <hr class="hr-style" />
         <ul class="list-unstyled">
           <li v-if="isAdmin">
-            <a
+            <a id="admin_toggle"
               @click="visible = !visible"
               data-toggle="collapse"
               aria-expanded="false"
-              class="dropdown-toggle mb-2"
-            >
-              <font-awesome-icon icon="user-cog" class="ml-2 mr-2" />Admin
+              class="sidebar_item"
+              v-b-tooltip.hover.bottomleft.noninteractive
+              title="Admin">
+              <font-awesome-icon icon="user-cog" class="mr-2" />
+              <span class="route-name">Admin</span>
+              <font-awesome-icon :icon="visible == false 
+                ? 'caret-right' : 'caret-down'"
+                class="mr-2 mt-1"
+                style="float:right;" />
             </a>
 
             <b-collapse id="collapse" class="mt-1" v-model="visible">
               <li
                 v-for="(adminroute, i) in adminroutes"
-                class="ml-3 mt-1"
+                class="ml-3 mt-1 mr-3"
                 :key="i"
-                :style="
-                  adminroute.active
+                :style="adminroute.active
                     ? 'background: #00803e; border-radius:3px'
-                    : ''
-                "
-                @click="setAdminActive(i)"
-              >
+                    : '' " @click="setAdminActive(i)"
+                v-b-tooltip.hover.bottomleft.noninteractive
+                :title="adminroute.name" >
                 <router-link :to="adminroute.link" :id="adminroute.id">
                   <font-awesome-icon
                     :icon="adminroute.icon"
                     :class="adminroute.class"
                   />
-                  <span :style="adminroute.style">{{ adminroute.name }}</span>
+                  <span class="route-name" :style="adminroute.style">{{
+                    adminroute.name
+                  }}</span>
                 </router-link>
               </li>
             </b-collapse>
           </li>
 
-          <li
-            v-for="(route, i) in routes"
+          <!-- SUPPLIER, CUSTOMER, ITEM TABS -->
+          <li v-for="(route, i) in routes"
             :key="i"
-            :style="
-              route.active ? 'background: #00803e; border-radius:3px' : ''
-            "
-            @click="setActive(i)"
-            class="mt-2"
-          >
-            <router-link :to="route.link" :id="route.id">
-              <font-awesome-icon :icon="route.icon" :class="route.class" />
-              {{ route.name }}
+            :style="route.active 
+            ? 'background: #00803e; border-radius:3px' : '' "
+            class="mt-2 mb-2"
+            @click="active = route.link"
+            :id="route.link"
+            v-b-tooltip.hover.bottomleft.noninteractive
+            :title="route.name">
+            <router-link :to="route.link" :id="route.id" >
+              <font-awesome-icon :icon="route.icon" :class="route.class"  />
+              <span class="route-name">
+                {{ route.name }}
+              </span>
             </router-link>
           </li>
         </ul>
@@ -62,49 +75,44 @@
     </nav>
 
     <!-- HEADER NAVIGATION BAR-->
-    <div class="content" fluid>
+    <div class="content">
       <div class="right">
         <b-row>
-          <b-col cols="3" style="margin-top:10px">
+          <b-col cols="4" style="margin-top:10px;position:relative;right:8px">
             <font-awesome-icon
-              style="color: #2F3028; height: 28px; width:28px"
+              style="color:black;height:25px;width:25px;"
               icon="user"
             />
           </b-col>
-          <b-col cols="6" style="margin-top:5px">
+          <b-col cols="4" class="mt-1" style="position:relative;right:22px">
             <b-row>
               <b style="font-size:12px">{{ user }}&nbsp;</b>
             </b-row>
             <b-row>
-              <b-badge variant="biotech" style="font-size:9px; width:4rem">{{
-                &nbsp; role  &nbsp;
+              <b-badge :variant="company == rci ? 'revive' : 'biotech'" style="font-size:9px;">{{
+                &nbsp; role &nbsp;
               }}</b-badge>
             </b-row>
           </b-col>
-          <b-col id="btn-logout" cols="3" style="margin-top:10px;">
+          <b-col cols="4" class="mt-2">
             <b-button
-              id="btn-logout"
-              size="sm"
               @click="confirmLogout()"
-              class="button-circle"
-              variant="secondary"
+              class="table-button"
+              style="width:30px; height:30px"
             >
               <font-awesome-icon
-                style="font-size:12.5px; margin-right: 2px"
+                style="font-size:15px; position:relative; right:5px;"
                 icon="power-off"
               />
             </b-button>
           </b-col>
         </b-row>
       </div>
-      <div class="nuxt-table ml-3">
-        <nuxt />
-      </div>
     </div>
 
     <b-modal
       size="md"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       id="bv-modal-confirmLogout"
       class="modal"
@@ -123,7 +131,7 @@
         <b-button
           id="btn-save-logout"
           size="sm"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="logout()"
           style="font-size:13px"
           >Yes</b-button
@@ -185,63 +193,61 @@
 export default {
   created() {
     const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
+
     const user_role = JSON.parse(localStorage.user_role);
     const user_actions = JSON.parse(localStorage.user_actions);
     this.user = `${user_details.LastName}`;
-    this.role = user_role.Name;
+    
+    this.role = "";
+    this.roleCode = JSON.parse(localStorage.user_role).Code;
+    this.roleCode == 9 ? this.role = 'Admin Staff' : this.role = user_role.Name;
 
     if (user_actions["Admin Module"]) {
       this.isAdmin = true;
 
       const module_actions = user_actions["Admin Module"];
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View modules")
-      ) {
+      // if (
+      //   !module_actions.find(action => action.U_ACTION_NAME == "View modules")
+      // ) {
+      //   const index = this.adminroutes.findIndex(
+      //     route => (route.name = "Modules")
+      //   );
+      //   this.adminroutes.splice(index, 1);
+      // }
+      if (!module_actions.find(action => action.U_ACTION_NAME == "View actions")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Modules")
-        );
+          route => (route.name = "Actions"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View actions")
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View users")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Actions")
-        );
+          route => (route.name = "User Accounts"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View users")
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View roles and access rights")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "User Accounts")
-        );
+          route => (route.name = "Roles and Access"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View roles and access rights")
-      ) {
+       if(!module_actions.find(action => action.U_ACTION_NAME == "View print logs")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Roles and Access")
-        );
+          route => (route.name = "Print Logs"));
         this.adminroutes.splice(index, 1);
       }
-       if (
-        !module_actions.find(action => action.U_ACTION_NAME == "View print logs")
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View activity logs")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Print Logs")
-        );
+          route => (route.name = "Activity Logs"));
         this.adminroutes.splice(index, 1);
       }
-      if (
-        !module_actions.find(
-          action => action.U_ACTION_NAME == "View activity logs"
-        )
-      ) {
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View location")) {
         const index = this.adminroutes.findIndex(
-          route => (route.name = "Activity Logs")
-        );
+          route => (route.name = "Location"));
+        this.adminroutes.splice(index, 1);
+      }
+      if(!module_actions.find(action => action.U_ACTION_NAME == "View printer")) {
+        const index = this.adminroutes.findIndex(
+          route => (route.name = "Printer"));
         this.adminroutes.splice(index, 1);
       }
     }
@@ -255,21 +261,33 @@ export default {
       const index = this.routes.findIndex(route => (route.name == "Reports"));
       this.routes.splice(index, 1);
     }
-  },
+},
 
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
+      roleCode: "",
       role: "",
       user: "",
       activelinks: [],
       isAdmin: false,
-      //PAaccess: false,
       visible: false,
       visiblePrice: false,
+      toggleBtnActive: true,
 
       adminroutes: [
-
-            
+    {},
+        {
+          link: "/admin/modules",
+          name: "Modules",
+          icon: "th-large",
+          style: "position:relative;left:6px",
+          id: "sb-modules",
+          class: "ml-2",
+          active: false
+        },
         {
           link: "/admin/modules",
           name: "Modules",
@@ -315,7 +333,7 @@ export default {
           name: "Companies",
           icon: "building",
           style: "position:relative;left:6px",
-          id: "sb-modules",
+          id: "sb-companies",
           class: "ml-2",
           active: false
         },
@@ -338,32 +356,49 @@ export default {
           icon: "clipboard-list",
           class: "ml-2",
           active: false
-        }
-      ],
-
-      routes: [
+        },
         {
-          id: "deliveryreceipt",
-          link: "/transaction/deliveryreceipt",
-          name: "Delivery Slip",
-          icon: "file-signature",
-          style: "position:relative;left:6px",
+          link: "/admin/location",
+          name: "Location",
+          style: "position:relative;left:12px",
+          id: "sb-location",
+          icon: "location-arrow",
           class: "ml-2",
           active: false
         },
         {
-          id: "reports",
-          link: "/transaction/reports",
-          name: "Reports",
-          icon: "file",
-          class: "ml-2 mr-1",
+          link: "/admin/printer",
+          name: "Printer",
+          style: "position:relative;left:12px",
+          id: "sb-printer",
+          icon: "print",
+          class: "ml-2",
           active: false
-        }
+        },
+      ],
+
+      routes: [
+        {
+
+          link: "/transaction/deliveryreceipt",
+          name: "Delivery Slip",
+          icon: "file-signature",
+          active: false
+        },
+        {
+
+          link: "/transaction/reports",
+          name: "Reports", 
+          icon: "file",
+          active: false
+        },
+        {}
       ],
     };
   },
 
   methods: {
+
     async setActive(i) {
       this.visible = false;
       this.adminroutes.map(route => (route.active = false));
@@ -377,8 +412,10 @@ export default {
       });
     },
 
-    async setAdminActive(i) {
+    setAdminActive(i) {
+      this.visible = true;
       this.routes.map(route => (route.active = false));
+
       this.adminroutes.map((adminroute, index) => {
         if (index === i) {
           adminroute.active = true;
@@ -396,14 +433,19 @@ export default {
       localStorage.clear();
       this.$router.push("/");
     }
+  },
+
+  beforeCreate(){
+    const userDetails = JSON.parse(localStorage.user_details);
   }
 };
 </script>
 
 <style scoped>
-a {
+ a {
   color: #fff;
   text-decoration: none;
   background-color: transparent;
-}
+} 
+
 </style>

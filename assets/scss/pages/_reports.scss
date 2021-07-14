@@ -1,0 +1,44 @@
+
+.dotted-border {
+    border-width: 0px 0px 2px 0px;
+    border-bottom-style: dotted;
+    padding: 0px;
+}
+
+  .receipt-logo {
+    height: 18%;
+    width: 80%;
+  }
+
+  #receipt {
+    height: 50%;
+    width: 100%;
+    position: relative;
+    left: 14px;
+    right: 14px;
+  }
+
+  .component-margin {
+    margin: auto;
+  }
+
+  .report-sign {
+    margin: 0;
+    padding: 0;
+    border-width: 1px;
+    border-top-style: solid;
+    font-size: 9px;
+  }
+
+  .signature-sign {
+    width: 50%;
+    height: 70px;
+    position: absolute;
+    top: 0px;
+    right: 25%;
+  }
+
+  .signature-name {
+    position: relative;
+    height: 70px
+  }

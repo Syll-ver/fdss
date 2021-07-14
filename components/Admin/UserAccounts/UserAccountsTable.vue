@@ -19,136 +19,97 @@
     <div>
       <!-- Main table -->
       <b-row>
-        <b-col>
+        <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
+          <b-form-group>
+            <b-input-group size="sm">
+              <b-form-input
+                v-model="filter"
+                type="search"
+                id="filterInput"
+                placeholder="Search User"
+              ></b-form-input>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+
+        <b-col cols="12" md="4" lg="3" sm="2" xs="4" class="mt-3" align="left">
+          <b-dropdown
+              right
+              id="filter_roles"
+              class="button-sq"
+              size="sm"
+              variant="dark"
+            >
+              <template v-slot:button-content>
+                <font-awesome-icon icon="filter" class="mr-1" />   
+              </template> 
+                <b-form-checkbox-group
+                  id="status_group"
+                  name="flavour-2"
+                  class="pl-2"
+                  style="font-size:12px"
+                  v-model="filterStatus"
+                  v-b-tooltip.hover
+                  title="Filter Status"
+                >Status<br>
+
+                <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox><br>
+                  <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
+                </b-form-checkbox-group>
+
+              <!-- <b-form-checkbox-group
+                id="status_group1"
+                name="flavour-2"
+                class="pl-2"
+                style="font-size:12px"
+                v-model="filterCompany"
+                v-b-tooltip.hover
+                title="Filter Company "
+              >
+                Company<br>
+          
+                <b-form-checkbox
+                  size="sm"
+                  :id="'choice' + i"
+                  v-for="(company, i) in filterListCompanies"
+                  :key="i"
+                  :value="company.U_COMPANYCODE"
+                >{{company.COMPANYDBNAME  }}
+                </b-form-checkbox> -->
+                      <!-- <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
+                  >Biotech</b-form-checkbox
+                >
+                <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
+                  >REvive</b-form-checkbox> -->
+              <!-- </b-form-checkbox-group> -->
+
+            </b-dropdown>
+        </b-col>
+        <!-- <b-col></b-col> -->
+ 
+        <b-col cols="12" md="4" lg="6" sm="5" xs="4" class="mt-3" align="right">
           <b-button
             id="add_user"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             class="button-style"
             @click="addUser()"
-            v-if="actions.addUser"
+            v-if="actions.add_user"
           >
-            <font-awesome-icon icon="plus" class="mr-1" />Add User
+             Add User
           </b-button>
         </b-col>
       </b-row>
 
- <b-row>
-      <b-col cols="4" class="mt-3">
-        <b-form-group>
-          <b-input-group size="sm">
-            <b-form-input
-              v-model="filter"
-              type="search"
-              id="filterInput"
-              placeholder="Search User"
-            ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-
-      <b-col cols="4" class="mt-3">
-        <!-- <b-input-group prepend="Date" size="sm">
-          <date-range-picker
-            id="date_pending"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
-            v-model="datePicker"
-            @update="updateValues"
-          >
-            <div slot="input" id="date_pending" >
-              {{ datePicker.startDate }} - {{ datePicker.endDate }}
-            </div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button
-              @click="resetDate"
-              id="date_reset_pending"
-              style="font-size:12px"
-              >Reset</b-button
-            >
-          </b-input-group-append>
-        </b-input-group> -->
-      </b-col>
-  <b-col ></b-col>
- 
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-          <b-dropdown
-            right
-            id="filter_roles"
-            class="button-sq"
-            size="sm"
-            variant="dark"
-          >
-          <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
-            <b-form-checkbox-group
-              id="status_group"
-              name="flavour-2"
-              class="pl-2"
-              style="font-size:12px"
-              v-model="filterStatus"
-              v-b-tooltip.hover
-              title="Filter Status"
-            >Status<br>
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox><br>
-              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
-            </b-form-checkbox-group>
-
- <b-form-checkbox-group
-            id="status_group1"
-            name="flavour-2"
-            class="pl-2"
-            style="font-size:12px"
-            v-model="filterCompany"
-            v-b-tooltip.hover
-            title="Filter Company "
-          >
-         Company<br>
-       
-            <b-form-checkbox
-                    size="sm"
-                    :id="'choice' + i"
-                    v-for="(company, i) in filterListCompanies"
-                    :key="i"
-                    :value="company.U_COMPANYCODE"
-                  >{{company.COMPANYDBNAME  }}</b-form-checkbox>
-                   <!-- <b-form-checkbox id="Biotech" value="BIOTECH_FARMS_INC_DEV_INTEG_TESTING"
-              >Biotech</b-form-checkbox
-            >
-            <b-form-checkbox id="revive" value="REVIVE_DEV_INTEG_TESTING"
-              >REvive</b-form-checkbox> -->
-          </b-form-checkbox-group>
-
-          </b-dropdown>
-     
-      </b-col>
-    </b-row>
-
       <!-- Main table element -->
       <b-table
-        id="user-table"
-        class="table-style"
+      v-if="actions.view_users"
+        class="table-style mt-3"
         show-empty
         scrollable
         sticky-header
         no-border-collapse
+        :busy="isBusy"
         :items="filterItems"
         :fields="filterFields"
         :current-page="currentPage"
@@ -161,6 +122,22 @@
         @filtered="onFiltered"
         responsive
       >
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner small class="align-middle" variant="dark">
+            </b-spinner>
+            <span class="loading_spinner">Loading...</span>
+          </div>
+        </template>
+
+        <template v-slot:cell(FirstName, MiddleName, LastName)="row">
+          <div v-if="windowWidth < 576" >
+            <span> {{ row.item.Firstname + ' ' +
+              row.item.MiddleName != null ? row.item.MiddleName : '' 
+              + ' ' + row.item.LastName }} </span>
+          </div>
+        </template>
+
         <template v-slot:cell(actions)="row">
           <b-button
             id="edit_user"
@@ -170,7 +147,7 @@
             class="table-button"
             v-b-tooltip.hover
             title="Update User"
-            v-if="actions.editUser"
+            v-if="actions.edit_user"
           >
             <font-awesome-icon icon="edit" />
           </b-button>
@@ -183,7 +160,7 @@
             class="table-button" 
             v-b-tooltip.hover
             title="Update"
-            v-if="actions.updateUser && row.item.ApplicationUserID"
+            v-if="actions.update_SAP_user && row.item.ApplicationUserID"
           >
             <font-awesome-icon icon="sync" />
           </b-button>
@@ -195,7 +172,7 @@
             variant="danger"
             v-b-tooltip.hover
             title="Reset Password"
-            v-if="actions.resetPassword && !row.item.ApplicationUserID"
+            v-if="actions.reset_password && !row.item.ApplicationUserID"
           >
             <font-awesome-icon icon="undo-alt" />
           </b-button>
@@ -215,14 +192,29 @@
           </div>
         </template>
 
+        <template v-slot:cell(location)="row">
+          <div>
+            {{ 
+              listLocations.find(loc => loc.Code === row.item.U_LOCATION_ID) ? 
+              listLocations.find(loc => loc.Code === row.item.U_LOCATION_ID).U_ADDRESS : ""
+            }}
+          </div>
+        </template>
+
         <template v-slot:cell(U_IS_ACTIVE)="row">
           <div style="font-size:15px">
+            <font-awesome-icon
+            v-if="windowWidth < 576"
+            icon="circle"
+            :class="row.item.U_IS_ACTIVE 
+              ? 'active-status' : 'inactive-status'"
+          />
             <b-badge
+            v-else
               style="width:70px"
               pill
               :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
-              >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
-            >
+              >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge>
           </div>
         </template>
       </b-table>
@@ -230,27 +222,38 @@
       <hr />
 
       <b-row>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_users-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
         <b-col
           label-cols-sm
-          class="mb-0 mt-1 text-left"
+          class="mb-0 mt-2 text-left"
           cols="3"
           align-h="center"
         >
-          <div size="sm" style="color: gray; font-size: 11px;">
+          <div size="sm" style="color: gray; font-size: 11.5px;">
             {{ bottomLabel }}
           </div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
-            id="modules-pagination"
+            id="user-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
-            aria-controls="modules-table"
+            aria-controls="user-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
@@ -261,7 +264,7 @@
 
       <b-modal
         size="lg"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="add-user-modal"
@@ -279,7 +282,7 @@
                   <b-button
                     id="add_user"
                     size="sm"
-                    variant="biotech"
+                    :variant="company == rci ? 'revive' : 'biotech'"
                     class="button-style"
                     style="font-size:12px; box-shadow:0px 10px 20px -10px #000000 "
                     @click="findUsers()"
@@ -351,7 +354,8 @@
               class="cardShadow mt-4"
               style="position:relative; bottom:14px"
             >
-              <small class="ml-1">Username</small>
+              
+                <small class="ml-1">Username</small>
 
               <b-form-input
                 id="act_grp_add_modal"
@@ -360,9 +364,41 @@
                 style="font-size:10px"
                 disabled
               ></b-form-input>
+              
+              <small class="ml-1">Role</small>
+                <b-form-select
+                  id="role_add_modal"
+                  type="number"
+                  v-model="userDetails.U_ROLE_CODE"
+                  style="font-size:10px"
+                >
+                  <option :value="null">Select Role</option>
+
+                  <option
+                    :value="role.Code"
+                    v-for="(role, i) in filterListRoles"
+                    :key="i"
+                    >{{ role.Name }}</option
+                  >
+                </b-form-select>
+
+                <small class="ml-1">Printer Location</small>
+                <b-form-select v-model="userDetails.U_LOCATION_ID"
+                  size="sm"
+                  style="font-size:10px"
+                  >
+                  <option :value="null">Select Location</option>
+
+                  <option
+                    :value="loc.Code"
+                    v-for="(loc, i) in listLocations"
+                    :key="i"
+                    >{{ loc.U_ADDRESS }}</option>
+                </b-form-select>
+             
             </b-card>
 
-            <b-card
+            <!-- <b-card
               class="cardShadow mt-4"
               style="position:relative; bottom:14px"
             >
@@ -383,7 +419,7 @@
                 >
               </b-form-select>
 
-            </b-card>
+            </b-card> -->
 
             <!-- <b-card
               class="cardShadow mt-4"
@@ -438,7 +474,7 @@
           <b-button
             id="add_add_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addUserTable()"
             style="font-size:13px"
             class="button-style"
@@ -463,7 +499,7 @@
 
       <b-modal
         size="lg"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="find-user-modal"
@@ -509,20 +545,21 @@
           <b-table
             class="mt-4"
             ref="selectableTable"
-            id="tablefind"
+            id="user-accounts-table"
             v-model="selectableTable"
             selectable
             show-empty
             :busy="isBusy"
-            select-mode="single"
+            :items="SearchedUsers"
+            :filter="filterUser"
+            :fields="userFields"
             :current-page="currentPageUser"
             :per-page="perPages"
-            :items="SearchedUsers"
-            :fields="userFields"
-            :filter="filterUser"
+            select-mode="single"
             @row-selected="onRowSelected"
             responsive="sm"
           >
+          
             <!-- Example scoped slot for select state illustrative purposes -->
             <template v-slot:cell(selected)="{ rowSelected }">
               <template v-if="rowSelected">
@@ -535,48 +572,61 @@
               </template>
             </template>
 
-            <template v-slot:table-busy>
-              <div class="text-center text-secondary my-2">
-             
+            <template #table-busy>
+              <div class="text-center text-danger my-2">
+                <b-spinner small class="align-middle"  variant="dark">
+                  <strong><span class="loading_spinner">Loading...</span></strong>
+                </b-spinner>
               </div>
             </template>
+
           </b-table>
 
           <hr />
 
           <b-row align-h="start">
-            <b-col
-              label-cols-sm
-              class="mb-0 mt-1 text-left"
-              cols="3"
-              align-h="center"
-            >
-              <div size="sm" style="color: gray; font-size: 11px;">
+            <b-col cols="1" class="mb-2 mt-1">
+              <b-form-group class="mb-0">
+                <b-form-select
+                  v-model="perPages"
+                  id="perPageSelect_modules-pagination"
+                  size="sm"
+                  :options="pageOptions"
+                ></b-form-select>
+              </b-form-group>
+            </b-col> 
+          <b-col
+            label-cols-sm
+            class="mb-0 mt-2 text-left"
+            cols="3"
+            align-h="center"
+          >
+            <div size="sm" style="color: gray; font-size: 11.5px;">
                 {{ bottomLabelUser }}
               </div>
             </b-col>
 
             <b-col>
               <b-pagination
-                id="modules-pagination"
+                id="user-accounts-pagination"
                 pills
                 v-model="currentPageUser"
                 :total-rows="rowsUsers"
                 :per-page="perPages"
                 align="right"
                 size="sm"
-                aria-controls="modules-table"
+                aria-controls="user-table"
                 limit="3"
               ></b-pagination>
             </b-col>
           </b-row>
         </b-card>
 
-        <template v-slot:modal-footer="{ }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="add_add_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="selectedUser.length > 0 ? selectUser() : ''"
             class="button-style"
             >Select</b-button
@@ -584,7 +634,7 @@
           <b-button
             id="cancel_add_modal"
             size="sm"
-            @click="cancel1()"
+            @click="cancel()"
             class="button-style"
             >Cancel</b-button
           >
@@ -598,7 +648,7 @@
       <b-modal
         size="lg"
         body-bg-variant="light"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         id="edit-modal"
       >
@@ -703,11 +753,25 @@
                 <option :value="null" disabled>Select Role</option>
                 <option
                   :value="role.Code"
-                  v-for="(role, i) in listRoles"
+                  v-for="(role, i) in filterListRoles"
                   :key="i"
                   >{{ role.Name }}</option
                 >
               </b-form-select>
+
+               <small class="ml-1">Printer Location</small>
+                <b-form-select v-model="userDetails.U_LOCATION_ID"
+                  size="sm"
+                  style="font-size:10px"
+                >
+                <option
+                  :value="loc.Code"
+                  v-for="(loc, i) in listLocations"
+                  :key="i"
+                  >{{ loc.U_ADDRESS }}</option
+                >
+                
+                </b-form-select>
             </b-card>
           </b-col>
         </b-row>
@@ -775,7 +839,7 @@
           <b-button
             size="sm"
             id="edt_edit_modal"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="editTable()"
             class="button-style"
             >Update</b-button
@@ -796,7 +860,7 @@
 
       <b-modal
         size="sm"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         id="update-user-modal"
       >
@@ -808,11 +872,11 @@
           <h6>Do you want to update user?</h6>
         </div>
 
-        <template>
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             size="sm"
             class="button-style"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="confirmUpdate()"
             
             >Update</b-button
@@ -831,7 +895,7 @@
 
       <b-modal
         size="sm"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         id="reset-modal"
       >
@@ -847,7 +911,7 @@
           <b-button
             id="Resetbutton"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="confirmReset()"
             class="button-style"
             >Reset</b-button
@@ -868,6 +932,7 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
 import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 import Loading from "~/components/Loading/Loading.vue";
@@ -878,17 +943,22 @@ export default {
   },
   data() {
     return {
-      isBusy: false,
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
+      windowWidth: window.innerWidth,
+      isBusy: true,
       selectedCompany: null,
      
       showLoading: false,
       findUser: null,
-      filterStatus: [1,0],
+      filterStatus: [1],
       actions: {
-        addUser: false,
-        editUser: false,
-        resetPassword: false,
-        updateUser: false
+        add_user: false,
+        edit_user: false,
+        view_user: false,
+        reset_password: false,
+        update_SAP_user: false
       },
       alert: {
         showAlert: 0,
@@ -905,7 +975,7 @@ export default {
         U_IS_SAP_USER: 0,
         U_USERNAME: null
       },
-
+      locations: [],
       fields: [
           {
           key: "COMPANY_NAME",
@@ -944,6 +1014,19 @@ export default {
         {
           key: "U_ROLE_CODE",
           label: "Role",
+          sortable: true,
+          sortDirection: "desc"
+        },
+        {
+          key: "location",
+          label: "Location",
+          sortable: true,
+          sortDirection: "desc"
+        },
+
+        {
+          key: "location",
+          label: "Printer Location",
           sortable: true,
           sortDirection: "desc"
         },
@@ -989,7 +1072,8 @@ export default {
       },
       filterCompany: ["REVIVE","BIOTECH"],
       selectableTable: null,
-      totalRows: 1,
+      totalRows: null,
+      rowsUsers: null,
       currentPage: 1,
       perPage: 5,
       currentPageUser: 1,
@@ -998,9 +1082,9 @@ export default {
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterUser: null,
-      filterOn: []
+      filterOn: [],
     };
   },
   computed: {
@@ -1019,6 +1103,7 @@ export default {
       listRoles: "Admin/Roles/getListRoles",
       listCompanies: "Admin/Company/getListCompanies",
      listSAPcompanies: "SAP/Companies/getCompanyList",
+     listLocations: "Admin/Location/getListLocations",
       companyList: "Company/getCompanyList",
       SearchedUsers: "Admin/Users/getSearchedUsers"
     }),
@@ -1026,12 +1111,34 @@ export default {
       return this.listCompanies.filter(company => company.U_IS_ACTIVE == 1);
     },  
     filterSearchedUsers() {
-      return this.SearchedUsers;
+      let count = 0;
+      this.rowsUsers = count;
+      return this.SearchedUsers.filter(users => {
+        if(this.listCompanies.includes(this.selectedCompany)) {
+          count++;
+          this.rowsUsers = count;
+          return (users.FirstName.toLowerCase().match(this.filterUser.toLowerCase()) || 
+                  users.MiddleName.toLowerCase().match(this.filterUser.toLowerCase()) ||
+                  users.LastName.toLowerCase().match(this.filterUser.toLowerCase()));
+        }
+      })
     },
 
     filterItems() {
+      let count = 0;
+      //this.filterCompany.includes(Users.COMPANY_NAME)
+      // console.log(this.filterCompany);
       return this.Users.filter(Users => {
-        return this.filterStatus.includes(Users.U_IS_ACTIVE) && this.filterCompany.includes(Users.U_COMPANY_CODE) ;
+        if(this.filterStatus.includes(Users.U_IS_ACTIVE)){
+          count++;
+          this.totalRows = count;
+          return (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
+        }
+        if(this.filterStatus.includes(!Users.U_IS_ACTIVE)){
+          count++;
+          this.totalRows = count;
+          return (Users.COMPANY_NAME.toLowerCase().match(this.filter.toLowerCase()) || Users.FirstName.toLowerCase().match(this.filter.toLowerCase()) || Users.LastName.toLowerCase().match(this.filter.toLowerCase()) || Users.U_USERNAME.toLowerCase().match(this.filter.toLowerCase()));
+        }
       });
     },
 
@@ -1047,6 +1154,10 @@ export default {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
 
+      if(!this.filterItems) {
+        return;
+      }
+
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
       }
@@ -1059,10 +1170,12 @@ export default {
     },
 
     bottomLabelUser() {
-      if (!this.filterSearchedUsers) return;
-
       let end = this.perPages * this.currentPageUser;
       let start = end - this.perPages + 1;
+
+      if (!this.filterSearchedUsers) {
+        return;
+      } 
 
       if (end > this.filterSearchedUsers.length) {
         end = this.filterSearchedUsers.length;
@@ -1075,19 +1188,14 @@ export default {
       return `Showing ${start} to ${end} of ${this.filterSearchedUsers.length} entries`;
     },
 
-    rowsUsers() {
-      if (this.SearchedUsers) {
-        return this.SearchedUsers.length;
-      } else {
-        return 0;
-      }
-    },
+    // rowsUsers() {
+    //   if (this.SearchedUsers) {
+    //     return this.SearchedUsers.length;
+    //   } else {
+    //     return 0;
+    //   }
+    // },
 
-    rows() {
-      return this.filterItems.length;
-    },
-
-  
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -1109,6 +1217,39 @@ export default {
   },
 
   methods: {
+    async getLocations(userLocationId) {
+      this.isBusy = true;
+
+      this.listLocations.filter(loc => {
+        if(loc.U_LOCATION_ID && (loc.U_LOCATION_ID == userLocationId)) {
+          return loc.U_ADDRESS;
+        } else {
+          return "";
+        }
+      })
+
+      //   await axios({
+      //     method: "GET",
+      //     url: `${this.$axios.defaults.baseURL}/api/location/select`
+      //   }).then( res => {
+      //     const v = res.data.view;
+      //     this.locations.push({
+      //         text: "Select Location",
+      //         value: null,
+      //         disabled: true
+      //       })
+          
+      //     for(let i = 0; i < v.length; i++) {
+      //       this.locations.push({
+      //         text: v[i].U_ADDRESS,
+      //         value: v[i].Code
+      //       })
+      //     }
+      //   })
+      // this.isBusy = false;
+    },
+
+
     confirmUpdate() {
       this.showLoading = true;
       this.$store
@@ -1141,16 +1282,15 @@ export default {
       this.userDetails = { ...data };
       this.$bvModal.show("update-user-modal");
     },
-    fetchEmployees() {
+    async fetchEmployees() {
       console.log(this.selectedCompany)
-       this.showLoading = true;
+      //  this.showLoading = true;
       this.isBusy = true;
-      this.$store
+      await this.$store
         .dispatch("Admin/Users/searchEmployees", {
           SessionId: localStorage.SessionId,
           CompanyDB: this.selectedCompany
         })
-
 
         .then(res => {
           if (res && res.name == "Error") {
@@ -1163,7 +1303,11 @@ export default {
               this.showAlert(res.message, "danger");
             }
           }
-       this.showLoading = false;
+
+          if(!this.filterUser) {
+            this.rowsUsers = this.SearchedUsers ? this.SearchedUsers.length : 0
+          }
+        //  this.showLoading = false;
           this.isBusy = false;
         });
     },
@@ -1194,21 +1338,30 @@ export default {
       this.findUser = null;
     },
     findUsers() {
-      this.showLoading =true;
+      // this.showLoading =true;
+      // this.selectedCompany = null;
+      // this.$bvModal.show("find-user-modal");
+      // this.showLoading = false;
+      this.perPages = 5;
+      this.currentPageUser = 1;
       this.selectedCompany = null;
+      this.filterUser = "";
+      if (this.selectedCompany == null) {
+        this.SearchedUsers.length = [];
+      }
       this.$bvModal.show("find-user-modal");
-      this.showLoading = false;
+    
     },
-    cancel1(){
-      this.clearForm();
-      this.SearchedUsers=[];
-      this.rowsUsers=[];
-      // this.userFields={FirstName:null,
-      // MiddleName:null,LastName:null};
-      this.$bvModal.hide("add-user-modal");
-      this.$bvModal.hide("find-user-modal");
+    // cancel1(){
+    //   this.clearForm();
+    //   this.SearchedUsers=[];
+    //   this.rowsUsers=[];
+    //   // this.userFields={FirstName:null,
+    //   // MiddleName:null,LastName:null};
+    //   this.$bvModal.hide("add-user-modal");
+    //   this.$bvModal.hide("find-user-modal");
 
-    },
+    // },
     onRowSelected(items) {
       this.selectedUser = items;
     },
@@ -1266,8 +1419,9 @@ export default {
     },
 
     addUserTable() {
-      this.showLoading = true;
+      this.isBusy = true;
       this.userDetails.U_USERNAME = this.selectedUserDetails.ExternalEmployeeNumber;
+      console.log(this.userDetails);
      
       this.$store
         .dispatch("Admin/Users/addUser", {
@@ -1279,7 +1433,7 @@ export default {
         })
         .then(res => {        
           if (res && res.name == "Error") {
-            this.showLoading = false;
+            this.isBusy = false;
 
             if (res.response && res.response.data.errorMsg) {
               if (res.response.data.errorMsg === "Invalid session.") {
@@ -1289,7 +1443,7 @@ export default {
             } else {
               this.showAlert(res.message, "danger");
             }
-            this.showLoading = false;
+            this.isBusy = false;
           } else {
             this.showAlert("Successfully Added", "success");
 
@@ -1297,13 +1451,13 @@ export default {
 
             this.clearForm();
 
-            this.showLoading = false;
+            this.isBusy = false;
           }
         });
     },
 
-    edit(data) {
-      
+    edit(data) { 
+      console.log(data);
       this.userDetails = {
         Code: data.Code,
         U_EMPLOYEE_CODE: data.U_EMPLOYEE_CODE,
@@ -1312,7 +1466,8 @@ export default {
         U_ROLE_CODE: data.U_ROLE_CODE,
         U_USERNAME: data.U_USERNAME,
         U_COMPANY_CODE: data.U_COMPANY_CODE,
-        U_COMPANY_ACCESS: data.U_COMPANY_ACCESS
+        U_COMPANY_ACCESS: data.U_COMPANY_ACCESS,
+        U_LOCATION_ID: data.U_LOCATION_ID
       };
       this.selectedUserDetails = {
         FirstName: data.FirstName,
@@ -1323,7 +1478,7 @@ export default {
       this.$bvModal.show("edit-modal");
     },
     editTable() {
-      this.showLoading = true;
+      this.isBusy = true;
       console.log(this.userDetails);
       this.$store
         .dispatch("Admin/Users/editUser", {
@@ -1343,7 +1498,7 @@ export default {
               this.showAlert(res.message, "danger");
             }
           } else {
-            this.showLoading = false;
+            this.isBusy = false;
             this.showAlert("Successfully Updated", "success");
 
             this.$bvModal.hide("edit-modal");
@@ -1368,17 +1523,17 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
 
   async beforeCreate() {
-     this.showLoading = true;
-     this.isBusyTable = true;
 
+    this.isBusy = true;
+    
     await this.$store
       .dispatch("Admin/Company/fetchListCompany", {
         user_actions: JSON.parse(localStorage.user_actions),
@@ -1418,15 +1573,15 @@ export default {
         this.filterCompany.push(company.U_COMPANYCODE)
       })
 
-    this.isBusyTable = false;
-
-    this.showLoading = true;
     await this.$store
       .dispatch("Admin/Users/fetchUsers", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        if(!this.filter) {
+          this.totalRows = this.filterItems ? this.filterItems.length : 0
+        }
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -1435,9 +1590,7 @@ export default {
           }
         }
       });
-    await this.$store
-    
-      .dispatch("Admin/Roles/fetchRoles", {
+    await this.$store.dispatch("Admin/Roles/fetchRoles", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
@@ -1451,31 +1604,46 @@ export default {
         }
       });
 
-    this.showLoading = false;
+      await this.$store.dispatch("Admin/Location/fetchListLocations").then( res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.error) {
+            if (res.response.data.error === "Session expired") {
+              this.$bvModal.show("session_modal");
+            }
+          }
+        }
+      });
 
     // this.$store.dispatch("Accounting_Group/fetchAccountingGroup", {
     //   token: localStorage.token
     // });
+      this.isBusy = false;
+
   },
-  created() {
+  async created() {
+    const user_role = JSON.parse(localStorage.user_role);
+    if(user_role.Name.toLowerCase() !== 'administrator') {
+      this.$router.push("/transaction/deliveryreceipt")
+    }
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
     const user_details = JSON.parse(localStorage.user_details);
+    this.company = user_details.U_COMPANY_CODE;
+    
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add user")) {
-      this.actions.addUser = true;
+      this.actions.add_user = true;
     }
     if (userActions.find(action => action.U_ACTION_NAME === "Edit user")) {
-      this.actions.editUser = true;
+      this.actions.edit_user = true;
     }
-    if (
-      userActions.find(action => action.U_ACTION_NAME === "Reset user password")
-    ) {
-      this.actions.resetPassword = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Reset user password")) {
+      this.actions.reset_password = true;
     }
-    if (
-      userActions.find(action => action.U_ACTION_NAME === "Update SAP user")
-    ) {
-      this.actions.updateUser = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Update SAP user")) {
+      this.actions.update_SAP_user = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "View users")) {
+      this.actions.view_users = true;
     }
   }
 };

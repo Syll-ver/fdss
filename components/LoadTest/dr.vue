@@ -29,24 +29,24 @@
       <b-col>
         <b-button
           id="create"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           class="button-style"
           size="sm"
           @click="newDR('static')"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Create Delivery Slip
+           Create Delivery Slip
         </b-button>
       </b-col>
 
       <!-- <b-col>
         <b-button
           id="create"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           class="button-style"
           size="sm"
           @click="postPO()"
         >
-          <font-awesome-icon icon="plus" class="mr-1" />Post Purchase Order
+           Post Purchase Order
         </b-button>
       </b-col> -->
     </b-row>
@@ -331,7 +331,7 @@
     <!-- Confirm Cancel -->
     <b-modal
       size="sm"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       id="bv-modal-confirmCancel"
       class="modal-small"
@@ -356,7 +356,7 @@
         <b-button
           id="btn_submit_request"
           size="sm"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="confirmCancel()"
           class="button-style"
           >Yes</b-button
@@ -373,7 +373,7 @@
 
     <b-modal
       size="sm"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       id="bv-modal-confirmPrint"
       class="modal-small"
@@ -391,7 +391,7 @@
         <b-button
           id="btn_submit_request"
           size="sm"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="printed()"
           class="button-style"
           >Yes</b-button
@@ -409,7 +409,7 @@
 
     <b-modal
       size="large"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="add-transaction-modal"
@@ -624,12 +624,12 @@
           id="add_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="saveDR()"
           :disabled="showLoading === true"
         >
           <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner> -->
+          <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner> -->
           Create
         </b-button>
         <b-button
@@ -646,7 +646,7 @@
 
     <b-modal
       size="m"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="edit-transaction-modal"
@@ -840,11 +840,11 @@
           id="edit_action_modal"
           size="sm"
           class="button-style"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="updateDR(U_TRX_ID)"
           :disabled="showLoading === true"
         >
-          <!-- <b-spinner v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
+          <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
           Save
         </b-button>
         <b-button
@@ -863,7 +863,7 @@
 
     <b-modal
       size="m"
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       body-bg-variant="gray"
       id="view-transaction-modal"
@@ -1166,7 +1166,7 @@
       id="pin"
       no-close-on-backdrop
       hide-header-close
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
     >
       <template v-slot:modal-title>
@@ -1193,7 +1193,7 @@
         <b-button
           id="save"
           size="sm"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="confirmpin()"
           style="font-size: 13px"
           >Save</b-button
@@ -1212,7 +1212,7 @@
     <b-modal
       id="signature"
       no-close-on-backdrop
-      header-bg-variant="biotech"
+      :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
       size="xl"
       hide-header-close
@@ -1249,7 +1249,7 @@
         <b-button
           id="rmaf-verify"
           size="sm"
-          variant="biotech"
+          :variant="company == rci ? 'revive' : 'biotech'"
           @click="addSignature()"
           style="font-size: 13px"
           >Save</b-button

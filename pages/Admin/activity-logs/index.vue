@@ -1,10 +1,14 @@
 <template>
-  <div class>
+  <div class="row m-0 p-0">
+  <div class="container-fluid m-0 p-0">
+    <sidebar />
+  </div>
+  <div class="mainPages">
     <b-card no-body class="mt-5">
       <b-tabs
         card
         small
-        active-nav-item-class="font-weight-bold text-uppercase text-biotech"
+        active-nav-item-class="font-weight-bold text-uppercase text-print"
       >
         <b-tab title="Activity Logs">
         <div>
@@ -14,15 +18,18 @@
       </b-tabs>
     </b-card>
   </div>
+  </div>
 </template>
 
 <script>
+import sidebar from "~/layouts/sidebar";
 import ActivityLogsTable from "~/components/Admin/ActivityLogs/ActivityLogsTable";
 
 export default {
-  layout: "sidebar",
+  // layout: "sidebar",
   components: {
-    ActivityLogsTable
+    ActivityLogsTable,
+    sidebar,
   },
   data() {
     return {
@@ -32,4 +39,3 @@ export default {
   methods: {},
 };
 </script>
-

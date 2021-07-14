@@ -20,22 +20,9 @@
     </div>
     <div>
       <!-- Main table -->
-       <b-row>
-        <b-col>
-          <b-button
-            id="add_action"
-            size="sm"
-            class="button-style"
-            variant="biotech"
-            @click="addCompany()"
-             v-if="actions.add_company"
-          >
-            <font-awesome-icon icon="plus" class="mr-1" />Add Company
-          </b-button>
-        </b-col>
-      </b-row>
+       
      <b-row>
-      <b-col cols="4" class="mt-3">
+      <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -44,52 +31,12 @@
               id="filterInput"
               placeholder="Search Company"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col cols="4" class="mt-3">
-        <!-- <b-input-group prepend="Date" size="sm">
-          <date-range-picker
-            id="date_pending"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
-            v-model="datePicker"
-            @update="updateValues"
-          >
-            <div slot="input" id="date_pending" >
-              {{ datePicker.startDate }} - {{ datePicker.endDate }}
-            </div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button
-              @click="resetDate"
-              id="date_reset_pending"
-              style="font-size:12px"
-              >Reset</b-button
-            >
-          </b-input-group-append>
-        </b-input-group> -->
-      </b-col>
-  <b-col ></b-col>
- 
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-          <b-dropdown
+      <b-co cols="12" md="4" lg="3" sm="2" xs="4" class="mt-3" align="left">
+        <b-dropdown
             right
             id="filter_actions"
             class="button-sq"
@@ -97,29 +44,42 @@
             variant="dark"
           >
           <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
-            <b-form-checkbox-group
-              id="status_group"
-              name="flavour-2"
-              class="pl-2"
-              style="font-size:12px"
-              v-model="filterStatus"
-              v-b-tooltip.hover
-              title="Filter Status"
-            >
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
-              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-dropdown>
-     
+            <font-awesome-icon icon="filter" class="mr-1" />   
+          </template> 
+          <b-form-checkbox-group
+            id="status_group"
+            name="flavour-2"
+            class="pl-2"
+            style="font-size:12px"
+            v-model="filterStatus"
+            v-b-tooltip.hover
+            title="Filter Status"
+          >
+            <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+            <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
+          </b-form-checkbox-group>
+        </b-dropdown>
+      </b-co>
+      <b-col ></b-col>
+ 
+      <b-col cols="12" md="4" lg="6" sm="5" xs="4" class="mt-3" align="right">
+          <b-button
+            id="add_action"
+            size="sm"
+            class="button-style"
+            :variant="company == rci ? 'revive' : 'biotech'"
+            @click="addCompany()"
+             v-if="actions.add_company">
+             Add Company
+          </b-button>
       </b-col>
     </b-row>
 
       <!-- Main table element -->
       <b-table
+      v-if="actions.view_company"
         id="company-table"
-        class="table-style"
+        class="table-style mt-3"
         show-empty
         scrollable
         sticky-header
@@ -135,12 +95,13 @@
         :sort-direction="sortDirection"
         @filtered="onFiltered"
         responsive
-        :busy="isBusyTable"
+        :busy="isBusy"
       >
-        <template v-slot:table-busy>
-          <div class="text-center text-secondary my-2">
-            <b-spinner small class="align-middle"></b-spinner>
-            <strong>&nbsp;Loading...</strong>
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner small class="align-middle"  variant="dark">
+            </b-spinner>
+            <span class="loading_spinner">Loading...</span>
           </div>
         </template>
 
@@ -166,8 +127,7 @@
                 ? row.item.U_MODULE_NAME
                 : listModules.find(
                     modules => modules.Code === row.item.U_MODULE_CODE
-                  ).Name
-            }}
+                  ).Name}}
           </div>
         </template>
 
@@ -198,23 +158,22 @@
       <hr />
 
       <b-row>
-        <!-- <b-col cols="1" class="mb-2 mt-1">
+        <b-col cols="1" class="mb-2 mt-1">
           <b-form-group class="mb-0">
             <b-form-select
               v-model="perPage"
-              id="perPageSelect_company"
+              id="perPageSelect_companies-pagination"
               size="sm"
               :options="pageOptions"
             ></b-form-select>
           </b-form-group>
-        </b-col> -->
-
-        <b-col
-          label-cols-sm
-          class="mb-0 mt-2 text-left"
-          cols="3"
-          align-h="center"
-        >
+        </b-col> 
+      <b-col
+        label-cols-sm
+        class="mb-0 mt-2 text-left"
+        cols="3"
+        align-h="center"
+      >
           <div size="sm" style="color: gray; font-size: 11.5px;">
             {{ bottomLabel }}
           </div>
@@ -225,7 +184,7 @@
             id="company-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
@@ -242,7 +201,7 @@
 
       <b-modal
         size="md"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         footer-bg-variant="light"
@@ -293,7 +252,7 @@
           <b-button
             id="add_action_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addCompanyTable()"
             style="font-size:13px"
             class="button"
@@ -317,7 +276,7 @@
 
       <b-modal
         size="md"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         footer-bg-variant="light"
@@ -381,7 +340,7 @@
         
           <b-button
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="editCompanyTable()"
             style="font-size:13px"
             class="button"
@@ -413,13 +372,17 @@ export default {
   },
   data() {
     return {
-      isBusyTable: false,
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
+      isBusy: true,
       showLoading: false,
       filterStatus: [1],
 
       actions: {
         add_company: false,
-        edit_company: false
+        edit_company: false,
+        view_company: false
       },
 
       alert: {
@@ -467,26 +430,32 @@ export default {
         { key: "actions", label: "Actions" }
       ],
 
-      totalRows: 1,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
   computed: {
     filterItems() {
+      let count = 0;
       return this.listCompanies.filter(listCompanies => {
-        return this.filterStatus.includes(listCompanies.U_IS_ACTIVE);
+        if(this.filterStatus.includes(listCompanies.U_IS_ACTIVE)) {
+          count++;
+          this.totalRows = count;
+          return listCompanies.COMPANYNAME.toLowerCase().match(this.filter.toLowerCase()) || listCompanies.U_COMPANYCODE.toLowerCase().match(this.filter.toLowerCase());
+        }
+        if(this.filterStatus.includes(!listCompanies.U_IS_ACTIVE)) {
+          count++;
+          this.totalRows = count;
+          return listCompanies.COMPANYNAME.toLowerCase().match(this.filter.toLowerCase()) || listCompanies.U_COMPANYCODE.toLowerCase().match(this.filter.toLowerCase());
+        }
       });
-    },
-
-    rows() {
-      return this.filterItems.length;
     },
 
     filterFields() {
@@ -517,6 +486,10 @@ export default {
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -649,7 +622,8 @@ export default {
       this.infoModal.content = "";
     },
 
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     },
 
@@ -663,8 +637,12 @@ export default {
   },
 
   async beforeCreate() {
-     this.showLoading = true;
-    this.isBusyTable = true;
+    if(!this.filter) {
+      this.totalRows = this.filterItems ? this.filterItems.length : 0
+    }
+
+    //  this.showLoading = true;
+    this.isBusy = true;
 
     await this.$store
       .dispatch("Admin/Company/fetchListCompany", {
@@ -703,10 +681,16 @@ export default {
         }
       });
 
-    this.isBusyTable = false;
+    this.isBusy = false;
   },
 
   created() {
+    const user_details = JSON.parse(localStorage.user_details);
+    const user_role = JSON.parse(localStorage.user_role);
+    if(user_role.Name.toLowerCase() !== 'administrator') {
+      this.$router.push("/transaction/deliveryreceipt")
+    }
+    this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
     if (userActions.find(action => action.U_ACTION_NAME === "Add company")) {
       this.actions.add_company = true;
@@ -714,6 +698,10 @@ export default {
     if (userActions.find(action => action.U_ACTION_NAME === "Edit company")) {
       this.actions.edit_company = true;
     }
+    if (userActions.find(action => action.U_ACTION_NAME === "View companies")) {
+      this.actions.view_company = true;
+    }
+    
   }
 };
 </script>

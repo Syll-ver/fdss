@@ -7,7 +7,7 @@ module.exports = {
     title: process.env.npm_package_name || "",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, shrink-to-fit=no" },
       {
         hid: "description",
         name: "description",
@@ -19,7 +19,7 @@ module.exports = {
         src: `/epos-2.14.0.js`,
       },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.png" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
   /*
    ** Customize the progress-bar color
@@ -35,7 +35,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/fontawesome.js","~/plugins/htmltopaper.js","~/plugins/papa-parse"],
+  plugins: ["~/plugins/fontawesome.js","~/plugins/htmltopaper.js","~/plugins/papa-parse","~/plugins/elastic.js"],
   /*
    ** Nuxt.js dev-modules
    */
@@ -55,16 +55,35 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
-  },
+      },
   axios: {
     // baseURL: "http://172.16.4.168:8000/fdss-api" 
-    baseURL: "https://fdss-dev.biotechfarms.net/fdss-api"
-    // baseURL: "https://fdss-dev.biotechfarms.net/fdss-api" 
-    // baseURL: "hhtp://94.237.66.240:8200" (UAT)
-    // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api"
+    // baseURL: "http://94.237.66.240:8000" (MASTER)
+    // baseURL: "http://94.237.66.240:8100" (SQA)
+    // baseURL: "https://fdss-uat.biotechfarms.net/fdss-api" 
+    // baseURL: "https://fdss.biotechfarms.net/fdss-api" // prod
+    // baseURL: "https://fdss-eut.biotechfarms.net/fdss-api"  // eut
+    // baseURL: "http://172.16.4.201:8000/fdss-api" // butch 
+    // baseURL: "http://172.16.4.168:8000/fdss-api" // coach 
+    baseURL: "http://94.237.65.245:8223/fdss-api"// (DEV)
+    // baseURL: "https://fdss-sqa.biotechfarms.net/fdss-api" 
+
+  },
+  env:{
+    serverPrintUrl: "http://172.16.4.182:887", 
+    // serverPrintUrl: "http://94.237.65.245:887", 
+    // serverPrintUrl: "http://localhost:3002",
+    // networkPrinterIp: `172.16.4.173`, // gensan network printer ip
+    uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
+    bfi: 157321, // dev
+    rci: 157333, // dev
+    // bfi: '4400', // prod
+    // rci: '4381', // prod
+    // bfi: `139483`, // eut
+    // rci: `139492`, // eut
   },
 
-  server: { port: 7000}
+  server: { port: 9000 }
+
   // host:'172.16.4.114'}
 };

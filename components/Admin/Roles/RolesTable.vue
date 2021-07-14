@@ -18,25 +18,9 @@
       </b-alert>
       <Loading v-if="showLoading" />
     </div>
-    
-      <!-- Main table -->
-      <b-row>
-        <b-col>
-          <b-button
-            id="add_role"
-            size="sm"
-            class="button-style"
-            variant="biotech"
-            @click="addRole()"
-            v-if="actions.addRoleAndAccess"
-          >
-            <font-awesome-icon icon="plus" class="mr-1" />Add Role
-          </b-button>
-        </b-col>
-      </b-row>
 
-<b-row>
-      <b-col cols="4" class="mt-3">
+    <b-row>
+      <b-col cols="12" md="4" lg="3" sm="5" xs="4" class="mt-3">
         <b-form-group>
           <b-input-group size="sm">
             <b-form-input
@@ -45,14 +29,35 @@
               id="filterInput"
               placeholder="Search Roles"
             ></b-form-input>
-            <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col cols="4" class="mt-3">
+      <b-col cols="12" md="4" lg="3" sm="2" xs="4" class="mt-3"  align="left">
+        <b-dropdown
+            right
+            id="filter_roles"
+            class="button-sq"
+            size="sm"
+            variant="dark"
+          >
+          <template v-slot:button-content>
+            <font-awesome-icon icon="filter" class="mr-1" />   
+          </template> 
+            <b-form-checkbox-group
+              id="status_group"
+              name="flavour-2"
+              class="pl-2"
+              style="font-size:12px"
+              v-model="filterStatus"
+              v-b-tooltip.hover
+              title="Filter Status"
+              
+            >
+              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
+              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-dropdown>
         <!-- <b-input-group prepend="Date" size="sm">
           <date-range-picker
             id="date_pending"
@@ -79,53 +84,31 @@
           </b-input-group-append>
         </b-input-group> -->
       </b-col>
-  <b-col ></b-col>
  
-      <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-          <b-dropdown
-            right
-            id="filter_roles"
-            class="button-sq"
-            size="sm"
-            variant="dark"
-          >
-          <template v-slot:button-content>
-     <font-awesome-icon icon="filter" class="mr-1" />   
-    </template> 
-            <b-form-checkbox-group
-              id="status_group"
-              name="flavour-2"
-              class="pl-2"
-              style="font-size:12px"
-              v-model="filterStatus"
-              v-b-tooltip.hover
-              title="Filter Status"
-              
-            >
-              <b-form-checkbox id="active_stat" :value="1">Active</b-form-checkbox>
-              <b-form-checkbox id="inactive_stat" :value="0" unchecked-value="true">Inactive</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-dropdown>
-     
+      <b-col cols="12" md="4" lg="6" sm="5" xs="4" class="mt-3" align="right">
+        <b-button
+          id="add_role"
+          size="sm"
+          class="button-style"
+          :variant="company == rci ? 'revive' : 'biotech'"
+          @click="addRole()"
+          v-if="actions.add_roleAccess"
+        >
+           Add Role
+        </b-button>
       </b-col>
     </b-row>
 
       <!-- Main table element -->
       <b-table
-        id="role-table"
-        class="table-style"
+      v-if="actions.view_roleAccess"
+        id="roles-table"
+        class="table-style mt-3"
         show-empty
         scrollable
         sticky-header
         no-border-collapse
+        :busy="isBusy"
         :items="filterItems"
         :fields="filterFields"
         :current-page="currentPage"
@@ -138,6 +121,14 @@
         @filtered="onFiltered"
         responsive
       >
+        <template #table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner small class="align-middle"  variant="dark">
+            </b-spinner>
+            <span class="loading_spinner">Loading...</span>
+          </div>
+        </template>
+
         <template v-slot:cell(actions)="row">
           <b-button
             id="edit_roles_and_access"
@@ -147,57 +138,76 @@
             class="table-button"
             v-b-tooltip.hover
             title="Update Roles"
-            v-if="actions.editRoleAndAccess"
+            v-if="actions.edit_roleAccess"
           >
             <font-awesome-icon icon="edit" />
           </b-button>
         </template>
 
         <template v-slot:cell(U_IS_ACTIVE)="row">
-            <b-badge
-              class="table-badge"
-              pill
-              :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
-              >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
-            >
+          <font-awesome-icon
+            v-if="windowWidth < 576"
+            icon="circle"
+            :class="row.item.U_IS_ACTIVE 
+              ? 'active-status' : 'inactive-status'"
+          />
+
+          <b-badge
+          v-else
+            class="table-badge"
+            pill
+            :variant="row.item.U_IS_ACTIVE ? 'success' : 'danger'"
+            >{{ row.item.U_IS_ACTIVE ? "Active" : "Inactive" }}</b-badge
+          >
         </template>
       </b-table>
 
       <hr />
 
       <b-row>
+        <b-col cols="1" class="mb-2 mt-1">
+          <b-form-group class="mb-0">
+            <b-form-select
+              v-model="perPage"
+              id="perPageSelect_modules-pagination"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-select>
+          </b-form-group>
+        </b-col> 
         <b-col
           label-cols-sm
-          class="mb-0 mt-1 text-left"
+          class="mb-0 mt-2 text-left"
           cols="3"
-          align-h="receipt"
+          align-h="center"
         >
           <div size="sm" class="bottomlabel">
             {{ bottomLabel }}
           </div>
         </b-col>
-        <b-col cols="4" offset="5">
+        <b-col>
           <b-pagination
             id="roles-pagination"
             pills
             v-model="currentPage"
-            :total-rows="rows"
+            :total-rows="totalRows"
             :per-page="perPage"
             align="right"
             size="sm"
             aria-controls="roles-table"
             limit="3"
+            class="mt-1"
           ></b-pagination>
         </b-col>
       </b-row>
 
-      <!-- Main table -->
+      <!-- end Main table -->
 
       <!-- Add Role -->
 
       <b-modal
         size="xl"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="add-role-modal"
@@ -209,43 +219,15 @@
         </template>
 
         <b-card class="cardShadow">
-          <!-- <small class="ml-1"> Role</small>
-          <b-form-input type="text" style="font-size:10px"></b-form-input>-->
-<!-- 
-          <b-row>
-            <b-col cols="2">
-              <b-form-checkbox
-                id="user_approver"
-                :value="true"
-                :unchecked-value="false"
-                v-model="checkApprover"
-                >Approver</b-form-checkbox
-              >
-            </b-col>
-
-            <b-col cols="2" v-if="checkApprover">
-              <b-form-select
-                type="text"
-                style="font-size:10px"
-                v-model="approverLevel"
-              >
-                <option :value="null" disabled>Select Level</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </b-form-select>
-            </b-col> -->
-
-            <b-col cols="3">
-              <b-form-input
-                id="role_name_add_modal"
-                type="text"
-                class="form-text"
-                placeholder="Type Role Name"
-                v-model="roleName"
-              ></b-form-input>
-            </b-col>
-     
+          <b-col cols="3">
+            <b-form-input
+              id="role_name_add_modal"
+              type="text"
+              class="form-text"
+              placeholder="Type Role Name"
+              v-model="roleName"
+            ></b-form-input>
+          </b-col>
         </b-card>
         <b-card class="cardShadow mt-4 mb-1">
           <b-row class="mt-4 mb-1 ml-3">
@@ -309,94 +291,13 @@
               </b-form-checkbox-group>
             </b-col>
           </b-row>
-          <!-- <b-row class="mt-4 mb-1 ml-3">
-            <b-col cols="4">
-              <span><b>Delivery Receipt Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_delivery_module_add_modal"
-                name="Delivery Receipt module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Delivery Receipt Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col>
-
-            <b-col cols="4">
-              <span><b>Reports Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_reports_module_add_modal"
-                name="reports module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in activeActions.filter(
-                    action => action.U_MODULE_NAME === 'Reports Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col> -->
-<!-- 
-            <b-col cols="4">
-              <span><b>Approval Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_approval_module_add_modal"
-                name="approval module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in listActions.filter(
-                    action => action.U_MODULE_NAME === 'Approval Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col>
-
-            <b-col cols="4">
-              <span><b>Report Module</b></span>
-              <b-form-checkbox-group
-                id="checkbox_report_module_add_modal"
-                name="report module actions"
-                stacked
-                switches
-                v-model="selectedAction"
-              >
-                <b-form-checkbox
-                  :value="action.Code"
-                  v-for="(action, i) in listActions.filter(
-                    action => action.U_MODULE_NAME === 'Report Module'
-                  )"
-                  :key="i"
-                  >{{ action.U_ACTION_NAME }}</b-form-checkbox
-                >
-              </b-form-checkbox-group>
-            </b-col> -->
-         
         </b-card>
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="add_roles_and_access_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="addRoleAccessTable()"
             style="font-size:13px"
             class="button-style"
@@ -415,13 +316,12 @@
         </template>
       </b-modal>
 
-      <!-- Add Role -->
+      <!-- end Add Role -->
 
       <!-- Edit Role -->
-
       <b-modal
         size="xl"
-        header-bg-variant="biotech"
+        :header-bg-variant="company == rci ? 'revive' : 'biotech'"
         header-text-variant="light"
         body-bg-variant="light"
         id="edit-role-modal"
@@ -522,17 +422,12 @@
             </b-col>
           </b-row>
         </b-card>
-        <!-- <b-row class="mt-3 mb-3">
-        <b-col cols="3">Admin Module</b-col>
-        <b-col cols="3">Transaction Module</b-col>
-        <b-col cols="3">Report Module</b-col>
-        </b-row>-->
 
-        <template v-slot:modal-footer="{ ok, cancel }">
+        <template v-slot:modal-footer="{ cancel }">
           <b-button
             id="edit_roles_and_access_edit_modal"
             size="sm"
-            variant="biotech"
+            :variant="company == rci ? 'revive' : 'biotech'"
             @click="editRoleTable()"
             class="button-style"
             :disabled="showLoading === true"
@@ -549,7 +444,7 @@
         </template>
       </b-modal>
 
-      <!-- Edit User -->
+      <!-- end Edit User -->
     </div>
 
 </template>
@@ -557,16 +452,23 @@
 <script>
 import moment from "moment";
 import Loading from "~/components/Loading/Loading.vue";
-import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
   components: {Loading},
   data() {
     return {
+      rci: process.env.rci,
+      bfi: process.env.bfi,
+      company: null,
+      windowWidth: window.innerWidth,
       showLoading: false,
       filterStatus: [1],
-      actions: { addRoleAndAccess: false, editRoleAndAccess: false },
+      actions: { 
+        add_roleAccess: false, 
+        edit_roleAccess: false,
+        view_roleAccess: false,
+      },
       alert: {
         showAlert: 0,
         variant: "success",
@@ -607,28 +509,42 @@ export default {
 
         { key: "actions", label: "Actions" }
       ],
-
-      totalRows: 1,
+      isBusy: true,
+      totalRows: null,
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter: "",
       filterOn: []
     };
   },
   computed: {
     filterItems() {
+      let count = 0;
       return this.listRoles.filter(listRoles => {
-        return this.filterStatus.includes(listRoles.U_IS_ACTIVE);
+        if(this.filterStatus.includes(listRoles.U_IS_ACTIVE)) {
+          count++;
+          this.totalRows = count;
+          return (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+        }
+        if(this.filterStatus.includes(!listRoles.U_IS_ACTIVE)) {
+          count++;
+          this.totalRows = count;
+          return (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+        }
       });
     },
 
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
+
+      if(!this.filterItems) {
+        return;
+      }
 
       if (end > this.filterItems.length) {
         end = this.filterItems.length;
@@ -639,10 +555,6 @@ export default {
       }
 
       return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
-    },
-
-    rows() {
-      return this.filterItems.length;
     },
 
     ...mapGetters({
@@ -660,6 +572,7 @@ export default {
     },
 
     activeActions() {
+      console.log("actions: ", this.listActions.filter(action => action.U_IS_ACTIVE === 1 && action.U_MODULE_NAME === 'Delivery Receipt Module'));
       return this.listActions.filter(action => action.U_IS_ACTIVE === 1);
     },
 
@@ -675,6 +588,10 @@ export default {
     // Set the initial number of items
   },
   methods: {
+    updateRoleAccess(){
+      const access = JSON.parse(localStorage.user_actions)['Admin Module'];
+    },
+
     test() {
       console.log(this.checkApprover);
     },
@@ -743,6 +660,66 @@ export default {
           }
         });
     },
+    updateLocalStorageActions() {
+      console.log("selectedAction",this.selectedAction);
+      console.log(this.roleForm);
+
+      let activeActions  = this.listActions.filter(actions => actions.U_IS_ACTIVE === 1)
+      console.log(activeActions);
+      const userActions_admin = JSON.parse(localStorage.user_actions)['Admin Module']
+      const userActions_reports = JSON.parse(localStorage.user_actions)['Reports Module']
+      const userActions_transactions = JSON.parse(localStorage.user_actions)['Transactions Module']
+      let userRolesAccess = {};
+      let existing = {};
+      let admin = [];
+      let reports = [];
+      let transactions = [];
+
+      if(userActions_admin) {
+        this.selectedAction.forEach(actions => {
+          existing = userActions_admin.find(access => 
+            access.U_ACTION_CODE === actions)
+          if(existing) {
+            admin.push(existing)
+          }
+        })
+
+        if(admin){
+          userRolesAccess['Admin Module'] = admin
+        }
+      }
+
+      if(userActions_reports){
+        this.selectedAction.forEach(actions => {
+          let existing = userActions_reports.find(access => 
+            access.U_ACTION_CODE === actions)
+          if(existing) {
+            reports.push(existing)
+          }
+        })
+
+        if(reports){
+          userRolesAccess['Reports Module'] = reports
+        }
+      }
+
+      if(userActions_transactions) {
+        this.selectedAction.forEach(actions => {
+          let existing = userActions_transactions.find(access => 
+            access.U_ACTION_CODE === actions)
+          if(existing) {
+            transactions.push(existing)
+          }
+        })
+
+        if(transactions){
+          userRolesAccess['Transactions Module'] = transactions
+        }
+      }
+
+      console.log(userRolesAccess);
+    },
+
     editRoleTable() {
       this.showLoading = true;
       if (this.approverLevel) {
@@ -752,8 +729,6 @@ export default {
         this.roleForm.Name = this.roleName;
       }
       const finalActions = [];
-      // console.log(this.roleForm.actions);
-      // console.log(this.selectedAction);
 
       this.listActions.forEach(action => {
         const existingAction = this.roleForm.actions.find(
@@ -842,14 +817,24 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-    onFiltered(filteredItems) {
+    onFiltered(filterItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
-      // this.totalRows = filteredItems.length;
+      this.totalRows = filterItems.length;
       this.currentPage = 1;
     }
   },
-  beforeCreate() {
-    this.$store
+
+  mounted() {
+    window.addEventListener("resize", () => {
+      this.windowWidth = window.innerWidth
+    })
+  },
+
+  async beforeCreate() {
+
+    this.isBusy = true;
+
+    await this.$store
       .dispatch("Admin/Actions/fetchListActions", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
@@ -864,12 +849,17 @@ export default {
         }
       });
 
-    this.$store
+    await this.$store
       .dispatch("Admin/Roles/fetchRoles", {
         user_actions: JSON.parse(localStorage.user_actions),
         SessionId: localStorage.SessionId
       })
       .then(res => {
+        if(!this.filter) {
+          this.totalRows = this.filterItems ? this.filterItems.length : 0
+        }
+        this.isBusy = false;
+
         if (res && res.name == "Error") {
           if (res.response && res.response.data.errorMsg) {
             if (res.response.data.errorMsg === "Invalid session.") {
@@ -878,23 +868,27 @@ export default {
           }
         }
       });
+
+    
+
   },
   created() {
+    const user_details = JSON.parse(localStorage.user_details);
+    const user_role = JSON.parse(localStorage.user_role);
+    if(user_role.Name.toLowerCase() !== 'administrator') {
+      this.$router.push("/transaction/deliveryreceipt")
+    }
+    this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
-    if (
-      userActions.find(
-        action => action.U_ACTION_NAME === "Add role and access rights"
-      )
-    ) {
-      this.actions.addRoleAndAccess = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Add role and access rights" )) {
+        this.actions.add_roleAccess = true;
     }
-    if (
-      userActions.find(
-        action => action.U_ACTION_NAME === "Edit role and access rights"
-      )
-    ) {
-      this.actions.editRoleAndAccess = true;
+    if (userActions.find(action => action.U_ACTION_NAME === "Edit role and access rights")) {
+      this.actions.edit_roleAccess = true;
+    }
+    if (userActions.find(action => action.U_ACTION_NAME === "View roles and access rights")) {
+      this.actions.view_roleAccess = true;
     }
   }
 };
