@@ -101,7 +101,7 @@
                     >Pick-up</b-form-checkbox
                   >
                   <b-form-checkbox id="delivery" value="Delivery"
-                    >Delivery</b-form-checkbox
+                    >Direct</b-form-checkbox
                   >
                 </b-form-checkbox-group>
                 <!-- <b-form-checkbox-group
@@ -185,7 +185,6 @@
               variant="pending"
               >{{ row.item.U_STATUS }}</b-badge
             >
-
             <b-badge
               v-show="row.item.U_STATUS === 'Printed'"
               class="table-badge"
@@ -193,14 +192,6 @@
               variant="edit"
               >{{ row.item.U_STATUS }}</b-badge
             >
-
-            <!--  <b-badge
-              v-show="row.item.U_STATUS === 'Completed'"
-              class="table-badge"
-              pill
-              variant="completed"
-              >{{ row.item.U_STATUS }}
-            </b-badge>-->
           </template>
 
           <template v-slot:cell(actions)="row">
@@ -253,7 +244,6 @@
                 <font-awesome-icon icon="ban" />
               </b-button>
 
-              <!-- @click="$bvModal.show('view-transaction-modal')" -->
             </div>
             <div v-else>
               <b-button
@@ -294,22 +284,6 @@
           </template>
         </b-table>
       </span>
-
-      <!-- <span >
-        <b-list-group>
-          <b-list-group-item v-for="(items, i) in filterItems" :key="i">
-            <div>
-              {{ items.U_TRX_NO }}
-              <b-badge v-if="items.U_STATUS == 'Pending' " variant="warning">
-                {{ items.U_STATUS }}
-              </b-badge>
-              <b-badge v-if="items.U_STATUS == 'Printed' " variant="primary">
-                {{ items.U_STATUS }}
-              </b-badge>
-            </div>
-          </b-list-group-item>
-        </b-list-group>
-      </span> -->
 
       <b-row>
         <b-col cols="1" class="mb-2 mt-1">
@@ -480,7 +454,6 @@
                     />
                   </b-col>
                 </b-row>
-                <!-- <date-time-picker v-bind="datetimeScheme" @onChange="onChangeHandler" /> -->
 
                 <small class="text-left">Transaction Type</small>
                 <b-form-select
@@ -510,18 +483,6 @@
                   :clearable="false"
                   required
                   />
-                <!-- <multiselect
-                  id="commodity"
-                  placeholder="Select Item"
-                  v-model="U_CMMDTY.value"
-                  class="form-text"
-                  :options="commodity"
-                  @input="getUOM"
-                  required
-                  label="text"
-                  track-by="text"
-                  :hide-selected="true"
-                ></multiselect> -->
                 <small class="text-left">Unit of Measure</small>
                 <b-form-select
                   id="uom"
@@ -540,17 +501,6 @@
                 </b-form-select>
 
                 <small class="text-left">Farmer's Name</small>
-                <!-- <multiselect
-                  id="customer"
-                  :options="farmer"
-                  placeholder="Select Farmer"
-                  class="form-text"
-                  v-model="U_FRMR_NAME"
-                  label="text"
-                  track-by="text"
-                  @input="test"
-                  required
-                ></multiselect> -->
                 <vSelect id="customer"
                   size="sm"
                   placeholder="Select Farmer"
@@ -561,15 +511,7 @@
                   :clearable="false"
                   required
                   />
-                
-                <!-- <b-form-select
-                  id="customer"
-                  class="form-text"
-                  v-model=" U_FRMR_NAME"
-                  :options="farmer"
-                  @change="test"    
-                  required
-                ></b-form-select> -->
+
                 <small class="text-left" v-if="TRANSACTION_COMPANY_ID == rci " >Plot Code</small>
                 <multiselect
                   v-if="TRANSACTION_COMPANY_ID == rci"
@@ -787,8 +729,6 @@
             @click="saveDR()"
             :disabled="showLoading === true"
           >
-            <!-- @click="addActionTable(),$bvModal.hide('add-transaction-modal')" -->
-            <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner> -->
             Create
           </b-button>
           <b-button
@@ -833,18 +773,6 @@
             <option v-for="(comp, i) of filterCompany"
             :key="i" :value="comp.U_COMPANYCODE"> {{ comp.COMPANYNAME }} </option>
           </b-form-select>
-          <!-- <small class="text-left">Company</small>
-          <br />
-          <b> {{ this.TRANSACTION_COMPANY }}</b>
-          <b-form-select
-            id="company"
-            v-model="selectedcompany"
-            class="form-text"
-            :options="companyList"
-            @change="getCommodity(), getFarmer()"
-            required
-          ></b-form-select> {{this.TRANSACTION_COMPANY_ID}} 
-          <br /> -->
 
           <small>Schedule Date and Time</small>
           <b-row>
@@ -867,11 +795,6 @@
               />
             </b-col>
           </b-row>
-
-          <!-- <date-time-picker
-            v-bind="datetimeScheme2"
-            @onChange="onChangeHandler"
-          /> -->
 
           <small class="text-left">Transaction Type</small>
           <b-form-select
@@ -899,26 +822,6 @@
             :clearable="false"
             required
             />
-          <!-- <multiselect
-            id="commodity"
-            placeholder="Select Item"
-            v-model="U_CMMDTY"
-            class="form-text"
-            :options="commodity"
-            @input="updateUOM"
-            required
-            label="text"
-            track-by="text"
-            disabled
-          ></multiselect> -->
-          <!-- <b-form-select
-            id="commodity"
-            v-model=" U_CMMDTY"
-            class="form-text"
-            :options="commodity"
-            @input="getUOM"
-            disabled
-          ></b-form-select> -->
           <small class="text-left">Unit of Measure</small>
 
           <b-form-select
@@ -1139,7 +1042,7 @@
             @click="updateDR(U_TRX_ID)"
             :disabled="showLoading === true"
           >
-            <!-- <b-spinner small v-show="showLoading === true" small label="Spinning"></b-spinner>Save -->
+
             Save
           </b-button>
           <b-button
@@ -1415,20 +1318,6 @@
                       </b-row>
                     </b-form-group>
                   </div> -->
-
-                  <!-- <b-row>
-            <b-col cols="6">           
-              <span style="font-size:9px">
-                {{U_FRMR_NAME}}
-              </span>
-            </b-col>
-            <b-col cols="6" text-align="center">           
-              <span style="font-size:9px">
-                {{U_HLPR_NAME}}
-              </span>
-            </b-col>
-                </b-row>-->
-
                   <br />
                   <b-row class="my-2">
                     <b-col cols="6">
@@ -1517,7 +1406,7 @@
           >
         </template>
       </b-modal>
-      <!-- <alert/> -->
+
       <!-- ALERT SUCCESSFUL -->
       <b-modal
         id="pin"
@@ -1751,8 +1640,6 @@ export default {
   async created() {
     this.companyCode = JSON.parse(localStorage.user_details).U_COMPANY_CODE;
     this.user = localStorage.username;
-    // this.bfi = JSON.parse(localStorage.companyCode).bfi;
-    // this.rci = JSON.parse(localStorage.companyCode).rci;
 
     const roleCode = JSON.parse(localStorage.user_role).Code;
     roleCode == 9 ? this.directBuyingAdmin = true :  this.directBuyingAdmin = false
@@ -1761,13 +1648,11 @@ export default {
       this.TRANSACTION_COMPANY_ID = null;
     } else {
       this.TRANSACTION_COMPANY_ID = this.companyCode
-      // this.fetch();
     }
     await this.getTransactions();
     await this.getTransactionType();
     await this.getPrinters();
     await this.getLocationIP();
-    // await this.networkPrintInit();
     this.totalRows = this.items.length;
     // const userActions = JSON.parse(localStorage.user_actions)["Transactions Module"];
 
@@ -1801,7 +1686,7 @@ export default {
       windowWidth: window.innerWidth,
       logo: "",
       company: null,
-      directBuyingAdmin: false, //process.env.directBuyingAdmin,
+      directBuyingAdmin: false,
       user: null,
       rci: process.env.rci,
       bfi: process.env.bfi,
@@ -1818,7 +1703,6 @@ export default {
         singleDate: true,
         alignRight: true,
         timeFormat: "HH:mm",
-        // id: 'U_SCHEDULED_DATE',
         label: "Select Date",
         required: true
       },
@@ -1828,7 +1712,6 @@ export default {
         singleDate: true,
         alignRight: true,
         timeFormat: "HH:mm",
-        // id: 'U_SCHEDULED_DATE',
         label: "Select Date",
         required: true
       },
@@ -1836,7 +1719,6 @@ export default {
       U_SCHEDULED_DATE: null,
       U_SCHEDULED_TIME: null,
       filterStatus: ["Pick-up", "Delivery"],
-      // filterCompany: [],
       showLoading: false,
       alert: {
         showAlert: 0,
@@ -1854,8 +1736,6 @@ export default {
         variant1: "biotech",
         message1: ""
       },
-      // U_PRICELIST:null,
-      // pricelist:[],
       unit: [],
       TRANSACTION_COMPANY: null,
       TRANSACTION_COMPANY_ID: null,
@@ -2147,13 +2027,6 @@ export default {
         console.log("Error: ", e);
       }
     },
-    // onChangeHandler: function(data) {
-    //   (this.U_SCHEDULED_DATE = moment(data.startDate).format("YYYY-MM-DD")),
-    //     (this.U_SCHEDULED_TIME = this.fixTime(
-    //       moment(data.startDate).format("HH:mm")
-    //     ));
-    //   console.log(data);
-    // },
     onChangeHandler() {
       if(this.U_SCHEDULED_DATE != null) {
         this.U_SCHEDULED_DATE = moment(this.U_SCHEDULED_DATE).format("YYY-MM-DD")
@@ -2163,7 +2036,6 @@ export default {
       }
     },
     async saveDR() {
-      // console.log(this.U_ARRIVAL, this.U_TIME_START, this.U_TIME_END, this.U_DEPARTURE);
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
       } else if (this.U_TRANSACTION_TYPE == null) {
@@ -2360,204 +2232,6 @@ export default {
         message1
       };
     },
-    // async networkPrint(data) {
-    //   let QRCode = require("qrcode");
-
-    //   this.qrString = JSON.stringify(data.U_TRX_NO);
-
-    //   const qr = await QRCode.toDataURL(data.U_TRX_NO);
-
-    //   let canvas1 = document.createElement("canvas");
-    //   canvas1.width = 100;
-    //   canvas1.height = 100;
-
-    //   let biotechLogoContext = canvas1.getContext("2d");
-
-    //   const biotechLogo = await new Promise(resolve => {
-    //     let image1 = new Image();
-    //     image1.src = qr;
-    //     image1.onload = () => resolve(image1);
-    //   });
-
-    //   biotechLogoContext.drawImage(biotechLogo, 0, 0, 100, 100);
-
-    //   let canvas = document.createElement("canvas");
-    //   canvas.width = 200;
-    //   canvas.height = 100;
-
-    //   let revivelogoContext = canvas.getContext("2d");
-
-    //   const revivelogo = await new Promise(resolve => {
-    //     let image = new Image();
-    //     image.src = "/logo1.png";
-    //     image.onload = () => resolve(image);
-    //   });
-
-    //   revivelogoContext.drawImage(revivelogo, 0, 0, 180, 100);
-
-    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
-    //   this.networkPrinter.addImage(revivelogoContext, 0, 0, 180, 95);
-    //   this.networkPrinter.addText(`CROPTECH INC.\n`);
-    //   this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
-
-    //   this.networkPrinter.addText(
-    //     `Delivery Receipt | ${data.U_TRANSACTION_TYPE}\n`
-    //   );
-    //   this.networkPrinter.addText(`${data.U_DTE_CRTD}\n`);
-
-    //   this.networkPrinter.addText(`\n`);
-    //   // this.networkPrinter.align('right');
-    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
-    //   // this.networkPrinter.addTextFont(this.networkPrinter.FONT_B);
-    //   this.networkPrinter.addText(`Transaction Number: ${data.U_TRX_NO}\n`);
-
-    //   this.networkPrinter.addText(
-    //     `Delivery Schedule: ${data.U_SCHEDULED_DATE_AND_TIME}\n`
-    //   );
-    //   this.networkPrinter.addText(`Farmer's Name: ${data.U_FRMR_NAME}\n`);
-    //   this.networkPrinter.addText(`Address: ${data.U_FRMR_ADD}\n`);
-    //   if(data.U_APP_ProjCode){
-    //     this.networkPrinter.addText(`Plot Code: ${data.U_APP_ProjCode}\n`)
-    //   }
-    //   this.networkPrinter.addText(`\n`);
-    //   this.networkPrinter.addText(`Item: ${data.U_CMMDTY}\n`);
-    //   this.networkPrinter.addText(
-    //     `Requested Empty Sacks: ${data.U_REQUESTED_SACKS}\n`
-    //   );
-    //   if (data.U_TRANSACTION_TYPE == "Delivery") {
-    //     this.networkPrinter.addText(
-    //       `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
-    //     );
-    //   } else if (
-    //     data.U_TRANSACTION_TYPE == "Pick-up" &&
-    //     data.U_UOM.UomName == "TRUCK LOAD"
-    //   ) {
-    //     this.networkPrinter.addText(
-    //       `Quantity:  ${data.U_SACKS} ${data.U_UOM}\n`
-    //     );
-    //   } else {
-    //     this.networkPrinter.addText(`Quantity:  \n`);
-    //   }
-    //   this.networkPrinter.addText(
-    //     `Returned Empty Sacks: ${data.U_EMPTY_SACKS}\n`
-    //   );
-    //   this.networkPrinter.addText(`Driver's Name: ${data.U_DRVR_NAME}\n`);
-    //   this.networkPrinter.addText(`Plate Number: ${data.U_PLATE_NUMBER}\n`);
-    //   this.networkPrinter.addText(`\n`);
-    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_LEFT);
-
-    //   this.networkPrinter.addText(`SIGNED BY:         REVIEWED BY: \n`);
-    //   this.networkPrinter.addText(`\n`);
-    //   this.networkPrinter.addText(
-    //     `${data.U_FRMR_NAME}    ${data.U_HLPR_NAME}\n`
-    //   );
-    //   this.networkPrinter.addTextAlign(this.networkPrinter.ALIGN_CENTER);
-    //   this.networkPrinter.addText(`\n`);
-    //   this.networkPrinter.addText(`VERIFIED BY: \n`);
-    //   this.networkPrinter.addText(`\n`);
-    //   this.networkPrinter.addText(`${data.U_CRTD_BY}\n`);
-    //   this.networkPrinter.addImage(biotechLogoContext, 0, 0, 100, 100);
-    //   // this.networkPrinter.addText(`Item: ${data.header.item}\n`);
-    //   // this.networkPrinter.addText(
-    //   //   `Supplier Code: ${data.header.supplier_code}\n`
-    //   // );
-    //   // this.networkPrinter.addText(`DR #: ${data.header.dr}\n`);
-    //   // this.networkPrinter.addText(`${data.header.date}\n`);
-
-    //   this.networkPrinter.addText("\n");
-    //   this.networkPrinter.addCut(); // for auto cutting
-      
-
-    //   // this.networkPrinter.send();
-    // },
-    // async networkPrintInit() {
-    //   this.showLoading = true;
-    //   let ePosDev = new epson.ePOSDevice();
-
-    //   let ipAddress = `172.16.4.40`,
-    //     port = `8008`;
-
-    //   let deviceId = "bfi_printer";
-    //   let options = { crypto: false, buffer: false };
-
-    //   console.log(ipAddress, port)
-
-    //   const connectionResult = await new Promise((resolve) => {
-    //     ePosDev.connect(ipAddress, port, (resultConnect) => {
-    //       resolve(resultConnect);
-    //     });
-    //   });
-
-    //   if (!(connectionResult == "OK" || connectionResult == "SSL_CONNECT_OK")) {
-    //     console.log("Connecting to IP address and port failed");
-    //     return;
-    //   }
-
-    //   const createDeviceResult = await new Promise(resolve => {
-    //     ePosDev.createDevice(
-    //       deviceId,
-    //       ePosDev.DEVICE_TYPE_PRINTER,
-    //       options,
-    //       (deviceObj, errorCode) => {
-    //         resolve(deviceObj);
-    //       }
-    //     );
-    //   });
-
-    //   console.log(createDeviceResult);
-
-    //   if (createDeviceResult === null) {
-    //     console.log("Creating device failed");
-    //     this.showLoading = false;
-    //     return;
-    //   }
-
-    //   this.networkPrinter = createDeviceResult;
-
-    //   this.networkPrinter.onreceive = response => {
-    //     console.log(response);
-    //     if (response.success) {
-        
-    //       console.log("Callback create device response success");
-    //     } else {
-        
-    //       console.log("Callback create device response failed");
-    //     }
-    //   };
-
-       
-    // },
-    // async printReceipt(data) {
-    //   console.log(data);
-    //   // this.$refs.Receipt.print(data);
-    //   this.networkPrint(data);
-    // },
-    //    console.log(data);
-    //    if (this.U_STATUS === 'Pending'){
-    //   this.showLoading = true
-    //   const userDetails = JSON.parse(localStorage.user_details);
-
-    //   const employee_id = userDetails.Code;
-
-    //   const res = await axios({
-    //     method: "PUT",
-    //     url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data}`,
-    //     headers: {
-    //       Authorization: `B1SESSION=${localStorage.SessionId}`
-    //     },
-    //     data: {
-    //       employee_id,
-
-    //     }
-    //   });
-
-    //   // this.showReceipt = true;
-    //   this.$refs.Receipt.print(data);
-    //   // data.U_STATUS = "Printed";
-    //    } else{
-    //   this.$refs.Receipt.print(data);
-    //    }
-    // },
     getPrinters(){
       for(let i = 0; i < this.listPrinters.length; i++) {
         this.printers.push({
@@ -2590,7 +2264,6 @@ export default {
       if(!this.printerIP) {
         this.showAlert("Please provide IP Address", "danger")
       } else {
-        // this.pingPrinter();
         const session = localStorage.SessionId;
         await axios({
           method: "POST",
@@ -2844,7 +2517,7 @@ export default {
           Authorization: localStorage.SessionId
         },
         data: {
-          company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
+          company: this.TRANSACTION_COMPANY_ID 
         }
       });
       const v = res.data.view;
@@ -2861,24 +2534,6 @@ export default {
       this.showLoading = false;
 
     },
-    //  async getPriceList() {
-    //   const res = await axios({
-    //     method: "POST",
-    //     url: `${this.$axios.defaults.baseURL}/api/items/selectPl`,
-    //     headers: {
-    //       Authorization: localStorage.SessionId
-    //     }
-    //   });
-    //   const v = res.data.view;
-
-    //  for (let i = 0; i < v.length; i++) {
-    //     this.pricelist.push({
-    //       text: v[i].ListName,
-    //       value: v[i].ListNum
-    //     });
-
-    //   }
-    // },
     async getLocationIP(){
       this.isBusy = true;
       const locationId = JSON.parse(localStorage.user_details).U_LOCATION_ID;
@@ -2909,7 +2564,7 @@ export default {
             Authorization: localStorage.SessionId
           },
           data: {
-            company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
+            company: this.TRANSACTION_COMPANY_ID
           }
         });
         const v = res.data.view;
@@ -2932,7 +2587,7 @@ export default {
             Authorization: localStorage.SessionId
           },
           data: {
-            company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
+            company: this.TRANSACTION_COMPANY_ID
           }
         });
         const v = res.data.view;
@@ -2968,7 +2623,7 @@ export default {
             Authorization: localStorage.SessionId
           },
           data: {
-            company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
+            company: this.TRANSACTION_COMPANY_ID
           }
         });
 
@@ -3018,7 +2673,7 @@ export default {
             Authorization: localStorage.SessionId
           },
           data: {
-            company: this.TRANSACTION_COMPANY_ID //userDetails.U_COMPANY_CODE
+            company: this.TRANSACTION_COMPANY_ID
           }
         });
         v = res.data.view;
@@ -3104,7 +2759,7 @@ export default {
         let json = {};
         if(this.TRANSACTION_COMPANY_ID == this.bfi) {
           json = {
-            company: this.TRANSACTION_COMPANY_ID, //userDetails.U_COMPANY_CODE,
+            company: this.TRANSACTION_COMPANY_ID, 
             uom_id: this.U_UOM.UomEntry,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
@@ -3120,7 +2775,7 @@ export default {
           };
         } else if(this.TRANSACTION_COMPANY_ID == this.rci) {
           json = {
-            company: this.TRANSACTION_COMPANY_ID, //userDetails.U_COMPANY_CODE,
+            company: this.TRANSACTION_COMPANY_ID, 
             uom_id: this.U_UOM.UomEntry,
             transaction_type_id: this.U_TRANSACTION_TYPE,
             item_id: this.U_CMMDTY.value.value,
@@ -3183,8 +2838,6 @@ export default {
         this.$bvModal.hide("signature");
         this.showLoading = false;
         this.getTransactions();
-        // this.$bvModal.hide("add-transaction-modal");
-        // this.showAlert(res.data.posted.msg, "success");
         this.close();
       } catch (e) {
         console.log(e);
@@ -3378,9 +3031,6 @@ export default {
         const v = res.data.view;
         for (let i = 0; i < v.length; i++) {
           const d = moment(v[i].CREATED_DATE).format("MMM DD, YYYY");
-          // const t = this.intToTime(v[i].CREATED_TIME);
-          // const date = moment(`${d}  ${t}`).format("MMM DD, YYYY | hh:mm A");
-
           const sd = moment(v[i].SCHEDULED_DATE).format("MMM DD, YYYY");
           const st = this.intToTime(v[i].SCHEDULED_TIME);
           const sdate = moment(`${sd}  ${st}`).format("MMM DD, YYYY hh:mm A");

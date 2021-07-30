@@ -22,18 +22,6 @@
 
     <Receipt ref="Receipt" v-show="false" />
     <!-- Main table -->
-    <!-- <b-row>
-      <b-col>
-        <b-button
-          :variant="companyCode == rci ? 'revive' : 'biotech'"
-          class="button-style"
-          size="sm"
-          @click="$bvModal.show('add-transaction-modal')"
-        >
-           Create Delivery Receipt
-        </b-button>
-      </b-col>
-    </b-row> -->
 
     <b-row>
       <b-col cols="12" md="3" lg="3" sm="12" xs="1" class="mt-3">
@@ -116,7 +104,7 @@
               >Pick-up</b-form-checkbox
             >
             <b-form-checkbox id="delivery" value="Delivery"
-              >Delivery</b-form-checkbox
+              >Direct</b-form-checkbox
             >
             </b-form-checkbox-group>
              <!-- <b-form-checkbox-group
@@ -168,16 +156,7 @@
       </b-col>
  
       <b-col cols="2"  class="mt-3" align="right">
-        <!-- <b-form-group class="mb-0">
-          <b-form-select
-            id="perPageSelect_action"
-            size="sm"
-            :options="pageOptions"
-          ></b-form-select>
-        </b-form-group> -->
-      
-        
-     
+
       </b-col>
     </b-row>
 
@@ -213,18 +192,7 @@
       <template v-slot:cell(U_TRANSACTION_TYPE)="row">
         {{ row.item.U_TRANSACTION_TYPE == 'Delivery' ? 'Direct' : 'Pick-up' }}
       </template>
-        <!-- :sort-desc.sync="sortDesc"
-      :sort-direction="sortDirection" -->
       <template v-slot:cell(U_STATUS)="row">
-        <!-- <b-badge
-          v-show="row.item.U_STATUS === 'Pending'"
-          class="table-badge"
-          pill
-          variant="pending"
-          
-          >{{ row.item.U_STATUS }}
-        </b-badge> -->
-
         <b-badge
           v-show="row.item.U_STATUS === 'Cancelled'"
           class="table-badge"
@@ -241,77 +209,6 @@
           >{{ row.item.U_STATUS }}
         </b-badge>
       </template>
-
-      <!-- <template v-slot:cell(actions)="row">
-        <div v-if="row.item.U_STATUS === 'Cancelled'">
-       
-
-        <b-button
-          variant="secondary"
-          id="view"
-          class="table-button"
-          size="sm"
-          @click="$bvModal.show('view-transaction-modal')"
-          v-b-tooltip.hover
-          title="View Delivery Receipt"
-        >
-         @click="$bvModal.show('view-transaction-modal')"
-          <font-awesome-icon icon="folder-open" />
-        </b-button>
-
-        </div>
-        <div v-else>
-           <b-button
-          variant="print"
-          id="print"
-          class="table-button"
-          size="sm"
-          @click="printReceipt(row.item)"
-          v-b-tooltip.hover
-          title="Print Delivery Receipt"
-        >
-          <font-awesome-icon icon="print" />
-        </b-button>
-
-        <b-button
-          variant="edit"
-          id="edit"
-          class="table-button"
-          size="sm"
-          @click="edit(row.item)"
-          v-b-tooltip.hover
-          title="Edit Transaction"
-        >
-          <font-awesome-icon icon="edit" />
-        </b-button>
-
-        <b-button
-          variant="secondary"
-          id="view"
-          class="table-button"
-          size="sm"
-          @click="$bvModal.show('view-transaction-modal')"
-          v-b-tooltip.hover
-          title="View Delivery Receipt"
-        >
-          <font-awesome-icon icon="folder-open" />
-        </b-button>
-
-        <b-button
-          variant="danger"
-          id="void"
-          class="table-button"
-          size="sm"
-          v-b-tooltip.hover
-          title="Cancel Transaction"
-          @click="deleted(row.item)"
-        >
-          <font-awesome-icon icon="ban" />
-        </b-button>
-      
-        </div>
-      </template> -->
-
     </b-table>
     </div>
 
@@ -912,8 +809,6 @@ export default {
     await this.getTransactions();
     await this.getTransactionType();
     await this.getCompanyList();
-    // await this.getFarmer();
-    // await this.getCommodity();
     this.totalRows = this.items.length;
   },
   data() {
@@ -1048,12 +943,6 @@ export default {
           sortable: true,
           sortDirection: "asc"
         },
-        // {
-        //   key: "U_RMRKS",
-        //   label: "Remarks",
-        //   sortable: true,
-        //   sortDirection: "asc"
-        // },
 
         {
           key: "U_STATUS",
@@ -1509,6 +1398,10 @@ export default {
     const res = await axios({
       method: "GET",
       url: `${this.$axios.defaults.baseURL}/api/transaction/get-signature/${U_TRX_NO}`,
+      headers: {
+        Authorization: localStorage.SessionId,
+        'Content-Type' : 'application/json'
+      }
     })
     this.showLoading = false;
     return this.$axios.defaults.baseURL+res.data.view[0].U_SIGNATURE;
