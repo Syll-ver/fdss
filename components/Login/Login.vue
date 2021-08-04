@@ -20,6 +20,7 @@
               <input
                 id="emp_id"
                 class="username"
+                autocomplete="username"
                 v-model="user.name"
                 :state="inputValidation"
                 v-on:keyup.enter="focusPassword()"
@@ -29,6 +30,7 @@
               <input
                 id="password"
                 class="password"
+                autocomplete="current-password"
                 v-model="user.password"
                 :state="inputValidation"
                 placeholder="Password"

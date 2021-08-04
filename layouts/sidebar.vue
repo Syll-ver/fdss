@@ -14,22 +14,21 @@
         </div>
         <hr class="hr-style" />
         <ul class="list-unstyled">
-          <li v-if="isAdmin">
+          <li v-if="isAdmin" :class="adminSelct !== true ? 'actvB ':' '">
             <a id="admin_toggle"
-              @click="visible = !visible"
+              @click="selctAdmin()"
               data-toggle="collapse"
               aria-expanded="false"
               class="sidebar_item"
               v-b-tooltip.hover.bottomleft.noninteractive
               title="Admin">
               <font-awesome-icon icon="user-cog" class="mr-2" />
-              <span class="route-name">Admin</span>
+              <span class="route-admin">Admin</span>
               <font-awesome-icon :icon="visible == false 
                 ? 'caret-right' : 'caret-down'"
-                class="mr-2 mt-1"
+                class="mr-1 mt-1"
                 style="float:right;" />
             </a>
-
             <b-collapse id="collapse" class="mt-1" v-model="visible">
               <li
                 v-for="(adminroute, i) in adminroutes"
@@ -46,7 +45,7 @@
                     :class="adminroute.class"
                   />
                   <span class="route-name" :style="adminroute.style">{{
-                    adminroute.name
+                    adminroute.name 
                   }}</span>
                 </router-link>
               </li>
@@ -58,8 +57,8 @@
             :key="i"
             :style="route.active 
             ? 'background: #00803e; border-radius:3px' : '' "
-            class="mt-2 mb-2"
-            @click="active = route.link"
+            :class="`mt-2 mb-2 `+(chosenRoute == route.link ? 'actvB':'')"
+            @click="selct(route.link)"
             :id="route.link"
             v-b-tooltip.hover.bottomleft.noninteractive
             :title="route.name">
@@ -191,7 +190,12 @@
 
 <script>
 export default {
+  
   created() {
+    this.adminSelct = localStorage.adminSelct;
+
+    this.chosenRoute = localStorage.chosenRoute;
+
     const user_details = JSON.parse(localStorage.user_details);
     this.company = user_details.U_COMPANY_CODE;
 
@@ -276,6 +280,9 @@ export default {
       visible: false,
       visiblePrice: false,
       toggleBtnActive: true,
+
+      chosenRoute: "",
+      adminSelct: "",
 
       adminroutes: [
     {},
@@ -398,11 +405,26 @@ export default {
   },
 
   methods: {
+    selctAdmin() {
+      this.visible = !this.visible;
+      localStorage.adminSelct = true;
+      this.adminSelct = localStorage.adminSelct;
+      if(localStorage.chosenRoute) {
+        localStorage.chosenRoute = "";
+        this.chosenRoute = "";
+      }
+    },
+    selct(routeLink) {
+      this.active = routeLink;
+      localStorage.chosenRoute = routeLink;
+      localStorage.adminSelct = false;
+
+      this.adminSelct = true;
+      this.chosenRoute = localStorage.chosenRoute;
+    },
 
     async setActive(i) {
-      this.visible = false;
-      this.adminroutes.map(route => (route.active = false));
-
+      
       this.routes.map((route, index) => {
         if (index === i) {
           route.active = true;
@@ -410,6 +432,8 @@ export default {
           route.active = false;
         }
       });
+      this.visible = false;
+      this.adminroutes.map(route => (route.active = false));
     },
 
     setAdminActive(i) {
@@ -434,6 +458,7 @@ export default {
       this.$router.push("/");
     }
   },
+
 
   beforeCreate(){
     const userDetails = JSON.parse(localStorage.user_details);

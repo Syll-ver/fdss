@@ -65,6 +65,7 @@ overflow-y: auto;
   font-size: 15px;
 }
 
+
 #sidebarRCI ul p {
   color: #fff;
   padding: 10px;
@@ -76,7 +77,7 @@ overflow-y: auto;
 }
 
 #sidebarRCI ul li a {
-  padding: 10px;
+  padding: 10 25px;
   font-size: 1.1em;
   display: block;
   color: #fff;
@@ -84,12 +85,21 @@ overflow-y: auto;
 }
 
 #sidebarBFI ul li a {
-  padding: 10px;
+  padding: 10px 25px;
   font-size: 1.1em;
   display: block;
   color: #fff;
+  
   // border-radius: 3px;
 }
+
+
+
+.route-name{
+  margin-left: 10px;
+}
+
+
 
 #sidebarRCI ul li a:hover {
   color: #fff;
@@ -100,7 +110,7 @@ overflow-y: auto;
 
 #sidebarBFI ul li a:hover {
   color: #fff;
-  background: #01401f;
+  background: #016b35;
   // border-radius: 3px;
   transition: 0.5s;
 }
@@ -120,6 +130,16 @@ a[aria-expanded="true"] {
 a[aria-expanded="true"] {
   background: #fff;
   color: #01401f;
+}
+
+.actvB {
+  background: #00ff7b50;
+  color: white;
+}
+
+.actvR {
+  background: #fff;
+  color: #743013;
 }
 
 ul ul a {
@@ -202,6 +222,7 @@ ul ul a {
   .route-name {
     display: none;
     transition: all 0.3s;
+
   }
   .sidebar-image {
     display: none !important;

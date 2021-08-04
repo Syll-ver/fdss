@@ -147,7 +147,7 @@
            <b-button
             size="sm"
             style="font-size:15px;"
-            variant="dark"
+            variant="primary"
             v-b-tooltip.hover
             title="Export to PDF"
             @click="print"
