@@ -302,7 +302,7 @@
           cols="3"
           align-h="center"
         >
-          <div size="sm" style="color: gray; font-size: 11.5px;">{{ bottomLabel }}</div>
+          <div v-if="windowWidth >= 600" size="sm" style="color: gray; font-size: 11.5px;">{{ bottomLabel }}</div>
         </b-col>
         <b-col>
           <b-pagination
@@ -1905,14 +1905,7 @@ export default {
         if(this.filterStatus.includes(request.U_TRANSACTION_TYPE)) {
           count++;
           this.totalRows = count;
-          return (request.U_TRANSACTION_TYPE.toLowerCase().match(this.filter.toLowerCase()) 
-          || request.U_CMMDTY.toLowerCase().match(this.filter.toLowerCase()) 
-          || request.U_FRMR_NAME.toLowerCase().match(this.filter.toLowerCase()) 
-          || request.U_CRTD_BY.toLowerCase().match(this.filter.toLowerCase())
-          || request.U_TRX_NO.toLowerCase().match(this.filter.toLowerCase())
-          || request.U_SCHEDULED_DATE_AND_TIME.toLowerCase().match(this.filter.toLowerCase())
-          || request.U_SACKS.toString().match(this.filter.toLowerCase())
-          || request.U_UOM.toLowerCase().match(this.filter.toLowerCase(), this.totalRows = request.length))
+          return request;
         }
       })
     },

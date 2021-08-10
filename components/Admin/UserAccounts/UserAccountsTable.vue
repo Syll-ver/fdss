@@ -1117,9 +1117,7 @@ export default {
         if(this.listCompanies.includes(this.selectedCompany)) {
           count++;
           this.rowsUsers = count;
-          return (users.FirstName.toLowerCase().match(this.filterUser.toLowerCase()) || 
-                  users.MiddleName.toLowerCase().match(this.filterUser.toLowerCase()) ||
-                  users.LastName.toLowerCase().match(this.filterUser.toLowerCase()));
+          return users;
         }
       })
     },

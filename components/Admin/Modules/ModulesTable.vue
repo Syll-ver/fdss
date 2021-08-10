@@ -396,12 +396,12 @@ export default {
         if(this.filterStatus.includes(listModules.U_IS_ACTIVE)){
           count++;
           this.totalRows = count;
-          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+          return listModules;
         }
         if(this.filterStatus.includes(!listModules.U_IS_ACTIVE)){
           count++;
           this.totalRows = count;
-          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+          return listModules;
         }
       });
     },

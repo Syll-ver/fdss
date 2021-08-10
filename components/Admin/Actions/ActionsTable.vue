@@ -411,12 +411,12 @@ export default {
             count++;
             this.totalRows = count;
 
-            return listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_MODULE_NAME.toLowerCase().match(this.filter.toLowerCase()))
+            return listActions;
           }
           if(this.filterStatus.includes(!listActions.U_IS_ACTIVE)) {
             count++;
             this.totalRows = count;
-            return listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_MODULE_NAME.toLowerCase().match(this.filter.toLowerCase()))
+            return listActions;
           }
       });      
     },

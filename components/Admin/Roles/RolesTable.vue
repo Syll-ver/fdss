@@ -528,12 +528,12 @@ export default {
         if(this.filterStatus.includes(listRoles.U_IS_ACTIVE)) {
           count++;
           this.totalRows = count;
-          return (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+          return listRoles;
         }
         if(this.filterStatus.includes(!listRoles.U_IS_ACTIVE)) {
           count++;
           this.totalRows = count;
-          return (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+          return listRoles;
         }
       });
     },

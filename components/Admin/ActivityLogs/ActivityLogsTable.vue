@@ -307,7 +307,7 @@ export default {
   computed: {
     filterItems() {
       return this.listActivityLogs.filter(listActivityLogs => {
-        return (listActivityLogs.U_TABLE.toLowerCase().match(this.filter.toLowerCase()) || listActivityLogs.U_OPERATION.toLowerCase().match(this.filter.toLowerCase()) || listActivityLogs.Employee.toLowerCase().match(this.filter.toLowerCase()));
+        return listActivityLogs;
       });
     },
 
