@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper" id="wrapper">
-    <nav :id="company == rci ? 'sidebarRCI' : 'sidebarBFI'">
+    <nav :id="company == rci ? 'sidebarRCI' : (company == bfi && 'sidebarBFI')">
       <div class="sidebar-header">
         <div>
           <b-img :src="company == rci ? '/rlogo.png' : '/blogo.png'" class="sidebar-image" style="padding:8px 8px 0px 8px" center>
@@ -190,8 +190,11 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import axios from "axios";
+
 export default {
-  created() {
+  async created() {
     const user_details = JSON.parse(localStorage.user_details);
     this.company = user_details.U_COMPANY_CODE;
 
@@ -265,8 +268,8 @@ export default {
 
   data() {
     return {
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       company: null,
       roleCode: "",
       role: "",
@@ -398,7 +401,6 @@ export default {
   },
 
   methods: {
-
     async setActive(i) {
       this.visible = false;
       this.adminroutes.map(route => (route.active = false));
@@ -435,7 +437,7 @@ export default {
     }
   },
 
-  beforeCreate(){
+  async beforeCreate(){
     const userDetails = JSON.parse(localStorage.user_details);
   }
 };

@@ -29,7 +29,6 @@ export default {
   },
 
   async addLocation({commit}, data) {
-    console.log(data);
     return await axios({
       method: "POST",
       url: `${this.$axios.defaults.baseURL}/api/location/add`,
@@ -40,7 +39,6 @@ export default {
         U_ADDRESS: data.data
       }
     }).then( res => {
-      // console.log(data);
       if(res.data){
         commit("addLocation", data.data);
       } else {
@@ -61,7 +59,6 @@ export default {
       },
       validateStatus: () => true
     }).then( res => {
-      console.log(data);
       if(res.data.patched) {
         commit("updateLocation", data.data);
       } else {

@@ -1688,8 +1688,8 @@ export default {
       company: null,
       directBuyingAdmin: false,
       user: null,
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       isBusy: true,
       isPrinterAvailable: true,
       receiptData: {},
@@ -2521,7 +2521,6 @@ export default {
         }
       });
       const v = res.data.view;
-      console.log(v);
 
       for (let i = 0; i < v.length; i++) {
         if(!(v[i].UomName.toLowerCase().includes("kilogram"))) {
