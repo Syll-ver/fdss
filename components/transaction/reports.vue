@@ -1394,13 +1394,18 @@ export default {
       this.$bvModal.show("view-transaction-modal");
   },
   async getSignature(U_TRX_NO) {
+    console.log(localStorage.SessionId)
     this.showLoading = true;
     const res = await axios({
       method: "GET",
       url: `${this.$axios.defaults.baseURL}/api/transaction/get-signature/${U_TRX_NO}`,
       headers: {
+        'Content-Type' : 'application/json',
         Authorization: localStorage.SessionId,
-        'Content-Type' : 'application/json'
+      },
+      proxy: {
+        host: '192.168.36.35',
+        port: 3128
       }
     })
     this.showLoading = false;
