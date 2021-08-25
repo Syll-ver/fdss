@@ -815,8 +815,8 @@ export default {
     return {
       logo: "",
       windowWidth: window.innerWidth,
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       filterStatus:["Completed","Cancelled"],
        showLoading: false,
       alert: {

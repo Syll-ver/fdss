@@ -69,12 +69,6 @@ module.exports = {
     // serverPrintUrl: "http://94.237.65.245:887", 
     // serverPrintUrl: "http://localhost:3002",
     uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
-    bfi: 158871, // dev 
-    rci: 158883, // dev
-    // bfi: '4400', // prod
-    // rci: '4381', // prod
-    // bfi: `139483`, // eut
-    // rci: `139492`, // eut
   },
 
   server: { port: 9000 }

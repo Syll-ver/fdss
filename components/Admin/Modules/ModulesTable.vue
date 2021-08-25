@@ -336,8 +336,8 @@ export default {
     return {
       newUpdate: [],
       whatsNew: [],
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       company: null,
       windowWidth: window.innerWidth,
       showLoading: false,
@@ -396,12 +396,12 @@ export default {
         if(this.filterStatus.includes(listModules.U_IS_ACTIVE)){
           count++;
           this.totalRows = count;
-          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+          return listModules;
         }
         if(this.filterStatus.includes(!listModules.U_IS_ACTIVE)){
           count++;
           this.totalRows = count;
-          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+          return listModules;
         }
       });
     },

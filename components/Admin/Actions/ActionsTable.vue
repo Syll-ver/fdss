@@ -343,8 +343,8 @@ export default {
   },
   data() {
     return {
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       company: null,
       showLoading: false,
       filterStatus: [1],
@@ -411,12 +411,12 @@ export default {
             count++;
             this.totalRows = count;
 
-            return listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_MODULE_NAME.toLowerCase().match(this.filter.toLowerCase()))
+            return listActions;
           }
           if(this.filterStatus.includes(!listActions.U_IS_ACTIVE)) {
             count++;
             this.totalRows = count;
-            return listActions.U_ACTION_NAME.toLowerCase().match(this.filter.toLowerCase()) || (listActions.U_MODULE_NAME.toLowerCase().match(this.filter.toLowerCase()))
+            return listActions;
           }
       });      
     },
