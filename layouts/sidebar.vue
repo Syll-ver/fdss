@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper" id="wrapper">
-    <nav :id="company == rci ? 'sidebarRCI' : (company == bfi && 'sidebarBFI')">
+    <nav :id="company == rci ? 'sidebarRCI' : 'sidebarBFI'">
       <div class="sidebar-header">
         <div>
           <b-img :src="company == rci ? '/rlogo.png' : '/blogo.png'" class="sidebar-image" style="padding:8px 8px 0px 8px" center>
@@ -196,8 +196,6 @@ import axios from "axios";
 export default {
   async created() {
     const user_details = JSON.parse(localStorage.user_details);
-    this.company = user_details.U_COMPANY_CODE;
-
     const user_role = JSON.parse(localStorage.user_role);
     const user_actions = JSON.parse(localStorage.user_actions);
     this.user = `${user_details.LastName}`;
@@ -268,8 +266,8 @@ export default {
 
   data() {
     return {
-      rci: JSON.parse(localStorage.companyCode)['rci'],
-      bfi: JSON.parse(localStorage.companyCode)['bfi'],
+      rci: null,
+      bfi: null,
       company: null,
       roleCode: "",
       role: "",
@@ -437,8 +435,11 @@ export default {
     }
   },
 
-  async beforeCreate(){
+  async mounted(){
     const userDetails = JSON.parse(localStorage.user_details);
+    this.company = userDetails.U_COMPANY_CODE;
+    this.rci = JSON.parse(localStorage.companyCode).rci;
+    this.bfi = JSON.parse(localStorage.companyCode).bfi;
   }
 };
 </script>

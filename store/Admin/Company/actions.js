@@ -22,6 +22,20 @@ export default {
         if (Array.isArray(res.data.companies))
           commit("setListCompanies", res.data.companies);
         else commit("setListCompanies", []);
+        const company = {};
+        res.data.companies.filter(comp => {
+          if(comp.U_IS_ACTIVE == 1){
+            if(comp.COMPANYNAME.toLowerCase().includes('revive') 
+            || comp.COMPANYNAME.toLowerCase().includes('rci')) {
+              company["rci"] = comp.U_COMPANYCODE
+            } else if(comp.COMPANYNAME.toLowerCase().includes('biotech')
+            || comp.COMPANYNAME.toLowerCase().includes('bfi')) {
+              company["bfi"] = comp.U_COMPANYCODE
+            }
+          }
+          localStorage.companyCode = JSON.stringify(company);
+        });
+
         return res;
       })
       .catch(err => err);

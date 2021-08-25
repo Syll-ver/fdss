@@ -177,16 +177,15 @@ export default {
         url: `${this.$axios.defaults.baseURL}/login`,
         data: { username: this.user.name, password: this.user.password }
       })
-      .then(result => {
+      .then(async result => {
 
-        this.$store
+        await this.$store
         .dispatch("Admin/Company/fetchListCompany", {
           user_actions: result.data.user_actions,
           SessionId: result.data.SessionId,
           Admin: "Y"
         })
         .then(res => {
-          console.log(res);
           const company = {};
           res.data.companies.filter(comp => {
             if(comp.U_IS_ACTIVE == 1){
@@ -199,7 +198,6 @@ export default {
               }
             }
           })
-          localStorage.companyCode = JSON.stringify(company);
         });
 
           localStorage.username = this.user.name;
@@ -217,7 +215,6 @@ export default {
             } else if (result.data.user_role.Name.search("Administrator") >= 0) {
               this.$router.push("/admin/modules");
             } else {
-              // this.$router.push("/transaction/deliveryreceipt");
                this.showAlert(err.message, "danger");
             }
             this.showLoading = false;

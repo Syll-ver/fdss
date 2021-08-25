@@ -336,8 +336,8 @@ export default {
     return {
       newUpdate: [],
       whatsNew: [],
-      rci: JSON.parse(localStorage.companyCode)['rci'],
-      bfi: JSON.parse(localStorage.companyCode)['bfi'],
+      rci: null,
+      bfi: null,
       company: null,
       windowWidth: window.innerWidth,
       showLoading: false,
@@ -574,6 +574,8 @@ export default {
     window.addEventListener("resize", () => {
       this.windowWidth = window.innerWidth
     })
+    this.rci = JSON.parse(localStorage.companyCode).rci;
+    this.bfi = JSON.parse(localStorage.companyCode).bfi;
   },
 
   async beforeCreate() {
@@ -610,7 +612,6 @@ export default {
     }
     this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
-    // this.whatsNew = JSON.parse(localStorage.commits);
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add module")) {
       this.actions.add_module = true;
@@ -621,9 +622,6 @@ export default {
     if (userActions.find(action => action.U_ACTION_NAME === "View modules")) {
       this.actions.view_module = true;
     }
-
-    // this.$bvModal.show("updates-modal");
-    // this.newUpdates()
   }
 };
 </script>
