@@ -179,16 +179,15 @@ export default {
         url: `${this.$axios.defaults.baseURL}/login`,
         data: { username: this.user.name, password: this.user.password }
       })
-      .then(result => {
+      .then(async result => {
 
-        this.$store
+        await this.$store
         .dispatch("Admin/Company/fetchListCompany", {
           user_actions: result.data.user_actions,
           SessionId: result.data.SessionId,
           Admin: "Y"
         })
         .then(res => {
-          console.log(res);
           const company = {};
           res.data.companies.filter(comp => {
             if(comp.U_IS_ACTIVE == 1){
@@ -212,8 +211,8 @@ export default {
           if (this.user.name == this.user.password) {
             this.$router.push("/change-password");
           } else {
-            if 
-              (result.data.user_role.Name.search("Admin Staff") >= 0) 
+            
+            if(result.data.user_role.Name.search("Admin Staff") >= 0) 
              {
               this.$router.push("/transaction/deliveryreceipt");
             } else if (result.data.user_role.Name.search("Administrator") >= 0) {

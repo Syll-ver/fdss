@@ -60,8 +60,6 @@
           </b-form-checkbox-group>
         </b-dropdown>
       </b-col>
-      <b-col ></b-col>
- 
       <b-col cols="12" md="4" lg="6" sm="5" xs="4" class="mt-3" align="right">
           <b-button
             id="add_action"

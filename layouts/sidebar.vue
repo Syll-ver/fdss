@@ -13,8 +13,10 @@
           </center>
         </div>
         <hr class="hr-style" />
+
         <ul class="list-unstyled">
-          <li v-if="isAdmin" :class="adminSelct !== true ? 'actvB ':' '">
+          <!-- Admin module -->
+          <li v-if="isAdmin" :class="adminSelct !== true ? 'actvBR ':' '">
             <a id="admin_toggle"
               @click="selctAdmin()"
               data-toggle="collapse"
@@ -29,6 +31,7 @@
                 class="mr-1 mt-1"
                 style="float:right;" />
             </a>
+            
             <b-collapse id="collapse" class="mt-1" v-model="visible">
               <li
                 v-for="(adminroute, i) in adminroutes"
@@ -57,7 +60,7 @@
             :key="i"
             :style="route.active 
             ? 'background: #00803e; border-radius:3px' : '' "
-            :class="`mt-2 mb-2 `+(chosenRoute == route.link ? 'actvB':'')"
+            :class="`mt-2 mb-2 `+(chosenRoute == route.link ? 'actvBR':'')"
             @click="selct(route.link)"
             :id="route.link"
             v-b-tooltip.hover.bottomleft.noninteractive
@@ -192,6 +195,7 @@
 export default {
   
   created() {
+    
     this.adminSelct = localStorage.adminSelct;
 
     this.chosenRoute = localStorage.chosenRoute;
@@ -269,8 +273,8 @@ export default {
 
   data() {
     return {
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: null,
+      bfi: null,
       company: null,
       roleCode: "",
       role: "",
@@ -399,7 +403,7 @@ export default {
           icon: "file",
           active: false
         },
-        {}
+        {},
       ],
     };
   },
@@ -423,18 +427,18 @@ export default {
       this.chosenRoute = localStorage.chosenRoute;
     },
 
-    async setActive(i) {
+    // async setActive(i) {
       
-      this.routes.map((route, index) => {
-        if (index === i) {
-          route.active = true;
-        } else {
-          route.active = false;
-        }
-      });
-      this.visible = false;
-      this.adminroutes.map(route => (route.active = false));
-    },
+    //   this.routes.map((route, index) => {
+    //     if (index === i) {
+    //       route.active = true;
+    //     } else {
+    //       route.active = false;
+    //     }
+    //   });
+    //   this.visible = false;
+    //   this.adminroutes.map(route => (route.active = false));
+    // },
 
     setAdminActive(i) {
       this.visible = true;
@@ -462,6 +466,13 @@ export default {
 
   beforeCreate(){
     const userDetails = JSON.parse(localStorage.user_details);
+  },
+
+  async mounted(){
+    const userDetails = JSON.parse(localStorage.user_details);
+    this.company = userDetails.U_COMPANY_CODE;
+    this.rci = JSON.parse(localStorage.companyCode).rci;
+    this.bfi = JSON.parse(localStorage.companyCode).bfi;
   }
 };
 </script>
