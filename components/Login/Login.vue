@@ -197,7 +197,8 @@ export default {
                 company["bfi"] = comp.U_COMPANYCODE
               }
             }
-          })
+            localStorage.companyCode = JSON.stringify(company);
+          });
         });
 
           localStorage.username = this.user.name;
