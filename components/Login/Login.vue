@@ -1,7 +1,5 @@
 <template>
     <div class="body_loading">
-
-      
       <Loading v-if="showLoading" />
       <div class="container">
         <div>
@@ -235,6 +233,15 @@ export default {
         }
       });
     },
+  },
+  beforeCreate() {
+    if(localStorage.length > 0) {
+      const roleCode = JSON.parse(localStorage.user_role).Code;
+      roleCode == 9 ? 
+        this.$router.push("/transaction/deliveryreceipt")
+      : this.$router.push("/admin/modules")
+    } 
+
   }
 };
 </script>

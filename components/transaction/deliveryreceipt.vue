@@ -3080,6 +3080,10 @@ export default {
     },
   },
   async beforeCreate() {
+    if(localStorage.length <= 0) {
+      this.$router.push("/");
+    }
+    
     this.isBusy = true;
 
     await this.$store
