@@ -16,7 +16,7 @@
 
         <ul class="list-unstyled">
           <!-- Admin module -->
-          <li v-if="isAdmin" :class="adminSelct !== true ? 'actvBR ':' '">
+          <li v-if="isAdmin">
             <a id="admin_toggle"
               @click="selctAdmin()"
               data-toggle="collapse"
@@ -32,7 +32,7 @@
                 style="float:right;" />
             </a>
             
-            <b-collapse id="collapse" class="mt-1" v-model="visible">
+            <b-collapse  id="collapse" class="mt-1" v-model="visible">
               <li
                 v-for="(adminroute, i) in adminroutes"
                 class="ml-3 mt-1 mr-3"
@@ -47,7 +47,7 @@
                     :icon="adminroute.icon"
                     :class="adminroute.class"
                   />
-                  <span class="route-name" :style="adminroute.style">{{
+                  <span class="route-name" :style="adminroute.style">{{ 
                     adminroute.name 
                   }}</span>
                 </router-link>
@@ -195,7 +195,6 @@
 export default {
   
   created() {
-    
     this.adminSelct = localStorage.adminSelct;
 
     this.chosenRoute = localStorage.chosenRoute;
@@ -411,7 +410,8 @@ export default {
   methods: {
     selctAdmin() {
       this.visible = !this.visible;
-      localStorage.adminSelct = true;
+      localStorage.adminSelct = true
+      console.log(" this.visible 2", this.visible );
       this.adminSelct = localStorage.adminSelct;
       if(localStorage.chosenRoute) {
         localStorage.chosenRoute = "";
@@ -422,6 +422,8 @@ export default {
       this.active = routeLink;
       localStorage.chosenRoute = routeLink;
       localStorage.adminSelct = false;
+      localStorage.adminActiveIndx = -1;
+      // this.visible = false;
 
       this.adminSelct = true;
       this.chosenRoute = localStorage.chosenRoute;
@@ -443,14 +445,26 @@ export default {
     setAdminActive(i) {
       this.visible = true;
       this.routes.map(route => (route.active = false));
+      localStorage.adminActiveIndx = i;
 
-      this.adminroutes.map((adminroute, index) => {
-        if (index === i) {
-          adminroute.active = true;
-        } else {
-          adminroute.active = false;
+      for(let c=0; c < this.adminroutes.length; c++) {
+        if(i == c) {
+          this.adminroutes[c].active = true;
         }
-      });
+        else {
+          this.adminroutes[c].active = false;
+        }
+        console.log("index " + c + ": "+this.adminroutes[c].active);
+      }
+
+      // this.adminroutes.map((adminroute, index) => {
+      //   // console.log(adminroute);
+      //   if (index === i) {
+      //     adminroute.active = true;
+      //   } else {
+      //     adminroute.active = false;
+      //   }
+      // });
     },
 
     confirmLogout() {
@@ -473,6 +487,22 @@ export default {
     this.company = userDetails.U_COMPANY_CODE;
     this.rci = JSON.parse(localStorage.companyCode).rci;
     this.bfi = JSON.parse(localStorage.companyCode).bfi;
+
+    let ind = localStorage.adminActiveIndx;
+    if(String(ind) != "-1") {
+      this.visible = !this.visible;
+      for(let c=0; c < this.adminroutes.length; c++) {
+        if(ind == c) {
+          this.adminroutes[c].active = true;
+        }
+        else {
+          this.adminroutes[c].active = false;
+        }
+        console.log("index " + c + ": "+this.adminroutes[c].active);
+      }
+    }
+    
+    
   }
 };
 </script>
