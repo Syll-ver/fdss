@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <b-alert
       id="alert_action"
       class="alerticon"
@@ -33,23 +33,23 @@
 
       <b-col cols="12" md="8" lg="9" sm="7" xs="4" class="mt-3" align="right">
         <b-button
-        v-if="actions.add_printer"
+          v-if="actions.add_printer"
           id="create"
           :variant="company == rci ? 'revive' : 'biotech'"
           class="button-style"
           size="sm"
           @click="$bvModal.show('add-printerlocation-modal')"
         >
-           Add Printer
+          Add Printer
         </b-button>
       </b-col>
-    <!-- </b-row> -->
+      <!-- </b-row> -->
     </b-row>
 
     <!-- Main table element -->
     <span>
       <b-table
-      v-if="actions.view_printer"
+        v-if="actions.view_printer"
         id="location-table"
         class="table-style mt-3"
         show-empty
@@ -71,18 +71,19 @@
       >
         <template #table-busy>
           <div class="text-center text-danger my-2">
-            <b-spinner small class="align-middle"  variant="dark">
-            </b-spinner>
+            <b-spinner small class="align-middle" variant="dark"> </b-spinner>
             <span class="loading_spinner">Loading...</span>
           </div>
         </template>
 
-        <template v-slot:cell(U_CREATED_DATE)="row">{{ formatDate(row.item.U_CREATED_DATE) }}</template>
+        <template v-slot:cell(U_CREATED_DATE)="row">{{
+          formatDate(row.item.U_CREATED_DATE)
+        }}</template>
 
         <template v-slot:cell(actions)="row">
           <div>
             <b-button
-            v-if="actions.edit_printer"
+              v-if="actions.edit_printer"
               variant="edit"
               id="edit"
               class="table-button"
@@ -92,32 +93,33 @@
               title="Edit Printer"
             >
               <font-awesome-icon icon="edit" />
-            </b-button>          
+            </b-button>
           </div>
         </template>
-
       </b-table>
     </span>
     <hr />
 
     <b-row>
       <b-col cols="1" class="mb-2 mt-1">
-          <b-form-group class="mb-0">
-            <b-form-select
-              v-model="perPage"
-              id="perPageSelect_printLogs-pagination"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-select>
-          </b-form-group>
-        </b-col> 
+        <b-form-group class="mb-0">
+          <b-form-select
+            v-model="perPage"
+            id="perPageSelect_printLogs-pagination"
+            size="sm"
+            :options="pageOptions"
+          ></b-form-select>
+        </b-form-group>
+      </b-col>
       <b-col
         label-cols-sm
         class="mb-0 mt-2 text-left"
         cols="3"
         align-h="center"
       >
-        <div size="sm" style="color: gray; font-size: 11px;">{{ bottomLabel }}</div>
+        <div size="sm" style="color: gray; font-size: 11px;">
+          {{ bottomLabel }}
+        </div>
       </b-col>
       <b-col>
         <b-pagination
@@ -148,13 +150,11 @@
       <template v-slot:modal-title>
         <h6>Add Printer</h6>
       </template>
-        
-        <b-row>
-          <b-col>
-            <small class="text-left">Location</small>
-            <b-form-select v-model="printer.U_LOCATION_ID"
-            size="sm"
-            >
+
+      <b-row>
+        <b-col>
+          <small class="text-left">Location</small>
+          <b-form-select v-model="printer.U_LOCATION_ID" size="sm">
             <option :value="null">Select Locations</option>
 
             <option
@@ -163,22 +163,79 @@
               :key="i"
               >{{ loc.U_ADDRESS }}</option
             >
-            </b-form-select>
-          </b-col>
-        </b-row>
+          </b-form-select>
+        </b-col>
+      </b-row>
+
+      <div class="mt-2">
+        <small class="text-left">IP Address</small>
         <b-row>
-          <b-col class="mt-2">
-            <small class="text-left">Printer IP Address</small>
+          <b-col class="mt-0">
             <b-form-input
-              id="printer_ip"
-              placeholder="Printer IP Address"
+              placeholder="000"
               class="form-text"
-              v-model="printer.U_IP_ADD"
               required
               style="font-size: 13.5px"
+              id="ips1"
+              @keyup="ipFormat2($event, 1)"
+              v-model="ips[0].ip1"
+              type="number"
+            />
+          </b-col>
+          <b-col class="mt-0">
+            <b-form-input
+              placeholder="000"
+              class="form-text"
+              v-model="ips[0].ip2"
+              required
+              style="font-size: 13.5px"
+              id="ips2"
+              @keyup="ipFormat2($event, 2)"
+              type="number"
+            />
+          </b-col>
+          <b-col class="mt-0">
+            <b-form-input
+              placeholder="000"
+              class="form-text"
+              v-model="ips[0].ip3"
+              required
+              style="font-size: 13.5px"
+              id="ips3"
+              @keyup="ipFormat2($event, 3)"
+              type="number"
+            />
+          </b-col>
+          <b-col class="mt-0">
+            <b-form-input
+              placeholder="000"
+              class="form-text"
+              v-model="ips[0].ip4"
+              required
+              style="font-size: 13.5px"
+              id="ips4"
+              @keyup="ipFormat2($event, 4)"
+              type="number"
             />
           </b-col>
         </b-row>
+
+        <!-- <b-row>
+          <b-col class="mt-2">
+            <small class="text-left">IP Address</small>
+            <b-form-input
+              id="printer_ip"
+              placeholder="Printer IP"
+              class="form-text"
+              type="text"
+              v-model="printer.U_IP_ADD"
+              disabled
+              style="font-size: 13.5px"
+              @keydown="ipFormat($event)"
+            />
+          </b-col>
+        </b-row> -->
+      </div>
 
       <template v-slot:modal-footer="{}">
         <b-button
@@ -203,7 +260,7 @@
 
     <!-- edit printer modal -->
 
-      <b-modal
+    <b-modal
       size="large"
       :header-bg-variant="company == rci ? 'revive' : 'biotech'"
       header-text-variant="light"
@@ -216,37 +273,94 @@
       <template v-slot:modal-title>
         <h6>Edit Printer</h6>
       </template>
-        
-        <b-row>
-          <b-col >
-            <small class="text-left">Location</small>
-            <b-form-select v-model="printer.U_LOCATION_ID"
+
+      <b-row>
+        <b-col>
+          <small class="text-left">Location</small>
+          <b-form-select
+            v-model="printer.U_LOCATION_ID"
             placeholder="Select Location"
             size="sm"
             disabled
-            >
+          >
             <option
               :value="loc.Code"
               v-for="(loc, i) in listLocations"
               :key="i"
               >{{ loc.U_ADDRESS }}</option
             >
-            </b-form-select>
-          </b-col>
-        </b-row>
+          </b-form-select>
+        </b-col>
+      </b-row>
+      <div class="mt-2">
+        <small class="text-left">IP Address</small>
         <b-row>
-          <b-col class="mt-2">
-            <small class="text-left">Printer IP Address</small>
+          <b-col class="mt-0">
             <b-form-input
-              id="printer_ip"
-              placeholder="Printer IP Address"
+              
               class="form-text"
-              v-model="printer.U_IP_ADD"
               required
               style="font-size: 13.5px"
+              id="ips1"
+              @keyup="ipFormat2($event, 1)"
+              v-model="ips[0].ip1"
+              type="number"
+            />
+          </b-col>
+          <b-col class="mt-0">
+            <b-form-input
+              
+              class="form-text"
+              v-model="ips[0].ip2"
+              required
+              style="font-size: 13.5px"
+              id="ips2"
+              @keyup="ipFormat2($event, 2)"
+              type="number"
+            />
+          </b-col>
+          <b-col class="mt-0">
+            <b-form-input
+              
+              class="form-text"
+              v-model="ips[0].ip3"
+              required
+              style="font-size: 13.5px"
+              id="ips3"
+              @keyup="ipFormat2($event, 3)"
+              type="number"
+            />
+          </b-col>
+          <b-col class="mt-0">
+            <b-form-input
+              
+              class="form-text"
+              v-model="ips[0].ip4"
+              required
+              style="font-size: 13.5px"
+              id="ips4"
+              @keyup="ipFormat2($event, 4)"
+              type="number"
             />
           </b-col>
         </b-row>
+
+        <!-- <b-row>
+          <b-col class="mt-2">
+            <small class="text-left">IP Address</small>
+            <b-form-input
+              id="printer_ip"
+              placeholder="Printer IP"
+              class="form-text"
+              type="text"
+              v-model="printer.U_IP_ADD"
+              disabled
+              style="font-size: 13.5px"
+              @keydown="ipFormat($event)"
+            />
+          </b-col>
+        </b-row> -->
+      </div>
 
       <template v-slot:modal-footer="{}">
         <b-button
@@ -270,8 +384,7 @@
     </b-modal>
 
     <!-- end edit printer modal -->
-
-</div>
+  </div>
 </template>
 
 <script>
@@ -291,7 +404,7 @@ export default {
       actions: {
         view_printer: false,
         add_printer: false,
-        edit_printer: false,
+        edit_printer: false
       },
       isBusy: true,
       showLoading: false,
@@ -312,7 +425,6 @@ export default {
           sortDirection: "desc"
         },
         { key: "actions", label: "Action", class: "text-center" }
-
       ],
       alert: {
         showAlert: 0,
@@ -330,26 +442,37 @@ export default {
       filterOn: [],
       printers: [],
       printer: [],
+      cnt: 0,
+
+      ips: [
+        {
+          ip1: "",
+          ip2: "",
+          ip3: "",
+          ip4: ""
+        }
+      ]
     };
   },
-  computed: {    
+
+  computed: {
     ...mapGetters({
       listPrinters: "Admin/Printer/getListPrinters",
       listLocations: "Admin/Location/getListLocations"
     }),
 
-    filterItems(){
+    filterItems() {
       return this.listPrinters.filter(logs => {
-        return logs
+        return logs;
         // return logs
-        })
+      });
     },
 
     bottomLabel() {
       let end = this.perPage * this.currentPage;
       let start = end - this.perPage + 1;
 
-      if(!this.filterItems) {
+      if (!this.filterItems) {
         return;
       }
 
@@ -363,7 +486,7 @@ export default {
 
       return `Showing ${start} to ${end} of ${this.filterItems.length} entries`;
     },
-    
+
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -375,72 +498,160 @@ export default {
   },
 
   methods: {
+    ipFormat2(event, part) {
+      let i = part;
+      // console.log(part);
+      if (part == 1) {
+        if (this.ips[0].ip1.length >= 4) {
+          this.ips[0].ip2 = this.ips[0].ip1.slice(3, 4);
+
+          document.getElementById("ips2").focus();
+
+          this.ips[0].ip1 = this.ips[0].ip1.slice(0, 3);
+        }
+      } else if (part == 2) {
+        // console.log("test");
+        if (this.ips[0].ip2.length >= 4) {
+          this.ips[0].ip3 = this.ips[0].ip2.slice(3, 4);
+
+          document.getElementById("ips3").focus();
+
+          this.ips[0].ip2 = this.ips[0].ip2.slice(0, 3);
+        }
+      } else if (part == 3) {
+        if (this.ips[0].ip3.length >= 4) {
+          this.ips[0].ip4 = this.ips[0].ip3.slice(3, 4);
+
+          document.getElementById("ips4").focus();
+
+          this.ips[0].ip3 = this.ips[0].ip3.slice(0, 3);
+        }
+      } else if (part == 4) {
+        if (this.ips[0].ip4.length >= 4) {
+          this.ips[0].ip4 = this.ips[0].ip4.slice(0, 3);
+        }
+      }
+
+      if (event.key == "Enter" || event.key == " ") {
+        i = i + 1;
+        if (i == 4) {
+          document.getElementById("ips" + i).focus();
+          this.printer.U_IP_ADD =
+            this.ips[0].ip1 +
+            "." +
+            this.ips[0].ip2 +
+            "." +
+            this.ips[0].ip3 +
+            "." +
+            this.ips[0].ip4;
+        } else {
+          console.log("no more fields");
+          this.printer.U_IP_ADD =
+            this.ips[0].ip1 +
+            "." +
+            this.ips[0].ip2 +
+            "." +
+            this.ips[0].ip3 +
+            "." +
+            this.ips[0].ip4;
+        }
+      }
+
+      console.log("test", i);
+      if (this.ips[0].ip4.length == 4) {
+        this.printer.U_IP_ADD =
+          this.ips[0].ip1 +
+          "." +
+          this.ips[0].ip2 +
+          "." +
+          this.ips[0].ip3 +
+          "." +
+          this.ips[0].ip4;
+      }
+    },
+
     edit(data) {
-      console.log(data);
+      // console.log(data);
+      console.log(data.U_IP_ADD.split("."));
+      this.ips[0].ip1 = data.U_IP_ADD.split(".")[0];
+      this.ips[0].ip2 = data.U_IP_ADD.split(".")[1];
+      this.ips[0].ip3 = data.U_IP_ADD.split(".")[2];
+      this.ips[0].ip4 = data.U_IP_ADD.split(".")[3];
       this.printer = [];
-      this.printer = { ...data }
-      this.$bvModal.show('edit-printerlocation-modal');
+      this.printer = { ...data };
+      this.$bvModal.show("edit-printerlocation-modal");
     },
 
     cancel() {
-      this.$bvModal.hide('edit-printerlocation-modal');
-      this.$bvModal.hide('add-printerlocation-modal');
+      this.$bvModal.hide("edit-printerlocation-modal");
+      this.$bvModal.hide("add-printerlocation-modal");
       this.printer = [];
+      this.ips[0].ip1 = "";
+      this.ips[0].ip2 = "";
+      this.ips[0].ip3 = "";
+      this.ips[0].ip4 = "";
     },
 
-    async addPrinter(){
+    async addPrinter() {
       console.log(this.printer);
 
-      if(this.printer.U_IP_ADD == null){
-          this.showAlert("Please input IP Address", "danger");
-      } else if(this.printer.U_LOCATION_ID == null) {
-          this.showAlert("Please input Location", "danger");
+      if (this.printer.U_IP_ADD == null) {
+        this.showAlert("Please input IP Address", "danger");
+      } else if (this.printer.U_LOCATION_ID == null) {
+        this.showAlert("Please input Location", "danger");
       } else {
-        const existingIP = this.listPrinters.find(ip => ip.U_IP_ADD === this.printer.U_IP_ADD)
-        if(existingIP != null){
+        const existingIP = this.listPrinters.find(
+          ip => ip.U_IP_ADD === this.printer.U_IP_ADD
+        );
+        if (existingIP != null) {
           this.showAlert("IP Address already exists", "danger");
         } else {
           this.isBusy = true;
           this.showLoading = true;
           const SessionId = localStorage.SessionId;
-          this.$store.dispatch("Admin/Printer/addPrinter", {
-            data: this.printer,
-            // U_IP_ADD: this.printer.ip,
-            // U_LOCATION_ID: this.printer.location,
-            sessionID: SessionId
-          }).then( res => {
-            if (res && res.name == "Error") {
-              if (res.response && res.response.data.error) {
-                if (res.response.data.error === "Session expired") {
-                  this.$bvModal.show("session_modal");
+          this.$store
+            .dispatch("Admin/Printer/addPrinter", {
+              data: this.printer,
+              // U_IP_ADD: this.printer.ip,
+              // U_LOCATION_ID: this.printer.location,
+              sessionID: SessionId
+            })
+            .then(res => {
+              if (res && res.name == "Error") {
+                if (res.response && res.response.data.error) {
+                  if (res.response.data.error === "Session expired") {
+                    this.$bvModal.show("session_modal");
+                  }
                 }
+              } else {
+                this.$store.dispatch("Admin/Printer/fetchListPrinters");
+                this.showLoading = false;
+                this.isBusy = false;
+                this.$bvModal.hide("add-printerlocation-modal");
+                this.showAlert("Successfully Added", "success");
               }
-            } else {
-              this.$store.dispatch("Admin/Printer/fetchListPrinters")
-              this.showLoading = false;
-              this.isBusy = false;
-              this.$bvModal.hide("add-printerlocation-modal");
-              this.showAlert("Successfully Added", "success");
-            }
-          }).catch( err => console.log(err));
+            })
+            .catch(err => console.log(err));
         }
       }
     },
 
     async updatePrinter() {
-      if(this.printer.U_IP_ADD == null){
+      if (this.printer.U_IP_ADD == null) {
         this.showAlert("Please input IP Address", "danger");
-      } else if(this.printer.U_LOCATION_ID == null) {
+      } else if (this.printer.U_LOCATION_ID == null) {
         this.showAlert("Please input Location", "danger");
       } else {
         this.isBusy = true;
-          this.showLoading = true;
-          const SessionId = localStorage.SessionId;
+        this.showLoading = true;
+        const SessionId = localStorage.SessionId;
 
-          await this.$store.dispatch("Admin/Printer/updatePrinter", {
+        await this.$store
+          .dispatch("Admin/Printer/updatePrinter", {
             sessionId: SessionId,
             data: this.printer
-          }).then( res => {
+          })
+          .then(res => {
             if (res && res.name == "Error") {
               if (res.response && res.response.data.error) {
                 if (res.response.data.error === "Session expired") {
@@ -451,23 +662,23 @@ export default {
             } else {
               this.$bvModal.hide("edit-printerlocation-modal");
               this.showLoading = false;
-              this.isBusy = false;;
+              this.isBusy = false;
               this.printer = [];
               this.showAlert("Successfully Added", "success");
             }
-            this.getPrinter()
+            this.getPrinter();
           })
           .catch(e => {
             console.log(e);
-          })
-        // }   
+          });
+        // }
       }
     },
 
     async getPrinter() {
       this.isBusy = true;
       await this.$store.dispatch("Admin/Location/fetchListPrinters");
-      this.isBusy = false
+      this.isBusy = false;
     },
 
     showAlert(message, variant) {
@@ -478,8 +689,7 @@ export default {
       };
     },
     close() {
-        (this.printer_ip = null),
-        (this.printer_location = null)
+      (this.printer_ip = null), (this.printer_location = null);
       this.$bvModal.hide("add-location-modal");
     },
     onFiltered(filterItems) {
@@ -490,56 +700,59 @@ export default {
   },
   async beforeCreate() {
     this.isBusy = true;
-    await this.$store.dispatch("Admin/Printer/fetchListPrinters", {
-      SessionId: localStorage.SessionId
-    })
-    .then( res => {
-      if (res && res.name == "Error") {
-        if (res.response && res.response.data.error) {
-          if (res.response.data.error === "Session expired") {
-            this.$bvModal.show("session_modal");
+    await this.$store
+      .dispatch("Admin/Printer/fetchListPrinters", {
+        SessionId: localStorage.SessionId
+      })
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.error) {
+            if (res.response.data.error === "Session expired") {
+              this.$bvModal.show("session_modal");
+            }
           }
         }
-      }
-    });
+      });
 
-      if(!this.filter) {
-        this.totalRows = this.filterItems ? this.filterItems.length : 0
-      }
+    if (!this.filter) {
+      this.totalRows = this.filterItems ? this.filterItems.length : 0;
+    }
 
-    await this.$store.dispatch("Admin/Location/fetchListLocations").then( res => {
-      if (res && res.name == "Error") {
-        if (res.response && res.response.data.error) {
-          if (res.response.data.error === "Session expired") {
-            this.$bvModal.show("session_modal");
+    await this.$store
+      .dispatch("Admin/Location/fetchListLocations")
+      .then(res => {
+        if (res && res.name == "Error") {
+          if (res.response && res.response.data.error) {
+            if (res.response.data.error === "Session expired") {
+              this.$bvModal.show("session_modal");
+            }
           }
         }
-      }
-    });
+      });
 
-      this.isBusy = false;
+    this.isBusy = false;
   },
 
   created() {
     const user_details = JSON.parse(localStorage.user_details);
     const user_role = JSON.parse(localStorage.user_role);
-    if(user_role.Name.toLowerCase() !== 'administrator') {
-      this.$router.push("/transaction/deliveryreceipt")
+    if (user_role.Name.toLowerCase() !== "administrator") {
+      this.$router.push("/transaction/deliveryreceipt");
     }
     this.company = user_details.U_COMPANY_CODE;
-    
+
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'View Printer')) {
+    if (userActions.find(action => action.U_ACTION_NAME === "View Printer")) {
       this.actions.view_printer = true;
-      console.log(this.actions.view_printer)
+      console.log(this.actions.view_printer);
     }
 
-    if(userActions.find(action => action.U_ACTION_NAME === 'Add Printer')) {
+    if (userActions.find(action => action.U_ACTION_NAME === "Add Printer")) {
       this.actions.add_printer = true;
     }
-    
-    if(userActions.find(action => action.U_ACTION_NAME === 'Edit Printer')) {
+
+    if (userActions.find(action => action.U_ACTION_NAME === "Edit Printer")) {
       this.actions.edit_printer = true;
     }
   }
@@ -547,7 +760,6 @@ export default {
 </script>
 
 <style>
-
 .reportrange-text[data-v-8cc9549e] {
   /* background: #fff; */
   /* cursor: pointer; */
@@ -564,7 +776,7 @@ export default {
 }
 
 .daterangepicker.show-ranges .drp-calendar.left {
-   border-left: 0px solid #ddd;
+  border-left: 0px solid #ddd;
 }
 
 .daterangepicker .ranges li.active {

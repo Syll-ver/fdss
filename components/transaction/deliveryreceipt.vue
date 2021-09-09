@@ -1798,13 +1798,13 @@ export default {
   },
   data() {
     return {
+      rci: this.rci = JSON.parse(localStorage.companyCode).rci,
+      bfi: this.bfi = JSON.parse(localStorage.companyCode).bfi,
       windowWidth: window.innerWidth,
       logo: "",
       company: null,
       directBuyingAdmin: false, //process.env.directBuyingAdmin,
       user: null,
-      rci: process.env.rci,
-      bfi: process.env.bfi,
       isBusy: true,
       isPrinterAvailable: true,
       receiptData: {},

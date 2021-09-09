@@ -32,13 +32,13 @@
                 style="float:right;" />
             </a>
             
-            <b-collapse  id="collapse" class="mt-1" v-model="visible">
+            <b-collapse id="collapse-1" class="mt-2" v-model="visible">
               <li
                 v-for="(adminroute, i) in adminroutes"
                 class="ml-3 mt-1 mr-3"
                 :key="i"
                 :style="adminroute.active
-                    ? 'background: #00803e; border-radius:3px'
+                    ? 'background: #ffffff42; border-radius:3px'
                     : '' " @click="setAdminActive(i)"
                 v-b-tooltip.hover.bottomleft.noninteractive
                 :title="adminroute.name" >
@@ -416,6 +416,7 @@ export default {
       if(localStorage.chosenRoute) {
         localStorage.chosenRoute = "";
         this.chosenRoute = "";
+        
       }
     },
     selct(routeLink) {
@@ -490,9 +491,10 @@ export default {
 
     let ind = localStorage.adminActiveIndx;
     if(String(ind) != "-1") {
-      this.visible = !this.visible;
+      
       for(let c=0; c < this.adminroutes.length; c++) {
         if(ind == c) {
+          this.visible = !this.visible;
           this.adminroutes[c].active = true;
         }
         else {
