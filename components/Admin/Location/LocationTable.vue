@@ -265,8 +265,8 @@ export default {
   Loading },
   data() {
     return {
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       windowWidth: window.innerWidth,
       company: null,
       actions: {

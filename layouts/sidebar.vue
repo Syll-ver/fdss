@@ -192,6 +192,9 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import axios from "axios";
+
 export default {
   
   created() {
@@ -200,8 +203,6 @@ export default {
     this.chosenRoute = localStorage.chosenRoute;
 
     const user_details = JSON.parse(localStorage.user_details);
-    this.company = user_details.U_COMPANY_CODE;
-
     const user_role = JSON.parse(localStorage.user_role);
     const user_actions = JSON.parse(localStorage.user_actions);
     this.user = `${user_details.LastName}`;
@@ -479,9 +480,9 @@ export default {
   },
 
 
-  beforeCreate(){
-    const userDetails = JSON.parse(localStorage.user_details);
-  },
+  // beforeCreate(){
+  //   const userDetails = JSON.parse(localStorage.user_details);
+  // },
 
   async mounted(){
     const userDetails = JSON.parse(localStorage.user_details);

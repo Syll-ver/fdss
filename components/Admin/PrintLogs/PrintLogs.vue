@@ -209,8 +209,8 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       company: null,
       windowWidth: window.innerWidth,
       actions: {
@@ -306,9 +306,7 @@ export default {
         console.log(logs);
         count++;
         this.totalRows = count;
-        return (logs.U_TRANSACTION_ID.toLowerCase().match(this.filter.toLowerCase()) ||
-        logs.CREATED_BY.toLowerCase().match(this.filter.toLowerCase()) 
-        )
+        return logs;
       })
     },
 

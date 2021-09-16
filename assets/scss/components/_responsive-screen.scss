@@ -1,0 +1,67 @@
+// 1440x900
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+  .table-style {
+    font-size: 10.5px;
+    margin-top: 3.5px;
+    max-height: 36rem;
+    font-weight: 400;
+  }
+
+  .content {
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+}
+
+// 1366x1024
+@media screen and (max-width: 1366px) and (max-height: 1024px) {
+  .table-style {
+    font-size: 10.5px;
+    margin-top: 3.5px;
+    max-height: 44rem;
+    font-weight: 400;
+  }
+
+  .content {
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+}
+
+// 1366x768
+@media screen and (max-width: 1366px) and (max-height: 768px) {
+  .table-style {
+    font-size: 10.5px;
+    margin-top: 3.5px;
+    max-height: 27rem !important;
+    font-weight: 400;
+  }
+
+  .content {
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+}
+
+// 1280x950
+@media screen and (max-width: 1280px) and (max-height: 950px) {
+  .table-style {
+    font-size: 10.5px;
+    margin-top: 3.5px;
+    max-height: 39rem;
+    font-weight: 400;
+  }
+
+  .content {
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+}

@@ -458,8 +458,8 @@ export default {
   components: {Loading},
   data() {
     return {
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       company: null,
       windowWidth: window.innerWidth,
       showLoading: false,
@@ -528,12 +528,12 @@ export default {
         if(this.filterStatus.includes(listRoles.U_IS_ACTIVE)) {
           count++;
           this.totalRows = count;
-          return (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+          return listRoles;
         }
         if(this.filterStatus.includes(!listRoles.U_IS_ACTIVE)) {
           count++;
           this.totalRows = count;
-          return (listRoles.Name.toLowerCase().match(this.filter.toLowerCase()));
+          return listRoles;
         }
       });
     },

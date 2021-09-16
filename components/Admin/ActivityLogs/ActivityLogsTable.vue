@@ -221,8 +221,8 @@ export default {
   components: { DateRangePicker },
   data() {
     return {
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       company: null,
       windowWidth: window.innerWidth,
       actions: {
@@ -307,7 +307,7 @@ export default {
   computed: {
     filterItems() {
       return this.listActivityLogs.filter(listActivityLogs => {
-        return (listActivityLogs.U_TABLE.toLowerCase().match(this.filter.toLowerCase()) || listActivityLogs.U_OPERATION.toLowerCase().match(this.filter.toLowerCase()) || listActivityLogs.Employee.toLowerCase().match(this.filter.toLowerCase()));
+        return listActivityLogs;
       });
     },
 

@@ -6,7 +6,6 @@ export default {
       url: `${this.$axios.defaults.baseURL}/api/printer/select`,
     })
       .then(res => {
-        console.log(res.data.view);
         if (Array.isArray(res.data.view))
           commit("setListPrinters", res.data.view);
         else commit("setListPrinters", []);
@@ -16,7 +15,6 @@ export default {
   },
 
   async addPrinter({commit}, data) {
-    console.log(data);
     return await axios({
       method: "POST",
       url: `${this.$axios.defaults.baseURL}/api/printer/add`,
@@ -28,7 +26,6 @@ export default {
         U_LOCATION_ID: data.data.U_LOCATION_ID
       }
     }).then( res => {
-      console.log(res);
       if(res.data.patched){
         commit("addPrinter", data.data);
       } else {
@@ -38,7 +35,6 @@ export default {
   },
 
   async updatePrinter({commit}, data) {
-    console.log(data);
     return await axios({
       method: "PUT",
       url: `${this.$axios.defaults.baseURL}/api/printer/update/${data.data.Code}`,
@@ -51,8 +47,6 @@ export default {
       },
       validateStatus: () => true
     }).then( res => {
-      console.log(res);
-      console.log(data.data);
       if(res.data.patched) {
         commit("updatePrinter", data.data);
       } else {

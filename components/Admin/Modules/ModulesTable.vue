@@ -336,8 +336,8 @@ export default {
     return {
       newUpdate: [],
       whatsNew: [],
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: null,
+      bfi: null,
       company: null,
       windowWidth: window.innerWidth,
       showLoading: false,
@@ -396,12 +396,12 @@ export default {
         if(this.filterStatus.includes(listModules.U_IS_ACTIVE)){
           count++;
           this.totalRows = count;
-          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+          return listModules;
         }
         if(this.filterStatus.includes(!listModules.U_IS_ACTIVE)){
           count++;
           this.totalRows = count;
-          return listModules.Name.toLowerCase().match(this.filter.toLowerCase());
+          return listModules;
         }
       });
     },
@@ -574,6 +574,8 @@ export default {
     window.addEventListener("resize", () => {
       this.windowWidth = window.innerWidth
     })
+    this.rci = JSON.parse(localStorage.companyCode).rci;
+    this.bfi = JSON.parse(localStorage.companyCode).bfi;
   },
 
   async beforeCreate() {
@@ -610,7 +612,6 @@ export default {
     }
     this.company = user_details.U_COMPANY_CODE;
     const userActions = JSON.parse(localStorage.user_actions)["Admin Module"];
-    // this.whatsNew = JSON.parse(localStorage.commits);
 
     if (userActions.find(action => action.U_ACTION_NAME === "Add module")) {
       this.actions.add_module = true;
@@ -621,9 +622,6 @@ export default {
     if (userActions.find(action => action.U_ACTION_NAME === "View modules")) {
       this.actions.view_module = true;
     }
-
-    // this.$bvModal.show("updates-modal");
-    // this.newUpdates()
   }
 };
 </script>

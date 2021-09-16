@@ -11,7 +11,7 @@ export default {
         user_actions
       },
       proxy: {
-        host: '172.16.1.6',
+        host: '192.168.36.35',
         port: 3128
       }
       // params: {
