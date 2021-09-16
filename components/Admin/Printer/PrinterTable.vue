@@ -397,8 +397,8 @@ export default {
   components: { DateRangePicker, Loading },
   data() {
     return {
-      rci: process.env.rci,
-      bfi: process.env.bfi,
+      rci: JSON.parse(localStorage.companyCode)['rci'],
+      bfi: JSON.parse(localStorage.companyCode)['bfi'],
       company: null,
       windowWidth: window.innerWidth,
       actions: {
@@ -533,17 +533,17 @@ export default {
       }
 
       if (event.key == "Enter" || event.key == " ") {
-        i = i + 1;
+         i = i + 1;
         if (i == 4) {
           document.getElementById("ips" + i).focus();
-           this.printer.U_IP_ADD =
-            this.ips[0].ip1 +
-            "." +
-            this.ips[0].ip2 +
-            "." +
-            this.ips[0].ip3 +
-            "." +
-            this.ips[0].ip4;
+          //  this.printer.U_IP_ADD =
+          //   this.ips[0].ip1 +
+          //   "." +
+          //   this.ips[0].ip2 +
+          //   "." +
+          //   this.ips[0].ip3 +
+          //   "." +
+          //   this.ips[0].ip4;
         } else {
           console.log("no more fields");
           this.printer.U_IP_ADD =

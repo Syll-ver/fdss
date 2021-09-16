@@ -489,7 +489,8 @@ export default {
     this.company = userDetails.U_COMPANY_CODE;
     this.rci = JSON.parse(localStorage.companyCode).rci;
     this.bfi = JSON.parse(localStorage.companyCode).bfi;
-
+    console.log("rci ",this.rci);
+    console.log("bfi", this.bfi);
     let ind = localStorage.adminActiveIndx;
     if(String(ind) != "-1") {
       
