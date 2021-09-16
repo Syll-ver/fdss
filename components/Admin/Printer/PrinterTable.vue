@@ -536,7 +536,7 @@ export default {
         i = i + 1;
         if (i == 4) {
           document.getElementById("ips" + i).focus();
-          this.printer.U_IP_ADD =
+           this.printer.U_IP_ADD =
             this.ips[0].ip1 +
             "." +
             this.ips[0].ip2 +
@@ -559,20 +559,14 @@ export default {
 
       console.log("test", i);
       if (this.ips[0].ip4.length == 4) {
-        this.printer.U_IP_ADD =
-          this.ips[0].ip1 +
-          "." +
-          this.ips[0].ip2 +
-          "." +
-          this.ips[0].ip3 +
-          "." +
-          this.ips[0].ip4;
+        this.printer.U_IP_ADD = (this.ips[0].ip1 +"." +this.ips[0].ip2 + "." + this.ips[0].ip3 + "." + this.ips[0].ip4);
       }
     },
 
     edit(data) {
       // console.log(data);
       console.log(data.U_IP_ADD.split("."));
+      // split IP Address in 4 components.
       this.ips[0].ip1 = data.U_IP_ADD.split(".")[0];
       this.ips[0].ip2 = data.U_IP_ADD.split(".")[1];
       this.ips[0].ip3 = data.U_IP_ADD.split(".")[2];
