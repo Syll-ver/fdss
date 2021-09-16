@@ -9,7 +9,7 @@
             <b-img :src="company == rci ? '/rci-org.png' : '/bfi-org.png'" class="sidebar-image-mini" center></b-img>
           </div>
           <center>
-          <p class="h9 sidebar-image" >FARMER'S DELIVERY SLIP SYSTEM</p>
+          <p class="h9 sidebar-image" >{{company+" "+rci+" "+bfi}}FARMER'S DELIVERY SLIP SYSTEM</p>
           </center>
         </div>
         <hr class="hr-style" />
@@ -203,6 +203,10 @@ export default {
     this.role = "";
     this.roleCode = JSON.parse(localStorage.user_role).Code;
     this.roleCode == 9 ? this.role = 'Admin Staff' : this.role = user_role.Name;
+
+    this.company = user_details.U_COMPANY_CODE;
+    this.rci = JSON.parse(localStorage.companyCode).rci;
+    this.bfi = JSON.parse(localStorage.companyCode).bfi;
 
     if (user_actions["Admin Module"]) {
       this.isAdmin = true;
@@ -435,12 +439,21 @@ export default {
     }
   },
 
-  async mounted(){
-    const userDetails = JSON.parse(localStorage.user_details);
-    this.company = userDetails.U_COMPANY_CODE;
-    this.rci = JSON.parse(localStorage.companyCode).rci;
-    this.bfi = JSON.parse(localStorage.companyCode).bfi;
-  }
+  async beforeCreate(){
+    let userDetails = JSON.parse(localStorage.user_details);
+
+    if(!localStorage.companyCode.includes(userDetails.U_COMPANY_CODE)) {
+      if(userDetails.U_COMPANY_NAME.toLowerCase().includes('biotech') 
+        || userDetails.U_COMPANY_NAME.toLowerCase().includes('bfi')) {
+          userDetails['U_COMPANY_CODE'] = JSON.parse(localStorage.companyCode).bfi
+      } else if(userDetails.U_COMPANY_NAME.toLowerCase().includes('revive')
+        || userDetails.U_COMPANY_NAME.toLowerCase().includes('rci')) {
+          userDetails['U_COMPANY_CODE'] = JSON.parse(localStorage.companyCode).rci
+      }
+      localStorage['user_details'] = JSON.stringify(userDetails);
+    
+    }
+  },
 };
 </script>
 

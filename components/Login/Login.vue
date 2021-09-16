@@ -169,6 +169,7 @@ export default {
       };
     },
     async login() {
+        const t0 = new Date().getTime()
       this.showLoading = true;
       await axios({
         method: "POST",
@@ -218,6 +219,11 @@ export default {
             }
             this.showLoading = false;
           }
+
+           const t1 = new Date().getTime()
+const totalRuntime = `${t1-t0}ms`;
+console.log("total runtime = ",totalRuntime)
+
         })
       .catch(err => {
         this.showLoading = false;
@@ -234,14 +240,13 @@ export default {
       });
     },
   },
-  beforeCreate() {
+    beforeCreate() {
     if(localStorage.length > 0) {
       const roleCode = JSON.parse(localStorage.user_role).Code;
       roleCode == 9 ? 
         this.$router.push("/transaction/deliveryreceipt")
       : this.$router.push("/admin/modules")
     } 
-
   }
 };
 </script>
