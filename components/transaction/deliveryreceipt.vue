@@ -3123,6 +3123,11 @@ export default {
   reloadFunction() {
     this.values = [{ label: "2" }, { label: "3" }];
   },
+  beforeMount() {
+    if(localStorage.length <= 0) {
+      this.$router.push("/");
+    }
+  }
   
 };
 // End
