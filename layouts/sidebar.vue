@@ -9,7 +9,7 @@
             <b-img :src="company == rci ? '/rci-org.png' : '/bfi-org.png'" class="sidebar-image-mini" center></b-img>
           </div>
           <center>
-          <p class="h9 sidebar-image" >{{company+" "+rci+" "+bfi}}FARMER'S DELIVERY SLIP SYSTEM</p>
+          <p class="h9 sidebar-image" >FARMER'S DELIVERY SLIP SYSTEM</p>
           </center>
         </div>
         <hr class="hr-style" />

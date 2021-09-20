@@ -532,9 +532,11 @@ export default {
         }
       }
 
-      if (event.key == "Enter" || event.key == " ") {
-         i = i + 1;
-        if (i == 4) {
+      // if (event.key == "Enter" || event.key == " ") {
+        
+      // }
+      //  i = i + 1;
+        if (i == 5) {
           document.getElementById("ips" + i).focus();
           //  this.printer.U_IP_ADD =
           //   this.ips[0].ip1 +
@@ -555,7 +557,6 @@ export default {
             "." +
             this.ips[0].ip4;
         }
-      }
 
       console.log("test", i);
       if (this.ips[0].ip4.length == 4) {
@@ -587,7 +588,7 @@ export default {
     },
 
     async addPrinter() {
-      console.log(this.printer);
+      console.log(this.printer.U_IP_ADD);
 
       if (this.printer.U_IP_ADD == null) {
         this.showAlert("Please input IP Address", "danger");
