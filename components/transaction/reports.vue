@@ -44,9 +44,7 @@
             ref="picker"
             :opens="opens1"
             :locale-data="localeData"
-            :autoApply="true"
-            :singleDatePicker="false"
-            :showWeekNumbers="true"
+            autoApply="true"
             v-model="datePicker"
             @update="updateValues"
           >
@@ -1592,38 +1590,3 @@ export default {
     // End 
 
 </script>
-<style>
-
-.reportrange-text[data-v-8cc9549e] {
-  border: 1px solid #ccc;
-  height: 2rem;
-  width: 14rem;
-  font-size: 12px;
-}
-
-.daterangepicker.show-ranges .drp-calendar.left {
-  position: relative;
-  right: 8px;
-}
-
-.daterangepicker.show-ranges .drp-calendar.left {
-   border-left: 0px solid #ddd;
-}
-
-.daterangepicker .ranges li.active {
-  background-color: #743013;
-  color: #fff;
-}
-
-.daterangepicker td.active,
-.daterangepicker td.active:hover {
-  background-color: #743013;
-  border-color: transparent;
-  color: #fff;
-}
-
-.daterangepicker .ranges li.active {
-  background-color: #743013;
-  color: #fff;
-}
-</style>

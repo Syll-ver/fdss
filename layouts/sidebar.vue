@@ -16,32 +16,38 @@
 
         <ul class="list-unstyled">
           <!-- Admin module -->
-          <li v-if="isAdmin">
+          <li v-if="isAdmin" 
+            :align="(windowWidth >= 1450 ? 'left' : 'center')">
             <a id="admin_toggle"
               @click="selctAdmin()"
               data-toggle="collapse"
               aria-expanded="false"
-              class="sidebar_item"
-              v-b-tooltip.hover.bottomleft.noninteractive
-              title="Admin">
-              <font-awesome-icon icon="user-cog" class="mr-2" />
+              >
+              <font-awesome-icon icon="user-cog" />
               <span class="route-admin">Admin</span>
               <font-awesome-icon :icon="visible == false 
                 ? 'caret-right' : 'caret-down'"
-                class="mr-1 mt-1"
+                class="mt-1"
                 style="float:right;" />
             </a>
+            <b-tooltip v-if="windowWidth < 1450 " 
+              target="admin_toggle" 
+              triggers="hover" 
+              placement="left"
+              boundary-padding="-110"
+            >
+              Admin
+            </b-tooltip>
             
-            <b-collapse id="collapse-1" class="mt-2" v-model="visible">
+            <b-collapse id="collapse-1" v-model="visible">
               <li
                 v-for="(adminroute, i) in adminroutes"
-                class="ml-3 mt-1 mr-3"
                 :key="i"
+                :id="adminroute.link"
                 :style="adminroute.active
                     ? 'background: #ffffff42; border-radius:3px'
                     : '' " @click="setAdminActive(i)"
-                v-b-tooltip.hover.bottomleft.noninteractive
-                :title="adminroute.name" >
+              >
                 <router-link :to="adminroute.link" :id="adminroute.id">
                   <font-awesome-icon
                     :icon="adminroute.icon"
@@ -51,6 +57,14 @@
                     adminroute.name 
                   }}</span>
                 </router-link>
+            <b-tooltip v-if="windowWidth < 1450 " 
+              :target="adminroute.link" 
+              triggers="hover" 
+              placement="left"
+              boundary-padding="-110"
+            >
+              {{ adminroute.name }}
+            </b-tooltip>
               </li>
             </b-collapse>
           </li>
@@ -58,21 +72,30 @@
           <!-- SUPPLIER, CUSTOMER, ITEM TABS -->
           <li v-for="(route, i) in routes"
             :key="i"
+            :align="(windowWidth >= 1450 ? 'left' : 'center')"
             :style="route.active 
             ? 'background: #00803e; border-radius:3px' : '' "
             :class="`mt-2 mb-2 `+(chosenRoute == route.link ? 'actvBR':'')"
             @click="selct(route.link)"
             :id="route.link"
-            v-b-tooltip.hover.bottomleft.noninteractive
-            :title="route.name">
+            >
             <router-link :to="route.link" :id="route.id" >
               <font-awesome-icon :icon="route.icon" :class="route.class"  />
               <span class="route-name">
                 {{ route.name }}
               </span>
             </router-link>
+            <b-tooltip v-if="windowWidth < 1450 " 
+              :target="route.link" 
+              triggers="hover" 
+              placement="left"
+              boundary-padding="-110"
+            >
+              {{ route.name }}
+            </b-tooltip>
           </li>
         </ul>
+        
       </div>
     </nav>
 
@@ -279,6 +302,7 @@ export default {
 
   data() {
     return {
+      windowWidth: window.innerWidth,
       rci: null,
       bfi: null,
       company: null,
@@ -300,18 +324,18 @@ export default {
           link: "/admin/modules",
           name: "Modules",
           icon: "th-large",
-          style: "position:relative;left:6px",
+          style: "position:relative;left:7px",
           id: "sb-modules",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
         {
           link: "/admin/modules",
           name: "Modules",
           icon: "th-large",
-          style: "position:relative;left:6px",
+          style: "position:relative;left:7px",
           id: "sb-modules",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
 
@@ -321,17 +345,17 @@ export default {
           icon: "tasks",
           style: "position:relative;left:7px",
           id: "sb-actions",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
 
         {
           link: "/admin/roles",
-          name: "Roles and Access",
+          name: "Roles",
           style: "position:relative;left:5px",
           id: "sb-roles-and-access",
           icon: "id-card",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
 
@@ -341,7 +365,7 @@ export default {
           style: "position:relative;left:11px",
           id: "sb-user-accounts",
           icon: "user",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
         
@@ -351,7 +375,7 @@ export default {
           icon: "building",
           style: "position:relative;left:6px",
           id: "sb-companies",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
 
@@ -361,7 +385,7 @@ export default {
           style: "position:relative;left:11px",
           id: "sb-print-logs",
           icon: "file-signature",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
 
@@ -371,7 +395,7 @@ export default {
           style: "position:relative;left:12px",
           id: "sb-activity-logs",
           icon: "clipboard-list",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
         {
@@ -380,7 +404,7 @@ export default {
           style: "position:relative;left:12px",
           id: "sb-location",
           icon: "location-arrow",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
         {
@@ -389,7 +413,7 @@ export default {
           style: "position:relative;left:12px",
           id: "sb-printer",
           icon: "print",
-          class: "ml-2",
+          class: "ml-3",
           active: false
         },
       ],
@@ -423,7 +447,6 @@ export default {
       if(localStorage.chosenRoute) {
         localStorage.chosenRoute = "";
         this.chosenRoute = "";
-        
       }
     },
     selct(routeLink) {
@@ -485,12 +508,11 @@ export default {
     }
   },
 
-
-  // beforeCreate(){
-  //   const userDetails = JSON.parse(localStorage.user_details);
-  // },
-
   async mounted(){
+
+    window.addEventListener("resize", () => {
+      this.windowWidth = window.innerWidth
+    })
     
     let ind = localStorage.adminActiveIndx;
     if(String(ind) != "-1") {
@@ -511,7 +533,7 @@ export default {
   },
   async beforeCreate(){
     let userDetails = JSON.parse(localStorage.user_details);
-    console.log("test", userDetails)
+
     if(!localStorage.companyCode.includes(userDetails.U_COMPANY_CODE)) {
       if(userDetails.U_COMPANY_NAME.toLowerCase().includes('biotech') 
         || userDetails.U_COMPANY_NAME.toLowerCase().includes('bfi')) {
