@@ -62,11 +62,13 @@ module.exports = {
     // baseURL: "https://fdss-eut.biotechfarms.net/fdss-api"  // eut
     // baseURL: "http://172.16.4.168:8000/fdss-api" // coach 
     baseURL: "http://94.237.65.245:8223/fdss-api"// (DEV)
+    // baseURL: "http://172.16.28.8:8000/fdss-api"// Carl
 
   },
   env:{
-    // serverPrintUrl: "http://172.16.4.182:887", 
-    serverPrintUrl: "http://172.17.122.199:3002", 
+    serverPrintUrl: "http://172.16.4.182:887", 
+    // serverPrintUrl: "http://172.17.122.199:3002", 
+    // serverPrintUrl: "http://172.16.28.8:8000/fdss-api", 
     // serverPrintUrl: "http://localhost:3002",
     uuid: `8204064d-1029-4398-98c4-075fe28643b4`,
     // bfi: 158871, // dev
