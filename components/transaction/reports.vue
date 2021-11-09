@@ -1242,7 +1242,40 @@ export default {
     },
 
      exportReports() {
-      const csv = Papa.unparse(this.items, { header: true });
+      let data = [];
+       for(let i = 0; i < this.items.length; i++) {
+          data.push({
+            'Transaction Number': this.items[i].U_TRX_NO,
+            'Transaction Company': this.items[i].TRANSACTION_COMPANY,
+            'Unit Of Measure': this.items[i].U_UOM,
+            'Transaction ID': this.items[i].U_TRX_ID,
+            'Transaction Type ID': this.items[i].U_TRANSCTION_TYPE_ID,
+            "Item ID": this.items[i].U_ITEM,
+            'Unit Of Measure ID': this.items[i].U_UOM_ID,
+            'Supplier ID': this.items[i].U_SUPP,
+            'Transaction Type': this.items[i].U_TRANSACTION_TYPE,
+            'Commodity': this.items[i].U_CMMDTY,
+            'Farmer Name': this.items[i].U_FRMR_NAME,  
+            'Farmer Address': this.items[i].U_FRMR_ADD,  
+            'Created At': this.items[i].U_DTE_CRTD,
+            'Created By': this.items[i].U_CRTD_BY,
+            'Status': this.items[i].U_STATUS,
+            'Plate Number': this.items[i].U_PLATE_NUMBER,
+            'Helper Name': this.items[i].U_HLPR_NAME,
+            'Driver Name': this.items[i].U_DRVR_NAME,
+            'Requested Sacks': this.items[i].U_REQUESTED_SACKS,
+            'Empty Sacks': this.items[i].U_EMPTY_SACKS,
+            'Sacks': this.items[i].U_SACKS,
+            'Scheduled Date and Time': this.items[i].U_SCHEDULED_DATE_AND_TIME,
+            'Arrival': this.items[i].U_ARRIVAL,
+            'Departure': this.items[i].U_DEPARTURE,
+            'Time Start': this.items[i].U_TIME_START,
+            'Time End': this.items[i].U_TIME_END,
+            'Unloading': this.items[i].U_UNLOADING,
+            'Remarks': this.items[i].U_REMARKS
+         })
+       }
+      const csv = Papa.unparse(data, { header: true });
       let csvData = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       let csvURL = null;
       if (navigator.msSaveBlob) {
@@ -1252,7 +1285,7 @@ export default {
       }
       var tempLink = document.createElement("a");
       tempLink.href = csvURL;
-      tempLink.setAttribute("download", `${moment().format()}.csv`);
+      tempLink.setAttribute("download", `${moment().format()}.csv`);  
       tempLink.click();
     },
    
