@@ -1285,7 +1285,7 @@ export default {
       }
       var tempLink = document.createElement("a");
       tempLink.href = csvURL;
-      tempLink.setAttribute("download", `${moment().format()}.csv`);  
+      tempLink.setAttribute("download", `FDSS Report ${this.datePicker.startDate} - ${this.datePicker.endDate}.csv`);  
       tempLink.click();
     },
    
