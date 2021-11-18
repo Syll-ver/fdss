@@ -1,7 +1,7 @@
 .daterangepicker.show-ranges .drp-calendar.col.left {
   position: relative;
-  border-left: 0px solid #ddd;
-  padding-right: 30px
+  padding-right: 20px;
+  // margin-right: 100px;
 }
 
 .daterangepicker.show-ranges .drp-calendar.col.right {
@@ -28,3 +28,18 @@
     border-color: transparent;
     color: #fff;
   }
+
+  @media screen and (max-width: 768px) {
+    .daterangepicker.show-calendar .ranges {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 539px) {
+    .daterangepicker .drp-calendar.right {
+        visibility: hidden;
+    }
+    .daterangepicker.show-calendar .ranges {
+        display: none;
+    }
+}

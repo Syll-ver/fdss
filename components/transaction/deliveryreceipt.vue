@@ -52,26 +52,23 @@
             <b-col cols="12" md="10" sm="10" lg="10" class="mb-3">
               <b-input-group size="sm">
                 <date-range-picker
-                  id="actvty_date"
+                  class="date"
                   ref="picker"
-                  :opens="opens1"
                   :locale-data="localeData"
                   :autoApply="true"
                   :singleDatePicker="false"
-                  :showWeekNumbers="true"
+                  :showWeekNumbers="false"
                   v-model="datePicker"
+                  @change="updateValues"
                   @update="updateValues"
-                  size="sm"
                   style="height:2rem; font-size:12px"
                 >
-                  <div id="actvty_date" slot="input" style="height:2rem; font-size:14px;">
+                  <div slot="input" style="height:2rem; font-size:14px;">
                     {{ datePicker.startDate }} - {{ datePicker.endDate }}
                   </div>
                 </date-range-picker>
                 <b-input-group-append style="height:2rem; font-size:12px">
-                  <b-button @click="resetDate" id="date-reset" style="font-size:12px"
-                    >Reset</b-button
-                  >
+                  <b-button @click="resetDate" id="date-reset">Reset</b-button>
                 </b-input-group-append>
               </b-input-group>
             </b-col>
@@ -3133,3 +3130,25 @@ export default {
 // End
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style scoped>
+  .daterangepicker.show-ranges .drp-calendar.left {
+    position: relative;
+    right: 8px;
+  }
+  .daterangepicker.show-ranges .drp-calendar.left {
+    border-left: 0px solid #ddd;
+  }
+  .daterangepicker .ranges li.active {
+    background-color: #0d874a;
+    color: #fff;
+  }
+  .daterangepicker td.active,
+  .daterangepicker td.active:hover {
+    background-color: #0d874a;
+    border-color: transparent;
+    color: #fff;
+  }
+  /* .form-control {
+    font-size: 0.75rem;
+  } */
+</style>

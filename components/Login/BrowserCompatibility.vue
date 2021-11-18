@@ -139,7 +139,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .__nuxt-error-page {
   z-index: 1000;
   padding: 1rem;

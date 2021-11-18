@@ -754,7 +754,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .reportrange-text[data-v-8cc9549e] {
   /* background: #fff; */
   /* cursor: pointer; */

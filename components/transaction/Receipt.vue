@@ -360,7 +360,7 @@ export default {
                 <html>
                 <head>
                     ${stylesHtml}
-                <style>
+                <style scoped>
                     body {margin-left: 1rem;}
 
                 </style>

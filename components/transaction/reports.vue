@@ -39,24 +39,27 @@
 
       <b-col cols="12" md="6" lg="4" sm="8" xs="6" class="mt-3 mb-3" style="display:flex" >
         <b-input-group style="height:10px" size="sm">
-          <date-range-picker
-            id="actvty_date"
-            ref="picker"
-            :opens="opens1"
-            :locale-data="localeData"
-            autoApply="true"
-            v-model="datePicker"
-            @update="updateValues"
-          >
-            <div
-              id="actvty_date"
-              slot="input"
-              style="height:2rem; font-size:14px;"
-            >{{ datePicker.startDate }} - {{ datePicker.endDate }}</div>
-          </date-range-picker>
-          <b-input-group-append style="height:2rem; font-size:12px">
-            <b-button @click="resetDate" id="date-reset" style="font-size:12px">Reset</b-button>
-          </b-input-group-append>
+          <b-input-group size="sm">
+                <date-range-picker
+                  class="date"
+                  ref="picker"
+                  :locale-data="localeData"
+                  :autoApply="true"
+                  :singleDatePicker="false"
+                  :showWeekNumbers="false"
+                  v-model="datePicker"
+                  @change="updateValues"
+                  @update="updateValues"
+                  style="height:2rem; font-size:12px"
+                >
+                  <div slot="input" style="height:2rem; font-size:14px;">
+                    {{ datePicker.startDate }} - {{ datePicker.endDate }}
+                  </div>
+                </date-range-picker>
+                <b-input-group-append style="height:2rem; font-size:12px">
+                  <b-button @click="resetDate" id="date-reset">Reset</b-button>
+                </b-input-group-append>
+              </b-input-group>
         </b-input-group>
       </b-col>
       <b-col cols="12" md="3" lg="5" sm="4" xs="10" class="mt-3" align="left">

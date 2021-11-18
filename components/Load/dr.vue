@@ -2133,7 +2133,7 @@ export default {
 };
 // End
 </script>
-<style>
+<style scoped>
 .reportrange-text[data-v-8cc9549e] {
   border: 1px solid #ccc;
   height: 2rem;

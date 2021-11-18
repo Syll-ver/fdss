@@ -126,6 +126,9 @@ export default {
     if(!this.validVersion()){
       this.$router.push("/browser-error");
     }
+
+    document.addEventListener('visibilitychange', this.visibilityChange, false);
+    document.addEventListener('visibilitychange', this.handleVisibilityChange, false);
     // await this.getCommits();
     // await this.getJiraIssues();
   },
@@ -139,6 +142,13 @@ export default {
     }
   },
   methods: {
+    handleVisibilityChange() {
+      console.log("visibility change",document.visibilityState);
+    },
+    visibilityChange(e) {
+      console.log('vis change', document.hidden);
+    },
+
     checkKey(e) {
       this.hasCapsLock = false;
       console.log(e);

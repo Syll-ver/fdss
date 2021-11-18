@@ -24,6 +24,7 @@
           </b-input-group-prepend>-->
           <date-range-picker
             id="actvty_date"
+            class="date"
             ref="picker"
             :locale-data="localeData"
             :autoApply="true"
@@ -444,7 +445,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 .reportrange-text[data-v-8cc9549e] {
   /* background: #fff; */

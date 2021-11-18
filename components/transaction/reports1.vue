@@ -762,7 +762,7 @@ export default {
   created() {}
 };
 </script>
-<style>
+<style scoped>
 
 /* Date Range */
 
