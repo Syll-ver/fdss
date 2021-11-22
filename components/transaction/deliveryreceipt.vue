@@ -2590,19 +2590,17 @@ export default {
         });
         const v = res.data.view;
 
-        for(var i = 0; i < v.length; i++){
+        const item = v.filter((itemCode) => (itemCode.ItemCode.startsWith("NM") 
+          || itemCode.ItemCode.startsWith("RM11") 
+          || itemCode.ItemCode.startsWith("RM16-00014")));
+        
+        for(var i = 0; i < item.length; i++){
           this.commodity.push({
-            text: v[i].ItemCode + ' : ' + v[i].ItemName,
-            value: v[i].ItemCode
+            text: item[i].ItemCode + ' : ' + item[i].ItemName,
+            value: item[i].ItemCode
           })
         }
 
-        // add the rice bran raw material
-        // const riceBran = v.filter((itemCode) => itemCode.ItemCode.startsWith("RM16-00014"));
-        // this.commodity.push({
-        //   text: riceBran[0].ItemCode + ' : ' + riceBran[0].ItemName,
-        //   value: riceBran[0].ItemCode
-        // })
       }
       this.isBusy = false;
     },
