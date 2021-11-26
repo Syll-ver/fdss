@@ -2592,7 +2592,7 @@ export default {
 
         const item = v.filter((itemCode) => (itemCode.ItemCode.startsWith("NM") 
           || itemCode.ItemCode.startsWith("RM11") 
-          || itemCode.ItemCode.startsWith("RM16-00014")));
+          || itemCode.ItemCode.startsWith("RM16")));
         
         for(var i = 0; i < item.length; i++){
           this.commodity.push({
