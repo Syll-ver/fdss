@@ -62,7 +62,7 @@ module.exports = {
     // baseURL: "https://fdss-eut.biotechfarms.net/fdss-api"  // eut
     // baseURL: "http://172.16.4.168:8000/fdss-api" // coach 
     // baseURL: "http://94.237.65.245:8223/fdss-api"// (DEV)
-    baseURL: "https://fdss-supp.biotechfarms.net/fdss-api"// (DEV)
+    baseURL: "https://fdss-supp.biotechfarms.net/fdss-api" // support domain
     // baseURL: "http://172.16.28.8:8000/fdss-api"// Carl
 
   },
