@@ -417,7 +417,12 @@ export default {
           sortable: true,
           sortDirection: "desc"
         },
-
+        {
+          key: "COMPANYDBNAME",
+          label: "DB Name",
+          sortable: true,
+          sortDirection: "desc"
+        },
         {
           key: "U_IS_ACTIVE",
           label: "Status",
