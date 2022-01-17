@@ -233,8 +233,8 @@ export default {
           }
 
            const t1 = new Date().getTime()
-const totalRuntime = `${t1-t0}ms`;
-console.log("total runtime = ",totalRuntime)
+            const totalRuntime = `${t1-t0}ms`;
+            console.log("total runtime = ",totalRuntime)
 
         })
       .catch(err => {
