@@ -122,7 +122,7 @@ export default {
       // working!!!!
       axios({
         method: "GET",
-        url: "http://api.ipify.org?format=json",
+        url: "https://api.ipify.org?format=json",
         headers: {
           // 'Content-Type': 'application/json',
           //           'Accept': 'application/json',
@@ -134,8 +134,8 @@ export default {
           //           'Allow': 'GET, HEAD, POST, TRACE, OPTIONS',
         }
       }).then(data => {
-        // console.log(JSON.stringify(data, null, 2));
-        console.log("data", data);
+        console.log(JSON.stringify(data, null, 2));
+        // console.log("data", data);
       })
     
     const browser = Bowser.getParser(window.navigator.userAgent);
