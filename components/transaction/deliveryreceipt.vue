@@ -2248,7 +2248,7 @@ export default {
       this.$bvModal.show('select-printer-modal')
       this.showLoading = false;
     },
-    async printed(transaction) {
+    async printed() {
       this.showLoading = true;
 
       let data 
@@ -2264,61 +2264,101 @@ export default {
         this.showAlert("Please provide IP Address", "danger")
       } else {
         const session = localStorage.SessionId;
-        await axios({
-          method: "POST",
-          url: `${process.env.serverPrintUrl}/fdss/print`,
-          data: {
-            header: data,
-            qrcode: data.U_TRX_NO,
-            uuids: process.env.uuid,
-            ip: this.printerIP,
-            sessionId: session,
-          }
-        })
-        .then((res) => {
-          if(res.data.posted.status && res.data.posted.status == 500) {
-            this.showAlert(
-              res.data.posted.status+' '+res.data.posted.statusText, "danger");
-          }
-          if(res.status === 201) {
-            try {
-              this.showLoading = true;
-              const userDetails = JSON.parse(localStorage.user_details);
 
-              const employee_id = userDetails.Code;
-
-              axios({
-                method: "PUT",
-                url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data.U_TRX_ID}`,
-                headers: {
-                  Authorization: `B1SESSION=${localStorage.SessionId}`
-                },
-                data: {
-                  employee_id,
-                  U_TRX_ID: data.U_TRX_NO
-                }
-              }).then(res => {
-                this.getTransactions();
-                this.showLoading = false;
-                this.copiesToPrint = 1;
-                this.$bvModal.hide('select-printer-modal');
-                this.showAlert("Printed Successfully", "success");
-              })
-            } catch (e) {
-              console.log(e);
-              this.showAlert(e, "danger");
-              this.showLoading = false;
+        console.log("window location protocol", window.location.protocol);
+        console.log(window.location.protocol == 'http:');
+        if(window.location.protocol == 'http:') {
+          console.log("HTTP");
+          await axios({
+            method: "POST",
+            url: `${process.env.serverPrintUrl}/fdss/print`,
+            data: {
+              header: data,
+              qrcode: data.U_TRX_NO,
+              uuids: process.env.uuid,
+              ip: this.printerIP,
+              sessionId: session,
             }
-          } else if(res.includes('500')) {
-            this.showAlert(res, "danger")
-          }
-        })
-        .catch((err => {
-          console.log("error: ", err);
-          this.showAlert(err, "danger");
-          this.showLoading = false;
-        }))
+            })
+            .then((res) => {
+              if(res.data.posted.status && res.data.posted.status == 500) {
+                this.showAlert(
+                  res.data.posted.status+' '+res.data.posted.statusText, "danger");
+              }
+              if(res.status === 201) {
+                try {
+
+                  this.changeStatusToPrinted(data.U_TRX_ID);
+                  // this.showLoading = true;
+                  // const userDetails = JSON.parse(localStorage.user_details);
+
+                  // const employee_id = userDetails.Code;
+
+                  // axios({
+                  //   method: "PUT",
+                  //   url: `${this.$axios.defaults.baseURL}/api/transaction/print/${data.U_TRX_ID}`,
+                  //   headers: {
+                  //     Authorization: `B1SESSION=${localStorage.SessionId}`
+                  //   },
+                  //   data: {
+                  //     employee_id,
+                  //     U_TRX_ID: data.U_TRX_NO
+                  //   }
+                  // }).then(res => {
+                  //   this.getTransactions();
+                  //   this.showLoading = false;
+                  //   this.copiesToPrint = 1;
+                  //   this.$bvModal.hide('select-printer-modal');
+                  //   this.showAlert("Printed Successfully", "success");
+                  // })
+                } catch (e) {
+                  console.log(e);
+                  this.showAlert(e, "danger");
+                  this.showLoading = false;
+                }
+              } else if(res.includes('500')) {
+                this.showAlert(res, "danger")
+              }
+            })
+            .catch((err => {
+              console.log("error: ", err);
+              this.showAlert(err, "danger");
+              this.showLoading = false;
+            }))
+        } else {
+          console.log("HTTPS");
+          this.changeStatusToPrinted(data.U_TRX_ID);
+        }
+
       }
+    },
+    async changeStatusToPrinted(id) {
+      this.showLoading = true;
+        const userDetails = JSON.parse(localStorage.user_details);
+
+        const employee_id = userDetails.Code;
+
+      axios({
+        method: "PUT",
+        url: `${this.$axios.defaults.baseURL}/api/transaction/print/${id}`,
+        headers: {
+          Authorization: `B1SESSION=${localStorage.SessionId}`
+        },
+        data: {
+          employee_id,
+          U_TRX_ID: id
+        }
+      }).then(res => {
+        this.getTransactions();
+        this.showLoading = false;
+        this.copiesToPrint = 1;
+        this.$bvModal.hide('select-printer-modal');
+        this.showAlert("Printed Successfully", "success");
+      }).catch((err => {
+        console.log("error: ", err);
+        this.showAlert(err, "danger");
+        this.showLoading = false;
+      }))
     },
     async confirmCancel(U_TRX_ID) {
       try {
