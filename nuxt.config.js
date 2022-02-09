@@ -67,9 +67,9 @@ module.exports = {
 
   },
   env:{
-    // serverPrintUrl: "http://172.16.4.182:887",
+    serverPrintUrl: "http://172.16.4.182:887",
     // serverPrintUrl: "https://fdss-supp.biotechfarms.net/printer-api" ,
-    serverPrintUrl: "http://94.237.65.245:887",
+    // serverPrintUrl: "http://94.237.65.245:887",
     // serverPrintUrl: "http://172.17.122.199:3002", 
     // serverPrintUrl: "http://172.16.28.8:8000/fdss-api", 
     // serverPrintUrl: "http://localhost:3002",
