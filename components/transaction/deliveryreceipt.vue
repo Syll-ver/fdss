@@ -599,6 +599,7 @@
                       type="number"
                       v-model="U_REQUESTED_SACKS"
                       class="form-text"
+                      placeholder="0"
                       required
                     ></b-form-input>
                   </b-col>
@@ -612,6 +613,8 @@
                       v-model="U_SACKS"
                       class="form-text"
                       required
+                      value="1"
+                      disabled
                     ></b-form-input>
                   </b-col>
                 </b-row>
@@ -625,6 +628,7 @@
                       type="number"
                       v-model="U_REQUESTED_SACKS"
                       class="form-text"
+                      placeholder="0"
                       required
                     ></b-form-input>
                     <small class="text-left"># of Filled Bags</small>
@@ -633,6 +637,7 @@
                       id="Bags"
                       class="form-text"
                       v-model="U_SACKS"
+                      placeholder="0"
                     />
                   </b-col>
                   <!-- <b-col cols="6" v-else>
@@ -646,6 +651,7 @@
                       id="emptysacks"
                       class="form-text"
                       v-model="U_EMPTY_SACKS"
+                      placeholder="0"
                     />
                   </b-col>
                   <b-col cols="6" v-else></b-col>
@@ -1969,7 +1975,9 @@ export default {
       }
 
       if(this.U_UOM.UomName == 'BAG') {
-        this.U_SACKS = 0;
+        this.U_SACKS = null;
+        this.U_REQUESTED_SACKS = null;
+        this.U_EMPTY_SACKS = null;
       }
     },
     async createDR() {
@@ -2035,6 +2043,15 @@ export default {
       }
     },
     async saveDR() {
+      console.log(this.U_SCHEDULED_DATE);
+      console.log(this.U_TRANSACTION_TYPE);
+      console.log(this.U_CMMDTY);
+      console.log(this.U_UOM);
+      console.log(this.U_FRMR_NAME);
+      console.log(this.U_HLPR_FNAME, this.U_HLPR_LNAME);
+      console.log(this.U_DRVR_FNAME, this.U_DRVR_LNAME);
+      console.log(this.U_PLATE_NUMBER);
+      console.log(this.U_TRANSACTION_TYPE);
       if (this.U_SCHEDULED_DATE == null) {
         this.showAlert("Please input Schedule Date", "danger");
       } else if (this.U_TRANSACTION_TYPE == null) {
@@ -2045,9 +2062,9 @@ export default {
         this.showAlert("Please select Unit of Measure", "danger");
       } else if (this.U_FRMR_NAME == null) {
         this.showAlert("Please select Farmer Name", "danger");
-      } else if (this.U_HLPR_FNAME.trim() == null || this.U_HLPR_LNAME.trim() == null) {
+      } else if (this.U_HLPR_FNAME == null || this.U_HLPR_LNAME == null || this.U_HLPR_FNAME.trim() == null || this.U_HLPR_LNAME.trim() == null) {
         this.showAlert("Please input Helper Name", "danger");
-      } else if (this.U_DRVR_FNAME.trim() == null || this.U_DRVR_LNAME.trim() == null || this.U_DRVR_FNAME.trim() == "" || this.U_DRVR_LNAME.trim() == "") {
+      } else if (this.U_DRVR_FNAME == null || this.U_DRVR_LNAME == null || this.U_DRVR_FNAME.trim() == null || this.U_DRVR_LNAME.trim() == null || this.U_DRVR_FNAME.trim() == "" || this.U_DRVR_LNAME.trim() == "") {
         this.showAlert("Please input Driver Name", "danger");
       } else if (this.U_PLATE_NUMBER == null) {
         this.showAlert("Please input Plate Number", "danger");
@@ -2065,6 +2082,12 @@ export default {
       //   this.showAlert("Please input Time Start", "danger");
         // } else if (this.U_SACKS < "1" ) {
         //   this.showAlert("Please input quantity/# of Filled Bags  not less than zero", "danger");
+      } else if (this.U_SACKS == null) {
+        this.U_SACKS = 0;
+      } else if (this.U_REQUESTED_SACKS == null) {
+        this.U_REQUESTED_SACKS = 0;
+      } else if (this.U_EMPTY_SACKS == null) {
+        this.U_EMPTY_SACKS = 0
       } else {
         console.log(this.U_CMMDTY.value);
         this.$bvModal.show("pin");
