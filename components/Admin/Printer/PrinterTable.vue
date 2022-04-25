@@ -585,7 +585,7 @@ export default {
       this.ips[0].ip2 = "";
       this.ips[0].ip3 = "";
       this.ips[0].ip4 = "";
-    },
+    }, 
 
     async addPrinter() {
       console.log(this.printer.U_IP_ADD);
